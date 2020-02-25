@@ -1,7 +1,7 @@
 Great tit song analyses
 ==============================
 
-Codeorded in Wytham Wooods. Oxford, UK
+Recorded in Wytham and Bagley Wooods. Oxford, UK
 
 Project Organization
 ------------
