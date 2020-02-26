@@ -1,7 +1,13 @@
-Great tit song analyses
+Great tit song analysis
 ==============================
 
-Recorded in Wytham and Bagley Wooods. Oxford, UK
+---
+title: "Field Recordings"
+author: "Nilo Merino Recalde"
+date: "02/26/2020"
+---
+
+Analysis of the great tit (*Parus major*) songs recorded in the Wytham and Bagley Woods, Oxford, 2020- .
 
 Project Organization
 ------------
@@ -20,9 +26,9 @@ Project Organization
     ├── models             <- Trained and serialized models, model predictions, or model summaries
     │
     ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
+    │   └── 00_bagley         the creator's initials, and a short `-` delimited description, e.g.
     │                         `1.0-jqp-initial-data-exploration`.
-    │
+    │                         
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
