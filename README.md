@@ -1,13 +1,11 @@
 Great tit song analysis
 ==============================
+Nilo Merino Recalde - 02/26/2020
 
----
-title: "Field Recordings"
-author: "Nilo Merino Recalde"
-date: "02/26/2020"
 ---
 
 Analysis of the great tit (*Parus major*) songs recorded in the Wytham and Bagley Woods, Oxford, 2020- .
+
 
 Project Organization
 ------------
