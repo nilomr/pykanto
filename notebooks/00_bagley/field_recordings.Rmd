@@ -1,0 +1,104 @@
+---
+title: "Field Recordings"
+author: "Nilo Merino Rrecalde"
+date: "03/02/2020"
+output: 
+  html_document:
+    code_folding: show
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r pkg, message=FALSE}
+setwd("/media/nilo/Data/dphil/field_recordings/")
+library(tidyverse)
+library(lubridate)
+library(ggmap)
+```
+
+### Read GPS coordinates of recording locations
+This Will change names of files newly added to the field recordings data folder
+
+```{r gpx_read, message=FALSE}
+
+# Gets filenames of GPS coordinates and .WAVs
+file_gps <- list.files(path = "./data/", full.names = TRUE, pattern = ".gpx$") # make sure that there is only one .gpx file in this directory
+
+file_wav_new <- list.files(path = "./data/", full.names = FALSE, pattern = ".wav$") %>%
+  grep(., pattern = "_", inv = T, value = T) %>%
+  sort(., decreasing = FALSE)
+
+file_wav_existing <- list.files(path = "./data/", full.names = FALSE, pattern = ".wav$") %>%
+  grep(., pattern = "_", inv = F, value = T) %>%
+  sort(., decreasing = FALSE)
+
+# Imports and cleans gps coordinates
+locations <-
+  file_gps %>%
+  plotKML::readGPX(., waypoints = TRUE, bounds = FALSE, tracks = FALSE, routes = FALSE) %>%
+  pluck("waypoints") %>%
+  as_tibble() %>%
+  mutate(time = ymd_hms(time)) %>%
+  mutate(filename = paste0(date(time), "_", str_sub(name, start = -3), ".wav")) %>%
+  arrange(., time)
+
+## Renames Zoom H4N files to something more sensible. Pause to think before using.
+setwd("./data/")
+file.rename(from = file_wav_new, to = setdiff(locations$filename, file_wav_existing))
+```
+
+### Map recording locations
+```{r mapcode, message=FALSE}
+
+## Dis my key, remove before sharing
+# ggmap::register_google(key = "AIzaSyDfAbhsGQ32byJTmQnpOFjQ_5yr3ViVYeI", write = TRUE)
+
+bagley_wood <- c(lon = -1.259911, lat = 51.715711)
+
+# # Satellite map
+# get_googlemap(
+#   center = bagley_wood,
+#   zoom = 14,
+#   scale = 4,
+#   maptype = "terrain",
+#   color = "color"
+# ) 
+
+bagley_samples_mapget_map <- 
+  get_map(
+    location = bagley_wood,
+    source = "stamen",
+    maptype = "terrain",
+    crop = FALSE,
+    zoom = 15
+  ) %>%
+    ggmap(base_layer = ggplot(aes(x = lon, y = lat), data = locations)) %>%
+    +stat_density_2d(
+      aes(fill = ..level..),
+      geom = "polygon",
+      alpha = .07,
+      color = NA
+    ) +
+    scale_fill_gradient2(
+      "Density",
+      low = "white",
+      mid = "yellow",
+      high = "red",
+      midpoint = 12000
+    ) +
+    geom_point(colour = "black", size = 3) +
+    theme_nothing()
+
+```
+
+<br>
+
+```{r fig1, out.width = "90%", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+bagley_samples_mapget_map
+```
+
