@@ -72,12 +72,47 @@
       "Repository": "CRAN",
       "Hash": "26b1a48cba670ad632664906b48a01a6"
     },
+    "RSpectra": {
+      "Package": "RSpectra",
+      "Version": "0.16-0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "a41329d24d5a98eaed2bd0159adb1b5f"
+    },
     "Rcpp": {
       "Package": "Rcpp",
       "Version": "1.0.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "f3ca785924863b0e4c8cb23b6a5c75a1"
+    },
+    "RcppAnnoy": {
+      "Package": "RcppAnnoy",
+      "Version": "0.0.15",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "ba13c3e25aff89096ca4942bfdd33134"
+    },
+    "RcppEigen": {
+      "Package": "RcppEigen",
+      "Version": "0.3.3.7.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c6faf038ba4346b1de19ad7c99b8f94a"
+    },
+    "RcppParallel": {
+      "Package": "RcppParallel",
+      "Version": "4.4.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "12c9e07854eca8814a62ebeabb16e8ef"
+    },
+    "RcppProgress": {
+      "Package": "RcppProgress",
+      "Version": "0.4.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "1c0aa18b97e6aaa17f93b8b866c0ace5"
     },
     "RgoogleMaps": {
       "Package": "RgoogleMaps",
@@ -247,6 +282,13 @@
       "Repository": "CRAN",
       "Hash": "3ecb1deedd4c4ad6ebf4605d263616f2"
     },
+    "dqrng": {
+      "Package": "dqrng",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "cc0d03e8383d407e9568855f8efbc07d"
+    },
     "e1071": {
       "Package": "e1071",
       "Version": "1.7-3",
@@ -386,6 +428,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "48a9f38248943dd1743af3e6ecd8849c"
+    },
+    "irlba": {
+      "Package": "irlba",
+      "Version": "2.3.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "a9ad517358000d57022401ef18ee657a"
     },
     "jpeg": {
       "Package": "jpeg",
@@ -709,6 +758,25 @@
       "Repository": "CRAN",
       "Hash": "80dde2abbbe641a1dd783cfbd1d23596"
     },
+    "sitmo": {
+      "Package": "sitmo",
+      "Version": "2.0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0f9ba299f2385e686745b066c6d7a7c4"
+    },
+    "snedata": {
+      "Package": "snedata",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "snedata",
+      "RemoteUsername": "jlmelville",
+      "RemoteRef": "master",
+      "RemoteSha": "2dd9f62da348f3798c46ae4993d4a7d9021ef4e6",
+      "Hash": "cd85de6d4be381939da28ec14a0e3fee"
+    },
     "sp": {
       "Package": "sp",
       "Version": "1.4-0",
@@ -785,6 +853,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "4a5081acfb7b81a572e4384a7aaf2af1"
+    },
+    "uwot": {
+      "Package": "uwot",
+      "Version": "0.1.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c27a53bacadf923ea06f322bb1d093a7"
     },
     "vctrs": {
       "Package": "vctrs",

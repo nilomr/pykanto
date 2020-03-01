@@ -9,12 +9,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
-
+```{r ksetup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r pkg, message=FALSE}
+```{r setup, message=FALSE}
 setwd("/home/nilomr/projects/00_gtit/data/raw/00_bagley")
 library(tidyverse)
 library(lubridate)
@@ -28,7 +27,9 @@ This Will change names of files newly added to the field recordings data folder
 ```{r gpx_read, message=FALSE}
 
 # Gets filenames of GPS coordinates and .WAVs
-file_gps <- list.files(full.names = TRUE, pattern = ".gpx$") # make sure that there is only one .gpx file in this directory
+file_gps <-
+  list.files(full.names = TRUE,
+             pattern = ".gpx$") # make sure that there is only one .gpx file in this directory
 
 file_wav_new <- list.files(full.names = FALSE, pattern = ".wav$") %>%
   grep(., pattern = "_", inv = T, value = T) %>%
