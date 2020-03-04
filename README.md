@@ -6,8 +6,6 @@ Nilo Merino Recalde - 02/26/2020
 
 Analysis of the great tit (*Parus major*) songs recorded in the Wytham and Bagley Woods, Oxford, 2020- .
 
-Test delete
-
 
 Project Organization
 ------------
