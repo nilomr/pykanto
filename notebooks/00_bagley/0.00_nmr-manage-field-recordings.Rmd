@@ -4,6 +4,8 @@ author: "Nilo Merino Rrecalde"
 date: "03/02/2020"
 output: 
   html_document:
+    theme: yeti
+    highlight: kate
     code_folding: show
 editor_options: 
   chunk_output_type: console
@@ -14,34 +16,36 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r pkg, message=FALSE}
-setwd("/home/nilomr/projects/00_gtit/data/raw/00_bagley")
+setwd("/home/nilomr/projects/00_gtit")
+source("./src/data-read/import-field-recordings.R")
 library(tidyverse)
 library(lubridate)
 library(ggmap)
 library(plotKML)
 ```
 
-### Read GPS coordinates of recording locations
-This Will change names of files newly added to the field recordings data folder
 
-```{r gpx_read, message=FALSE}
+### Read GPS coordinate of recording locations
+<p style="color:red">Note: This will change names of files newly added to the field recordings data folder</p>
+
+```{r read}
 
 # Gets filenames of GPS coordinates and .WAVs
 
-file_gps <- list.files(full.names = TRUE, pattern = ".gpx$") # make sure that there is only one .gpx file in this directory
+file.gps <- list.files(path = "./data/raw/00_bagley", full.names = TRUE, pattern = ".gpx$") # make sure that there is only one .gpx file in this directory
 
-file_wav_new <- list.files(full.names = FALSE, pattern = ".wav$") %>%
+file.wav.new <- list.files(path = "./data/raw/00_bagley", full.names = FALSE, pattern = ".wav$") %>%
   grep(., pattern = "_", inv = T, value = T) %>%
   sort(., decreasing = FALSE)
 
-file_wav_existing <- list.files(full.names = FALSE, pattern = ".wav$") %>%
+file.wav.existing <- list.files(path = "./data/raw/00_bagley", full.names = FALSE, pattern = ".wav$") %>%
   grep(., pattern = "_", inv = F, value = T) %>%
   sort(., decreasing = FALSE)
 
 # Imports and cleans gps coordinates
 
 locations <-
-  file_gps %>%
+  file.gps %>%
   plotKML::readGPX(., waypoints = TRUE, bounds = FALSE, tracks = FALSE, routes = FALSE) %>%
   pluck("waypoints") %>%
   as_tibble() %>%
@@ -49,23 +53,76 @@ locations <-
   mutate(filename = paste0(date(time), "_", str_sub(name, start = -3), ".wav")) %>%
   arrange(., time)
 
+## Renames Zoom H4N files to something more sensible. Pause to think before using.
+
+file.rename(from = file.wav.new, to = setdiff(locations$filename, file.wav.existing))
+```
+
+
+### Check that gps and audio times and filenames are coherent
+
+```{r check}
+
+all.wav.files <-
+  list.files(path = "./data/raw/00_bagley",
+             full.names = TRUE,
+             pattern = ".wav$") %>%
+  grep(.,
+       pattern = "_",
+       inv = F,
+       value = T) %>%
+  sort(., decreasing = FALSE)
+
+all.wav.files.metadata <-
+  file_metadata(all.wav.files) %>% select(
+    .,
+    -exif_tool_version,
+    -file_type,
+    -mime_type,
+    -description,
+    -originator_reference,
+    -bwf_version,
+    -coding_history
+  ) %>%
+  mutate(time = ymd_hms(date_time_original))
+
 # Check that gps and audio times are coherent:
 # look for possible mistakes when manually labelling POIs in the field
 
+if ('TRUE' %in% duplicated(locations$filename)) {
+stop("There is a duplicated file in the .gpx gps data file. Check and fix before continuing")
+}
 
+if ('TRUE' %in% duplicated(all.wav.files.metadata$file_name)) {
+stop("There is a duplicated audio file. Check and fix before continuing")
+}
 
-## Renames Zoom H4N files to something more sensible. Pause to think before using.
+# One way to remove duplicates is 'my_data %>% distinct()'. Note that this removes the second entry.
+# locations <- locations %>% distinct(filename, .keep_all = TRUE)
 
-file.rename(from = file_wav_new, to = setdiff(locations$filename, file_wav_existing))
+time.diff <-
+  tibble(
+    time.diff = (all.wav.files.metadata$time - locations$time) / 60,
+    filename = all.wav.files.metadata$file_name) %>% 
+  ggplot(aes(x=filename, y=time.diff)) +
+  geom_point() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Difference between audio creation time and gps entry time, in minutes", subtitle = "Look for outliers")
+
+time.diff
+
 ```
 
+
 ### Map recording locations
+
 ```{r mapcode, message=FALSE}
 
 ## This is my google key, remove before sharing
 #ggmap::register_google(key = "AIzaSyDfAbhsGQ32byJTmQnpOFjQ_5yr3ViVYeI", write = TRUE)
 
-bagley_wood <- c(lon = -1.259911, lat = 51.715711)
+bagley.wood <- c(lon = -1.259911, lat = 51.715711)
 
 # # Satellite map
 # get_googlemap(
@@ -76,9 +133,9 @@ bagley_wood <- c(lon = -1.259911, lat = 51.715711)
 #   color = "color"
 # ) 
 
-bagley_samples_mapget_map <- 
+bagley.samples.map <- 
   get_map(
-    location = bagley_wood,
+    location = bagley.wood,
     source = "stamen",
     maptype = "terrain",
     crop = FALSE,
@@ -100,23 +157,24 @@ bagley_samples_mapget_map <-
     ) +
     geom_point(colour = "black", size = 2)
 
+
 # Save plot
 
-# ggsave(
-#   bagley_samples_mapget_map,
-#   path = "/home/nilomr/projects/00_gtit/reports/figures",
-#   filename = "00_bagley-map.png",
-#   width = 20,
-#   height = 20,
-#   units = "cm",
-#   dpi = 350
-# )
+ggsave(
+  bagley.samples.map,
+  path = "./reports/figures",
+  filename = "00_bagley-map.png",
+  width = 20,
+  height = 20,
+  units = "cm",
+  dpi = 350
+)
 
 ```
 
 <br>
 
 ```{r fig1, out.width = "90%", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
-bagley_samples_mapget_map
+bagley.samples.map
 ```
 
