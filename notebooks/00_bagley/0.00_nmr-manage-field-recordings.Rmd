@@ -1,7 +1,7 @@
 ---
 title: "Field Recordings"
 author: "Nilo Merino Recalde"
-date: "03/02/2020"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   github_document:
     toc: true
@@ -10,22 +10,27 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r pkg, message=FALSE}
-setwd("/home/nilomr/projects/00_gtit")
-source("./src/data-read/import-field-recordings.R")
+```{r setup, include=TRUE, , message=FALSE}
+# Requires: 
+library(rprojroot)
 library(tidyverse)
 library(lubridate)
 library(ggmap)
 library(plotKML)
+
+# Knitr settings: 
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE, fig.path = "../../reports/figures/")
+```
+
+```{r pkg, message=FALSE}
+# Source file
+source("./src/data-read/import-field-recordings.R")
 ```
 
 
-### Read GPS coordinate of recording locations
-<p style="color:red">Note: This will change the names of newly added files to something more sensible</p>
+### Read GPS coordinate of recording locations 
+<span style="color:red">Note: This will change the names of newly added files to something more sensible</span>
 
 ```{r read}
 
@@ -76,8 +81,9 @@ locations <-
 file.rename(from = file.wav.new, to = setdiff(locations$filename, file.wav.existing))
 ```
 
+---
 
-### Check that gps and audio times and filenames are coherent
+#### Check that gps and audio times and filenames are coherent
 
 ```{r check}
 
@@ -156,10 +162,13 @@ ggsave(
 )
 ```
 
+<br>
+
 ```{r fig1, out.width = "90%", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
 time.diff 
 ```
 
+---
 
 ### Map recording locations
 
