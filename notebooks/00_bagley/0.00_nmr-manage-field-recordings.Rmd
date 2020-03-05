@@ -1,13 +1,12 @@
 ---
 title: "Field Recordings"
-author: "Nilo Merino Rrecalde"
+author: "Nilo Merino Recalde"
 date: "03/02/2020"
-output: 
-  html_document:
-    theme: yeti
-    highlight: kate
-    code_folding: show
-editor_options: 
+output:
+  github_document:
+    toc: true
+    toc_depth: 3
+editor_options:
   chunk_output_type: console
 ---
 
@@ -26,27 +25,46 @@ library(plotKML)
 
 
 ### Read GPS coordinate of recording locations
-<p style="color:red">Note: This will change names of files newly added to the field recordings data folder</p>
+<p style="color:red">Note: This will change the names of newly added files to something more sensible</p>
 
 ```{r read}
 
 # Gets filenames of GPS coordinates and .WAVs
+# There should only be one .gpx file in this directory
 
-file.gps <- list.files(path = "./data/raw/00_bagley", full.names = TRUE, pattern = ".gpx$") # make sure that there is only one .gpx file in this directory
+file.gps <-
+  list.files(path = "./data/raw/00_bagley",
+             full.names = TRUE,
+             pattern = ".gpx$") 
 
-file.wav.new <- list.files(path = "./data/raw/00_bagley", full.names = FALSE, pattern = ".wav$") %>%
-  grep(., pattern = "_", inv = T, value = T) %>%
-  sort(., decreasing = FALSE)
+file.wav.new <-
+  list.files(path = "./data/raw/00_bagley",
+             full.names = FALSE,
+             pattern = ".wav$") %>%
+  grep(pattern = "_",
+       inv = T,
+       value = T) %>%
+  sort(decreasing = FALSE)
 
-file.wav.existing <- list.files(path = "./data/raw/00_bagley", full.names = FALSE, pattern = ".wav$") %>%
-  grep(., pattern = "_", inv = F, value = T) %>%
-  sort(., decreasing = FALSE)
+file.wav.existing <-
+  list.files(path = "./data/raw/00_bagley",
+             full.names = FALSE,
+             pattern = ".wav$") %>%
+  grep(pattern = "_",
+       inv = F,
+       value = T) %>%
+  sort(decreasing = FALSE)
 
 # Imports and cleans gps coordinates
 
 locations <-
   file.gps %>%
-  plotKML::readGPX(., waypoints = TRUE, bounds = FALSE, tracks = FALSE, routes = FALSE) %>%
+  plotKML::readGPX(
+    waypoints = TRUE,
+    bounds = FALSE,
+    tracks = FALSE,
+    routes = FALSE
+  ) %>%
   pluck("waypoints") %>%
   as_tibble() %>%
   mutate(time = ymd_hms(time)) %>%
@@ -86,32 +104,60 @@ all.wav.files.metadata <-
   ) %>%
   mutate(time = ymd_hms(date_time_original))
 
-# Check that gps and audio times are coherent:
-# look for possible mistakes when manually labelling POIs in the field
+
+# Check that gps and audio times are coherent: look for possible mistakes when
+# manually labelling POIs in the field. Execution will halt if there are any duplicates.
+# For other issues, check plots.
 
 if ('TRUE' %in% duplicated(locations$filename)) {
-stop("There is a duplicated file in the .gpx gps data file. Check and fix before continuing")
+  stop("There is a duplicated entry in the .gpx data file")
+} else {
+  print("There are no duplicates in the .gpx gps data file")
 }
 
 if ('TRUE' %in% duplicated(all.wav.files.metadata$file_name)) {
-stop("There is a duplicated audio file. Check and fix before continuing")
+  stop("There is a duplicated audio file. Check and fix before continuing")
+} else {
+  print("There are no duplicated audio files")
 }
 
-# One way to remove duplicates is 'my_data %>% distinct()'. Note that this removes the second entry.
-# locations <- locations %>% distinct(filename, .keep_all = TRUE)
+
+# One way to remove duplicates is 'my_data %>% distinct()'.
+# Note that this removes the second entry, which might not be what you want.
+
+locations <- locations %>% distinct(filename, .keep_all = TRUE)
 
 time.diff <-
   tibble(
-    time.diff = (all.wav.files.metadata$time - locations$time) / 60,
-    filename = all.wav.files.metadata$file_name) %>% 
-  ggplot(aes(x=filename, y=time.diff)) +
+    time.diff = as.numeric((
+      all.wav.files.metadata$time - locations$time
+    ) / 60),
+    filename = all.wav.files.metadata$file_name,
+    day = yday(all.wav.files.metadata$time)
+  ) %>%
+  ggplot(aes(x = filename, y = time.diff)) +
   geom_point() +
-  theme_minimal() +
+  facet_grid(rows = vars(day)) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  labs(title = "Difference between audio creation time and gps entry time, in minutes", subtitle = "Look for outliers")
+  labs(title = "Difference between audio creation time and gps entry time",
+       subtitle = "Look for outliers!",
+       x = element_blank(),
+       y = "Time difference (mins)")
 
-time.diff
+ggsave(
+  time.diff,
+  path = "./reports/figures",
+  filename = "01_time-difference.png",
+  width = 20,
+  height = 20,
+  units = "cm",
+  dpi = 350
+)
+```
 
+```{r fig1, out.width = "90%", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+time.diff 
 ```
 
 
@@ -174,7 +220,7 @@ ggsave(
 
 <br>
 
-```{r fig1, out.width = "90%", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
+```{r fig2, out.width = "90%", fig.align="center", message=FALSE, warning=FALSE, echo=FALSE}
 bagley.samples.map
 ```
 
