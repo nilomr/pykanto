@@ -13,4 +13,7 @@ RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
 BuildType: Makefile
+<<<<<<< HEAD
 MakefilePath: ~/projects/00_gtit
+=======
+>>>>>>> bf3cb0505c4edeb6fde21285f2ffacaba2044ff5

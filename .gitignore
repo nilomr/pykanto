@@ -87,4 +87,7 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+# Unwanted file extensions
+*.html
 .Rproj.user
