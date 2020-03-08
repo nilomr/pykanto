@@ -10,18 +10,9 @@ editor_options:
   chunk_output_type: console
 ---
 
-<<<<<<< HEAD
-```{r ksetup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r setup, message=FALSE}
-setwd("/home/nilomr/projects/00_gtit/data/raw/00_bagley")
-=======
 ```{r setup, include=TRUE, , message=FALSE}
 # Requires: 
 library(rprojroot)
->>>>>>> bf3cb0505c4edeb6fde21285f2ffacaba2044ff5
 library(tidyverse)
 library(lubridate)
 library(ggmap)
@@ -38,15 +29,8 @@ source("./src/data-read/import-field-recordings.R")
 ```
 
 
-<<<<<<< HEAD
-# Gets filenames of GPS coordinates and .WAVs
-file_gps <-
-  list.files(full.names = TRUE,
-             pattern = ".gpx$") # make sure that there is only one .gpx file in this directory
-=======
 ### Read GPS coordinate of recording locations 
 <span style="color:red">Note: This will change the names of newly added files to something more sensible</span>
->>>>>>> bf3cb0505c4edeb6fde21285f2ffacaba2044ff5
 
 ```{r read}
 
