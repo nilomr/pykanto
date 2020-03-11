@@ -1,0 +1,42 @@
+---
+title: "0.00_nmr-umap-bagley"
+author: "Nilo Merino Recalde"
+date: "28/02/2020"
+output: html_document
+---
+UMAP lolololo
+-------
+
+```{r ksetup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r setup, message = FALSE}
+setwd("/home/nilomr/projects/00_gtit/data/raw/00_bagley")
+library(snedata)
+library(RnavGraphImageData)
+library(uwot)
+```
+
+
+```{r}
+mnist <- snedata::download_mnist()
+
+# For some functions we need to strip out non-numeric columns and convert data to matrix
+x2m <- function(X) {
+  if (!methods::is(X, "matrix")) {
+    m <- as.matrix(X[, which(vapply(X, is.numeric, logical(1)))])
+  }
+  else {
+    m <- X
+  }
+  m
+}
+
+frey_faces()
+s1k_umap <- umap(frey_faces())
+
+plot(s1k_umap)
+```
+
