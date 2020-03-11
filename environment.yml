@@ -1,8 +1,8 @@
 name: 00_gtit-env
 channels:
+  - anaconda
   - rapidsai
   - nvidia
-  - anaconda
   - conda-forge
   - defaults
 dependencies:
@@ -22,7 +22,7 @@ dependencies:
   - brotli=1.0.7=he1b5a44_1000
   - bzip2=1.0.8=h516909a_2
   - c-ares=1.15.0=h7b6447c_1001
-  - ca-certificates=2020.1.1=0
+  - ca-certificates=2019.11.28=hecc5488_0
   - cachetools=3.1.1=py_0
   - certifi=2019.11.28=py36_0
   - cffi=1.13.2=py36h8022711_0
@@ -135,7 +135,7 @@ dependencies:
   - nvstrings=0.11.0=py36_0
   - oauthlib=3.1.0=py_0
   - openh264=1.8.0=hdbcaa40_1000
-  - openssl=1.1.1=h7b6447c_0
+  - openssl=1.1.1d=h516909a_0
   - opt_einsum=3.1.0=py_0
   - pandas=0.24.2=py36hb3f55d8_1
   - pandoc=2.9.2=0
@@ -156,6 +156,7 @@ dependencies:
   - pyasn1=0.4.8=py_0
   - pyasn1-modules=0.2.7=py_0
   - pycparser=2.19=py_2
+  - pydub=0.23.1=py_0
   - pygments=2.5.2=py_0
   - pyjwt=1.7.1=py36_0
   - pyopenssl=19.1.0=py_1
