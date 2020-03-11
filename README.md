@@ -1,9 +1,5 @@
 Great tit song analysis
 ==============================
-Nilo Merino Recalde - 02/26/2020
-
----
-
 Analysis of the great tit (*Parus major*) songs recorded in the Wytham and Bagley Woods, Oxford, 2020- .
 
 
@@ -58,4 +54,4 @@ Project Organization
 
 --------
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+<p><small>A project by Nilo Merino Recalde | based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>.</small></p>
