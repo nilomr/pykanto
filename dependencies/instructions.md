@@ -13,6 +13,6 @@ Instructions
 
  #### To segment bouts into syllables
 
-  - 
+  - [Download chipper](https://github.com/CreanzaLab/chipper/blob/master/docs/chipper_manual.md)
   - 
   - 

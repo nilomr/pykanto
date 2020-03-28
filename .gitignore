@@ -79,8 +79,10 @@ target/
 /data/
 
 # exclude resources folder
-
 /resources/
+
+# exclude chipper
+/dependencies/chipper_v1.0_linux
 
 # Mac OS-specific storage files
 .DS_Store
