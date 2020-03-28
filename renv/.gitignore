@@ -1,3 +1,7 @@
 library/
 python/
 staging/
+*
+*/
+!.gitignore
+!activate.R

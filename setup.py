@@ -4,7 +4,7 @@ setup(
     name='src',
     packages=find_packages(),
     version='0.1.0',
-    description='Recorded in Wytham Wooods. Oxford, UK',
+    description='Analysis of great tit songs',
     author='Nilo M. Recalde',
     license='MIT',
 )
