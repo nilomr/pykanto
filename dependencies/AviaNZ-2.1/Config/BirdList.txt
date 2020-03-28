@@ -1,4 +1,6 @@
 [
-"GREATI_HQ",
-"GREATI_LQ"
+ "Don't Know",
+ "GT-high-Q",
+ "GT-low-Q",
+ "GT-unsure"
 ]

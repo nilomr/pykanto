@@ -27,6 +27,7 @@ dependencies:
   - mkl_fft=1.0.15=py36ha843d7b_0
   - mkl_random=1.1.0=py36hd6b4f25_0
   - ncurses=6.2=he6710b0_0
+  - numpy=1.18.1=py36h4f9e942_0
   - numpy-base=1.18.1=py36hde5b4d6_1
   - openssl=1.1.1d=h7b6447c_4
   - parso=0.6.1=py_0
@@ -58,7 +59,6 @@ dependencies:
     - joblib==0.14.1
     - kiwisolver==1.1.0
     - matplotlib==3.1.2
-    - numpy==1.18.1
     - pydub==0.23.1
     - pyparsing==2.4.6
     - python-magic==0.4.15

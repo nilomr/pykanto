@@ -1,4 +1,0 @@
-[
-"GREATI_HQ",
-"GREATI_LQ"
-]
