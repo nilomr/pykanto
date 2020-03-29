@@ -1,6 +1,7 @@
 [
+ "other",
  "Don't Know",
- "GT-high-Q",
  "GT-low-Q",
+ "GT-high-Q",
  "GT-unsure"
 ]

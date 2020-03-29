@@ -9,7 +9,7 @@
 "widthOverviewSegment": 10.0, "maxFileShow": 300, "fileOverlap": 10,
 "brightness": 50, "contrast": 50, "overlap_allowed": 5, "reviewSpecBuffer": 1,
 "BirdListShort": "BirdList.txt",
-"BirdListLong": none,
+"BirdListLong": "ListCommonBirds.txt",
 "RecentFiles": [],
 "ColourList": ["Grey", "Viridis", "Inferno", "Plasma", "Autumn", "Cool", "Bone",
                 "Copper", "Hot", "Jet", "Thermal", "Flame", "Yellowy", "Bipolar", "Spectrum"],
