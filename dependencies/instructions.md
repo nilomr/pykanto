@@ -14,7 +14,7 @@ Instructions
 <br>
 
 #### To Do:
-- [ ] Add to bird list: "song matching", "2nd GT", etc
+- [ ] Add to bird list: "song matching", "2nd GT", "Blue tit" etc
 - [ ] 
 - [ ] 
 - [ ] 

@@ -1,7 +1,8 @@
 [
- "other",
  "Don't Know",
- "GT-low-Q",
- "GT-high-Q",
- "GT-unsure"
+ "GREATI-GOOD",
+ "GREATI-BAD",
+ "MATCHING",
+ "BLUETI",
+ "WTF"
 ]
