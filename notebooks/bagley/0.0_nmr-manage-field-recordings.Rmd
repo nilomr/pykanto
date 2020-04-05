@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.path = "../../reports/figures/")
 
 ```{r pkg, message=FALSE}
 # Source file
-source("./src/data-read/import-field-recordings.R")
+source("./src/read/import-field-recordings.R")
 ```
 
 
