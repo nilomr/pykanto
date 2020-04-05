@@ -76,10 +76,12 @@ target/
 .ipynb_checkpoints/
 
 # exclude data from source control by default
+# And data alias + other folders
 /data/
-
-# exclude resources folder
+data
+/private/
 /resources/
+
 
 # exclude chipper
 /dependencies/chipper_v1.0_linux
@@ -138,9 +140,8 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-data
 
-private
 
-.Rhistory
+
+
 
