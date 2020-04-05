@@ -608,7 +608,8 @@ class AviaNZ(QMainWindow):
         self.playButton.setToolTip("Play visible")
         self.playButton.clicked.connect(self.playVisible)
         self.playKey = QShortcut(QKeySequence("Space"), self)
-        self.playKey.activated.connect(self.playVisible)
+        self.playKey.activated.connect(self.playSelectedSegment) # changed default so that space bar plays segment. To change back,
+        # self.playKey.activated.connect(self.playVisible)
 
         self.stopButton = QtGui.QToolButton()
         self.stopButton.setIcon(self.style().standardIcon(QtGui.QStyle.SP_MediaStop))
