@@ -23,6 +23,7 @@ import sys
 from tqdm.auto import tqdm
 import pathlib2
 from pathlib2 import Path
+from src.read.paths import safe_makedir
 
 
 def segment_bouts(wavfile, destination, subset=None):    
