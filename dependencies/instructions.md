@@ -11,6 +11,8 @@ Instructions
  5. Build Cython extensions `cd ext; python3 setup.py build_ext -i; cd ..`
  6. Run `python3 AviaNZ.py`
 
+ It took me 1h 33min to segment one morning (4-11h)
+
 <br>
 
 #### To Do:
@@ -26,3 +28,4 @@ Instructions
   - [Download chipper](https://github.com/CreanzaLab/chipper/blob/master/docs/chipper_manual.md)
   - 
   - 
+
