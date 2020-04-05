@@ -21,6 +21,7 @@ library(ggmap)
 library(rgdal)
 library(ggrepel)
 library(plotKML)
+library(pgirmess)
 library(kableExtra)
 
 # Python setup

@@ -121,27 +121,23 @@ newones %>% select(-x, -y) %>%
 
 # Make and save .gpx file --------------------------------
 
-longlats <- data.frame(newones$lon, 
-                       newones$lat, 
-                       newones$Nestbox)
+longlats <- data.frame(ID=newones$Nestbox,
+                       Long=newones$lon, 
+                       Lat=newones$lat
+                       )
 
-longlats_spatial <-
-  SpatialPointsDataFrame(
-    coords = longlats[, c(1, 2)],
-    data = longlats,
-    proj4string = CRS("+proj=longlat + ellps=WGS84")
-  )
+gpx_file <- file.path(gpx_path, paste0(now, ".gpx"))
 
-writeOGR(
-  longlats_spatial,
-  dsn = file.path(gpx_path, paste0(now, ".gpx")),
-  dataset_options = "GPX_USE_EXTENSIONS=yes",
-  layer = "waypoints",
-  driver = "GPX",
-  overwrite_layer = T
-)
+writeGPX(longlats,
+         filename = gpx_file,
+         type = "w")
+
+# Read and change icon type
+readLines(gpx_file) %>%
+  gsub(pattern = "Flag", replace = "poi_red", .) %>%
+  writeLines(., con = gpx_file)
 
 
- rm(list = ls())
+ # rm(list = ls())
 
 ```
