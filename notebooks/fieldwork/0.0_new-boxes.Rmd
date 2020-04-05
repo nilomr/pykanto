@@ -1,0 +1,147 @@
+---
+title: "List and plot new great tit nestboxes"
+author: "Nilo Merino Recalde<br>"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+editor_options:
+  chunk_output_type: console
+---
+<br>
+
+This notebook does the following:
+
+* Tells you if there are new great tit nestboxes by checking the google spreadsheets uploaded by fieldworkers
+* If there are 10 or more since the last time you checked, then
+  + Saves a plot and a list with the new nestboxes and their locations
+  + Saves a .gpx file that can be read by mobile gps apps
+
+```{r setup, include=FALSE}
+# Knitr settings: 
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+```{r source, include=FALSE}
+# Source file
+source("./src/viz/plot-new-gretis.R")
+```
+
+### Are there new great tit nestboxes?
+Always run this first. Do not check more than once every 2 minutes
+
+```{r new, error=TRUE}
+
+# Download data - I started writing this in python 
+# and switched to R mid way, so run the first bit by:
+py_run_file("./src/read/get-new-gretis-rounds.py")
+
+# Are there at least 10 new nestboxes?
+new_boxes_list <- list.files(path = sheet_path,
+                             full.names = TRUE,
+                             pattern = ".csv")
+
+check_new_nestboxes(new_boxes_list)
+
+```
+
+Run the code below <span style="color:red">only if there ARE new nestboxes</span>.<br>
+`stop()` doesn't work with knitr for some reason, so if you do then you'll get duplicates of the previous run.
+
+```{r read-data}
+
+# Prepare data for plotting
+newones <- get_new_nestboxes(new_boxes_list)
+
+## This is my google key, remove before sharing
+# ggmap::register_google(key = "AIzaSyDfAbhsGQ32byJTmQnpOFjQ_5yr3ViVYeI", write = TRUE)
+
+# Centre the map here
+wytham <- c(lon = -1.321898, lat = 51.771250)
+
+# Make subtitles for plot
+subtitle <- make_subtitle(new_boxes_list, newones)
+
+
+# Make plot
+new_boxes_map <-
+  get_googlemap(
+    center = wytham,
+    zoom = 14,
+    scale = 4,
+    maptype = "satellite",
+    color = "color"
+  ) %>%
+  ggmap(base_layer = ggplot(
+    aes(x = lon, y = lat), data = newones)) %>%
+  +geom_point(colour = "white", size = 2) %>%
+  +geom_text_repel(
+    aes(label = Nestbox),
+    direction = 'both',
+    box.padding = 0.40,
+    colour = "white",
+    segment.alpha = 0.5,
+    seed = 30
+  ) %>%
+  +theme_nothing() %>%
+  +ggtitle("New great tit nestboxes", subtitle = subtitle) %>%
+  +theme(plot.title = element_text(hjust = 0, size = 30, face = "bold")) %>%
+  +theme(plot.subtitle = element_text(hjust = 0, size = 15)) %>%
+  +theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))
+
+# Save plot
+now <- gsub('.{3}$', '', now(tzone = "UTC"))  %>% sub(" ", "_", .)
+filename <- paste0("newboxes_map_", now, ".png")
+
+ggsave(
+  new_boxes_map,
+  path = figures_path,
+  filename = filename,
+  width = 30,
+  height = 30,
+  units = "cm",
+  dpi = 350
+)
+
+# Make and save list ------------------------------------
+
+list_path <-
+  file.path("resources",
+            "fieldwork",
+            year(today()),
+            paste0("new_", now, ".pdf"))
+
+newones %>% select(-x, -y) %>% 
+  knitr::kable() %>%  
+  kable_styling() %>%
+  save_kable(file = list_path)
+
+
+# Make and save .gpx file --------------------------------
+
+longlats <- data.frame(newones$lon, 
+                       newones$lat, 
+                       newones$Nestbox)
+
+longlats_spatial <-
+  SpatialPointsDataFrame(
+    coords = longlats[, c(1, 2)],
+    data = longlats,
+    proj4string = CRS("+proj=longlat + ellps=WGS84")
+  )
+
+writeOGR(
+  longlats_spatial,
+  dsn = file.path(gpx_path, paste0(now, ".gpx")),
+  dataset_options = "GPX_USE_EXTENSIONS=yes",
+  layer = "waypoints",
+  driver = "GPX",
+  overwrite_layer = T
+)
+
+
+ rm(list = ls())
+
+```
