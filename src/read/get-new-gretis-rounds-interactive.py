@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import pygsheets
 import os
-from datetime import date
+from datetime import date, timedelta, datetime
 from pathlib2 import Path
 from texttable import Texttable
 
@@ -161,7 +161,7 @@ print(white + """
 
 x = input()
 
-if x != 'n' or 'u':
+if x != ('n' or 'u'):
     raise Error(Fore.RED + Style.BRIGHT +
                 "'" + x + "'" + " is not a valid command")
 
@@ -196,7 +196,7 @@ if x == 'n':
         print(white + "You entered:" + blue + str(names))
 
     if len(names) == sum(nestbox_coords['Nestbox'].isin(names)):
-        print(white + "All nestbox names exist")
+        print(blue + "All nestbox names exist")
     else:
         print(red +
               str(len(names) - sum(nestbox_coords['Nestbox'].isin(names))) +
@@ -220,112 +220,107 @@ if x == 'n':
     if not yes_or_no(white + "Is " + str(date.today()) +
                      " the date when you deployed these recorders?"):
         print(white + "Enter the correct date in the same format")
-        date = input()
+        day = input()
+        day = datetime.strptime(day,'%Y-%m-%d').date()
     else:
-        date = str(date.today())
+        day = date.today()
     
     # Get coordinates, add date added and append
     new_boxes = nestbox_coords.query("Nestbox in @names")[
         ['Nestbox', 'x', 'y']]
 
-    new_boxes['Added'] = date
+    new_boxes['Deployed'] = str(day)
+    new_boxes['Move_by'] = str(day + timedelta(days=3))
 
-    f['Name'] = 'abc'
+    append_df_to_excel(recorded_xls, new_boxes)
 
-    append_df_to_excel(xls_file, df)
 
 elif x == 'u':
 
     # Get new nestboxes ------------------------
 
-    ##########################################################################
-    # Download google spreadsheets with nestbox info and create lists and maps
-    ##########################################################################
-
     # Auth key (keep private)
 
-gc = pygsheets.authorize(service_file=str(
-    PROJECT_PATH / "private" / "client_secret.json"))
+    gc = pygsheets.authorize(service_file=str(
+        PROJECT_PATH / "private" / "client_secret.json"))
 
-#! In progress - download and append personal sheets
+    # Download and append personal sheets
 
-#! Change every year
-freddy = gc.open_by_key('19YSkUwkW6GyGWsk3k8Mh56OAu04q_uLubd6S7Q8CH8g')[
-    0].get_as_df(has_header=True)
-julia = gc.open_by_key(
-    '1WWBT8mWVECd_lg6VJRzGHLuL78KMKojW-DCk1sjUqJU')[0].get_as_df(has_header=True)
-keith = gc.open_by_key('1CavBscnAw1SppJNUQ_RzZ7wGeGiSbbXh6i6M0n2MIIc')[
-    0].get_as_df(has_header=True)
-charlotte = gc.open_by_key('1I1WXw55BckjETRZIb2MtlVBM7AP0ik7RV6N9O8Vhdug')[
-    0].get_as_df(has_header=True)
+    #! Change every year
 
-# For some reason these three are different - why?
-richard = gc.open_by_key(
-    '1G6PzcgmQ0OZF_-uFWnbCSIbZf_H4eZ9fTYnfWpYNC8Q')[0].get_as_df(has_header=False)
-richard = richard.rename(columns=richard.iloc[0]).drop(richard.index[0])
-sam = gc.open_by_key('1G92eun7KIAPVkMsDDV4_aGd1oej0jjEygRECb0sG_io')[
-    0].get_as_df(has_header=False)
-sam = sam.rename(columns=sam.iloc[0]).drop(sam.index[0])
-samin = gc.open_by_key('1ovtFmPd5pvQCnyhO4_BFMlJdmcunpPhgd5vfChlzp70')[
-    0].get_as_df(has_header=False)
-samin = samin.rename(columns=samin.iloc[0]).drop(samin.index[0])
-
-
-allrounds = pd.concat([freddy, julia, keith, charlotte,
-                       richard, sam, samin]).query("Nestbox == Nestbox")
-
-# ! -------------------------------------------------
+    freddy = gc.open_by_key('19YSkUwkW6GyGWsk3k8Mh56OAu04q_uLubd6S7Q8CH8g')[
+        0].get_as_df(has_header=True)
+    julia = gc.open_by_key(
+        '1WWBT8mWVECd_lg6VJRzGHLuL78KMKojW-DCk1sjUqJU')[0].get_as_df(has_header=True)
+    keith = gc.open_by_key('1CavBscnAw1SppJNUQ_RzZ7wGeGiSbbXh6i6M0n2MIIc')[
+        0].get_as_df(has_header=True)
+    charlotte = gc.open_by_key('1I1WXw55BckjETRZIb2MtlVBM7AP0ik7RV6N9O8Vhdug')[
+        0].get_as_df(has_header=True)
+    # For some reason these three are different - why?
+    richard = gc.open_by_key(
+        '1G6PzcgmQ0OZF_-uFWnbCSIbZf_H4eZ9fTYnfWpYNC8Q')[0].get_as_df(has_header=False)
+    richard = richard.rename(columns=richard.iloc[0]).drop(richard.index[0])
+    sam = gc.open_by_key('1G92eun7KIAPVkMsDDV4_aGd1oej0jjEygRECb0sG_io')[
+        0].get_as_df(has_header=False)
+    sam = sam.rename(columns=sam.iloc[0]).drop(sam.index[0]).drop([''], axis=1)
+    samin = gc.open_by_key('1ovtFmPd5pvQCnyhO4_BFMlJdmcunpPhgd5vfChlzp70')[
+        0].get_as_df(has_header=False)
+    samin = samin.rename(columns=samin.iloc[0]).drop(samin.index[0])
 
 
-# Add coordinates of all nestboxes with great tits)
+    allrounds = pd.concat([freddy, julia, keith, charlotte,
+                        richard, sam, samin]).query("Nestbox == Nestbox")
 
-merged = pd.merge(allrounds, nestbox_coords, on=['Nestbox'])
+    # ! -------------------------------------------------
 
-# Save dataframe of new nestboxes
-# with 'date added' column and filename = 'date saved'
-filename = FIELD_PATH / (str(
-    str('allrounds')
-    + '_'
-    + str(pd.Timestamp('today', tz="UTC").strftime('%Y%m%d_%H%M'))
-    + '.pkl'))
+    # Add coordinates of all nestboxes with great tits)
+    greati_filtered = (allrounds
+                        .query('Species == "g" or Species == "G" or Species == "sp=g"')
+                        .filter(['Nestbox', 'Owner'])
+                        )
 
-which_greati = (merged
-                .filter(['Species', 'Nestbox', 'Owner', 'x', 'y'])
-                .query('Species == "g" or Species == "G" or Species == "sp=g"')
-                )
-
-len(which_greati)
-# Define undefined (:D) error type and stop execution if there are
-# no great tit nestboxes. Otherwise save a pickle file.
+    which_greati = pd.merge(greati_filtered, nestbox_coords, on=['Nestbox'])
 
 
-class Error(Exception):
-    pass
+    # Save dataframe of new nestboxes -------------------------
+    # with 'date added' column and filename = 'date saved'
+
+    filename = FIELD_PATH / (str(
+        str('allrounds')
+        + '_'
+        + str(pd.Timestamp('today', tz="UTC").strftime('%Y%m%d'))
+        + '.pkl'))
 
 
-if len(which_greati) == 0:
-    raise Error("There are no GRETI nestboxes")
-else:
-    which_greati['Added'] = (str(pd.Timestamp('today', tz="UTC")
-                                 .strftime('%Y-%m-%d_%H:%M')))
-    which_greati.to_pickle(str(filename))
+    if len(which_greati) == 0:
+        raise Error("There are no GRETI nestboxes")
+    else:
+        which_greati['Added'] = (str(pd.Timestamp('today', tz="UTC")
+                                    .strftime('%Y-%m-%d')))
+        which_greati.to_pickle(str(filename))
 
 
-# Read spreadsheets and compare last two (if there are two)
+    # Read spreadsheets and compare last two (if there are two)
 
-spreadsheets = list(FIELD_PATH.glob('*.pkl'))
+    spreadsheets = list(FIELD_PATH.glob('*.pkl'))
 
 
-if len(spreadsheets) > 1:  # there are more than 1 files
-    dat = [pd.read_pickle(s) for s in spreadsheets[-2:]]
-    new = dataframe_diff(dat[0],
-                         dat[1],
-                         colnames=['Species', 'Nestbox'])
-    if len(new) >= 10:  # and they have at least 10 rows
+    if len(spreadsheets) > 1:  # there are more than 1 files
+        dat = [pd.read_pickle(s) for s in spreadsheets[-2:]]
+        new = dataframe_diff(dat[0],
+                            dat[1],
+                            colnames=['Nestbox', 'Species'])
+    elif len(spreadsheets) == 1:
+        new = pd.read_pickle(str(spreadsheets)[12:-3])
+    else:
+        print("No .pkl files in this directory")
+
+
+    if len(new) >= 10:  # at least 10 rows
 
         new.to_csv(FIELD_PATH / str(
             'NEW-'
-            + str(pd.Timestamp('today', tz="UTC").strftime('%Y%m%d_%H%M'))
+            + str(pd.Timestamp('today', tz="UTC").strftime('%Y%m%d'))
             + '.csv'
         ),
             index=False
@@ -333,35 +328,20 @@ if len(spreadsheets) > 1:  # there are more than 1 files
     else:  # if not, remove .pkl
         os.remove(spreadsheets[-1])
 
-elif len(spreadsheets) == 1:
-    new = pd.read_pickle(str(spreadsheets)[12:-3])
 
-    if len(new) >= 10:
-
-        new.to_csv(FIELD_PATH / str(
-            'NEW-'
-            + str(pd.Timestamp('today', tz="UTC").strftime('%Y%m%d_%H%M'))
-            + '.csv'
-        ),
-            index=False
-        )
-    else:
-        os.remove(spreadsheets[-1])
+# ! NOW take out all that have been marked as recorded and create a list of all 
+# ! that have to be, in chronological order.
 
 
-else:
-    print("No .pkl files in this directory")
-
-
-# ! Make changes so that the program compares all great tit nestboxes #
-# ! in the spreadsheets with all the nestboxes that have already been recorded
-# ! and returns those only- so that i get not just the new ones but an incremental list
-# ! always in the same order from which i can 'tick them off'.
-# ! also make it so that:
-# ! I get 10 new nestboxes that were marked as sp=g the earliest not including those
-# ! in the 'already recorded list. for the gps points, lists and maps, include the 10 nestboxes
-# ! added to the list 3 days ago, and do so in a different colour. note: this needs to be the manually
-# ! confirmed list, since changes will happen in the field. Also add way to label nestboxes as blue tit if
-# ! i see thats the case in the field
-# !
-# !
+    # ! Make changes so that the program compares all great tit nestboxes #
+    # ! in the spreadsheets with all the nestboxes that have already been recorded
+    # ! and returns those only- so that i get not just the new ones but an incremental list
+    # ! always in the same order from which i can 'tick them off'.
+    # ! also make it so that:
+    # ! I get 10 new nestboxes that were marked as sp=g the earliest not including those
+    # ! in the 'already recorded list. for the gps points, lists and maps, include the 10 nestboxes
+    # ! added to the list 3 days ago, and do so in a different colour. note: this needs to be the manually
+    # ! confirmed list, since changes will happen in the field. Also add way to label nestboxes as blue tit if
+    # ! i see thats the case in the field
+    # !
+    # !
