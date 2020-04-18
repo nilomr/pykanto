@@ -8,6 +8,8 @@ import pandas as pd
 import numpy as np
 import pygsheets
 import os
+import subprocess
+from pyproj import Proj, transform
 from datetime import date, timedelta, datetime
 from pathlib2 import Path
 from texttable import Texttable
@@ -21,12 +23,13 @@ init(autoreset=True)
 
 # Paths -----------------------------------
 
-PROJECT_PATH = Path("__file__").resolve().parents[2]  # ! Ego = notebook
+PROJECT_PATH = Path("__file__").resolve().parents[0]  # ! Ego = notebook
 DATA_PATH = PROJECT_PATH / "data"
 FIELD_PATH = DATA_PATH / "resources" / "fieldwork" / str(date.today().year)
 OUT_PATH = PROJECT_PATH / "resources" / "fieldwork" / str(date.today().year)
-RPLOTS = PROJECT_PATH / "src" / "fieldwork" / "plot-new-boxes.R"
+GPX_PATH = OUT_PATH / "gpx-files"
 
+RPLOTS = PROJECT_PATH / "src" / "fieldwork" / "plot-new-boxes.R"
 coords_xls = DATA_PATH / "resources" / "nestbox_position.xls"
 recorded_xlsx = OUT_PATH / "already-recorded.xlsx"
 
@@ -120,6 +123,68 @@ def yes_or_no(question):
             return False
 
 
+def coord_transform(row):
+    return pd.Series(transform(Proj('epsg:27700'),
+                               Proj('epsg:4326'),
+                               row["x"], row["y"]))
+
+
+def write_gpx(filename, newboxes, tocollect):
+    """Writes .gpx file to disk, containing 
+    a) all great tit nestboxes that haven't been recorded (in green),
+    b) nestboxes where recorders need to be collected (in red) and
+    c) nestboxes that haven't been recored and have eggs (helipad symbol).
+
+    Args:
+        filename (PosixPath): path including filename and extension (.gpx) where to output file.
+        newboxes (DataFrame): DataFrame containing all new boxes, with ['Nestbox', 'x', 'y'] columns.
+        tocollect (DataFrame): DataFrame containing boxes from n days ago,  with ['Nestbox', 'x', 'y'] columns.
+    """
+    allpoints = (newboxes.
+                 query('Eggs == "no"')
+                 .filter(['Nestbox', 'x', 'y']))
+    eggs = (newboxes
+            .query('Eggs != "no"')
+            .filter(['Nestbox', 'x', 'y']))
+    collect = tocollect.filter(['Nestbox', 'x', 'y'])
+
+    all_transformed = allpoints.apply(coord_transform, axis=1)
+    eggs_transformed = eggs.apply(coord_transform, axis=1)
+    coll_transformed = collect.apply(coord_transform, axis=1)
+
+    allpoints_transformed = (allpoints.assign(
+        **{'lon': all_transformed[1], 'lat': all_transformed[0]})
+        .to_dict(orient='records'))
+    eggs_transformed = (eggs.assign(
+        **{'lon': eggs_transformed[1], 'lat': eggs_transformed[0]})
+        .to_dict(orient='records'))
+    collect_transformed = (collect.assign(
+        **{'lon': coll_transformed[1], 'lat': coll_transformed[0]})
+        .to_dict(orient='records'))
+
+    gpxfile = open(str(filename), "x")
+    gpxfile.write(
+        '<?xml version="1.0"?><gpx version="1.1" creator="Nilo Merino Recalde" >')
+
+    for box in allpoints_transformed:
+        poi = '<wpt lat="{}" lon="{}"><name>{}</name><sym>{}</sym></wpt>'.format(
+            box['lat'], box['lon'], box['Nestbox'], "poi_green")
+        gpxfile.write(poi)
+
+    for box in eggs_transformed:
+        poi = '<wpt lat="{}" lon="{}"><name>{}</name><sym>{}</sym></wpt>'.format(
+            box['lat'], box['lon'], box['Nestbox'], "helipad")
+        gpxfile.write(poi)
+
+    for box in collect_transformed:
+        poi = '<wpt lat="{}" lon="{}"><name>{}</name><sym>{}</sym></wpt>'.format(
+            box['lat'], box['lon'], box['Nestbox'], "poi_red")
+        gpxfile.write(poi)
+
+    gpxfile.write('</gpx>')
+    gpxfile.close()
+
+
 # Main ------------------------------------
 
 white = Fore.BLACK + Back.WHITE + Style.BRIGHT
@@ -167,7 +232,7 @@ while True:
             print('\n' + white +
                   "Try again, you absolute idiot:" +
                   enter_text)
-            names = input().split(' ')
+            names = input().upper().split(' ')
             print(white + "You entered:" + blue + str(names))
 
         if len(names) == sum(nestbox_coords['Nestbox'].isin(names)):
@@ -181,14 +246,14 @@ while True:
             print('\n' + white +
                   "Try again, you absolute idiot:" +
                   enter_text)
-            names = input().split(' ')
+            names = input().upper().split(' ')
             print(white + "You entered:" + blue + str(names))
 
             while not yes_or_no("Is this correct?"):
                 print('\n' + white +
                       "Try again, you absolute idiot:" +
                       enter_text)
-                names = input().split(' ')
+                names = input().upper().split(' ')
                 print(white + "You entered:" + blue + str(names))
 
         # Enter date
@@ -237,6 +302,7 @@ while True:
         for worker, googlekey in tqdm(workerdict.items(),
                                       desc="{Downloading field worker data}",
                                       position=0, leave=True):
+            name = worker
 
             worker = gc.open_by_key(googlekey)[0].get_as_df(has_header=False)
 
@@ -247,12 +313,23 @@ while True:
             if '' in worker.columns:
                 worker = worker.drop([''], axis=1)
 
-            worker = (worker
-                      .query("Nestbox == Nestbox")
-                      .query('Species == "g" or Species == "G" or Species == "sp=g"')
-                      .filter(['Nestbox', 'Owner', 'weigh eggs'])
-                      .rename(columns={'weigh eggs': 'Eggs'})
-                      .replace('', 'no'))
+            if name == 'sam':
+                worker = (worker
+                          .rename(columns={'Num eggs weighed': 'Eggs'})
+                          .rename(columns={'number': 'Nestbox'})
+                          .query("Nestbox == Nestbox")
+                          .query('Species == "g" or Species == "G" or Species == "sp=g"')
+                          .filter(['Nestbox', 'Eggs'])
+                          .replace('', 'no'))
+                worker.insert(1, 'Owner', 'Sam Crofts')
+
+            else:
+                worker = (worker
+                          .query("Nestbox == Nestbox")
+                          .query('Species == "g" or Species == "G" or Species == "sp=g"')
+                          .filter(['Nestbox', 'Owner', 'weigh eggs'])
+                          .rename(columns={'weigh eggs': 'Eggs'})
+                          .replace('', 'no'))
 
             which_greati = which_greati.append(worker)
 
@@ -276,7 +353,9 @@ while True:
 
         # Check which nestboxes have already been recorded
 
-        already_recorded = pd.read_excel(recorded_xlsx).filter(['Nestbox'])
+        already_recorded = (pd.read_excel(recorded_xlsx)
+                            .filter(['Nestbox'])
+                            .query('Nestbox != "Nestbox"'))
 
         diff_df = (which_greati.merge(already_recorded,
                                       on=['Nestbox'],
@@ -287,50 +366,82 @@ while True:
                    .dropna(thresh=2)
                    )
 
-        diff_df["Added"] = pd.to_datetime(diff_df["Added"])
-        diff_df = diff_df.sort_values(by="Added")
+        if {'x_x', 'y_y'}.issubset(diff_df.columns):
+            diff_df = diff_df.drop(['x_y', 'y_y'], 1).rename(
+                columns={'x_x': 'x', 'y_x': 'y'})
+
+        diff_df = diff_df.sort_values(by="Owner")
 
         print(Fore.BLACK + Back.WHITE + dedent("""
-        These are the great tit nextboxes that you haven't recorded at yet: 
-        """))
+
+        You have recorded at a total of {} nestboxes.
+        There are {} new nextboxes that you haven't recorded at.
+        """).format(len(already_recorded), len(diff_df)))
+
         print(Fore.BLACK + Back.WHITE +
               str(diff_df.drop(['x', 'y'], 1).to_markdown()))
 
+        newpath = OUT_PATH / str("new_" + str(date.today()) + '.csv')
+        diff_df.to_csv(newpath)
+        diff_df.to_csv(str(OUT_PATH / 'toberecorded.csv'), index=False)
+
+        print(green + "This dataframe has also been saved to "
+              + str(newpath))
+
         print(white + dedent("""
-        Type 'plot' to save a plot of all great tit nestboxes that have not been recorded
+        Type 'plots' to save a plot of all great tit nestboxes that have not been recorded
+        AND a gpx file with the same + nestboxes where recorders need to be collected
         Type 'menu' to go back to the main selector
         Type 'exit' to exit
-        """))
+        (plots/menu/exit):"""))
 
         option = input().lower().strip()
 
         if option == "exit":
             break
-        elif option == "plot":  # Plot in R
-            diff_df.to_csv(str(OUT_PATH / 'toberecorded.csv'), index=False)
-            import subprocess
-            subprocess.check_call(['Rscript', str(RPLOTS)], shell=False)
-            print(green + "Done. You can check your plot at "
-              + str(OUT_PATH))
 
         elif option == "menu":
             continue
+
+        elif option == "plots":  
+            # Plot with R + ggplot2
+            diff_df.to_csv(str(OUT_PATH / 'toberecorded.csv'), index=False)
+            subprocess.check_call(['Rscript', str(RPLOTS)], shell=False)
+            print(green + "Done. You can check your plot at "
+                  + str(OUT_PATH))
+            # Export gpx
+            today = str(date.today())
+            tomorrow = str(date.today() + timedelta(days=1))
+            print(white + "Do you want the file for later today ("
+                  + today
+                  + ") or tomorrow ("
+                  + tomorrow
+                  + ")? (today/tomorrow)"
+                  )
+            whichday = input().lower().strip()
+            while True:
+                if whichday == 'today':
+                    move_today = (pd.read_excel(recorded_xlsx)
+                                  .query('Nestbox != "Nestbox"')
+                                  .query('Move_by == @today'))
+                    write_gpx(GPX_PATH / str(str(today) + ".gpx"),
+                              diff_df, move_today)
+                    break
+                elif whichday == 'tomorrow':
+                    move_tomorrow = (pd.read_excel(recorded_xlsx)
+                                     .query('Nestbox != "Nestbox"')
+                                     .query('Move_by == @tomorrow'))
+                    write_gpx(GPX_PATH / str(str(tomorrow) + ".gpx"),
+                              diff_df, move_tomorrow)
+                    break
+                else:
+                    print(Fore.RED + Style.BRIGHT +
+                          "'" + option + "'" + " is not a valid command")
+                    continue
+
+            print(green + "Done. You can find your .gpx file at "
+                  + str(GPX_PATH))
+
         else:
             print(Fore.RED + Style.BRIGHT +
                   "'" + option + "'" + " is not a valid command")
-
-    # ! NOW take out all that have been marked as recorded and create a list of all
-    # ! that have to be, in chronological order.
-
-        # ! Make changes so that the program compares all great tit nestboxes #
-        # ! in the spreadsheets with all the nestboxes that have already been recorded
-        # ! and returns those only- so that i get not just the new ones but an incremental list
-        # ! always in the same order from which i can 'tick them off'.
-        # ! also make it so that:
-        # ! I get 10 new nestboxes that were marked as sp=g the earliest not including those
-        # ! in the 'already recorded list. for the gps points, lists and maps, include the 10 nestboxes
-        # ! added to the list 3 days ago, and do so in a different colour. note: this needs to be the manually
-        # ! confirmed list, since changes will happen in the field. Also add way to label nestboxes as blue tit if
-        # ! i see thats the case in the field
-        # !
-        # !
