@@ -185,6 +185,14 @@ def write_gpx(filename, newboxes, tocollect):
     gpxfile.close()
 
 
+def order(frame, var):
+    if type(var) is str:
+        var = [var]  # let the command take a string or list
+    varlist = [w for w in frame.columns if w not in var]
+    frame = frame[var+varlist]
+    return frame
+
+
 # Main ------------------------------------
 
 white = Fore.BLACK + Back.WHITE + Style.BRIGHT
@@ -205,6 +213,7 @@ while True:
     Type 'enter' to enter newly deployed recorders
     Type 'update' to get an update about new nestboxes
     Type 'exit' to exit
+    (enter/update/exit):
     """))
 
     x = input().lower().strip()
@@ -217,46 +226,58 @@ while True:
               "'" + x + "'" + " is not a valid command")
         continue
 
-    elif x == 'enter':  # Enter new nestboxes
+    elif x == 'enter':  # Enter new nestboxes and recorders
+        while True:
+            while True:
+                print(white + dedent("""
+                Please enter all nestbox names separated by a single space:
+                e.g. SW84A EX20 C47
+                """))
 
-        enter_text = white + dedent("""
-        Please enter all nestbox names separated by a single space
-        e.g. SW84A EX20 C47
-        """)
+                names = input().upper().strip().split(' ')
 
-        print(enter_text)
-        names = input().upper().split(' ')
-        print(white + "You entered:", names)
+                if len(names) == sum(nestbox_coords['Nestbox'].isin(names)):
+                    print(blue + "All nestbox names exist")
+                    break
+                else:
+                    print(red +
+                          str(len(names) - sum(nestbox_coords['Nestbox'].isin(names))) +
+                          " out of " + str(len(names)) + red +
+                          " entered nestbox names do not exist"
+                          )
+                    print('\n' + white +
+                          "Try again, you absolute dumbass:")
+                    continue
 
-        while not yes_or_no("Is this correct?"):
-            print('\n' + white +
-                  "Try again, you absolute idiot:" +
-                  enter_text)
-            names = input().upper().split(' ')
-            print(white + "You entered:" + blue + str(names))
+            while True:
+                print(white + dedent("""
+                Now enter the recorder numbers, also separated by spaces:
+                e.g. 01 23 15
+                """))
 
-        if len(names) == sum(nestbox_coords['Nestbox'].isin(names)):
-            print(blue + "All nestbox names exist")
-        else:
-            print(red +
-                  str(len(names) - sum(nestbox_coords['Nestbox'].isin(names))) +
-                  " out of " + str(len(names)) + red +
-                  " entered nestbox names do not exist"
-                  )
-            print('\n' + white +
-                  "Try again, you absolute idiot:" +
-                  enter_text)
-            names = input().upper().split(' ')
-            print(white + "You entered:" + blue + str(names))
+                recorders = input().upper().strip().split(' ')
+                recorders = pd.to_numeric(recorders)
 
-            while not yes_or_no("Is this correct?"):
-                print('\n' + white +
-                      "Try again, you absolute idiot:" +
-                      enter_text)
-                names = input().upper().split(' ')
-                print(white + "You entered:" + blue + str(names))
+                if len(names) == len(recorders):
+                    break
+                else:
+                    print(red +
+                          "The number of recorders does not match the number of nestboxes")
+                    print('\n' + white +
+                          "Try again, you absolute dumbass:")
+                    continue
 
-        # Enter date
+            user_entered = dict(zip(names, recorders))
+
+            question = white + "You have entered: " + blue + \
+                str(user_entered) + white + dedent("""
+                Is this correct?""")
+            if yes_or_no(question):
+                break
+            else:
+                continue
+
+            # Enter date
         if not yes_or_no(white + "Is " + str(date.today()) +
                          " the date when you deployed these recorders?"):
             print(white + "Enter the correct date in the same format")
@@ -265,12 +286,14 @@ while True:
         else:
             day = date.today()
 
-        # Get coordinates, add date added and append
+        # Get coordinates, add date added, add recorder number and append
+
         new_boxes = nestbox_coords.query("Nestbox in @names")[
             ['Nestbox', 'x', 'y']]
-
+        new_boxes['AM'] = new_boxes['Nestbox'].map(user_entered)
         new_boxes['Deployed'] = str(day)
         new_boxes['Move_by'] = str(day + timedelta(days=3))
+        new_boxes = order(new_boxes, ['Nestbox', 'AM'])
 
         append_df_to_excel(recorded_xlsx, new_boxes, index=False)
 
@@ -403,20 +426,20 @@ while True:
         elif option == "menu":
             continue
 
-        elif option == "plots":  
+        elif option == "plots":
             # Plot with R + ggplot2
             diff_df.to_csv(str(OUT_PATH / 'toberecorded.csv'), index=False)
             subprocess.check_call(['Rscript', str(RPLOTS)], shell=False)
-            print(green + "Done. You can check your plot at "
+            print(green + "Done (1/2). You can check your plot at "
                   + str(OUT_PATH))
             # Export gpx
             today = str(date.today())
             tomorrow = str(date.today() + timedelta(days=1))
-            print(white + "Do you want the file for later today ("
+            print(white + "Do you want the .gpx file for later today ("
                   + today
                   + ") or tomorrow ("
                   + tomorrow
-                  + ")? (today/tomorrow)"
+                  + ")? (today/tomorrow):"
                   )
             whichday = input().lower().strip()
             while True:
@@ -439,7 +462,7 @@ while True:
                           "'" + option + "'" + " is not a valid command")
                     continue
 
-            print(green + "Done. You can find your .gpx file at "
+            print(green + "Done (2/2). You can find your .gpx file at "
                   + str(GPX_PATH))
 
         else:
