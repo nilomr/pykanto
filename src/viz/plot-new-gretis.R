@@ -1,10 +1,11 @@
+#!/usr/bin/env Rscript
 
 # new-nestboxes.R
 #
 # This script provides part of the source code necessary to 
 # make lists and plot new nestboxes as reported by field workers
-# Note: The functions below are very specific to this task and
-# are very dirty.
+# The functions below are very specific to this task and
+# are very 'dirty'.
 # 
 # Copyright (c) Nilo Merino recalde, 2020, except where indicated
 # Date Created: 2020-04-02
@@ -14,26 +15,28 @@
 # REQUIRES
 # --------------------------------------------------------------------------
 
+suppressPackageStartupMessages({library(methods)
 library(rprojroot)
 library(tidyverse)
 library(lubridate)
 library(ggmap)
 library(rgdal)
 library(ggrepel)
+library(ggtext)
 library(plotKML)
 library(pgirmess)
+library(readxl)
 library(kableExtra)
+})
 
-# Python setup
-library(reticulate)
-use_condaenv("0.0_great-tit-song-segment")
+
 
 # --------------------------------------------------------------------------
 # PATHS
 # --------------------------------------------------------------------------
 
 data_path <- file.path(getwd(), "data")
-sheet_path <- file.path(data_path, "resources", "fieldwork", year(today()))
+sheet_path <- file.path(getwd(), "resources", "fieldwork", year(today()))
 figures_path <- file.path(getwd(), "resources", "fieldwork", year(today()))
 gpx_path <- file.path(figures_path, "gpx-files")
 
@@ -63,7 +66,7 @@ if (!dir.exists(gpx_path)) {
 check_new_nestboxes <- function(new_boxes_list) {
   Sys.sleep(2)
   if (length(new_boxes_list) == 0) {
-    stop("The list is empty")
+    stop("The list is empty -- there are fewer than 10 new nestboxes")
     }
   last <- read_csv(last(new_boxes_list)) %>%
     mutate(Added = ymd_hm(Added)) %>% select(Added)
