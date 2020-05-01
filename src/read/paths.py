@@ -1,12 +1,23 @@
-# Define paths
+# Define paths, make if they don't exist
 
 import pathlib2
 from pathlib2 import Path
 import os
+from datetime import date
 
-PROJECT_PATH = Path("__file__").resolve().parents[2] # Ego = notebook!!
+year = date.today().year
+
+
+# Define directories:
+
+PROJECT_PATH = Path("__file__").resolve().parents[0] # Ego = notebook!! # 0 in vscode, 2 in notebook
 DATA_PATH = PROJECT_PATH / "data"
-FIGURE_PATH = PROJECT_PATH / "figures"
+FIGURE_PATH = PROJECT_PATH / "reports" / "figures"
+RESOURCES_PATH = PROJECT_PATH / "resources" / "fieldwork" / str(year)
+
+#----------------------
+
+# Make if they do not exist:
 
 
 def safe_makedir(file_path):
@@ -33,3 +44,14 @@ def safe_makedir(file_path):
             file_path.parent.mkdir(parents=True, exist_ok=True)
         else:
             file_path.mkdir(parents=True, exist_ok=True)
+
+
+
+for path in DATA_PATH, FIGURE_PATH, RESOURCES_PATH:
+    safe_makedir(path)
+
+
+
+
+
+
