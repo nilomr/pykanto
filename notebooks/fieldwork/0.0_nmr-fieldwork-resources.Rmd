@@ -26,7 +26,7 @@ source("./src/fieldwork/fieldwork-resources.R")
 ### Prepare lay date data for the years 2016 to 2020 
 
 ```{r message=FALSE, warning=FALSE}
-
+# All data / song recording data
 df.paths <- list.files(data_path, pattern = "ebmp_broods", full.names = TRUE)
 datalist = list()
 
@@ -52,10 +52,15 @@ recorded_2020 <-
   filter(str_detect(nestbox, "Nestbox", negate = TRUE)) %>%
   mutate(move_by = ymd(move_by))
 
-
 clean_dataset_2020 <- full_join(recorded_2020, data_2020) %>% 
   mutate(recorded = case_when(is.na(am) ~ "NO", !is.na(am) ~ "YES")) %>% 
   select(nestbox, recorded, everything())
+
+# Specific round data
+
+nilo_round_2020 <-
+  read_sheet("1I1WXw55BckjETRZIb2MtlVBM7AP0ik7RV6N9O8Vhdug") %>%
+  clean_names()
 
 ```
 
@@ -115,16 +120,16 @@ b_laying_rate + b_clutch_size + g_laying_rate + g_clutch_size
 
 ```{r}
 
-nilo_round_2020 <-
-  read_csv(file.path(data_path, "Nilo and Charlotte 2020 - summaries.csv")) %>%
-  clean_names() %>% 
-  filter(expected_hatch_date != "11/01/1900") %>%
-  mutate(catching_expected = dmy(expected_hatch_date) + days(11))
+catching <- nilo_round_2020 %>%
+  filter(catch_adults != "1900-01-09",
+         catching_needed != 'No' | is.na(catching_needed)) %>% 
+  mutate(catch_adults = ymd(catch_adults)) %>% 
+  drop_na(nestbox)
 
 text_size = 15
 
-nilo_round_2020 %>%
-  ggplot(aes(x = catching_expected)) +
+catching %>%
+  ggplot(aes(x = catch_adults)) +
   geom_histogram(
     binwidth = 1,
     alpha = 0.9,
@@ -132,7 +137,8 @@ nilo_round_2020 %>%
     colour = "white"
   ) +
   theme_minimal(base_size = text_size) +
-  scale_x_date(breaks = scales::pretty_breaks(n = 10)) +
+  stat_bin(aes(y=..count.., label=..count..), geom="text", vjust=-.5, binwidth = 1) +
+  scale_x_date(breaks = scales::pretty_breaks(n = 20)) +
   theme(
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),
@@ -146,14 +152,34 @@ nilo_round_2020 %>%
     y = "Number of nests\n",
     x = element_blank(),
     fill = "Year",
-    title = "Expected adult catching dates (Extra round)",
-    subtitle = paste0("n = ",
-                      nrow(nilo_round_2020),
+    title = "Adult catching dates (Extra round)",
+    subtitle = paste0(
+      "n = ",
+      nrow(catching),
+      " nests",
       " as of ",
       as.character(today()),
-      ". Calculated as expected hatch date + 11 days"
+      ". Calculated as hatch date + 11 days"
     )
   )
+
+
+catching %>%
+  select(nestbox,
+         species,
+         catch_adults,
+         catching_needed,
+         pit_tag_1,
+         pit_tag_2,
+         father,
+         mother) %>%
+  group_split(catch_adults)
+
+catching %>%
+  select(nestbox,
+         species,
+         ring_day) %>%
+  group_split(ring_day)
 
 ```
 
