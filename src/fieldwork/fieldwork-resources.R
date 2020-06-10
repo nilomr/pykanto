@@ -17,6 +17,7 @@
 
 suppressPackageStartupMessages({
   library(tidyverse)
+  library(googlesheets4)
   library(devtools)
   library(jcolors)
   library(readxl)
