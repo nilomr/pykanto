@@ -140,46 +140,59 @@ def write_gpx(filename, newboxes, tocollect):
         newboxes (DataFrame): DataFrame containing all new boxes, with ['Nestbox', 'x', 'y'] columns.
         tocollect (DataFrame): DataFrame containing boxes from n days ago,  with ['Nestbox', 'x', 'y'] columns.
     """
-    allpoints = (newboxes.
-                 query('Eggs == "no"')
-                 .filter(['Nestbox', 'x', 'y']))
-    eggs = (newboxes
-            .query('Eggs != "no"')
-            .filter(['Nestbox', 'x', 'y']))
-    collect = tocollect.filter(['Nestbox', 'x', 'y'])
-
-    all_transformed = allpoints.apply(coord_transform, axis=1)
-    eggs_transformed = eggs.apply(coord_transform, axis=1)
-    coll_transformed = collect.apply(coord_transform, axis=1)
-
-    allpoints_transformed = (allpoints.assign(
-        **{'lon': all_transformed[1], 'lat': all_transformed[0]})
-        .to_dict(orient='records'))
-    eggs_transformed = (eggs.assign(
-        **{'lon': eggs_transformed[1], 'lat': eggs_transformed[0]})
-        .to_dict(orient='records'))
-    collect_transformed = (collect.assign(
-        **{'lon': coll_transformed[1], 'lat': coll_transformed[0]})
-        .to_dict(orient='records'))
 
     gpxfile = open(str(filename), "x")
     gpxfile.write(
         '<?xml version="1.0"?><gpx version="1.1" creator="Nilo Merino Recalde" >')
 
-    for box in allpoints_transformed:
-        poi = '<wpt lat="{}" lon="{}"><name>{}</name><sym>{}</sym></wpt>'.format(
-            box['lat'], box['lon'], box['Nestbox'], "poi_green")
-        gpxfile.write(poi)
+    try:
+        allpoints = (newboxes.
+                    query('Eggs == "no"')
+                    .filter(['Nestbox', 'x', 'y']))
+        all_transformed = allpoints.apply(coord_transform, axis=1)
+        allpoints_transformed = (allpoints.assign(
+            **{'lon': all_transformed[1], 'lat': all_transformed[0]})
+            .to_dict(orient='records'))
 
-    for box in eggs_transformed:
-        poi = '<wpt lat="{}" lon="{}"><name>{}</name><sym>{}</sym></wpt>'.format(
-            box['lat'], box['lon'], box['Nestbox'], "helipad")
-        gpxfile.write(poi)
+        for box in allpoints_transformed:
+            poi = '<wpt lat="{}" lon="{}"><name>{}</name><sym>{}</sym></wpt>'.format(
+                box['lat'], box['lon'], box['Nestbox'], "poi_green")
+            gpxfile.write(poi)
 
-    for box in collect_transformed:
-        poi = '<wpt lat="{}" lon="{}"><name>{}</name><sym>{}</sym></wpt>'.format(
-            box['lat'], box['lon'], box['Nestbox'], "poi_red")
-        gpxfile.write(poi)
+    except Exception:
+        pass
+
+    try:
+        eggs = (newboxes
+                .query('Eggs != "no"')
+                .filter(['Nestbox', 'x', 'y']))
+        eggs_transformed = eggs.apply(coord_transform, axis=1)
+        eggs_transformed = (eggs.assign(
+            **{'lon': eggs_transformed[1], 'lat': eggs_transformed[0]})
+            .to_dict(orient='records'))
+
+        for box in eggs_transformed:
+            poi = '<wpt lat="{}" lon="{}"><name>{}</name><sym>{}</sym></wpt>'.format(
+                box['lat'], box['lon'], box['Nestbox'], "helipad")
+            gpxfile.write(poi)
+
+    except Exception:
+        pass
+
+    try:
+        collect = tocollect.filter(['Nestbox', 'x', 'y'])
+        coll_transformed = collect.apply(coord_transform, axis=1)
+        collect_transformed = (collect.assign(
+            **{'lon': coll_transformed[1], 'lat': coll_transformed[0]})
+            .to_dict(orient='records'))
+
+        for box in collect_transformed:
+            poi = '<wpt lat="{}" lon="{}"><name>{}</name><sym>{}</sym></wpt>'.format(
+                box['lat'], box['lon'], box['Nestbox'], "poi_red")
+            gpxfile.write(poi)
+
+    except Exception:
+        pass
 
     gpxfile.write('</gpx>')
     gpxfile.close()
@@ -311,7 +324,7 @@ while True:
         # Download and append personal sheets
 
         workerdict = {  # ! Change every year
-            "freddy": '19YSkUwkW6GyGWsk3k8Mh56OAu04q_uLubd6S7Q8CH8g',
+            "freddy": '1ZDNQcU5wTFn7Ac_NPm8x0jcxs-b9aMupnaH50z5qRLE',
             "julia": '1WWBT8mWVECd_lg6VJRzGHLuL78KMKojW-DCk1sjUqJU',
             "keith": '1CavBscnAw1SppJNUQ_RzZ7wGeGiSbbXh6i6M0n2MIIc',
             "charlotte": '1I1WXw55BckjETRZIb2MtlVBM7AP0ik7RV6N9O8Vhdug',
@@ -335,8 +348,20 @@ while True:
 
             if '' in worker.columns:
                 worker = worker.drop([''], axis=1)
+                        
+            if name == 'freddy':
+                worker = (worker
+                          .rename(columns={'CS': 'Eggs'})
+                          .rename(columns={'NB': 'Nestbox'})
+                          .rename(columns={'SP': 'Species'})
+                          .query("Nestbox == Nestbox")
+                          .query('Species == "g" or Species == "G" or Species == "sp=g"')
+                          .filter(['Nestbox', 'Eggs'])
+                          .replace('', 'no'))
 
-            if name == 'sam':
+                worker.insert(1, 'Owner', 'Freddy Hillemann')
+
+            elif name == 'sam':
                 worker = (worker
                           .rename(columns={'Num eggs weighed?': 'Eggs'})
                           .rename(columns={'number': 'Nestbox'})
