@@ -9,7 +9,6 @@ setwd("/home/nilomr/projects/0.0_great-tit-song")
 source("./src/viz/plot-new-gretis.R")
 
 
-
 # 2. Nestboxes to be recorded ====
 
 # Prepare data for plotting
