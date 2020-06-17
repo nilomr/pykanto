@@ -806,7 +806,7 @@ class BuildRecAdvWizard(QWizard):
             sp = SignalProc.SignalProc(512, 256)
             sp.readWav(filename, duration, offset)
 
-            sgRaw = sp.spectrogram(window='Hann', mean_normalise=True, onesided=True,
+            sgRaw = sp.spectrogram(window='Hann', mean_normalise=False, onesided=True,
                                           multitaper=False, need_even=False)
             maxsg = np.min(sgRaw)
             self.sg = np.abs(np.where(sgRaw == 0, 0.0, 10.0 * np.log10(sgRaw / maxsg)))

@@ -146,7 +146,7 @@ class AviaNZ(QMainWindow):
 
         # Spectrogram
         self.sgOneSided = True
-        self.sgMeanNormalise = True
+        self.sgMeanNormalise = False
         self.sgMultitaper = False
         self.sgEqualLoudness = False
 

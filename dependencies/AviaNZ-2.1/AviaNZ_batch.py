@@ -577,7 +577,7 @@ class AviaNZ_batchProcess(QMainWindow):
                             self.sp = SignalProc.SignalProc(self.config['window_width'], self.config['incr'])
                         self.sp.data = self.audiodata[start:end]
                         self.sp.sampleRate = self.sampleRate
-                        _ = self.sp.spectrogram(window='Hann', mean_normalise=True, onesided=True, multitaper=False, need_even=False)
+                        _ = self.sp.spectrogram(window='Hann', mean_normalise=False, onesided=True, multitaper=False, need_even=False)
                         self.seg = Segment.Segmenter(self.sp, self.sampleRate)
                         # thisPageSegs = self.seg.bestSegments()
                         thisPageSegs = self.seg.medianClip(thr=3.5)
@@ -1419,7 +1419,7 @@ class AviaNZ_reviewAll(QMainWindow):
                 dlg.repaint()
 
                 # Get the data for the spectrogram
-                self.sgRaw = self.sp.spectrogram(window='Hann', mean_normalise=True, onesided=True,multitaper=False, need_even=False)
+                self.sgRaw = self.sp.spectrogram(window='Hann', mean_normalise=False, onesided=True,multitaper=False, need_even=False)
                 dlg += 1
                 dlg.update()
                 dlg.repaint()

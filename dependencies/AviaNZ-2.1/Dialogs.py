@@ -146,7 +146,7 @@ class Spectrogram(QDialog):
         self.windowType.setCurrentText(window)
 
         self.mean_normalise = QCheckBox()
-        self.mean_normalise.setChecked(True)
+        self.mean_normalise.setChecked(False)
 
         self.equal_loudness = QCheckBox()
         self.equal_loudness.setChecked(False)

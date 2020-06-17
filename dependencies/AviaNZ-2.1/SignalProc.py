@@ -151,7 +151,7 @@ class SignalProc:
     # from memory_profiler import profile
     # fp = open('memory_profiler_sp.log', 'w+')
     # @profile(stream=fp)
-    def spectrogram(self, window_width=None,incr=None,window='Hann',equal_loudness=False,mean_normalise=True,onesided=True,multitaper=False,need_even=False):
+    def spectrogram(self, window_width=None,incr=None,window='Hann',equal_loudness=False,mean_normalise=False,onesided=True,multitaper=False,need_even=False):
         """ Compute the spectrogram from amplitude data
         Returns the power spectrum, not the density -- compute 10.*log10(sg) 10.*log10(sg) before plotting.
         Uses absolute value of the FT, not FT*conj(FT), 'cos it seems to give better discrimination
