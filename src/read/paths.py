@@ -10,19 +10,21 @@ year = date.today().year
 
 # Define directories:
 
-PROJECT_PATH = Path("__file__").resolve().parents[0] # Ego = notebook!! # 0 in vscode, 2 in notebook
+PROJECT_PATH = (
+    Path("__file__").resolve().parents[2]
+)  # Ego = notebook!! # 0 in vscode, 2 in notebook
 DATA_PATH = PROJECT_PATH / "data"
 FIGURE_PATH = PROJECT_PATH / "reports" / "figures"
 RESOURCES_PATH = PROJECT_PATH / "resources" / "fieldwork" / str(year)
 
-#----------------------
+# ----------------------
 
-# Make if they do not exist:
+# Make these directiories should they not currently exist:
 
 
 def safe_makedir(file_path):
     """Make a safely nested directory.
-    (C) Tim Sainburg https://github.com/timsainb/avgn_paper/blob/vizmerge/avgn/utils/paths.py
+    From Tim Sainburg: https://github.com/timsainb/avgn_paper/blob/vizmerge/avgn/utils/paths.py
 
     Args:
         file_path (str or PosixPath): Path to be created.
@@ -46,12 +48,5 @@ def safe_makedir(file_path):
             file_path.mkdir(parents=True, exist_ok=True)
 
 
-
 for path in DATA_PATH, FIGURE_PATH, RESOURCES_PATH:
     safe_makedir(path)
-
-
-
-
-
-
