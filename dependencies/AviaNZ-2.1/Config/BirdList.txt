@@ -1,8 +1,8 @@
 [
+ "GRETI_HQ",
+ "BLUTI_HQ",
+ "GRETI_LQ",
+ "GRETI_OVERLAPPING",
  "Don't Know",
- "BLUTI",
- "GRETI-GOOD",
- "GRETI-BAD",
- "GT-OVERLAP",
- "WTF"
+ "WREN"
 ]
