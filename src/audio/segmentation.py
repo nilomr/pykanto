@@ -1,4 +1,3 @@
-
 # Code to:
 #
 # - Read song bout segmentation information from AviaNZ
@@ -6,7 +5,7 @@
 #
 # - Read syllable segmentation information from Chipper
 #
-# - Save JSON dictionaries including all pertinent 
+# - Save JSON dictionaries including all pertinent
 #   information for each bout.
 
 
@@ -24,10 +23,11 @@ from pathlib2 import Path
 from src.read.paths import safe_makedir
 
 
-#---------------------------------------------------------
+# ---------------------------------------------------------
 #   Read song bout segmentation information from AviaNZ
 #   and save .wav files of individual bouts.
-#---------------------------------------------------------
+# ---------------------------------------------------------
+
 
 def segment_bouts(wavfile, destination, subset=None):
     """Saves segmented bouts (from AviaNZ) to individual .wav files
@@ -36,10 +36,10 @@ def segment_bouts(wavfile, destination, subset=None):
 
         wavfile (PosixPath): Path to file
         destination (PosixPath): Destination folder. /year/individual is added.
-        subset (str, optional): Subset to save, e.g "GREAT-TIT" only. Default = None.
+        subset (str, optional): Subset to save, e.g "GRETI_HQ" only. Default = None.
     """
     wavfile_str = str(wavfile)
-    datfile = wavfile_str + '.data'
+    datfile = wavfile_str + ".data"
 
     if Path(datfile).is_file():
 
@@ -54,38 +54,47 @@ def segment_bouts(wavfile, destination, subset=None):
         tmpdir = Path(destination / wavfile.parts[-3] / wavfile.parts[-2])
         safe_makedir(tmpdir)  # create output directory
 
-        for seg in tqdm(segments, desc="{Reading, trimming and saving segments}",
-                        position=0, leave=True):
+        for seg in segments:
 
-            filename = tmpdir / (str(wavfile.parts[-2]
-                                         + '-'
-                                         + str(seg[4][0]['species'])
-                                         + '-'
-                                         + wavfile.with_suffix('').parts[-1]
-                                         + '-'
-                                         + str(cnt) + '.wav'))
+            filename = tmpdir / (
+                str(
+                    wavfile.parts[-2]
+                    + "-"
+                    + str(seg[4][0]["species"])
+                    + "-"
+                    + wavfile.with_suffix("").parts[-1]
+                    + "-"
+                    + str(cnt)
+                    + ".wav"
+                )
+            )
             cnt += 1
 
             if not subset:
-                
+
                 s = int(seg[0] * sampleRate)
                 e = int(seg[1] * sampleRate)
-                temp = data[s:e]
-                wavio.write(str(filename), temp.astype('int16'),
-                            sampleRate, scale='dtype-limits', sampwidth=2)
 
-            elif subset == seg[4][0]['species']:  # select songs with this label
+            elif subset == seg[4][0]["species"]:  # select segments with this label
 
-                s = int((seg[0]-1) * sampleRate)
-                e = int((seg[1]+1) * sampleRate)
-                temp = data[s:e]
-                wavio.write(str(filename), temp.astype('int16'),
-                            sampleRate, scale='dtype-limits', sampwidth=2)
+                s = int((seg[0] - 1) * sampleRate)
+                e = int((seg[1] + 1) * sampleRate)
+
+            temp = data[s:e]
+            wavio.write(
+                str(filename),
+                temp.astype("int16"),
+                sampleRate,
+                scale="dtype-limits",
+                sampwidth=2,
+            )
 
     else:
-        print("""No .data file exists for this .wav
+        print(
+            """No .data file exists for this .wav
         There might be files with no segmentation information or
-        you might have included an unwanted directory""")
+        you might have included an unwanted directory"""
+        )
 
 
 def batch_segment_bouts(origin, destination, subset=None):
@@ -100,13 +109,21 @@ def batch_segment_bouts(origin, destination, subset=None):
         subset (str, optional): Subset to save, e.g "GREAT-TIT" only. Defaults to None.
     """
     for root, dirs, files in os.walk(str(origin)):
-        
-        for wavfile in files:
 
-            if wavfile.endswith('.wav') or wavfile.endswith('.WAV') and wavfile + '.data' in files:
+        for wavfile in tqdm(
+            files,
+            desc="{Reading, trimming and saving song bouts}",
+            position=0,
+            leave=True,
+        ):
+
+            if (
+                wavfile.endswith(".wav")
+                or wavfile.endswith(".WAV")
+                and wavfile + ".data" in files
+            ):
                 wavfile = Path(root) / wavfile
                 segment_bouts(wavfile, destination, subset=subset)
-
 
 
 ####################################
@@ -122,9 +139,9 @@ def batch_segment_bouts(origin, destination, subset=None):
 # * parse chipper gzips (see /utils.py)
 
 
-#---------------------------------------------------------
+# ---------------------------------------------------------
 #   Read syllable segmentation information from Chipper
-#---------------------------------------------------------
+# ---------------------------------------------------------
 
 
 def open_gzip(file):
@@ -135,19 +152,19 @@ def open_gzip(file):
     
     Returns:
         list: params, onsets, offsets
-    """    
+    """
     with gzip.open(file, "rb") as f:
         data = f.read()
 
-    song_data = pickle.loads(data, encoding='utf-8')
+    song_data = pickle.loads(data, encoding="utf-8")
 
     return song_data[0], song_data[1]
 
 
-#---------------------------------------------------------
-#   Save JSON dictionaries including all pertinent 
+# ---------------------------------------------------------
+#   Save JSON dictionaries including all pertinent
 #   information for each bout.
-#---------------------------------------------------------
+# ---------------------------------------------------------
 
 # file = "/media/nilomr/SONGDATA/interim/2020/W100/SegSyllsOutput_20200407_T191217/SegSyllsOutput_W100-BLUETI-20200327_040000-27.gzip"
 # open_gzip(file)[0]['BoutRange']
@@ -156,5 +173,3 @@ def open_gzip(file):
 # json_dict["species"] = "European starling"
 # json_dict["common_name"] = "Sturnus vulgaris"
 
-
-    
