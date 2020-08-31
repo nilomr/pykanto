@@ -16,11 +16,15 @@ import wavio
 import os
 import json
 import wave
+import contextlib
 import sys
 from tqdm.auto import tqdm
 import pathlib2
 from pathlib2 import Path
+import datetime as dt
 from src.read.paths import safe_makedir
+import audio_metadata
+import re
 
 
 # ---------------------------------------------------------
@@ -28,15 +32,136 @@ from src.read.paths import safe_makedir
 #   and save .wav files of individual bouts.
 # ---------------------------------------------------------
 
+# segment_bouts(wavfile, destination, subset=None, **kwargs):
+"""Saves segmented bouts (from AviaNZ) to individual .wav files
+Args:
+    wavfile (PosixPath): Path to file
+    destination (PosixPath): Destination folder. /year/individual is added.
+    subset (str, optional): Subset to save, e.g "GRETI_HQ" only. Defaults to None.
+"""
 
-def segment_bouts(wavfile, destination, subset=None):
+### remove
+path = Path("/home/nilomr/projects/0.0_great-tit-song/test")
+origin = path / "raw" / "2020"
+wavfile = origin / "W58" / "20200410_050000.WAV"
+destination = path / "interim"
+subset = "GRETI_HQ"
+threshold = None
+###
+
+
+wavfile_str = str(wavfile)
+datfile = wavfile_str + ".data"
+datetime = dt.datetime.strptime(wavfile.stem, "%Y%m%d_%H%M%S")
+
+kk = audio_metadata.load(wavfile)["tags"].comment
+
+
+if Path(datfile).is_file():
+
+    with open(datfile) as dat, wave.open(wavfile_str) as wav:
+        segments = json.load(dat)[1:]
+        frames = wav.getnframes()
+        sampleRate = wav.getframerate()
+        data = np.frombuffer(wav.readframes(frames), dtype=np.int16)
+
+    cnt = 1
+    tmpdir = Path(destination / wavfile.parts[-3] / wavfile.parts[-2])
+    safe_makedir(tmpdir)  # create output directory
+
+    for seg in segments:
+        species = seg[4][0]["species"]
+        filename = tmpdir / (
+            str(
+                wavfile.parts[-2]
+                + "-"
+                + species
+                + "-"
+                + wavfile.with_suffix("").parts[-1]
+                + "-"
+                + str(cnt)
+                + ".wav"
+            )
+        )
+        cnt += 1
+
+        if not subset:
+            save_bout(data, filename, seg, sampleRate, threshold=None)
+
+        elif subset == species:  # select segments with this label
+            s = int(seg[0] * sampleRate)
+            e = int(seg[1] * sampleRate)
+            temp = data[s:e]
+
+            # JSON dictionary to go with .wav file
+            # TODO continue populating the JSON and save it; then add bandpass filter
+
+            seg_datetime = datetime + dt.timedelta(seconds=seg[0])
+            meta = audio_metadata.load(wavfile)
+
+            s = "Part 1. Part 2. Part 3 then more text"
+            re.search(r"Part 1\.(.*?)Part 3", s).group(1)
+
+            tags = audio_metadata.load(wavfile)["tags"].comment[0]
+            audiomoth = re.search(r"AudioMoth.(.*?) at gain", tags).group(1)
+
+            json_dict = {}
+            json_dict["species"] = species
+            json_dict["nestbox"] = wavfile.parts[-2]
+            json_dict["recorder"] = audiomoth
+            json_dict["recordist"] = "Nilo Merino Recalde"
+            json_dict["source_datetime"] = str(datetime)
+            json_dict["datetime"] = str(seg_datetime)
+            json_dict["date"] = str(seg_datetime.date())
+            json_dict["time"] = str(seg_datetime.time())
+            json_dict["samplerate_hz"] = sampleRate
+            json_dict["length_s"] = len(temp) / sampleRate
+            json_dict["upper_freq"] = 
+            json_dict["lower_freq"] = 
+            json_dict["bit_depth"] = meta["streaminfo"].bit_depth
+            json_dict["tech_comment"] = tags
+            json_dict["source_location"] = wavfile.as_posix()
+            json_dict["wav_location"] = filename.as_posix()
+
+
+            if not threshold:
+                wavio.write(
+                    str(filename),
+                    temp.astype("int16"),
+                    sampleRate,
+                    scale="dtype-limits",
+                    sampwidth=2,
+                )
+
+            elif max(temp) > threshold:
+                wavio.write(
+                    str(filename),
+                    temp.astype("int16"),
+                    sampleRate,
+                    scale="dtype-limits",
+                    sampwidth=2,
+                )
+else:
+    print(
+        """No .data file exists for this .wav
+    There might be files with no segmentation information or
+    you might have included an unwanted directory"""
+    )
+
+
+#####
+
+# def save_bout(data, filename, seg, sampleRate, threshold=None):
+
+
+def segment_bouts(wavfile, destination, subset=None, **kwargs):
     """Saves segmented bouts (from AviaNZ) to individual .wav files
 
     Args:
 
         wavfile (PosixPath): Path to file
         destination (PosixPath): Destination folder. /year/individual is added.
-        subset (str, optional): Subset to save, e.g "GRETI_HQ" only. Default = None.
+        subset (str, optional): Subset to save, e.g "GRETI_HQ" only. Defaults to None.
     """
     wavfile_str = str(wavfile)
     datfile = wavfile_str + ".data"
@@ -55,7 +180,6 @@ def segment_bouts(wavfile, destination, subset=None):
         safe_makedir(tmpdir)  # create output directory
 
         for seg in segments:
-
             filename = tmpdir / (
                 str(
                     wavfile.parts[-2]
@@ -70,24 +194,35 @@ def segment_bouts(wavfile, destination, subset=None):
             )
             cnt += 1
 
-            if not subset:
+            def save_bout(data, filename, seg, sampleRate, threshold=None):
 
                 s = int(seg[0] * sampleRate)
                 e = int(seg[1] * sampleRate)
+                temp = data[s:e]
 
-            elif subset == seg[4][0]["species"]:  # select segments with this label
+                if not threshold:
+                    wavio.write(
+                        str(filename),
+                        temp.astype("int16"),
+                        sampleRate,
+                        scale="dtype-limits",
+                        sampwidth=2,
+                    )
 
-                s = int((seg[0] - 1) * sampleRate)
-                e = int((seg[1] + 1) * sampleRate)
+                elif max(temp) > threshold:
+                    wavio.write(
+                        str(filename),
+                        temp.astype("int16"),
+                        sampleRate,
+                        scale="dtype-limits",
+                        sampwidth=2,
+                    )
 
-            temp = data[s:e]
-            wavio.write(
-                str(filename),
-                temp.astype("int16"),
-                sampleRate,
-                scale="dtype-limits",
-                sampwidth=2,
-            )
+            if not subset:
+                save_bout(data, filename, seg, sampleRate, **kwargs)
+
+            elif subset == seg[4][0]["species"]:  # select songs with this label
+                save_bout(data, filename, seg, sampleRate, **kwargs)
 
     else:
         print(
@@ -97,7 +232,7 @@ def segment_bouts(wavfile, destination, subset=None):
         )
 
 
-def batch_segment_bouts(origin, destination, subset=None):
+def batch_segment_bouts(origin, destination, subset=None, **kwargs):
     """Extracts all sound segments found in a folder/subfolders.
 
     Based on code by Stephen Marsland, Nirosha Priyadarshani & Julius Juodakis.
@@ -123,7 +258,15 @@ def batch_segment_bouts(origin, destination, subset=None):
                 and wavfile + ".data" in files
             ):
                 wavfile = Path(root) / wavfile
-                segment_bouts(wavfile, destination, subset=subset)
+                segment_bouts(wavfile, destination, subset=subset, **kwargs)
+
+
+path = Path("/home/nilomr/projects/0.0_great-tit-song/test")
+origin = path / "raw" / "2020"
+destination = path / "interim"
+
+
+batch_segment_bouts(origin, destination, subset="GRETI_HQ", threshold=5000)
 
 
 ####################################
