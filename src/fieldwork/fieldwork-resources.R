@@ -29,6 +29,10 @@ suppressPackageStartupMessages({
   library(RColorBrewer)
   library(patchwork)
   library(sjPlot)
+  library(ochRe)
+  library(ghibli)
+  library(wesanderson)
+  library(kableExtra)
   library(knitr)
 })
 
@@ -159,4 +163,61 @@ plot_recorder_model <- function(model, plot_title){
     )
 }
 
+#' Get total birds identified each year in a range
+#'
+#' @param data cleaned ebmp csv for the desired range of years
+#' @param years int, range of years
+#' @return a data frame with total and identified males
+get_id_number <- function(data, years) {
+  noid_greti_m <- vector(mode = "numeric", length = length(years))
+  noid_greti_f <- vector(mode = "numeric", length = length(years))
+  total_gretis <- vector(mode = "numeric", length = length(years))
+  parent = c('father', 'mother')
+  for (i in seq_along(years)) {
+    total <-
+      (
+        data %>%
+          filter(year == years[i]) %>%
+          select(all_of(parent)) %>%
+          count() %>%
+          sum()
+      )
+    no_id_m <-
+      (
+        data %>%
+          filter(year == years[i]) %>%
+          select('father') %>%
+          is.na() %>%
+          sum()
+      )
+    no_id_f <-
+      (
+        data %>%
+          filter(year == years[i]) %>%
+          select('mother') %>%
+          is.na() %>%
+          sum()
+      )
+    total_gretis[i] <- total
+    noid_greti_m[i] <- no_id_m
+    noid_greti_f[i] <- no_id_f
+  }
+  
+  id_gretis_m <- total_gretis - noid_greti_m
+  id_gretis_f <- total_gretis - noid_greti_f
+  
+  id_data <-
+    do.call(
+      rbind,
+      Map(
+        data.frame,
+        year = years,
+        total = total_gretis,
+        identified_male = id_gretis_m,
+        identified_female = id_gretis_f
+      )
+    )
+  
+  return(id_data)
+}
 
