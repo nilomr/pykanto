@@ -1,23 +1,30 @@
-# Define paths, make if they don't exist
+# This script stores paths in variables and makes directories if they don't exist
+
+# Libraries
 
 import pathlib2
+import numpy as np
+import pandas as pd
 from pathlib2 import Path
 import os
 from datetime import date
 
+
+# Setup
+
 year = date.today().year
+level = 0 if __name__ == "__main__" else 2
 
 
 # Define directories:
 
-PROJECT_PATH = (
-    Path("__file__").resolve().parents[2]
-)  # Ego = notebook!! # 0 in vscode, 2 in notebook
+PROJECT_PATH = Path("__file__").resolve().parents[level]
 DATA_PATH = PROJECT_PATH / "data"
 FIGURE_PATH = PROJECT_PATH / "reports" / "figures"
 RESOURCES_PATH = PROJECT_PATH / "resources" / "fieldwork" / str(year)
 
 # ----------------------
+
 
 # Make these directiories should they not currently exist:
 
@@ -50,3 +57,24 @@ def safe_makedir(file_path):
 
 for path in DATA_PATH, FIGURE_PATH, RESOURCES_PATH:
     safe_makedir(path)
+
+
+# -----------------------
+
+# files_path = DATA_PATH / "raw" / str(year)
+
+# filearray = np.sort(list(files_path.glob("**/*.WAV")))
+# nestboxes = pd.DataFrame(set([file.parent.name for file in filelist]))
+
+# recorded_gretis = pd.read_csv(RESOURCES_PATH / "recorded_greti_boxes.csv")[
+#     "nestbox"
+# ].to_list()
+
+# filelist = pd.Series([str(path) for path in filearray])
+# greti_files = filelist[filelist.str.contains("|".join(recorded_gretis))]
+# greti_files.to_frame().to_csv("greti_files.csv")
+
+# # All recordings and recorded nests:
+# pd.set_option("display.max_colwidth", -1)
+# display(pd.DataFrame(filearray), nestboxes)
+
