@@ -77,13 +77,13 @@ target/
 
 # exclude data from source control by default
 # And data alias + other folders
+
 /data/
 data
 /private/
 /resources/
-
-
-# exclude chipper
+/test/
+/avgn/
 /dependencies/chipper_v1.0_linux
 
 # Mac OS-specific storage files
