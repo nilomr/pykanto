@@ -15,9 +15,14 @@ Nilo M. Recalde, 2020
  5. Build Cython extensions `cd ext; python3 setup.py build_ext -i; cd ..`
  6. Run `python3 AviaNZ.py`
 
+Henceforth, `conda activate 0.0_great-tit-song-segment && j /dependencies/AviaNZ-2.1 && python3 AviaNZ.py`
+
+
 **Note**: I haven't figured out how to change the config directory to `/dependencies/AviaNZ-2.1/Config`, so the `AviaNZconfig.txt` file has to be edited in `/home/[username]/.avianz/AviaNZconfig.txt`. 
 
-My current settigs are:
+My current settings in `AviaNZconfig.txt` are:
+
+    # not complete, only relevant bits
 
     {
     "window_width": 1024,
@@ -26,14 +31,8 @@ My current settigs are:
     "maxFreq": 9000,
     "maxSearchDepth": 50,
     "minSegment": 50,
-    "drawingRightBtn": false,
-    "specMouseAction": 3,
-    "StartMaximized": true,
-    "MultipleSpecies": false,
-    "RequireNoiseData": false,
     "DOC": true,
     "ReorderList": false,
-    "SoundFileDir": "./Sound Files",
     "secsSave": 60,
     "windowWidth": 27.5,
     "widthOverviewSegment": 20.0,
@@ -43,55 +42,6 @@ My current settigs are:
     "contrast": 88,
     "overlap_allowed": 5,
     "reviewSpecBuffer": 1,
-    "BirdListShort": "/home/nilomr/projects/0.0_great-tit-song/dependencies/AviaNZ-2.1/Config/BirdList.txt",
-    "BirdListLong": "/home/nilomr/projects/0.0_great-tit-song/dependencies/AviaNZ-2.1/Config/BirdList.txt",
-    "RecentFiles": [
-    "/home/nilomr/projects/0.0_great-tit-song/data/raw/2020/B3/20200423_030000.WAV",
-    "/home/nilomr/projects/0.0_great-tit-song/data/raw/2020/B3/20200423_040000.WAV",
-    "/home/nilomr/projects/0.0_great-tit-song/data/raw/2020/B3/20200423_050000.WAV",
-    "/home/nilomr/projects/0.0_great-tit-song/data/raw/2020/B3/20200424_080000.WAV"
-    ],
-    "ColourList": [
-    "Grey",
-    "Viridis",
-    "Inferno",
-    "Plasma",
-    "Autumn",
-    "Cool",
-    "Bone",
-    "Copper",
-    "Hot",
-    "Jet",
-    "Thermal",
-    "Flame",
-    "Yellowy",
-    "Bipolar",
-    "Spectrum"
-    ],
-    "ColourSelected": [
-    0,
-    0,
-    255,
-    100
-    ],
-    "ColourNamed": [
-    34,
-    186,
-    0,
-    90
-    ],
-    "ColourNone": [
-    255,
-    0,
-    0,
-    100
-    ],
-    "ColourPossible": [
-    255,
-    255,
-    0,
-    100
-    ],
     "cmap": "Viridis",
     "showAmplitudePlot": true,
     "showAnnotationOverview": true,
@@ -103,22 +53,20 @@ My current settigs are:
     "saveCorrections": true,
     "operator": "Nilo",
     "reviewer": "Nilo",
-    "protocolOn": false,
-    "protocolSize": 10,
-    "protocolInterval": 60,
-    "fs_start": 0,
-    "fs_end": 0,
     "window": "Hann",
-    "FiltersDir": "Filters"
     }
 
+> Took me 14 min to segment 1h of audio.
+> 39.375 8-hour day days if segmenting only 2h per day and bird
 
+> Took me 14 min to check 1 nestbox (21h of recordings).
+> 39.375 8-hour day days if segmenting only 2h per day and bird
 
 ***
 
 #### To segment bouts into syllables
 
-> Last updated 11 June 2020: If on ubuntu/debian-based linux, follow:
+> Last updated 11 June 2020: If on debian-based linux, follow:
 
 1. Clone the repository with `git clone https://github.com/CreanzaLab/chipper.git`
 
@@ -156,9 +104,8 @@ My current settigs are:
 <br>
 
 #### To Do:
-- [ ] Add to bird list: "song matching", "2nd GT", "Blue tit" etc
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-
+- [ ] Write function to get recordings from n mins before sunrise that day to n minutes after. 
+- [ ] Add a 'global' progress bar to the batch segment function!
+- [ ] Update segmentation funtion to only export trimemd audio segment IF it doesn't exist OR some value has changed
+- [ ] Improve way to deal with year - either select one year of data or all years
+- [ ] Fix segment_bouts() to use context manager (with ... as ...)
