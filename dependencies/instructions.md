@@ -6,7 +6,7 @@ Instructions
 Nilo M. Recalde, 2020
 
 
-#### To segment songs into bouts
+#### To segment songs into songs
 
  1. `conda env create -f 0.0_great-tit-song-segment.yml`
  2. `conda activate 0.0_great-tit-song-segment`
@@ -64,7 +64,7 @@ My current settings in `AviaNZconfig.txt` are:
 
 ***
 
-#### To segment bouts into syllables
+#### To segment songs into syllables
 
 > Last updated 11 June 2020: If on debian-based linux, follow:
 
@@ -108,4 +108,4 @@ My current settings in `AviaNZconfig.txt` are:
 - [ ] Add a 'global' progress bar to the batch segment function!
 - [ ] Update segmentation funtion to only export trimemd audio segment IF it doesn't exist OR some value has changed
 - [ ] Improve way to deal with year - either select one year of data or all years
-- [ ] Fix segment_bouts() to use context manager (with ... as ...)
+- [ ] Fix segment_songs() to use context manager (with ... as ...)

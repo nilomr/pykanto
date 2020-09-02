@@ -1,12 +1,23 @@
-# ONE WAY to BANDPASS-FILTER 
-# https://americodias.com/docs/python/audio_python.md
+# Dereverberation using NARA-WPE
+
+# @InProceedings{Drude2018NaraWPE,
+#   Title     = {{NARA-WPE}: A Python package for weighted prediction error dereverberation in {Numpy} and {Tensorflow} for online and offline processing},
+#   Author    = {Drude, Lukas and Heymann, Jahn and Boeddeker, Christoph and Haeb-Umbach, Reinhold},
+#   Booktitle = {13. ITG Fachtagung Sprachkommunikation (ITG 2018)},
+#   Year      = {2018},
+#   Month     = {Oct},
+# }
+
+#! TODO
 
 
-# Following two functions are a version of code by
+# The following two functions are a version of code by
 # (c) 2011 James Robert, http://jiaaro.com
 
 from scipy.signal import butter, sosfilt
-# import pydub 
+
+# import pydub
+
 
 def _mk_butter_filter(freq, type, order):
     """[Defines ]
@@ -23,9 +34,10 @@ def _mk_butter_filter(freq, type, order):
     
     Returns:
         [function] -- [filters a mono audio segment]
-    """  
+    """
+
     def filter_fn(seg):
-                
+
         assert seg.channels == 1
 
         nyq = 0.5 * seg.frame_rate
@@ -34,7 +46,7 @@ def _mk_butter_filter(freq, type, order):
         except TypeError:
             freqs = freq / nyq
 
-        sos = butter(order, freqs, btype=type, output='sos')
+        sos = butter(order, freqs, btype=type, output="sos")
         y = sosfilt(sos, seg.get_array_of_samples())
 
         return seg._spawn(y.astype(seg.array_type))
@@ -43,11 +55,16 @@ def _mk_butter_filter(freq, type, order):
 
 
 def band_pass_filter(seg, low_cutoff_freq, high_cutoff_freq, order):
-    filter_fn = _mk_butter_filter([low_cutoff_freq, high_cutoff_freq], 'band', order=order)
+    filter_fn = _mk_butter_filter(
+        [low_cutoff_freq, high_cutoff_freq], "band", order=order
+    )
     return seg.apply_mono_filter_to_each_channel(filter_fn)
+
 
 # convert to mono somewhere here!!!
 
-test_audio = pydub.AudioSegment.from_wav("/home/nilomr/Music/trimmed.wav") # can you do without pydub?
-test_audio_bandpass = band_pass_filter(test_audio, 3000, 9000, order = 12)
-test_audio_bandpass.export("/home/nilomr/Music/bandpasseddupdup.wav", format = "wav")
+test_audio = pydub.AudioSegment.from_wav(
+    "/home/nilomr/Music/trimmed.wav"
+)  # can you do without pydub?
+test_audio_bandpass = band_pass_filter(test_audio, 3000, 9000, order=12)
+test_audio_bandpass.export("/home/nilomr/Music/bandpasseddupdup.wav", format="wav")
