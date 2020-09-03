@@ -42,8 +42,9 @@ for (year in df.paths) {
     select(-lay_date_uncertainty)
 }
 
-data_2016_to_2020 <- bind_rows(datalist)
-data_2020 <- as_tibble(datalist[[5]])
+data_2010_to_2020 <- bind_rows(datalist)
+write_csv(data_2010_to_2020, file.path(data_path, "broods_2010_to_2020_29072020.csv"))
+data_2020 <- as_tibble(datalist$`/home/nilomr/projects/0.0_great-tit-song/resources/brood_data/ebmp_broods_2020.csv`)
 
 recorded_2020 <-
   read_excel(file.path(sheet_path, "already-recorded.xlsx")) %>%
@@ -52,15 +53,16 @@ recorded_2020 <-
   filter(str_detect(nestbox, "Nestbox", negate = TRUE)) %>%
   mutate(move_by = ymd(move_by))
 
-clean_dataset_2020 <- full_join(recorded_2020, data_2020) %>% 
-  mutate(recorded = case_when(is.na(am) ~ "NO", !is.na(am) ~ "YES")) %>% 
+clean_dataset_2020 <- full_join(recorded_2020, data_2020) %>%
+  mutate(recorded = case_when(is.na(am) ~ "NO",!is.na(am) ~ "YES")) %>%
   select(nestbox, recorded, everything())
+
 
 # Specific round data
 
-nilo_round_2020 <-
-  read_sheet("1I1WXw55BckjETRZIb2MtlVBM7AP0ik7RV6N9O8Vhdug") %>%
-  clean_names()
+# nilo_round_2020 <-
+#   read_sheet("1I1WXw55BckjETRZIb2MtlVBM7AP0ik7RV6N9O8Vhdug") %>%
+#   clean_names()
 
 ```
 
@@ -190,7 +192,8 @@ catching %>%
 
 text_size = 15
 
-lay_plot <- data_2016_to_2020 %>%
+lay_plot <- data_2010_to_2020 %>%
+  filter(year==2016:2020) %>% 
   ggplot(aes(x = plot_date, fill = factor(year))) +
   geom_histogram(binwidth = 1,
                  alpha = 0.7,
@@ -241,31 +244,142 @@ lay_plot <- data_2016_to_2020 %>%
 plot(lay_plot)
 ```
 
-### How many males are identified in the nest?
+### How many birds are identified in the nest?
 
 ```{r  message=FALSE, warning=FALSE}
-# How many males ID'd in nest (total nests - non IDd males)
-years <- 2016:2020
-difference <- vector(mode = "numeric", length = length(years))
-for (i in seq_along(years)) {
-  IDmales <-
-    (data_2016_to_2020 %>%
-       filter(year == years[i]) %>%
-       select('father') %>%
-       count() %>%
-       sum()
-     ) -
-    (data_2016_to_2020 %>%
-       filter(year == years[i]) %>%
-       select('father') %>%
-       is.na() %>%
-       sum()
-     )
-  difference[i] <- IDmales
-}
 
-print(difference) # each year
-print(mean(difference)) # average # ID'd males
+# How many birds ID'd in nest?
+
+text_size = 15
+species = "g"
+years = 2010:2020
+
+
+# compare years 
+
+now <-
+  read_csv(file.path(data_path, "broods_2010_to_2020_29072020.csv"))
+before <-
+  read_csv(file.path(data_path, "broods_2010_to_2020_17062020.csv"))
+
+
+now_g <-
+  now %>% filter(species == "g") %>%  get_id_number(., years) %>% mutate(species = "g")
+now_b <-
+  now %>% filter(species == "b") %>%  get_id_number(., years) %>% mutate(species = "b")
+
+now_all <- bind_rows(now_g, now_b) %>% mutate(data = "June")
+
+before_g <-
+  before %>% filter(species == "g") %>%  get_id_number(., years) %>% mutate(species = "g")
+before_b <-
+  before %>% filter(species == "b") %>%  get_id_number(., years) %>% mutate(species = "b")
+
+before_all <- bind_rows(before_g, before_b) %>% mutate(data = "July")
+
+
+summary_table <- full_join(now_all, before_all, by=c("year","species")) %>% mutate(diff_total= total.x - total.y, diff_male = identified_male.x - identified_male.y, diff_female = identified_female.x - identified_female.y) %>% relocate(species, .before = everything())
+
+
+write_csv(summary_table, file.path(data_path, "summary_differences.csv"))
+kable(summary_table) %>% kable_styling() %>% save_kable(file = file.path(data_path, "summary_differences.html"), self_contained = T)
+
+
+
+
+#####################
+
+id_gretis_plot <- data_2010_to_2020 %>%
+  filter(species == "g") %>%
+  get_id_number(., years) %>%
+  pivot_longer(-year, names_to = "group", values_to = "n") %>%
+  ggplot(aes(fill =
+               group, y = n, x = year)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal(base_size = text_size) +
+  coord_fixed(ratio = 0.008) +
+  scale_fill_grey(start=0.8, end=0.2) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major  = element_blank(),
+    axis.text.x = element_text(face = "bold", size = text_size - (text_size / 100 * 20)),
+    axis.title = element_text(size = text_size - (text_size / 100 * 15)),
+    plot.title = element_text(face = "bold", size = text_size + (text_size / 100 * 10)),
+    plot.subtitle = element_text(color = "#424242",
+                                 size = text_size - (text_size / 100 * 20))
+  ) +
+  labs(
+    y = "Count\n",
+    x = element_blank(),
+    fill = "Status",
+    title = "Great tits",
+    subtitle = "In the period 2010 - 2020\n"
+  )
+
+id_blutis_plot <- data_2010_to_2020 %>%
+  filter(species == "b") %>%
+  get_id_number(.,years) %>%
+  pivot_longer(-year, names_to = "group", values_to = "n") %>%
+  ggplot(aes(fill =
+               group, y = n, x = year)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal(base_size = text_size) +
+  coord_fixed(ratio = 0.008) +
+  scale_fill_grey(start=0.8, end=0.2) +
+  scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major  = element_blank(),
+    axis.text.x = element_text(face = "bold", size = text_size - (text_size / 100 * 20)),
+    axis.title = element_text(size = text_size - (text_size / 100 * 15)),
+    plot.title = element_text(face = "bold", size = text_size + (text_size / 100 * 10)),
+    plot.subtitle = element_text(color = "#424242",
+                                 size = text_size - (text_size / 100 * 20))
+  ) +
+  labs(
+    y = "Count\n",
+    x = element_blank(),
+    fill = "Status",
+    title = "Blue tits",
+    subtitle = "In the period 2010 - 2020\n"
+  )
+
+id_gretis_plot + id_blutis_plot +  plot_layout(guides = 'collect')
+
+
+data_2010_to_2020 %>% filter(species=="g") %>%  group_by(year) %>% tally()
+data_2010_to_2020 %>% filter(species=="b") %>%  group_by(year) %>% tally()
+
+
+#ID'd great tit recorded
+
+# Greti NOT recorded
+  clean_dataset_2020 %>% 
+  distinct(nestbox, .keep_all = TRUE) %>% 
+  filter(recorded == "NO" & species=="g" ) %>% nrow()
+
+# Greti recorded
+  clean_dataset_2020 %>% 
+  distinct(nestbox, .keep_all = TRUE) %>% 
+  filter(recorded == "YES" & species=="g") %>% nrow()
+
+# Greti recorded and IDd
+  clean_dataset_2020 %>% 
+  distinct(nestbox, .keep_all = TRUE) %>% 
+  filter(recorded == "YES" & species=="g" & father!=is.na(father)) %>% nrow()
+
+```
+
+```{r}
+# Greti recorded
+both <-  clean_dataset_2020 %>% 
+  distinct(nestbox, .keep_all = TRUE) %>% 
+  filter(recorded == "YES" & species=="b")
+
+both %>% select(nestbox) %>% write_csv(file.path(sheet_path, "recorded_greti_boxes.csv"))
 
 ```
 

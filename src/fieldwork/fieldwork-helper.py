@@ -24,15 +24,15 @@ init(autoreset=True)
 
 # Paths -----------------------------------
 
-PROJECT_PATH = Path("__file__").resolve().parents[0]  # ! Ego = notebook
-DATA_PATH = PROJECT_PATH / "data"
-FIELD_PATH = DATA_PATH / "resources" / "fieldwork" / str(date.today().year)
-OUT_PATH = PROJECT_PATH / "resources" / "fieldwork" / str(date.today().year)
-GPX_PATH = OUT_PATH / "gpx-files"
+PROJECT_DIR = Path("__file__").resolve().parents[0]  # ! Ego = notebook
+DATA_DIR = PROJECT_DIR / "data"
+FIELD_DIR = DATA_DIR / "resources" / "fieldwork" / str(date.today().year)
+OUT_DIR = PROJECT_DIR / "resources" / "fieldwork" / str(date.today().year)
+GPX_DIR = OUT_DIR / "gpx-files"
 
-RPLOTS = PROJECT_PATH / "src" / "fieldwork" / "plot-new-boxes.R"
-coords_xls = DATA_PATH / "resources" / "nestbox_position.xls"
-recorded_xlsx = OUT_PATH / "already-recorded.xlsx"
+RPLOTS = PROJECT_DIR / "src" / "fieldwork" / "plot-new-boxes.R"
+coords_xls = DATA_DIR / "resources" / "nestbox_position.xls"
+recorded_xlsx = OUT_DIR / "already-recorded.xlsx"
 
 
 class Error(Exception):
@@ -354,7 +354,7 @@ while True:
 
         # Auth key (keep private)
         gc = pygsheets.authorize(
-            service_file=str(PROJECT_PATH / "private" / "client_secret.json")
+            service_file=str(PROJECT_DIR / "private" / "client_secret.json")
         )
 
         # Download and append personal sheets
@@ -425,7 +425,7 @@ while True:
         # Add coordinates & date added.
         # save pickle for the record
 
-        picklename = FIELD_PATH / (
+        picklename = FIELD_DIR / (
             str(
                 str("allrounds")
                 + "_"
@@ -481,9 +481,9 @@ while True:
 
         print(Fore.BLACK + Back.WHITE + str(diff_df.drop(["x", "y"], 1).to_markdown()))
 
-        newpath = OUT_PATH / str("new_" + str(date.today()) + ".csv")
+        newpath = OUT_DIR / str("new_" + str(date.today()) + ".csv")
         diff_df.to_csv(newpath)
-        diff_df.to_csv(str(OUT_PATH / "toberecorded.csv"), index=False)
+        diff_df.to_csv(str(OUT_DIR / "toberecorded.csv"), index=False)
 
         print(green + "This dataframe has also been saved to " + str(newpath))
 
@@ -509,9 +509,9 @@ while True:
 
         elif option == "plots":
             # Plot with R + ggplot2
-            diff_df.to_csv(str(OUT_PATH / "toberecorded.csv"), index=False)
+            diff_df.to_csv(str(OUT_DIR / "toberecorded.csv"), index=False)
             subprocess.check_call(["Rscript", str(RPLOTS)], shell=False)
-            print(green + "Done (1/2). You can check your plot at " + str(OUT_PATH))
+            print(green + "Done (1/2). You can check your plot at " + str(OUT_DIR))
             # Export gpx
             today = str(date.today())
             tomorrow = str(date.today() + timedelta(days=1))
@@ -531,7 +531,7 @@ while True:
                         .query('Nestbox != "Nestbox"')
                         .query("Move_by == @today")
                     )
-                    write_gpx(GPX_PATH / str(str(today) + ".gpx"), diff_df, move_today)
+                    write_gpx(GPX_DIR / str(str(today) + ".gpx"), diff_df, move_today)
                     break
                 elif whichday == "tomorrow":
                     move_tomorrow = (
@@ -540,7 +540,7 @@ while True:
                         .query("Move_by == @tomorrow")
                     )
                     write_gpx(
-                        GPX_PATH / str(str(tomorrow) + ".gpx"), diff_df, move_tomorrow
+                        GPX_DIR / str(str(tomorrow) + ".gpx"), diff_df, move_tomorrow
                     )
                     break
                 else:
@@ -554,7 +554,7 @@ while True:
                     )
                     continue
 
-            print(green + "Done (2/2). You can find your .gpx file at " + str(GPX_PATH))
+            print(green + "Done (2/2). You can find your .gpx file at " + str(GPX_DIR))
 
         else:
             print(

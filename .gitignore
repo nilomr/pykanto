@@ -81,10 +81,11 @@ target/
 /data/
 data
 /private/
-/resources/
+/resources/brood_data/temporal
+/resources/fieldwork/
 /test/
-/avgn/
 /dependencies/chipper_v1.0_linux
+/reports/
 
 # Mac OS-specific storage files
 .DS_Store

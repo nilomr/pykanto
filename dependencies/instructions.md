@@ -5,6 +5,13 @@ Instructions
 
 Nilo M. Recalde, 2020
 
+### General requirements
+
+Clone the following:
+
+`https://github.com/timsainb/vocalization-segmentation.git`
+
+
 
 #### To segment songs into songs
 
@@ -106,6 +113,5 @@ My current settings in `AviaNZconfig.txt` are:
 #### To Do:
 - [ ] Write function to get recordings from n mins before sunrise that day to n minutes after. 
 - [ ] Add a 'global' progress bar to the batch segment function!
-- [ ] Update segmentation funtion to only export trimemd audio segment IF it doesn't exist OR some value has changed
 - [ ] Improve way to deal with year - either select one year of data or all years
-- [ ] Fix segment_songs() to use context manager (with ... as ...)
+
