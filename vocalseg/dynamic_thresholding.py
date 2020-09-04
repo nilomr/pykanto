@@ -262,3 +262,117 @@ def plot_segmentations(
     ax0.axis("off")
     return fig
 
+
+#
+
+
+# ### segment and plot
+# - for each json, load the wav file - segment the file into start and end times
+# - plot the segmentation
+# - add to the JSON
+
+import json
+import librosa
+from avgn.signalprocessing.filtering import butter_bandpass_filter
+from avgn.utils.audio import load_wav, read_wav
+from avgn.utils.json import NoIndent, NoIndentEncoder
+from avgn.utils.paths import most_recent_subdirectory, ensure_dir
+from src.read.paths import DATA_DIR
+from datetime import datetime
+
+DT_ID = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+DATASET_ID = "GRETI_HQ"
+
+
+def segment_spec_custom(
+    key,
+    df,
+    n_fft=1024,
+    hop_length_ms=3,
+    win_length_ms=15,
+    ref_level_db=30,
+    pre=0.5,
+    min_level_db=-30,
+    min_level_db_floor=-10,
+    db_delta=7,
+    silence_threshold=0.3,
+    min_silence_for_spec=0.001,
+    max_vocal_for_spec=(0.4,),
+    min_syllable_length_s=0.03,
+    spectral_range=[1200, 9000],
+    save=False,
+    plot=False,
+    DATA_DIR=DATA_DIR,
+    DT_ID=DT_ID,
+    DATASET_ID=DATASET_ID,
+):
+
+    # load wav
+    rate, data = load_wav(df.data["wav_loc"])
+
+    # bandpass based on manual selections in AviaNZ
+    butter_min = df.data["lower_freq"]
+    butter_max = df.data["upper_freq"]
+
+    data = butter_bandpass_filter(data, butter_min, butter_max, rate)
+    data = librosa.util.normalize(data)
+
+    # segment
+    results = dynamic_threshold_segmentation(
+        data,
+        rate,
+        n_fft=n_fft,
+        hop_length_ms=hop_length_ms,
+        win_length_ms=win_length_ms,
+        min_level_db_floor=min_level_db_floor,
+        db_delta=db_delta,
+        ref_level_db=ref_level_db,
+        pre=pre,
+        min_silence_for_spec=min_silence_for_spec,
+        max_vocal_for_spec=max_vocal_for_spec,
+        min_level_db=min_level_db,
+        silence_threshold=silence_threshold,
+        verbose=True,
+        min_syllable_length_s=min_syllable_length_s,
+        spectral_range=spectral_range,
+    )
+    if results is None:
+        return
+    if plot:
+        plot_segmentations(
+            results["spec"],
+            results["vocal_envelope"],
+            results["onsets"],
+            results["offsets"],
+            hop_length_ms,
+            rate,
+            figsize=(15, 3),
+        )
+        plt.show()
+
+    # save the results
+    json_out = (
+        DATA_DIR
+        / "processed"
+        / (DATASET_ID + "_segmented")
+        / DT_ID
+        / "JSON"
+        / (key + ".JSON")
+    )
+
+    json_dict = df.data.copy()
+
+    json_dict["indvs"][list(df.data["indvs"].keys())[0]]["syllables"] = {
+        "start_times": NoIndent(list(results["onsets"])),
+        "end_times": NoIndent(list(results["offsets"])),
+    }
+
+    json_txt = json.dumps(json_dict, cls=NoIndentEncoder, indent=2)
+    # save json
+    if save:
+        ensure_dir(json_out.as_posix())
+        print(json_txt, file=open(json_out.as_posix(), "w"))
+
+    # print(json_txt)
+
+    return results
