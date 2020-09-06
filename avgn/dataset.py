@@ -35,7 +35,7 @@ class DataSet(object):
             )
         self._get_wav_json_files()
 
-        self.sample_json = read_json(self.json_files[0])
+        self.sample_json = read_json(self.json_files[4])
 
         self._load_datafiles()
 
@@ -66,6 +66,7 @@ class DataSet(object):
         if rate is None:
             rate = self.sample_json["samplerate_hz"]
         self.mel_matrix = prepare_mel_matrix(self.hparams, rate)
+    
 
     def _get_unique_individuals(self):
         self.json_indv = np.array(

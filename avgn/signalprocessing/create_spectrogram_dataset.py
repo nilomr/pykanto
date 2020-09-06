@@ -9,7 +9,6 @@ from avgn.signalprocessing.filtering import butter_bandpass_filter
 from joblib import Parallel, delayed
 from tqdm.autonotebook import tqdm
 import pandas as pd
-
 import noisereduce as nr
 
 
@@ -370,8 +369,8 @@ def get_row_audio(syllable_df, wav_loc, hparams):
 
     # load audio
     rate, data = prepare_wav(wav_loc, hparams)
-    data = data.astype('float32')
-    
+    data = data.astype("float32")
+
     # get audio for each syllable
     syllable_df["audio"] = [
         data[int(st * rate) : int(et * rate)]
