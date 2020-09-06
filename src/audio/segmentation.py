@@ -154,7 +154,9 @@ def segment_songs(wavfile, DATA_DIR, DT_ID, DATASET_ID, subset="GRETI_HQ", thres
         )
 
 
-def batch_segment_songs_single(origin, DATA_DIR, DT_ID, subset="GRETI_HQ", threshold=0):
+def batch_segment_songs_single(
+    origin, DATA_DIR, DT_ID, DATASET_ID, subset="GRETI_HQ", threshold=0
+):
     """Extracts all sound segments found in a folder/subfolders.
     Based on code by Stephen Marsland, Nirosha Priyadarshani & Julius Juodakis.
 
@@ -174,11 +176,18 @@ def batch_segment_songs_single(origin, DATA_DIR, DT_ID, subset="GRETI_HQ", thres
             if wav.endswith(".wav") or wav.endswith(".WAV") and wav + ".data" in files:
                 wavfile = Path(root) / wav
                 segment_songs(
-                    wavfile, DATA_DIR, DT_ID, subset=subset, threshold=threshold
+                    wavfile,
+                    DATA_DIR,
+                    DT_ID,
+                    DATASET_ID,
+                    subset=subset,
+                    threshold=threshold,
                 )
 
 
-def batch_segment_songs(origin, DATA_DIR, DT_ID, subset="GRETI_HQ", threshold=0):
+def batch_segment_songs(
+    origin, DATA_DIR, DT_ID, DATASET_ID, subset="GRETI_HQ", threshold=0
+):
     """Extracts all sound segments found in a folder/subfolders. Uses multiprocessing.
 
     Args:
@@ -201,7 +210,7 @@ def batch_segment_songs(origin, DATA_DIR, DT_ID, subset="GRETI_HQ", threshold=0)
             if wav.endswith(".wav") or wav.endswith(".WAV") and wav + ".data" in files:
                 p.apply_async(
                     segment_songs,
-                    args=(wavfile, DATA_DIR, DT_ID),
+                    args=(wavfile, DATA_DIR, DT_ID, DATASET_ID),
                     kwds={"subset": subset, "threshold": threshold},
                 )
 
