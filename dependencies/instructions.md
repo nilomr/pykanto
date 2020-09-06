@@ -79,7 +79,7 @@ My current settings in `AviaNZconfig.txt` are:
 
 2. Create a new conda environment: `conda create -n chipper_env python=3.7 -y`
 
-3. Activate the conda environment: `conda activate chipper_env` and avigate to `./chipper`.
+3. Activate the conda environment: `conda activate chipper_env` and navigate to `./chipper`.
 
 4. `pip install --no-binary kivy kivy`. 
 
