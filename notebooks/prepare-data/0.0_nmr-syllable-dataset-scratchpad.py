@@ -4,26 +4,32 @@ from IPython import get_ipython
 get_ipython().run_line_magic("load_ext", "autoreload")
 get_ipython().run_line_magic("autoreload", "2")
 
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import librosa
+import seaborn as sns
 
 get_ipython().run_line_magic("matplotlib", "inline")
 from tqdm.autonotebook import tqdm
 from joblib import Parallel, delayed
 from tqdm import tqdm
 
-# import umap
-import pandas as pd
+from src.greti.read.paths import DATA_DIR
+from src.avgn.utils.paths import most_recent_subdirectory, ensure_dir
+from src.avgn.utils.hparams import HParams
+from src.avgn.dataset import DataSet
+from src.avgn.signalprocessing.create_spectrogram_dataset import *
 
-from avgn.utils.paths import DATA_DIR, most_recent_subdirectory, ensure_dir
-from avgn.utils.hparams import HParams
-from avgn.dataset import DataSet
-from avgn.signalprocessing.create_spectrogram_dataset import (
-    prepare_wav,
-    create_label_df,
-    get_row_audio,
+# from cuml.manifold.umap import UMAP as cumlUMAP
+from src.avgn.visualization.spectrogram import draw_spec_set
+from src.avgn.visualization.projections import (
+    scatter_spec,
+    scatter_projections,
+    draw_projection_transitions,
 )
+from src.avgn.visualization.quickplots import draw_projection_plots
+import umap
 
 
 # %%
@@ -38,14 +44,14 @@ DATASET_ID = "GRETI_HQ_segmented"
 hparams = HParams(
     num_mel_bins=64,
     n_fft=1024,
-    win_length_ms=4,
+    win_length_ms=15,
     hop_length_ms=3,
     mel_lower_edge_hertz=1200,
     mel_upper_edge_hertz=9000,
     butter_lowcut=1200,
     butter_highcut=9000,
     ref_level_db=30,
-    min_level_db=-30,
+    min_level_db=-20,
     mask_spec=True,
     n_jobs=-2,
     verbosity=1,
@@ -56,25 +62,16 @@ hparams = HParams(
 # %%
 # create a dataset object
 dataset = DataSet(DATASET_ID, hparams=hparams)
-
-# subset and individual
-# dataset.data_files = {key:value for key, value in tqdm(dataset.data_files.items()) if key.split('_')[0] == 'Bird5'}
-
 dataset.sample_json
-
-
-# %%
 len(dataset.data_files)
 
 # %% [markdown]
-# #### Create dataset based upon JSON
+# #### Create dataset from JSON files
 
 # %%
 
-
 n_jobs = -2
 verbosity = 10
-
 
 # %%
 with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
@@ -92,8 +89,6 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
 
 syllable_df = pd.concat(syllable_dfs)
 len(syllable_df)
-
-# %%
 syllable_df[:3]
 
 # %% [markdown]
@@ -112,29 +107,22 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
 syllable_df = pd.concat(syllable_dfs)
 len(syllable_df)
 
-
 # %%
 df_mask = np.array([len(i) > 0 for i in tqdm(syllable_df.audio.values)])
-
 syllable_df = syllable_df[np.array(df_mask)]
-
 syllable_df[:5]
-
-
 sylls = syllable_df.audio.values
 
 
 # %%
 syllable_df["audio"] = [librosa.util.normalize(i) for i in syllable_df.audio.values]
-
-
-# %%
 sylls = syllable_df["audio"].values
 
-
 # %%
-nrows = 5
-ncols = 10
+
+# Plot amplitude envelope of a few syllables
+nrows = 10
+ncols = 5
 zoom = 2
 fig, axs = plt.subplots(
     ncols=ncols, nrows=nrows, figsize=(ncols * zoom, nrows + zoom / 1.5)
@@ -145,25 +133,17 @@ for i, syll in tqdm(enumerate(sylls), total=nrows * ncols):
     if i == nrows * ncols - 1:
         break
 
+fig.tight_layout(pad=3.0)
+
 # %% [markdown]
 # ### Create spectrograms
-
-# %%
-from avgn.visualization.spectrogram import draw_spec_set
-from avgn.signalprocessing.create_spectrogram_dataset import (
-    make_spec,
-    mask_spec,
-    log_resize_spec,
-    pad_spectrogram,
-)
-
 
 # %%
 syllables_wav = syllable_df.audio.values
 syllables_rate = syllable_df.rate.values
 
-
 # %%
+
 with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
     # create spectrograms
     syllables_spec = parallel(
@@ -183,9 +163,8 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
         )
     )
 
-
 # %%
-plt.matshow(syllables_spec[10])
+plt.matshow(syllables_spec[20])
 
 # %% [markdown]
 # ### Rescale spectrogram
@@ -194,8 +173,6 @@ plt.matshow(syllables_spec[10])
 # %%
 log_scaling_factor = 10
 
-
-# %%
 with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
     syllables_spec = parallel(
         delayed(log_resize_spec)(spec, scaling_factor=log_scaling_factor)
@@ -204,15 +181,8 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
 
 
 # %%
-draw_spec_set(syllables_spec, zoom=1, maxrows=25, colsize=15)
+draw_spec_set(syllables_spec, zoom=1, maxrows=20, colsize=15)
 
-
-# %%
-def norm(x):
-    return (x - np.min(x)) / (np.max(x) - np.min(x))
-
-
-syllables_spec = [(norm(i) * 255).astype("uint8") for i in tqdm(syllables_spec)]
 
 # %% [markdown]
 # ### Pad spectrograms
@@ -222,15 +192,6 @@ syll_lens = [np.shape(i)[1] for i in syllables_spec]
 pad_length = np.max(syll_lens)
 
 
-# %%
-syllable_df[:3]
-
-
-# %%
-import seaborn as sns
-
-
-# %%
 for indv in np.unique(syllable_df.indv):
     sns.distplot(
         np.log(
@@ -239,6 +200,7 @@ for indv in np.unique(syllable_df.indv):
         ),
         label=indv,
     )
+
 plt.legend()
 
 
@@ -252,19 +214,25 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
 
 
 # %%
-draw_spec_set(syllables_spec, zoom=1, maxrows=10, colsize=25)
+draw_spec_set(syllables_spec, zoom=1, maxrows=15, colsize=15)
 
-
-# %%
 np.shape(syllables_spec)
 
 
 # %%
-def norm(x):
-    return (x - np.min(x)) / (np.max(x) - np.min(x))
+
+# Clip range to add contrast
 
 
-syllables_spec = [(norm(i) * 255).astype("uint8") for i in tqdm(syllables_spec)]
+def contrast(x):
+    minval = np.percentile(x, 4)
+    maxval = np.percentile(x, 99)
+    x = np.clip(x, minval, maxval)
+    x = ((x - minval) / (maxval - minval)) * 255
+    return x
+
+
+syllables_spec = [contrast(i).astype("uint8") for i in tqdm(syllables_spec)]
 
 
 # %%
@@ -293,26 +261,57 @@ for indv in np.sort(syllable_df.indv.unique()):
         ]
     )
     specs[specs < 0] = 0
-    draw_spec_set(specs, zoom=2, maxrows=16, colsize=25)
-
-
-# %%
-from avgn.signalprocessing.create_spectrogram_dataset import flatten_spectrograms
-from cuml.manifold.umap import UMAP as cumlUMAP
-from avgn.visualization.projections import scatter_spec
-
-
-# %%
-import umap
+    draw_spec_set(specs, zoom=2, maxrows=20, colsize=20)
 
 
 # %%
 
+# UMAP embedding for all birds in dataset
 
+specs = list(syllable_df.spectrogram.values)
+specs = [i / np.max(i) for i in specs]
+specs_flattened = flatten_spectrograms(specs)
+np.shape(specs_flattened)
+
+specs_flattened = flatten_spectrograms(specs)
+fit = umap.UMAP(min_dist=0.30)
+z = list(fit.fit_transform(specs_flattened))
+
+fig, ax = plt.subplots(figsize=(15, 15))
+scatter_projections(
+    projection=np.array(z), alpha=0.5, labels=syllable_df.indv.values, s=10, ax=ax
+)
 # %%
+
+scatter_spec(
+    z,
+    specs,
+    column_size=15,
+    # x_range = [-5.5,7],
+    # y_range = [-10,10],
+    pal_color="hls",
+    color_points=False,
+    enlarge_points=20,
+    figsize=(10, 10),
+    scatter_kwargs={
+        "labels": syllable_df.indv.values,
+        "alpha": 1.0,
+        "s": 3,
+        "color_palette": "Set2",
+        "show_legend": True,
+    },
+    matshow_kwargs={"cmap": plt.cm.Greys},
+    line_kwargs={"lw": 1, "ls": "solid", "alpha": 0.25,},
+    draw_lines=True,
+    border_line_width=0.5,
+)
+# %%
+
+# For each bird
+
 for indv in np.sort(syllable_df.indv.unique()):
-    if indv != "Bird4":
-        continue
+    # if indv != "Bird4":
+    #     continue
     print(indv, np.sum(syllable_df.indv == indv))
     specs = np.array(
         [
@@ -322,11 +321,8 @@ for indv in np.sort(syllable_df.indv.unique()):
     )
 
     specs_flattened = flatten_spectrograms(specs)
-    fit = umap.UMAP(min_dist=0.25)
+    fit = umap.UMAP(min_dist=0.20)
     z = list(fit.fit_transform(specs_flattened))
-
-    # cuml_umap = cumlUMAP(min_dist=0.25)
-    # z = list(cuml_umap.fit_transform(specs_flattened))
 
     scatter_spec(
         np.vstack(z),
@@ -339,14 +335,15 @@ for indv in np.sort(syllable_df.indv.unique()):
         enlarge_points=20,
         figsize=(10, 10),
         scatter_kwargs={
-            "labels": list(syllable_df[syllable_df.indv == indv]["labels"].values),
-            "alpha": 0.25,
+            "labels": list(syllable_df[syllable_df.indv == indv]["indv"].values),
+            "alpha": 0.30,
             "s": 1,
-            "show_legend": False,
+            "show_legend": True,
         },
         matshow_kwargs={"cmap": plt.cm.Greys},
         line_kwargs={"lw": 1, "ls": "solid", "alpha": 0.25,},
         draw_lines=True,
+        border_line_width=0.5,
     )
     plt.show()
 
@@ -354,7 +351,52 @@ for indv in np.sort(syllable_df.indv.unique()):
 # ### save dataset
 
 # %%
-save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "bf.pickle"
+
+save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
 ensure_dir(save_loc)
 syllable_df.drop("audio", 1).to_pickle(save_loc)
+
+
+# for indv in np.sort(syllable_df.indv.unique()):
+#     save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(indv)
+#     ensure_dir(save_loc)
+#     syllable_df.drop("audio", 1).to_pickle(save_loc)
+
+# %%
+
+# Save dataframe with embeddings for each bird
+syllable_df = pd.read_pickle(save_loc)
+ensure_dir(DATA_DIR / "embeddings" / DATASET_ID)
+
+
+for indv in tqdm(syllable_df.indv.unique()):
+    subset_df = syllable_df[syllable_df.indv == indv]
+
+    specs = list(subset_df.spectrogram.values)
+    specs = [i / np.max(i) for i in tqdm(specs)]
+    specs_flattened = flatten_spectrograms(specs)
+    print(np.shape(specs_flattened))
+
+    fit = umap.UMAP(min_dist=0.20)
+    embedding = fit.fit_transform(specs_flattened)
+    subset_df["umap"] = list(embedding)
+    subset_df.to_pickle(DATA_DIR / "embeddings" / DATASET_ID / (indv + ".pickle"))
+
+
+# %%
+
+df_pickles = list((DATA_DIR / "embeddings" / DATASET_ID).glob("*.pickle"))
+syllable_dfs = {}
+for df_pickle in tqdm(df_pickles):
+    syllable_dfs[df_pickle.stem] = pd.read_pickle(df_pickle)
+
+
+# %%
+syllable_dfs.keys()
+draw_projection_plots(syllable_dfs["MP58"])
+
+# syllable_df_sample = syllable_df['MP58']
+
+
+# %%
 
