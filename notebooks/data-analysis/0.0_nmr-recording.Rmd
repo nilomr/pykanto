@@ -1,0 +1,34 @@
+---
+title: "Recording great tit songs"
+description: |
+  An exploration of the factors that affect recording success
+author:
+  - name: Nilo M. Recalde
+    url: https://zoology.web.ox.ac.uk/people/nilo-merino-recalde
+    affiliation: Department of Zoology
+    affiliation_url: https://example.com/spacelysprokets
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+```{r setup}
+# Knitr settings: 
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+options(scipen = 999)
+```
+
+
+
+```{r}
+plot(mtcars)
+```
+
+Distill is a publication format for scientific and technical writing, native to the web. 
+
+Learn more about using Distill for R Markdown at <https://rstudio.github.io/distill>.
+
+
+
+
+# caca
+## caquita
