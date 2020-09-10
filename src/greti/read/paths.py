@@ -21,7 +21,7 @@ level = 0 if __name__ == "__main__" else 2
 # Define directories:
 
 PROJECT_DIR = Path("__file__").resolve().parents[level]
-DATA_DIR = PROJECT_DIR / "test"  #! TESTING ONLY, CHANGE
+DATA_DIR = PROJECT_DIR / "test"
 FIGURE_DIR = PROJECT_DIR / "reports" / "figures"
 RESOURCES_DIR = PROJECT_DIR / "resources"
 
@@ -54,7 +54,11 @@ def safe_makedir(FILE_DIR):
         if len(FILE_DIR.suffix) > 0:
             FILE_DIR.parent.mkdir(parents=True, exist_ok=True)
         else:
-            FILE_DIR.mkdir(parents=True, exist_ok=True)
+            try:
+                FILE_DIR.mkdir(parents=True, exist_ok=True)
+            except OSError as e:
+                if e.errno != 17:
+                    print("Error:", e)
 
 
 for path in DATA_DIR, FIGURE_DIR, RESOURCES_DIR:

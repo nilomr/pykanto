@@ -1,6 +1,6 @@
 from tqdm.autonotebook import tqdm
-from vocalseg.utils import _normalize, spectrogram, norm, plot_spec
-from vocalseg.dynamic_thresholding import dynamic_threshold_segmentation
+from src.vocalseg.utils import _normalize, spectrogram, norm, plot_spec
+from src.vocalseg.dynamic_thresholding import dynamic_threshold_segmentation
 import numpy as np
 from scipy import ndimage, signal
 import matplotlib.pyplot as plt

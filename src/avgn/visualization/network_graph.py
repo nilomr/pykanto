@@ -1,6 +1,5 @@
 import matplotlib
 import matplotlib.pyplot as plt
-import matplotlib.cbook as cb
 from matplotlib.colors import colorConverter, Colormap, Normalize
 from matplotlib.collections import LineCollection
 from matplotlib.patches import FancyArrowPatch
@@ -11,6 +10,10 @@ import networkx as nx
 import seaborn as sns
 
 
+from collections.abc import Iterable
+import numbers
+
+
 def plot_network_graph(
     elements,
     projections,
@@ -19,6 +22,7 @@ def plot_network_graph(
     ax=None,
     min_cluster_samples=0,
     pal_dict=None,
+    facecolour="#ededed",
 ):
     """
     """
@@ -64,7 +68,7 @@ def plot_network_graph(
 
     # plot
     if ax is None:
-        fig, ax = plt.subplots(figsize=(5, 5))
+        fig, ax = plt.subplots(figsize=(10, 10))
     graph_weights = [graph[edge[0]][edge[1]]["weight"] for edge in graph.edges()]
     rgba_cols = [[0, 0, 0] + [i] for i in graph_weights]
     draw_networkx_edges(graph, pos, ax=ax, edge_color=rgba_cols, width=2)
@@ -78,6 +82,13 @@ def plot_network_graph(
         zorder=100,
     )
     ax.scatter(pos_locs[:, 0], pos_locs[:, 1], color=pos_colors, s=150, zorder=100)
+    ax.set_facecolor(facecolour)
+    ax.set_xticks([])  # remove ticks
+    ax.set_yticks([])  # remove ticks
+    ax.spines["top"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
 
     return ax
 
@@ -278,14 +289,14 @@ def draw_networkx_edges(
     # set edge positions
     edge_pos = np.asarray([(pos[e[0]], pos[e[1]]) for e in edgelist])
 
-    if not cb.iterable(width):
+    if not isinstance(width, Iterable):
         lw = (width,)
     else:
         lw = width
 
     if (
         not is_string_like(edge_color)
-        and cb.iterable(edge_color)
+        and isinstance(edge_color, Iterable)
         and len(edge_color) == len(edge_pos)
     ):
         if np.alltrue([is_string_like(c) for c in edge_color]):
@@ -294,7 +305,9 @@ def draw_networkx_edges(
             edge_colors = tuple([colorConverter.to_rgba(c, alpha) for c in edge_color])
         elif np.alltrue([not is_string_like(c) for c in edge_color]):
             # If color specs are given as (rgb) or (rgba) tuples, we're OK
-            if np.alltrue([cb.iterable(c) and len(c) in (3, 4) for c in edge_color]):
+            if np.alltrue(
+                [isinstance(c, Iterable) and len(c) in (3, 4) for c in edge_color]
+            ):
                 edge_colors = tuple(edge_color)
             else:
                 # numbers (which are going to be mapped with a colormap)
@@ -327,7 +340,7 @@ def draw_networkx_edges(
         # r7184 and r7189 (June 6 2009). We should then not set the alpha
         # value globally, since the user can instead provide per-edge alphas
         # now.  Only set it globally if provided as a scalar.
-        if cb.is_numlike(alpha):
+        if isinstance(alpha, numbers.Number):
             edge_collection.set_alpha(alpha)
 
         if edge_colors is None:
@@ -375,7 +388,7 @@ def draw_networkx_edges(
             line_width = None
             shrink_source = 0  # space from source to tail
             shrink_target = 0  # space from  head to target
-            if cb.iterable(node_size):  # many node sizes
+            if isinstance(node_size, Iterable):  # many node sizes
                 src_node, dst_node = edgelist[i]
                 index_node = nodelist.index(dst_node)
                 marker_size = node_size[index_node]

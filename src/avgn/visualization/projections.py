@@ -23,9 +23,11 @@ def scatter_projections(
     figsize=(10, 10),
     alpha=0.1,
     s=1,
+    range_pad=0.1,
     color="k",
     color_palette="tab20",
     show_legend=True,
+    facecolour="#ededed",
 ):
     """ creates a scatterplot of syllables using some projection
     """
@@ -41,6 +43,35 @@ def scatter_projections(
         fit = umap.UMAP(min_dist=0.25, verbose=True)
         u_all = fit.fit_transform(syllables_flattened)
 
+    xmin, xmax = np.sort(np.vstack(projection)[:, 0])[
+        np.array([int(len(projection) * 0.01), int(len(projection) * 0.99)])
+    ]
+    ymin, ymax = np.sort(np.vstack(projection)[:, 1])[
+        np.array([int(len(projection) * 0.01), int(len(projection) * 0.99)])
+    ]
+    # xmin, ymin = np.min(projection, axis=0)
+    # xmax, ymax = np.max(projection, axis=0)
+    xmin -= (xmax - xmin) * range_pad
+    xmax += (xmax - xmin) * range_pad
+    ymin -= (ymax - ymin) * range_pad
+    ymax += (ymax - ymin) * range_pad
+
+    # ignore segments outside of range
+    projection = np.array(projection)
+    mask = np.array(
+        [
+            (projection[:, 0] > xmin)
+            & (projection[:, 1] > ymin)
+            & (projection[:, 0] < xmax)
+            & (projection[:, 1] < ymax)
+        ]
+    )[0]
+
+    if labels is not None:
+        labels = np.array(labels[mask])
+
+    projection = projection[mask]
+
     # color labels
     if labels is not None:
         pal = sns.color_palette(color_palette, n_colors=len(np.unique(labels)))
@@ -51,9 +82,12 @@ def scatter_projections(
 
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
+        pass
 
         # plot
+    ax.set_facecolor(facecolour)
     ax.scatter(projection[:, 0], projection[:, 1], alpha=alpha, s=s, color=colors)
+
     if labels is not None:
         legend_elements = [
             Line2D([0], [0], marker="o", color=value, label=key)
@@ -61,6 +95,15 @@ def scatter_projections(
         ]
         if show_legend:
             ax.legend(handles=legend_elements)
+
+    ax.set_facecolor(facecolour)
+    plt.setp(plt.gcf().get_axes(), xticks=[], yticks=[])
+    ax.spines["top"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    ax.set_facecolor(facecolour)
+
     return ax
 
 
@@ -73,13 +116,15 @@ def draw_projection_transitions(
     cmap=plt.get_cmap("cubehelix"),
     alpha=0.05,
     linewidth=3,
-    range_pad=0.1
+    range_pad=0.1,
+    facecolour="#f2f1f0",
 ):
     """ draws a line plot of each transition
     """
     # make a plot if needed
     if ax is None:
         fig, ax = plt.subplots(figsize=(10, 10))
+        ax.set_facecolor(facecolour)
 
     for sequence in tqdm(np.unique(sequence_ids)):
         seq_mask = sequence_ids == sequence
@@ -107,6 +152,13 @@ def draw_projection_transitions(
 
     ax.set_xlim((xmin, xmax))
     ax.set_ylim((ymin, ymax))
+    ax.set_facecolor(facecolour)
+    plt.setp(plt.gcf().get_axes(), xticks=[], yticks=[])
+    ax.spines["top"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    ax.set_facecolor(facecolour)
     return ax
 
 
@@ -241,7 +293,7 @@ def scatter_spec(
     pal_color="hls",
     matshow_kwargs={"cmap": plt.cm.Greys},
     scatter_kwargs={"alpha": 0.5, "s": 1},
-    line_kwargs={"lw": 1, "ls": "dashed", "alpha": 1},
+    line_kwargs={"lw": 1, "ls": "solid", "alpha": 1},
     color_points=False,
     figsize=(10, 10),
     range_pad=0.1,
@@ -252,7 +304,8 @@ def scatter_spec(
     n_subset=-1,
     ax=None,
     show_scatter=True,
-    border_line_width = 1,
+    border_line_width=1,
+    facecolour="#ededed",
 ):
     """
     """
@@ -295,9 +348,12 @@ def scatter_spec(
 
     # prepare the main axis
     main_ax = fig.add_subplot(gs[1 : column_size - 1, 1 : column_size - 1])
+    pass
     # main_ax.scatter(z[:, 0], z[:, 1], **scatter_kwargs)
     if show_scatter:
-        scatter_projections(projection=z, ax=main_ax, **scatter_kwargs)
+        scatter_projections(
+            projection=z, ax=main_ax, **scatter_kwargs, facecolour=facecolour
+        )
 
     # loop through example columns
     axs = {}
@@ -319,6 +375,7 @@ def scatter_spec(
             col = 0
 
         axs[column] = {"ax": fig.add_subplot(gs[row, col]), "col": col, "row": row}
+        pass
         # label subplot
         """axs[column]["ax"].text(
             x=0.5,
@@ -336,9 +393,11 @@ def scatter_spec(
 
         axs[column]["xpos"] = xpos
         axs[column]["ypos"] = ypos
+        pass
 
     main_ax.set_xlim([xmin, xmax])
     main_ax.set_ylim([ymin, ymax])
+    pass
 
     # create a voronoi diagram over the x and y pos points
     points = [[axs[i]["xpos"], axs[i]["ypos"]] for i in axs.keys()]
@@ -373,6 +432,7 @@ def scatter_spec(
                 color=color,
                 s=enlarge_points,
             )
+            pass
         # draw spec
         axs[key]["ax"].matshow(
             specs[chosen_point],
@@ -381,6 +441,7 @@ def scatter_spec(
             aspect="auto",
             **matshow_kwargs,
         )
+        pass
 
         axs[key]["ax"].set_xticks([])
         axs[key]["ax"].set_yticks([])
@@ -388,7 +449,8 @@ def scatter_spec(
             plt.setp(axs[key]["ax"].spines.values(), color=pal[key])
 
         for i in axs[key]["ax"].spines.values():
-            i.set_linewidth(border_line_width) 
+            i.set_linewidth(border_line_width)
+            i.set_facecolor(facecolour)
 
         # draw a line between point and image
         if draw_lines:
@@ -434,13 +496,29 @@ def scatter_spec(
     gs.update(wspace=0, hspace=0)
     # gs.update(wspace=0.5, hspace=0.5)
 
-    fig = plt.gcf()
+    # plt.margins(0,0)
+    # fig = plt.gcf()
+
+    # plt.gca().set_axis_off()
+    # plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0,
+    #             hspace = 0, wspace = 0)
+    # plt.margins(0,0)
+    # plt.gca().xaxis.set_major_locator(plt.NullLocator())
+    # plt.gca().yaxis.set_major_locator(plt.NullLocator())
+    # plt.savefig("filename.pdf", bbox_inches = 'tight', pad_inches = 0)
 
     if ax is not None:
         buf = io.BytesIO()
+        plt.setp(plt.gcf().get_axes(), xticks=[], yticks=[])
         plt.savefig(buf, dpi=300, bbox_inches="tight", pad_inches=0)
         buf.seek(0)
         im = Image.open(buf)
+        ax.axis("off")
+        ax.spines["top"].set_visible(False)
+        ax.spines["bottom"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["left"].set_visible(False)
+        ax.set_facecolor(facecolour)
         ax.imshow(im)
         plt.close(fig)
 

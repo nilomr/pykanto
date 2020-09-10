@@ -1,11 +1,20 @@
 from tqdm import tqdm
-from vocalseg.utils import _normalize, spectrogram_nn, norm
+from src.vocalseg.utils import _normalize, spectrogram_nn, norm
 import numpy as np
 from scipy import ndimage
 from matplotlib.patches import Rectangle
 from matplotlib.collections import PatchCollection
 from matplotlib import gridspec
-from vocalseg.utils import plot_spec
+from src.vocalseg.utils import plot_spec
+
+import json
+import librosa
+from src.avgn.signalprocessing.filtering import butter_bandpass_filter
+from src.avgn.utils.audio import load_wav, read_wav
+from src.avgn.utils.json import NoIndent, NoIndentEncoder
+from src.avgn.utils.paths import most_recent_subdirectory, ensure_dir
+from src.greti.read.paths import DATA_DIR
+from datetime import datetime
 
 
 def contiguous_regions(condition):
@@ -271,18 +280,6 @@ def plot_segmentations(
 # - plot the segmentation
 # - add to the JSON
 
-import json
-import librosa
-from src.avgn.signalprocessing.filtering import butter_bandpass_filter
-from src.avgn.utils.audio import load_wav, read_wav
-from src.avgn.utils.json import NoIndent, NoIndentEncoder
-from src.avgn.utils.paths import most_recent_subdirectory, ensure_dir
-from src.read.paths import DATA_DIR
-from datetime import datetime
-
-DT_ID = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-DATASET_ID = "GRETI_HQ"
-
 
 def segment_spec_custom(
     key,
@@ -302,13 +299,14 @@ def segment_spec_custom(
     spectral_range=[1200, 9000],
     save=False,
     plot=False,
+    figsize=(10, 3),
     DATA_DIR=DATA_DIR,
-    DT_ID=DT_ID,
-    DATASET_ID=DATASET_ID,
+    DT_ID=None,
+    DATASET_ID=None,
 ):
 
     # load wav
-    rate, data = load_wav(df.data["wav_loc"])
+    rate, data = load_wav(df.data["wav_loc"], catch_errors=False)
 
     # bandpass based on manual selections in AviaNZ
     butter_min = df.data["lower_freq"]
@@ -346,7 +344,7 @@ def segment_spec_custom(
             results["offsets"],
             hop_length_ms,
             rate,
-            figsize=(15, 3),
+            figsize=figsize,
         )
         plt.show()
 
@@ -371,7 +369,9 @@ def segment_spec_custom(
     # save json
     if save:
         ensure_dir(json_out.as_posix())
-        print(json_txt, file=open(json_out.as_posix(), "w"))
+        f = open(json_out.as_posix(), "w")
+        print(json_txt, file=f)
+        f.close()
 
     # print(json_txt)
 

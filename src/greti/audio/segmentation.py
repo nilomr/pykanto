@@ -21,7 +21,7 @@ import pathlib2
 from pathlib2 import Path
 import time
 import datetime as dt
-from src.read.paths import safe_makedir
+from src.greti.read.paths import safe_makedir
 import audio_metadata
 import re
 from multiprocess import Pool, cpu_count
@@ -144,7 +144,9 @@ def segment_songs(wavfile, DATA_DIR, DT_ID, DATASET_ID, subset="GRETI_HQ", thres
 
                     # Save .json
                     safe_makedir(json_out.as_posix())
-                    print(json_txt, file=open(json_out.as_posix(), "w"))
+                    f = open(json_out.as_posix(), "w")
+                    print(json_txt, file=f)
+                    f.close()
 
     else:
         print(
