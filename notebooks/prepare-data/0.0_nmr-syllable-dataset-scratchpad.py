@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import librosa
 import seaborn as sns
+import src
 
 get_ipython().run_line_magic("matplotlib", "inline")
 from tqdm.autonotebook import tqdm
@@ -33,7 +34,7 @@ import umap
 
 
 # %%
-DATASET_ID = "GRETI_HQ_segmented"
+DATASET_ID = "GRETI_HQ_2020_segmented"
 
 
 # %% [markdown]
@@ -51,7 +52,7 @@ hparams = HParams(
     butter_lowcut=1200,
     butter_highcut=9000,
     ref_level_db=30,
-    min_level_db=-20,
+    min_level_db=-30,
     mask_spec=True,
     n_jobs=-2,
     verbosity=1,
@@ -108,13 +109,12 @@ syllable_df = pd.concat(syllable_dfs)
 len(syllable_df)
 
 # %%
+
 df_mask = np.array([len(i) > 0 for i in tqdm(syllable_df.audio.values)])
 syllable_df = syllable_df[np.array(df_mask)]
 syllable_df[:5]
 sylls = syllable_df.audio.values
 
-
-# %%
 syllable_df["audio"] = [librosa.util.normalize(i) for i in syllable_df.audio.values]
 sylls = syllable_df["audio"].values
 
@@ -191,17 +191,18 @@ draw_spec_set(syllables_spec, zoom=1, maxrows=20, colsize=15)
 syll_lens = [np.shape(i)[1] for i in syllables_spec]
 pad_length = np.max(syll_lens)
 
+# %%
 
-for indv in np.unique(syllable_df.indv):
-    sns.distplot(
-        np.log(
-            syllable_df[syllable_df.indv == indv]["end_time"]
-            - syllable_df[syllable_df.indv == indv]["start_time"]
-        ),
-        label=indv,
-    )
+# for indv in np.unique(syllable_df.indv):
+#     sns.distplot(
+#         np.log(
+#             syllable_df[syllable_df.indv == indv]["end_time"]
+#             - syllable_df[syllable_df.indv == indv]["start_time"]
+#         ),
+#         label=indv,
+#     )
 
-plt.legend()
+# plt.legend()
 
 
 # %%
@@ -215,7 +216,6 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
 
 # %%
 draw_spec_set(syllables_spec, zoom=1, maxrows=15, colsize=15)
-
 np.shape(syllables_spec)
 
 
@@ -225,24 +225,17 @@ np.shape(syllables_spec)
 
 
 def contrast(x):
-    minval = np.percentile(x, 4)
-    maxval = np.percentile(x, 99)
+    minval = np.percentile(x, 5)
+    maxval = np.percentile(x, 100)
     x = np.clip(x, minval, maxval)
     x = ((x - minval) / (maxval - minval)) * 255
     return x
 
 
-syllables_spec = [contrast(i).astype("uint8") for i in tqdm(syllables_spec)]
-
-
-# %%
 # convert to uint8 to save space
+syllables_spec = [contrast(i).astype("uint8") for i in tqdm(syllables_spec)]
 syllable_df["spectrogram"] = syllables_spec
 
-
-# %%
-syllable_df[:3]
-syllable_df
 
 # %% [markdown]
 # ### view syllables per indv
@@ -252,16 +245,26 @@ syllable_df.indv.unique()
 
 
 # %%
-for indv in np.sort(syllable_df.indv.unique()):
-    print(indv, np.sum(syllable_df.indv == indv))
-    specs = np.array(
-        [
-            i / np.max(i)
-            for i in syllable_df[syllable_df.indv == indv].spectrogram.values
-        ]
-    )
-    specs[specs < 0] = 0
-    draw_spec_set(specs, zoom=2, maxrows=20, colsize=20)
+# for indv in np.sort(syllable_df.indv.unique()):
+#     print(indv, np.sum(syllable_df.indv == indv))
+#     specs = np.array(
+#         [
+#             i / np.max(i)
+#             for i in syllable_df[syllable_df.indv == indv].spectrogram.values
+#         ]
+#     )
+#     specs[specs < 0] = 0
+#     draw_spec_set(specs, zoom=2, maxrows=20, colsize=20)
+
+
+# %% [markdown]
+# ### save dataset
+
+# %%
+
+save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
+ensure_dir(save_loc)
+syllable_df.drop("audio", 1).to_pickle(save_loc)
 
 
 # %%
@@ -274,13 +277,10 @@ specs_flattened = flatten_spectrograms(specs)
 np.shape(specs_flattened)
 
 specs_flattened = flatten_spectrograms(specs)
-fit = umap.UMAP(min_dist=0.30)
+fit = umap.UMAP(min_dist=0.25)
 z = list(fit.fit_transform(specs_flattened))
 
-fig, ax = plt.subplots(figsize=(15, 15))
-scatter_projections(
-    projection=np.array(z), alpha=0.5, labels=syllable_df.indv.values, s=10, ax=ax
-)
+
 # %%
 
 scatter_spec(
@@ -321,7 +321,7 @@ for indv in np.sort(syllable_df.indv.unique()):
     )
 
     specs_flattened = flatten_spectrograms(specs)
-    fit = umap.UMAP(min_dist=0.20)
+    fit = umap.UMAP(min_dist=0.40)
     z = list(fit.fit_transform(specs_flattened))
 
     scatter_spec(
@@ -347,25 +347,10 @@ for indv in np.sort(syllable_df.indv.unique()):
     )
     plt.show()
 
-# %% [markdown]
-# ### save dataset
-
-# %%
-
-save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
-ensure_dir(save_loc)
-syllable_df.drop("audio", 1).to_pickle(save_loc)
-
-
-# for indv in np.sort(syllable_df.indv.unique()):
-#     save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(indv)
-#     ensure_dir(save_loc)
-#     syllable_df.drop("audio", 1).to_pickle(save_loc)
 
 # %%
 
 # Save dataframe with embeddings for each bird
-syllable_df = pd.read_pickle(save_loc)
 ensure_dir(DATA_DIR / "embeddings" / DATASET_ID)
 
 
@@ -381,22 +366,3 @@ for indv in tqdm(syllable_df.indv.unique()):
     embedding = fit.fit_transform(specs_flattened)
     subset_df["umap"] = list(embedding)
     subset_df.to_pickle(DATA_DIR / "embeddings" / DATASET_ID / (indv + ".pickle"))
-
-
-# %%
-
-df_pickles = list((DATA_DIR / "embeddings" / DATASET_ID).glob("*.pickle"))
-syllable_dfs = {}
-for df_pickle in tqdm(df_pickles):
-    syllable_dfs[df_pickle.stem] = pd.read_pickle(df_pickle)
-
-
-# %%
-syllable_dfs.keys()
-draw_projection_plots(syllable_dfs["MP58"])
-
-# syllable_df_sample = syllable_df['MP58']
-
-
-# %%
-
