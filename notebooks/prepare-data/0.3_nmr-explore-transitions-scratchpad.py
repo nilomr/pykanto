@@ -24,7 +24,7 @@ import hdbscan
 import pandas as pd
 from src.avgn.utils.paths import DATA_DIR, most_recent_subdirectory, ensure_dir
 from src.avgn.signalprocessing.create_spectrogram_dataset import flatten_spectrograms
-from src.avgn.visualization.spectrogram import draw_spec_set
+from src.avgn.visualization.spectrogram import draw_spec_set, plot_example_specs
 from src.avgn.visualization.quickplots import draw_projection_plots
 
 from src.greti.read.paths import DATA_DIR, FIGURE_DIR
@@ -97,7 +97,7 @@ for indvi, indv in enumerate(tqdm(indvs)):
     # indv_dfs[indv]["phate"] = z
 
     # umap_cluster
-    fit = umap.UMAP(n_neighbors=20, min_dist=0.1, n_components=10)
+    fit = umap.UMAP(n_neighbors=20, min_dist=0.1, n_components=5)
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_cluster"] = z
 
@@ -106,9 +106,8 @@ for indvi, indv in enumerate(tqdm(indvs)):
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_viz"] = z
 
-
     # %%
-    #TODO: get distances between nestboxes
+    # TODO: get distances between nestboxes
     # All individuals
 
     specs = list(syllable_df.spectrogram.values)
@@ -123,7 +122,6 @@ for indvi, indv in enumerate(tqdm(indvs)):
     phate_op = phate.PHATE()
     phate_operator = phate.PHATE(n_jobs=-1, knn=5, gamma=1)
     z = list(phate_operator.fit_transform(specs_flattened))
-
 
     labs = syllable_df.indv.values
 
@@ -150,7 +148,7 @@ for indvi, indv in enumerate(tqdm(indvs)):
         draw_lines=True,
         border_line_width=0,
         facecolour=facecolour,
-    );
+    )
 
 
 # %%
@@ -160,7 +158,7 @@ for indv in tqdm(indv_dfs.keys()):
     z = list(indv_dfs[indv]["umap_cluster"].values)
     clusterer = hdbscan.HDBSCAN(
         min_cluster_size=int(
-            len(z) * 0.04
+            len(z) * 0.035
         ),  # the smallest size we would expect a cluster to be
         min_samples=10,  # larger values = more conservative clustering
     )
@@ -170,6 +168,8 @@ for indv in tqdm(indv_dfs.keys()):
 
 for indv in tqdm(indv_dfs.keys()):
     print(indv + ":" + str(len(indv_dfs[indv]["hdbscan_labels"].unique())))
+
+
 
 # %% [markdown]
 # ### plot
@@ -185,6 +185,7 @@ pal = "Set2"
 for indv in tqdm(indv_dfs.keys()):
     labs = indv_dfs[indv]["hdbscan_labels"].values
     proj = np.array(list(indv_dfs[indv]["umap_viz"].values))
+    specs = indv_dfs[indv].spectrogram.values
 
     scatter_spec(
         proj,
@@ -217,18 +218,27 @@ for indv in tqdm(indv_dfs.keys()):
 
 for indv in tqdm(indv_dfs.keys()):
 
-    f = plt.figure(figsize=(30, 10))
-    gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1, 1])
-    ax = f.add_subplot(gs[0])
-    ax1 = f.add_subplot(gs[1])
-    ax2 = f.add_subplot(gs[2])
-
-    labs = indv_dfs[indv]["hdbscan_labels"].values
-    proj = np.array(list(indv_dfs[indv]["umap_viz"].values))
-    sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
+    f = plt.figure(figsize=(40, 10))
+    gs = f.add_gridspec(1, 4, width_ratios=[1, 1, 1, 1], hspace=0, wspace=0.2)
+    axes = [f.add_subplot(gs[i]) for i in range(4)]
 
     f.suptitle("UMAP projection and trajectories for {}".format(indv), fontsize=30)
 
+    hdbscan_labs = indv_dfs[indv]["hdbscan_labels"]
+    labs = hdbscan_labs.values
+    unique_labs = hdbscan_labs.unique()
+    nlabs = len(unique_labs)
+
+    proj = np.array(list(indv_dfs[indv]["umap_viz"].values))
+    sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
+    specs = np.invert(indv_dfs[indv].spectrogram.values)
+    specs = np.where(specs==255, 242, specs) # grey
+
+    pal = np.random.permutation(
+        sns.color_palette("Set2", nlabs)
+    )
+
+    # Projection scatterplot, labeled by cluster
     scatter_projections(
         projection=proj,
         labels=labs,
@@ -238,43 +248,63 @@ for indv in tqdm(indv_dfs.keys()):
         facecolour=facecolour,
         show_legend=False,
         range_pad=0.1,
-        ax=ax,
+        ax=axes[0],
     )
-    ax.set_facecolor(facecolour)
 
+    # Draw lines between consecutive syllables
     draw_projection_transitions(
         projections=proj,
         sequence_ids=indv_dfs[indv]["syllables_sequence_id"],
         sequence_pos=indv_dfs[indv]["syllables_sequence_pos"],
         cmap=plt.get_cmap("ocean"),
         facecolour=facecolour,
-        range_pad=0.15,
+        range_pad=0.1,
         alpha=0.02,
-        ax=ax1,
+        ax=axes[1],
     )
 
+    # Plot inferred directed network
     plot_network_graph(
-        labs, proj, sequence_ids, color_palette=pal, min_cluster_samples=40, ax=ax2
+        labs,
+        proj,
+        sequence_ids,
+        color_palette=pal,
+        min_cluster_samples=10,
+        min_connections=0.02,
+        facecolour=facecolour,
+        ax=axes[2],
     )
 
-    #TODO: do this in a loop!
+    # Plot examples of each cluster
+    plot_example_specs(
+        specs=specs,
+        labels=labs,
+        clusters_to_viz=unique_labs,
+        custom_pal=pal,
+        cmap=plt.cm.bone,
+        nex=nlabs,
+        line_width=3,
+        ax=axes[3],
+    )
 
-    # weight='bold', ha='center', va='center', size=14
-    ax.annotate("A", xy=(0.1, 0.9), xycoords="axes fraction")
-    ax1.annotate("B", xy=(0.1, 0.9), xycoords="axes fraction")
-    ax2.annotate("C", xy=(0.1, 0.9), xycoords="axes fraction")
+    import string
 
-    # ax3.plot(net)
+    labels = string.ascii_uppercase[0 : len(axes)]
 
-    # plt.gca().set_axis_off()
-    # plt.subplots_adjust(
-    #     top=1, bottom=0, right=1, left=0, hspace=0, wspace=0,
-    # )
-    # plt.margins(3, 0)
-    # fig.tight_layout(pad=1)
-    # fig.subplots_adjust(top=0.90)
+    for ax, labels in zip(axes, labels):
+        bbox = ax.get_tightbbox(f.canvas.get_renderer())
+        f.text(
+            0.03,
+            0.97,
+            labels,
+            fontsize=25,
+            fontweight="bold",
+            va="top",
+            ha="left",
+            transform=ax.transAxes,
+        )
 
-    #TODO: saving for all figures
+    # TODO: saving for all figures
     # save_fig(FIGURE_DIR / 'bf' / ('bf_sober_'+indv), dpi=300, save_jpg=True)
     plt.show()
 
@@ -285,7 +315,7 @@ plot_example_specs(
     specs=np.array(list(syllable_df.syllables_spec.values)),
     labels=np.array(list(syllable_df.hdbscan_labels.values)),
     clusters_to_viz=[17, 18, 9, 20],
-    custom_pal=custom_pal,
+    custom_pal=pal,
     ax=ax,
     nex=4,
     line_width=2,
