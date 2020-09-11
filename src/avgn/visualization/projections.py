@@ -29,7 +29,8 @@ def scatter_projections(
     show_legend=True,
     facecolour="#ededed",
 ):
-    """ creates a scatterplot of syllables using some projection
+    """ Creates a scatterplot of syllables using some projection.
+    Note: Cluster label '-1' (noise) is coloured light gray.
     """
     if projection is None:
         if syllables is None:
@@ -67,6 +68,8 @@ def scatter_projections(
         ]
     )[0]
 
+    mask = mask[mask >= 0]  # remove 'noisy' label
+
     if labels is not None:
         labels = np.array(labels[mask])
 
@@ -76,6 +79,11 @@ def scatter_projections(
     if labels is not None:
         pal = sns.color_palette(color_palette, n_colors=len(np.unique(labels)))
         lab_dict = {lab: pal[i] for i, lab in enumerate(np.unique(labels))}
+        lab_dict[-1] = [
+            0.83137254902,
+            0.83137254902,
+            0.83137254902,
+        ]  # colour noisy data grey
         colors = np.array([lab_dict[i] for i in labels])
     else:
         colors = color
