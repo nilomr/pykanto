@@ -13,8 +13,8 @@ def plot_example_specs(
     nex=4,
     line_width=10,
     ax=None,
-    pad=1,
     figsize=(10, 10),
+    cmap=plt.cm.bone,
 ):
     spec_x = np.shape(specs[0])[0]
     spec_y = np.shape(specs[0])[1]
@@ -183,7 +183,6 @@ def plot_segmentations(
     plt.show()
 
 
-
 def draw_spec_set(spectrograms, maxrows=3, colsize=10, cmap=plt.cm.afmhot, zoom=2):
     """
     """
@@ -205,12 +204,13 @@ def draw_spec_set(spectrograms, maxrows=3, colsize=10, cmap=plt.cm.afmhot, zoom=
             row += 1
             column_pos = 0
         canvas[
-            rowsize * (maxrows-1-row) : rowsize * ((maxrows-1-row) + 1), column_pos : column_pos + spec_shape[1]
+            rowsize * (maxrows - 1 - row) : rowsize * ((maxrows - 1 - row) + 1),
+            column_pos : column_pos + spec_shape[1],
         ] = spec
         column_pos += spec_shape[1]
     if row < maxrows - 1:
-        canvas = canvas[(maxrows-1-row) * rowsize:, :]
-    #print(speci)
+        canvas = canvas[(maxrows - 1 - row) * rowsize :, :]
+    # print(speci)
     figsize = (zoom * (colsize / rowsize), zoom * (row + 1))
     # print(figsize, np.shape(canvas), colsize / rowsize, rowsize, colsize)
     fig, ax = plt.subplots(figsize=figsize)
