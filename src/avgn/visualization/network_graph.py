@@ -21,6 +21,7 @@ def plot_network_graph(
     color_palette="tab20",
     ax=None,
     min_cluster_samples=0,
+    min_connections=0.05,
     pal_dict=None,
     facecolour="#ededed",
 ):
@@ -49,7 +50,7 @@ def plot_network_graph(
 
     # generate graph
     graph = compute_graph(
-        transition_matrix, min_connections=0.05, column_names=true_label
+        transition_matrix, min_connections=min_connections, column_names=true_label
     )
 
     # graph positions
@@ -164,7 +165,7 @@ def draw_networkx_edges(
     style="solid",
     alpha=1.0,
     arrowstyle="-|>",
-    arrowsize=10,
+    arrowsize=13,
     edge_cmap=None,
     edge_vmin=None,
     edge_vmax=None,
