@@ -11,6 +11,7 @@ get_ipython().run_line_magic("autoreload", "2")
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 import seaborn as sns
 
 get_ipython().run_line_magic("matplotlib", "inline")
@@ -39,6 +40,9 @@ from src.avgn.utils.general import save_fig
 
 # from sklearn.cluster import MiniBatchKMeans
 # from cuml.manifold.umap import UMAP as cumlUMAP
+
+import phate
+import scprep
 
 
 # %%
@@ -84,39 +88,85 @@ for indvi, indv in enumerate(tqdm(indvs)):
             indv_dfs[indv].key == key, "syllables_sequence_pos"
         ] = np.arange(np.sum(indv_dfs[indv].key == key))
 
-    # umap
     specs_flattened = flatten_spectrograms(specs)
-    fit = umap.UMAP(n_neighbors=40, min_dist=0.1, n_components=10)
+
+    # # PHATE
+    # phate_op = phate.PHATE()
+    # phate_operator = phate.PHATE(n_jobs=-1, knn=5, decay=70, gamma=0)
+    # z = list(phate_operator.fit_transform(specs_flattened))
+    # indv_dfs[indv]["phate"] = z
+
+    # umap_cluster
+    fit = umap.UMAP(n_neighbors=20, min_dist=0.1, n_components=10)
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_cluster"] = z
 
     # umap_viz
-    specs_flattened = flatten_spectrograms(specs)
-    fit = umap.UMAP(n_neighbors=10, min_dist=0.1, n_components=2)
+    fit = umap.UMAP(n_neighbors=20, min_dist=0.1, n_components=2)
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_viz"] = z
 
 
+    # %%
+    #TODO: get distances between nestboxes
+    # All individuals
+
+    specs = list(syllable_df.spectrogram.values)
+    specs = [i / np.max(i) for i in specs]
+    specs_flattened = flatten_spectrograms(specs)
+
+    # # UMAP embedding for all birds in dataset
+    # fit = umap.UMAP(n_neighbors=20, min_dist=0.1, n_components=2)
+    # z = list(fit.fit_transform(specs_flattened))
+
+    # PHATE
+    phate_op = phate.PHATE()
+    phate_operator = phate.PHATE(n_jobs=-1, knn=5, gamma=1)
+    z = list(phate_operator.fit_transform(specs_flattened))
+
+
+    labs = syllable_df.indv.values
+
+    scatter_spec(
+        z,
+        specs=specs,
+        column_size=8,
+        # x_range = [-5.5,7],
+        # y_range = [-10,10],
+        pal_color="hls",
+        color_points=False,
+        enlarge_points=30,
+        range_pad=0.1,
+        figsize=(10, 10),
+        scatter_kwargs={
+            "labels": labs,
+            "alpha": 0.60,
+            "s": 7,
+            "color_palette": pal,
+            "show_legend": True,
+        },
+        matshow_kwargs={"cmap": plt.cm.Greys},
+        line_kwargs={"lw": 1, "ls": "solid", "alpha": 0.25},
+        draw_lines=True,
+        border_line_width=0,
+        facecolour=facecolour,
+    );
+
+
 # %%
-# Cluster
+# Cluster using HDBSCAN
 
 for indv in tqdm(indv_dfs.keys()):
-    # HDBSCAN UMAP
     z = list(indv_dfs[indv]["umap_cluster"].values)
     clusterer = hdbscan.HDBSCAN(
         min_cluster_size=int(
             len(z) * 0.04
         ),  # the smallest size we would expect a cluster to be
-        min_samples=2,  # larger values = more conservative clustering
+        min_samples=10,  # larger values = more conservative clustering
     )
     clusterer.fit(z)
     indv_dfs[indv]["hdbscan_labels"] = clusterer.labels_
 
-    # HDBSCAN
-    specs = [norm(i) for i in indv_dfs[indv].spectrogram.values]
-    specs_flattened = flatten_spectrograms(specs)
-
-# %%
 
 for indv in tqdm(indv_dfs.keys()):
     print(indv + ":" + str(len(indv_dfs[indv]["hdbscan_labels"].unique())))
@@ -128,8 +178,6 @@ for indv in tqdm(indv_dfs.keys()):
 
 facecolour = "#f2f1f0"
 pal = "Set2"
-
-from matplotlib import gridspec
 
 
 # %%
@@ -163,6 +211,8 @@ for indv in tqdm(indv_dfs.keys()):
         facecolour=facecolour,
     )
 
+    # save_fig(FIGURE_DIR / 'bf' / ('bf_sober_'+indv), dpi=300, save_jpg=True)
+
 # %%
 
 for indv in tqdm(indv_dfs.keys()):
@@ -177,7 +227,7 @@ for indv in tqdm(indv_dfs.keys()):
     proj = np.array(list(indv_dfs[indv]["umap_viz"].values))
     sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
 
-    # fig.suptitle("UMAP projection and trajectories for {}".format(indv), fontsize=30)
+    f.suptitle("UMAP projection and trajectories for {}".format(indv), fontsize=30)
 
     scatter_projections(
         projection=proj,
@@ -207,6 +257,13 @@ for indv in tqdm(indv_dfs.keys()):
         labs, proj, sequence_ids, color_palette=pal, min_cluster_samples=40, ax=ax2
     )
 
+    #TODO: do this in a loop!
+
+    # weight='bold', ha='center', va='center', size=14
+    ax.annotate("A", xy=(0.1, 0.9), xycoords="axes fraction")
+    ax1.annotate("B", xy=(0.1, 0.9), xycoords="axes fraction")
+    ax2.annotate("C", xy=(0.1, 0.9), xycoords="axes fraction")
+
     # ax3.plot(net)
 
     # plt.gca().set_axis_off()
@@ -217,6 +274,8 @@ for indv in tqdm(indv_dfs.keys()):
     # fig.tight_layout(pad=1)
     # fig.subplots_adjust(top=0.90)
 
+    #TODO: saving for all figures
+    # save_fig(FIGURE_DIR / 'bf' / ('bf_sober_'+indv), dpi=300, save_jpg=True)
     plt.show()
 
 
