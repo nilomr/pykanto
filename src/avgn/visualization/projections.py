@@ -26,8 +26,10 @@ def scatter_projections(
     range_pad=0.1,
     color="k",
     color_palette="tab20",
+    cmap="cubehelix",
     show_legend=True,
     facecolour="#ededed",
+    colourbar=False,
 ):
     """ Creates a scatterplot of syllables using some projection.
     Note: Cluster label '-1' (noise) is coloured light gray.
@@ -92,9 +94,39 @@ def scatter_projections(
         fig, ax = plt.subplots(figsize=figsize)
         pass
 
-        # plot
-    ax.set_facecolor(facecolour)
-    ax.scatter(projection[:, 0], projection[:, 1], alpha=alpha, s=s, color=colors)
+    # plot
+
+    if colourbar is True:
+
+        im = ax.scatter(
+            projection[:, 0],
+            projection[:, 1],
+            alpha=alpha,
+            s=s,
+            c=labels,
+            cmap=cmap,
+            linewidths=0,
+        )
+        from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
+        cbaxes = inset_axes(
+            ax,
+            width="1.5%",  # width = 5% of parent_bbox width
+            height="15%",  # height : 50%
+            loc="lower left",
+            bbox_to_anchor=(1.01, 0.0, 1, 1),
+            bbox_transform=ax.transAxes,
+            borderpad=0,
+        )
+
+        cbar = plt.colorbar(mappable=im, cax=cbaxes, orientation="vertical")
+        cbar.ax.tick_params(size=0, labelsize=9)
+        # ax.axes.set_aspect("equal")
+        cbar.outline.set_visible(False)
+
+        #! Make this work and add colourbar!!
+    else:
+        ax.scatter(projection[:, 0], projection[:, 1], alpha=alpha, s=s, color=colors)
 
     if labels is not None:
         legend_elements = [
