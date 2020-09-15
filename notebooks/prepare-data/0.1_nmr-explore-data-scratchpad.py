@@ -29,8 +29,7 @@ from joblib import Parallel, delayed
 ## 1. Distribution of number of song segments
 
 # %%
-
-DATASET_ID = "GRETI_HQ_segmented"
+DATASET_ID = "GRETI_HQ_2020_segmented"
 
 hparams = HParams(
     num_mel_bins=64,
@@ -38,9 +37,9 @@ hparams = HParams(
     win_length_ms=15,
     hop_length_ms=3,
     mel_lower_edge_hertz=1200,
-    mel_upper_edge_hertz=9000,
+    mel_upper_edge_hertz=10000,
     butter_lowcut=1200,
-    butter_highcut=9000,
+    butter_highcut=10000,
     ref_level_db=30,
     min_level_db=-30,
     mask_spec=True,
@@ -49,12 +48,14 @@ hparams = HParams(
     nex=-1,
 )
 
+# %%
 # create a dataset object
 dataset = DataSet(DATASET_ID, hparams=hparams)
 dataset.sample_json
 len(dataset.data_files)
 
 # %%
+# dataframe with all metadata
 metadata = []
 for key in tqdm(dataset.data_files.keys(), leave=False):
     metadata.append(pd.DataFrame(dataset.data_files[key].data))
