@@ -70,8 +70,8 @@ hparams = HParams(
 
 # create a dataset object
 dataset = DataSet(DATASET_ID, hparams=hparams)
-# dataset.sample_json
-len(dataset.data_files)
+print(dataset.sample_json)
+print(len(dataset.data_files))
 
 
 # %%
@@ -89,7 +89,7 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
     )
 
 syllable_df = pd.concat(syllable_dfs)
-len(syllable_df)
+print(len(syllable_df))
 # syllable_df[:3]
 
 # %% [markdown]
@@ -101,13 +101,16 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
     syllable_dfs = parallel(
         delayed(get_row_audio)(
             syllable_df[syllable_df.key == key],
-            dataset.data_files[key].data["wav_loc"],
+            dataset.data_files[key]
+            .data["wav_loc"]
+            .replace("/home/nilomr", "/data/zool-songbird/shil5293"),
+            # dataset.data_files[key].data["wav_loc"], # if local machine
             dataset.hparams,
         )
         for key in tqdm(syllable_df.key.unique(), position=0, leave=True)
     )
 syllable_df = pd.concat(syllable_dfs)
-len(syllable_df)
+print(len(syllable_df))
 
 # %% [markdown]
 # ### Normalise audio
@@ -204,7 +207,7 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
 # - Plot a few
 
 # %%
-np.shape(syllables_spec)
+print(np.shape(syllables_spec))
 # draw_spec_set(syllables_spec, zoom=2, maxrows=15, colsize=15)
 
 # %% [markdown]
@@ -248,6 +251,8 @@ syllable_df["spectrogram"] = syllables_spec
 save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
 ensure_dir(save_loc)
 syllable_df.drop("audio", 1).to_pickle(save_loc)
+
+print("Done")
 
 
 # %%
