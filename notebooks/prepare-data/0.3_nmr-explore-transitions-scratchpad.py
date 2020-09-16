@@ -9,40 +9,37 @@
 # get_ipython().run_line_magic("autoreload", "2")
 # get_ipython().run_line_magic("matplotlib", "inline")
 
-import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from matplotlib import gridspec
-import seaborn as sns
 import pickle
 
-
-from tqdm.autonotebook import tqdm
-from joblib import Parallel, delayed
-import umap
 import hdbscan
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
-from src.avgn.utils.paths import most_recent_subdirectory, ensure_dir
+import phate
+import scprep
+import seaborn as sns
+import umap
+from joblib import Parallel, delayed
+from matplotlib import gridspec
+from scipy.spatial import distance
+from tqdm.autonotebook import tqdm
+
 from src.avgn.signalprocessing.create_spectrogram_dataset import flatten_spectrograms
-
-from src.avgn.visualization.quickplots import draw_projection_plots, quad_plot_syllables
-
-from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
-from src.avgn.visualization.projections import (
-    scatter_projections,
-    draw_projection_transitions,
-    scatter_spec,
-    plot_label_cluster_transitions,
-)
-from src.avgn.visualization.network_graph import plot_network_graph
-
 from src.avgn.utils.general import save_fig
+from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
+from src.avgn.visualization.network_graph import plot_network_graph
+from src.avgn.visualization.projections import (
+    draw_projection_transitions,
+    plot_label_cluster_transitions,
+    scatter_projections,
+    scatter_spec,
+)
+from src.avgn.visualization.quickplots import draw_projection_plots, quad_plot_syllables
+from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
 
 # from sklearn.cluster import MiniBatchKMeans
 # from cuml.manifold.umap import UMAP as cumlUMAP
-
-import phate
-import scprep
 
 
 # %%
@@ -79,7 +76,6 @@ tmpl = pd.read_csv(coords_file)
 nestboxes = tmpl[tmpl["nestbox"].isin(syllable_df.indv.unique())]
 nestboxes["east_north"] = nestboxes[["x", "y"]].apply(tuple, axis=1)
 
-from scipy.spatial import distance
 
 X = [(447000, 208000)]
 
@@ -344,4 +340,3 @@ for indv in tqdm(indv_dfs.keys()):
 # Saves figures to FIGURE_DIR / year / "ind_repertoires" / (indv + ".png")
 
 quad_plot_syllables(indv_dfs, year)
-
