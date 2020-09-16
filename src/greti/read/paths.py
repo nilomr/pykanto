@@ -2,20 +2,20 @@
 
 # Libraries
 
-import pathlib2
+import glob
+import os
+from datetime import date
+from os import fspath
+
 import numpy as np
 import pandas as pd
+import pathlib2
 from pathlib2 import Path
-import os
-import glob
-from os import fspath
-from datetime import date
-
 
 # Setup
 
 
-level = 0 if __name__ == "__main__" else 2
+level = 0 if __name__ == "__main__" else 0
 
 
 # Define directories:
