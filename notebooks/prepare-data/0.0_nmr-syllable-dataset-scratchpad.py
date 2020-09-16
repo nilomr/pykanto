@@ -1,36 +1,28 @@
 # %%
-from IPython import get_ipython
-
-get_ipython().run_line_magic("load_ext", "autoreload")
-get_ipython().run_line_magic("autoreload", "2")
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 import librosa
-import seaborn as sns
-import src
-
-get_ipython().run_line_magic("matplotlib", "inline")
-from tqdm.autonotebook import tqdm
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import umap
+from IPython import get_ipython
 from joblib import Parallel, delayed
 from tqdm import tqdm
+from tqdm.autonotebook import tqdm
 
-from src.greti.read.paths import DATA_DIR
-from src.avgn.utils.paths import most_recent_subdirectory, ensure_dir
-from src.avgn.utils.hparams import HParams
 from src.avgn.dataset import DataSet
 from src.avgn.signalprocessing.create_spectrogram_dataset import *
+from src.avgn.utils.hparams import HParams
+from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
+from src.avgn.visualization.projections import scatter_spec
+from src.avgn.visualization.quickplots import draw_projection_plots
 
 # from cuml.manifold.umap import UMAP as cumlUMAP
 from src.avgn.visualization.spectrogram import draw_spec_set
-from src.avgn.visualization.projections import (
-    scatter_spec,
-    scatter_projections,
-    draw_projection_transitions,
-)
-from src.avgn.visualization.quickplots import draw_projection_plots
-import umap
+from src.greti.read.paths import DATA_DIR
+
+# get_ipython().run_line_magic("load_ext", "autoreload")
+# get_ipython().run_line_magic("autoreload", "2")
+# get_ipython().run_line_magic("matplotlib", "inline")
 
 
 # %%
