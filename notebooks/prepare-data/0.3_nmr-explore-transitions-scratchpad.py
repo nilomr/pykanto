@@ -59,7 +59,7 @@ syllable_df = pd.read_pickle(save_loc)
 
 indvs = [
     ind
-    for ind in syllable_df.indv.unique()
+    for ind in syllable_df.indv.unique()[:20]
     if len(syllable_df[syllable_df.indv == ind])
     > 60  # This threshold is based on the need to have minimum clustr sizes of size >1
 ]
