@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 import phate
 import seaborn as sns
-import umap
+
+# import umap
 from joblib import Parallel, delayed
 from scipy.spatial import distance
 from tqdm.autonotebook import tqdm
@@ -66,11 +67,11 @@ specs = list(syllable_df.spectrogram.values)
 specs = [i / np.max(i) for i in specs]
 specs_flattened = flatten_spectrograms(specs)
 
-# UMAP embedding for all birds in dataset
-fit = umap.UMAP(
-    n_neighbors=300, min_dist=0.3, n_components=2, verbose=True, init="random"
-)
-umap_proj = list(fit.fit_transform(specs_flattened))
+# # UMAP embedding for all birds in dataset
+# fit = umap.UMAP(
+#     n_neighbors=300, min_dist=0.3, n_components=2, verbose=True, init="random"
+# )
+# umap_proj = list(fit.fit_transform(specs_flattened))
 
 # PHATE
 phate_op = phate.PHATE()
@@ -83,10 +84,10 @@ phate_proj = list(phate_operator.fit_transform(specs_flattened))
 out_dir = DATA_DIR / "embeddings" / DATASET_ID
 ensure_dir(out_dir)
 
-syllable_df["umap"] = list(umap_proj)
+# syllable_df["umap"] = list(umap_proj)
 syllable_df["phate"] = list(phate_proj)
 
-syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
+syllable_df.to_pickle(out_dir / ("full_dataset_phate" + ".pickle"))
 
 
 # %%
@@ -105,7 +106,7 @@ syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
 # %%
 # Plot projections of all individuals, colour=distance
 
-umap_proj = list(syllable_df["umap"])
+# umap_proj = list(syllable_df["umap"])
 phate_proj = list(syllable_df["phate"])
 
 labs = syllable_df.dist_m.values
@@ -122,42 +123,44 @@ cmap = sns.cubehelix_palette(
     as_cmap=True,
 )
 
-for proj in [phate_proj, umap_proj]:
+# for proj in [phate_proj, umap_proj]:
 
-    if proj is phate_proj:
-        name = "PHATE"
-    elif proj is umap_proj:
-        name = "UMAP"
+#     if proj is phate_proj:
+#         name = "PHATE"
+#     elif proj is umap_proj:
+#         name = "UMAP"
 
-    scatter_projections(
-        projection=proj,
-        labels=labs,
-        alpha=1,
-        s=1,
-        color_palette="cubehelix",
-        cmap=cmap,
-        show_legend=False,
-        facecolour="k",
-        colourbar=True,
-        figsize=(10, 10),
-    )
+name = "UMAP"
 
-    fig_out = (
-        FIGURE_DIR
-        / YEAR
-        / "population"
-        / (
-            "{}_scatter".format(name)
-            + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            + ".svg"
-        )
+scatter_projections(
+    projection=proj,
+    labels=labs,
+    alpha=1,
+    s=1,
+    color_palette="cubehelix",
+    cmap=cmap,
+    show_legend=False,
+    facecolour="k",
+    colourbar=True,
+    figsize=(10, 10),
+)
+
+fig_out = (
+    FIGURE_DIR
+    / YEAR
+    / "population"
+    / (
+        "{}_scatter".format(name)
+        + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        + ".svg"
     )
-    ensure_dir(fig_out)
-    plt.savefig(
-        fig_out, dpi=300, bbox_inches="tight", pad_inches=0.3, transparent=False,
-    )
-    # plt.show()
-    plt.close()
+)
+ensure_dir(fig_out)
+plt.savefig(
+    fig_out, dpi=300, bbox_inches="tight", pad_inches=0.3, transparent=False,
+)
+# plt.show()
+plt.close()
 
 
 print("Done")
