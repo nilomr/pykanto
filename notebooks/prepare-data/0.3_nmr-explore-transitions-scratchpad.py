@@ -142,12 +142,16 @@ for indvi, indv in enumerate(tqdm(indvs)):
     indv_dfs[indv]["phate"] = z
 
     # umap_cluster
-    fit = umap.UMAP(n_neighbors=30, min_dist=0.1, n_components=7)
+    fit = umap.UMAP(
+        n_neighbors=30, min_dist=0.1, n_components=7, verbose=True, init="random"
+    )
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_cluster"] = z
 
     # umap_viz
-    fit = umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=2)
+    fit = umap.UMAP(
+        n_neighbors=15, min_dist=0.1, n_components=2, verbose=True, init="random"
+    )
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_viz"] = z
 
@@ -189,7 +193,9 @@ specs = [i / np.max(i) for i in specs]
 specs_flattened = flatten_spectrograms(specs)
 
 # UMAP embedding for all birds in dataset
-fit = umap.UMAP(n_neighbors=30, min_dist=0.2, n_components=2)
+fit = umap.UMAP(
+    n_neighbors=30, min_dist=0.2, n_components=2, verbose=True, init="random"
+)
 umap_proj = list(fit.fit_transform(specs_flattened))
 
 # PHATE
