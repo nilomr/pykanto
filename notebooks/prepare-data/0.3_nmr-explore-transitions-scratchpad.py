@@ -10,6 +10,7 @@
 # get_ipython().run_line_magic("matplotlib", "inline")
 
 import pickle
+from datetime import datetime
 
 import hdbscan
 import matplotlib as mpl
@@ -261,8 +262,6 @@ for proj in [phate_proj, umap_proj]:
         colourbar=True,
         figsize=(10, 10),
     )
-
-    from datetime import datetime
 
     fig_out = (
         FIGURE_DIR
