@@ -15,7 +15,7 @@ from pathlib2 import Path
 # Setup
 
 
-level = 0 if __name__ == "__main__" else 0
+level = 0 if __name__ == "__main__" else 2
 
 
 # Define directories:
