@@ -133,7 +133,7 @@ cmap = sns.cubehelix_palette(
 name = "UMAP"
 
 scatter_projections(
-    projection=proj,
+    projection=phate_proj,
     labels=labs,
     alpha=1,
     s=1,
