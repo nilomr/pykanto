@@ -67,7 +67,9 @@ specs = [i / np.max(i) for i in specs]
 specs_flattened = flatten_spectrograms(specs)
 
 # UMAP embedding for all birds in dataset
-fit = umap.UMAP(n_neighbors=30, min_dist=0.2, n_components=2, verbose=True)
+fit = umap.UMAP(
+    n_neighbors=50, min_dist=0.2, n_components=2, verbose=True, init="random"
+)
 umap_proj = list(fit.fit_transform(specs_flattened))
 
 # PHATE
