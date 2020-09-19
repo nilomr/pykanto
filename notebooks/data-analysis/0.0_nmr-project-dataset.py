@@ -75,7 +75,7 @@ specs_flattened = flatten_spectrograms(specs)
 
 # PHATE
 phate_op = phate.PHATE()
-phate_operator = phate.PHATE(n_jobs=-1, knn=20)
+phate_operator = phate.PHATE(n_jobs=-1, knn=5, n_pca=19, gamma=0)
 phate_proj = list(phate_operator.fit_transform(specs_flattened))
 
 # %%
@@ -130,7 +130,7 @@ cmap = sns.cubehelix_palette(
 #     elif proj is umap_proj:
 #         name = "UMAP"
 
-name = "UMAP"
+name = "PHATE"
 
 scatter_projections(
     projection=phate_proj,
@@ -151,7 +151,7 @@ fig_out = (
     / "population"
     / (
         "{}_scatter".format(name)
-        + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        + str(datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
         + ".svg"
     )
 )
