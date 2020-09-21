@@ -1,7 +1,8 @@
-from scipy.io import wavfile
-import numpy as np
 import wave
+
 import librosa
+import numpy as np
+from scipy.io import wavfile
 
 
 def read_wav(wav_loc, method="librosa", **kwargs):
@@ -10,7 +11,7 @@ def read_wav(wav_loc, method="librosa", **kwargs):
     if method == "librosa":
         if "sr" not in kwargs.keys():
             kwargs["sr"] = None
-        data, rate = librosa.core.load(wav_loc, **kwargs)
+        data, rate = librosa.load(wav_loc, **kwargs)
     elif method == "scipy":
         rate, data = wavfile.read(wav_loc)
     return rate, data

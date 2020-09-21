@@ -1,19 +1,21 @@
-import numpy as np
-from src.avgn.visualization.projections import (
-    scatter_projections,
-    draw_projection_transitions,
-    scatter_spec,
-    plot_label_cluster_transitions,
-)
-from src.avgn.visualization.network_graph import plot_network_graph
+import string
+from datetime import datetime
+
 import matplotlib.pyplot as plt
-
-from src.avgn.visualization.spectrogram import draw_spec_set, plot_example_specs
-from src.avgn.utils.paths import most_recent_subdirectory, ensure_dir
-from src.greti.read.paths import DATA_DIR, FIGURE_DIR
-
+import numpy as np
 import seaborn as sns
 from tqdm.autonotebook import tqdm
+
+from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
+from src.avgn.visualization.network_graph import plot_network_graph
+from src.avgn.visualization.projections import (
+    draw_projection_transitions,
+    plot_label_cluster_transitions,
+    scatter_projections,
+    scatter_spec,
+)
+from src.avgn.visualization.spectrogram import draw_spec_set, plot_example_specs
+from src.greti.read.paths import DATA_DIR, FIGURE_DIR
 
 
 def draw_projection_plots(
@@ -58,7 +60,9 @@ def draw_projection_plots(
     return ax
 
 
-def quad_plot_syllables(indv_dfs, year, facecolour="#f2f1f0"):
+def quad_plot_syllables(
+    indv_dfs, YEAR, viz_proj="umap_viz", palette="Set2", facecolour="#f2f1f0"
+):
 
     """Make plot including scatterplot, 'raw' syllable transitions, 
     transition directed network and example spectrograms.
@@ -66,7 +70,7 @@ def quad_plot_syllables(indv_dfs, year, facecolour="#f2f1f0"):
     Args:
         indv_dfs ([pd.DataFrame]): Dataframe with individual data
         facecolour (str, optional): Subplot background colour. Defaults to "#f2f1f0".
-        viz_projection (str, optional): Which projection to plot. Defaults to "umap_viz".
+        viz_proj(str, optional): Which projection to plot. Defaults to "umap_viz".
         labels (str, optional): Which labels to use. Defaults to "hdbscan_labels".
     """
 
@@ -83,12 +87,12 @@ def quad_plot_syllables(indv_dfs, year, facecolour="#f2f1f0"):
         unique_labs = hdbscan_labs.unique()
         nlabs = len(unique_labs)
 
-        proj = np.array(list(indv_dfs[indv]["umap_viz"].values))
+        proj = np.array(list(indv_dfs[indv][viz_proj].values))
         sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
         specs = np.invert(indv_dfs[indv].spectrogram.values)
         specs = np.where(specs == 255, 242, specs)  # grey
 
-        pal = np.random.permutation(sns.color_palette("Set2", nlabs))
+        pal = sns.color_palette(palette, n_colors=nlabs)
 
         # Projection scatterplot, labeled by cluster
         scatter_projections(
@@ -131,15 +135,13 @@ def quad_plot_syllables(indv_dfs, year, facecolour="#f2f1f0"):
         plot_example_specs(
             specs=specs,
             labels=labs,
-            clusters_to_viz=unique_labs[unique_labs >= 0],  # do not show noisy points
+            clusters_to_viz=unique_labs[unique_labs >= 0],  # do not show 'noisy' points
             custom_pal=pal,
             cmap=plt.cm.bone,
             nex=nlabs,
             line_width=3,
             ax=axes[3],
         )
-
-        import string
 
         labels = string.ascii_uppercase[0 : len(axes)]
 
@@ -156,9 +158,12 @@ def quad_plot_syllables(indv_dfs, year, facecolour="#f2f1f0"):
                 transform=ax.transAxes,
             )
 
-        # TODO: saving for all figures
-
-        fig_out = FIGURE_DIR / year / "ind_repertoires" / (indv + ".png")
+        fig_out = (
+            FIGURE_DIR
+            / YEAR
+            / "ind_repertoires"
+            / (indv + "_" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ".png")
+        )
         ensure_dir(fig_out)
         plt.savefig(
             fig_out, dpi=300, bbox_inches="tight", pad_inches=0.3, transparent=False,

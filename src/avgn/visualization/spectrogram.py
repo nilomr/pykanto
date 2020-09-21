@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import Rectangle
 import seaborn as sns
+from matplotlib.patches import Rectangle
 from tqdm.autonotebook import tqdm
 
 
@@ -183,14 +183,21 @@ def plot_segmentations(
     plt.show()
 
 
-def draw_spec_set(spectrograms, maxrows=3, colsize=10, cmap=plt.cm.afmhot, zoom=2):
+def draw_spec_set(
+    spectrograms,
+    maxrows=3,
+    colsize=10,
+    cmap=plt.cm.afmhot,
+    zoom=2,
+    facecolour="#ededed",
+):
     """
     """
     # get column and row sizes
     rowsize = np.shape(spectrograms[0])[0]
     colsize = colsize * rowsize
 
-    # create the vanvas
+    # create the Canvas
     canvas = np.zeros((rowsize * maxrows, colsize))
 
     # fill the canvas
@@ -214,11 +221,14 @@ def draw_spec_set(spectrograms, maxrows=3, colsize=10, cmap=plt.cm.afmhot, zoom=
     figsize = (zoom * (colsize / rowsize), zoom * (row + 1))
     # print(figsize, np.shape(canvas), colsize / rowsize, rowsize, colsize)
     fig, ax = plt.subplots(figsize=figsize)
+    ax.set_facecolor(facecolour)
     ax.matshow(
-        canvas, cmap=cmap, origin="lower", aspect="auto", interpolation="nearest"
+        canvas, cmap=cmap, origin="lower", aspect="equal", interpolation="nearest"
     )
+    ax.set_facecolor(facecolour)
     ax.axis("off")
-    plt.show()
+
+    return ax
 
 
 def plot_syllable_list(
