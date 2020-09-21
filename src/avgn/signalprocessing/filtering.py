@@ -1,7 +1,10 @@
-from scipy.signal import butter, lfilter
-import numpy as np
-from librosa.core.time_frequency import mel_frequencies
+import os
+import sys
 import warnings
+
+import numpy as np
+from librosa import mel_frequencies
+from scipy.signal import butter, lfilter
 
 
 def butter_bandpass(lowcut, highcut, fs, order=3):
@@ -56,10 +59,6 @@ def RMS(data, rate, rms_stride, rms_window, rms_padding, noise_thresh):
     ]
 
     return rms_data, sound_threshed
-
-
-import sys
-import os
 
 
 def prepare_mel_matrix(hparams, rate, return_numpy=True, GPU_backend=False):
