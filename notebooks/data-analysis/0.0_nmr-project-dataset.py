@@ -27,7 +27,7 @@ from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
 
 # get data
 
-DATASET_ID = "GRETI_HQ_segmented"
+DATASET_ID = "GRETI_HQ_2020_segmented"
 YEAR = "2020"
 
 save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
