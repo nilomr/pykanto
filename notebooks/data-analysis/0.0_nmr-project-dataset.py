@@ -32,7 +32,6 @@ YEAR = "2020"
 save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
 syllable_df = pd.read_pickle(save_loc)
 
-
 # %%
 
 # Add nestbox positions to syllable_df
@@ -77,7 +76,7 @@ pca_parameters = {
     "batch_size": 10,
 }
 ipca = IncrementalPCA(**pca_parameters)
-pca_proj = list(ipca.fit_transform(specs))
+syllable_df["pca"] = list(ipca.fit_transform(specs))
 
 
 # %%
@@ -92,24 +91,20 @@ umap_parameters = {
     "low_memory": True,
 }
 fit = umap.UMAP(**umap_parameters)
-umap_proj = list(fit.fit_transform(specs))
+syllable_df["umap"] = list(fit.fit_transform(specs))
 
 
 # %%
 # PHATE
 phate_parameters = {"n_jobs": -1, "knn": 10, "n_pca": 19, "gamma": 0}
 phate_operator = phate.PHATE(**phate_parameters)
-phate_proj = list(phate_operator.fit_transform(specs))
+syllable_df["phate"] = list(phate_operator.fit_transform(specs))
 
 # %%
 
 # Save embeddings
 out_dir = DATA_DIR / "embeddings" / DATASET_ID
 ensure_dir(out_dir)
-
-syllable_df["umap"] = umap_proj
-syllable_df["phate"] = phate_proj
-syllable_df["pca"] = pca_proj
 
 syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
 
@@ -133,24 +128,21 @@ syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
 
 labs = syllable_df.dist_m_y.values
 
-cmap = sns.cubehelix_palette(
-    n_colors=len(np.unique(labs)),
-    start=0,
-    rot=1,  # if 0 no hue change
-    gamma=1,
-    hue=0.9,
-    light=0.97,
-    dark=0.2,
-    reverse=False,
-    as_cmap=True,
-)
+# cmap = sns.cubehelix_palette(
+#     n_colors=len(np.unique(labs)),
+#     start=0,
+#     rot=1,  # if 0 no hue change
+#     gamma=1,
+#     hue=0.9,
+#     light=0.97,
+#     dark=0.2,
+#     reverse=False,
+#     as_cmap=True,
+# )
 
 
 # %%
 # Plot projections of all individuals, colour=distance
-
-
-projections = [phate_proj, pca_proj, umap_proj]
 
 
 def replace_params(params_dict):
@@ -158,12 +150,12 @@ def replace_params(params_dict):
     return params
 
 
-for proj in projections:
+for proj in [syllable_df["phate"], syllable_df["pca"], syllable_df["umap"]]:
 
-    if proj is phate_proj:
+    if proj is syllable_df["phate"]:
         name = "PHATE"
         params = replace_params(phate_parameters)
-    elif proj is pca_proj:
+    elif proj is syllable_df["pca"]:
         name = "PCA"
         params = replace_params(pca_parameters)
     else:
