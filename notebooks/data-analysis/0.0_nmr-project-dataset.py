@@ -43,9 +43,10 @@ tmpl = pd.read_csv(coords_file)
 nestboxes = tmpl[tmpl["nestbox"].isin(syllable_df.indv.unique())]
 nestboxes["east_north"] = nestboxes[["x", "y"]].apply(tuple, axis=1)
 
-# plt.scatter(nestboxes['x'], nestboxes['y'])
+# plt.figure(figsize=(8, 6), dpi=200)
+# plt.scatter(nestboxes['x'], nestboxes['y'], s=6, c="k")
 
-X = [(446000, 208000)]
+X = [(448500, 207000)]
 
 for i in nestboxes.index:
     nestboxes.at[i, "dist_m"] = distance.cdist(
@@ -54,6 +55,7 @@ for i in nestboxes.index:
 
 nestboxes.filter(["nestbox", "east_north", "section", "dist_m"])
 
+# %%
 #  Add to syllable_df
 syllable_df = pd.merge(
     syllable_df, nestboxes, how="inner", left_on="indv", right_on="nestbox"
@@ -82,7 +84,7 @@ pca_proj = list(ipca.fit_transform(specs))
 
 # UMAP
 umap_parameters = {
-    "n_neighbors": 300,
+    "n_neighbors": 50,
     "min_dist": 0.3,
     "n_components": 2,
     "verbose": True,
@@ -95,7 +97,7 @@ umap_proj = list(fit.fit_transform(specs))
 
 # %%
 # PHATE
-phate_parameters = {"n_jobs": -1, "knn": 30, "n_pca": 19, "gamma": 0}
+phate_parameters = {"n_jobs": -1, "knn": 10, "n_pca": 19, "gamma": 0}
 phate_operator = phate.PHATE(**phate_parameters)
 phate_proj = list(phate_operator.fit_transform(specs))
 
@@ -113,7 +115,7 @@ syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
 
 
 # %%
-# Load datasets if they already exist
+# Load dataset if it already exists
 
 # DATASET_ID = "GRETI_HQ_2020_segmented"
 # YEAR = "2020"
@@ -121,23 +123,24 @@ syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
 # syll_loc = DATA_DIR / "embeddings" / DATASET_ID / "full_dataset.pickle"
 # syllable_df = pd.read_pickle(syll_loc)
 
-# ind_loc = DATA_DIR / "embeddings" / DATASET_ID / "individual_embeddings.pickle"
-# indv_dfs = pd.read_pickle(ind_loc)
+# pca_proj = syllable_df["pca"]
+# umap_proj = syllable_df["umap"]
+# phate_proj = syllable_df["phate"]
 
 
 #%%
 # labels and palette for plots
 
-labs = syllable_df.dist_m.values
+labs = syllable_df.dist_m_y.values
 
 cmap = sns.cubehelix_palette(
     n_colors=len(np.unique(labs)),
     start=0,
-    rot=0.9,  # if 0 no hue change
+    rot=1,  # if 0 no hue change
     gamma=1,
     hue=0.9,
-    light=0.95,
-    dark=0.25,
+    light=0.97,
+    dark=0.2,
     reverse=False,
     as_cmap=True,
 )
@@ -171,9 +174,9 @@ for proj in projections:
         projection=list(proj),
         labels=labs,
         alpha=1,
-        s=1,
+        s=0.5,
         color_palette="cubehelix",
-        cmap=cmap,
+        cmap="gist_earth_r",
         show_legend=False,
         facecolour="k",
         colourbar=True,
@@ -223,7 +226,7 @@ for proj in projections:
 
     fig, ax = plt.subplots(1, figsize=(11, 10))
     sns.kdeplot(
-        pca_proj, n_levels=100, shade=True, cmap="inferno", zorder=0, ax=ax,
+        list(proj), n_levels=100, shade=True, cmap="inferno", zorder=0, ax=ax,
     )
 
     ax.set_xticks([])
@@ -245,5 +248,3 @@ for proj in projections:
 
 
 print("Done")
-
-# %%
