@@ -93,6 +93,16 @@ umap_parameters = {
 fit = umap.UMAP(**umap_parameters)
 syllable_df["umap"] = list(fit.fit_transform(specs))
 
+# %%
+
+# Save embeddings
+out_dir = DATA_DIR / "embeddings" / DATASET_ID
+ensure_dir(out_dir)
+
+syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
+
+print("Saved")
+
 
 # %%
 # PHATE
@@ -107,6 +117,8 @@ out_dir = DATA_DIR / "embeddings" / DATASET_ID
 ensure_dir(out_dir)
 
 syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
+
+print("Saved")
 
 
 # %%
