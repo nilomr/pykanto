@@ -153,7 +153,7 @@ for indv in tqdm(indv_dfs.keys()):
     z = list(indv_dfs[indv]["umap_cluster"].values)
     clusterer = hdbscan.HDBSCAN(
         min_cluster_size=int(
-            len(z) * 0.03
+            len(z) * 0.035
         ),  # the smallest size we would expect a cluster to be
         min_samples=4,  # larger values = more conservative clustering
         cluster_selection_method="eom",
@@ -162,8 +162,8 @@ for indv in tqdm(indv_dfs.keys()):
     indv_dfs[indv]["hdbscan_labels"] = clusterer.labels_
 
 
-for indv in tqdm(indv_dfs.keys()):
-    print(indv + ":" + str(len(indv_dfs[indv]["hdbscan_labels"].unique())))
+# for indv in tqdm(indv_dfs.keys()):
+#     print(indv + ":" + str(len(indv_dfs[indv]["hdbscan_labels"].unique())))
 
 # %%
 
