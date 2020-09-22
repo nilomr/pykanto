@@ -73,9 +73,9 @@ syllable_df["spectrogram"] = syllables_spec
 
 indvs = [
     ind
-    for ind in syllable_df.indv.unique()[15:20]  #!!!! Remove subsetting !!!!
+    for ind in syllable_df.indv.unique()  #!!!! Remove subsetting !!!!
     if len(syllable_df[syllable_df.indv == ind])
-    > 60  # This threshold is based on the need to have minimum clustr sizes of size >1
+    > 80  # This threshold is based on the need to have minimum clustr sizes of size >1
 ]
 
 len(indvs)
@@ -85,18 +85,9 @@ len(indvs)
 syllable_n = pd.Series(
     [len(syllable_df[syllable_df.indv == ind]) for ind in syllable_df.indv.unique()]
 )
+
 # %%
-
-# Get individuals
-indvs = [
-    ind
-    for ind in syllable_df.indv.unique()  #! Remove subsetting
-    if len(syllable_df[syllable_df.indv == ind])
-    > 60  # This threshold is based on the need to have minimum clustr sizes of size >1
-]
-
-# %% [markdown]
-# ###
+# # Dim. reduction
 
 indv_dfs = {}
 
@@ -130,7 +121,7 @@ for indvi, indv in enumerate(tqdm(indvs)):
 
     # umap_cluster
     fit = umap.UMAP(
-        n_neighbors=20, min_dist=0.1, n_components=20, verbose=True, init="random"
+        n_neighbors=20, min_dist=0.05, n_components=20, verbose=True, init="random"
     )
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_cluster"] = z
@@ -153,7 +144,7 @@ for indv in tqdm(indv_dfs.keys()):
     z = list(indv_dfs[indv]["umap_cluster"].values)
     clusterer = hdbscan.HDBSCAN(
         min_cluster_size=int(
-            len(z) * 0.035
+            len(z) * 0.027
         ),  # the smallest size we would expect a cluster to be
         min_samples=4,  # larger values = more conservative clustering
         cluster_selection_method="eom",
