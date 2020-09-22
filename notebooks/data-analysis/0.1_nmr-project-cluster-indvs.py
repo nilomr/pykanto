@@ -90,7 +90,7 @@ syllable_n = pd.Series(
 # Get individuals
 indvs = [
     ind
-    for ind in syllable_df.indv.unique()[20:30]  #! Remove subsetting
+    for ind in syllable_df.indv.unique()  #! Remove subsetting
     if len(syllable_df[syllable_df.indv == ind])
     > 60  # This threshold is based on the need to have minimum clustr sizes of size >1
 ]
