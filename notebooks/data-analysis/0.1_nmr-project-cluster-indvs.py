@@ -171,7 +171,22 @@ for indv in tqdm(indv_dfs.keys()):
 # Plot settings
 
 facecolour = "#f2f1f0"
-pal = "Set2"
+colours = [
+    "#66c2a5",
+    "#fc8d62",
+    "#8da0cb",
+    "#e78ac3",
+    "#a6d854",
+    "#ffd92f",
+    "#e5c494",
+    "#b3b3b3",
+    "#fc6c62",
+    "#7c7cc4",
+    "#57b6bd",
+    "#e0b255",
+]
+
+pal = sns.set_palette(sns.color_palette(colours))
 
 # %%
 # ### plot each individual's repertoire
@@ -230,24 +245,8 @@ for indv in tqdm(indv_dfs.keys()):
 # Plot: scatter, transitions, examples, per nestbox
 # Saves figures to FIGURE_DIR / year / "ind_repertoires" / (indv + ".png")
 
-colours = [
-    "#66c2a5",
-    "#fc8d62",
-    "#8da0cb",
-    "#e78ac3",
-    "#a6d854",
-    "#ffd92f",
-    "#e5c494",
-    "#b3b3b3",
-    "#fc6c62",
-    "#7c7cc4",
-    "#57b6bd",
-    "#e0b255",
-]
 
-spectral_mod = sns.set_palette(sns.color_palette(colours))
-quad_plot_syllables(
-    indv_dfs, YEAR, "umap_viz", palette=spectral_mod, facecolour=facecolour
-)
+quad_plot_syllables(indv_dfs, YEAR, "umap_viz", palette=pal, facecolour=facecolour)
 
 # %%
+
