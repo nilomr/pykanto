@@ -115,7 +115,7 @@ def quad_plot_syllables(
             cmap=plt.get_cmap("ocean"),
             facecolour=facecolour,
             range_pad=0.1,
-            alpha=0.02,
+            alpha=0.05,
             ax=axes[1],
         )
 
