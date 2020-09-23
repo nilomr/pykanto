@@ -1,69 +1,147 @@
 # %%
+import glob
+from os import fspath
+
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import matplotlib.style as style
+import numpy as np
+import pandas as pd
+import seaborn as sns
 from IPython import get_ipython
 from IPython.display import display
+from joblib import Parallel, delayed
+from mizani.breaks import date_breaks
+from mizani.formatters import date_format
+from plotnine import *
+from tqdm import tqdm
+
+import src
+from src.avgn.dataset import DataSet
+from src.avgn.utils.hparams import HParams
+from src.greti.read.paths import *
 
 get_ipython().run_line_magic("load_ext", "autoreload")
 get_ipython().run_line_magic("autoreload", "2")
 
-import src
-import numpy as np
-import pandas as pd
-import seaborn as sns
-import glob
-from os import fspath
-from plotnine import *
-from mizani.breaks import date_breaks
-from mizani.formatters import date_format
+# %%
 
-import matplotlib.style as style
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from src.greti.read.paths import *
-from src.avgn.dataset import DataSet
-from src.avgn.utils.hparams import HParams
-from tqdm import tqdm
-from joblib import Parallel, delayed
-
-# %% [markdown]
-
-## 1. Distribution of number of song segments
 
 # %%
+
+# ### get data
+
 DATASET_ID = "GRETI_HQ_2020_segmented"
+YEAR = "2020"
 
-hparams = HParams(
-    num_mel_bins=64,
-    n_fft=1024,
-    win_length_ms=15,
-    hop_length_ms=3,
-    mel_lower_edge_hertz=1200,
-    mel_upper_edge_hertz=10000,
-    butter_lowcut=1200,
-    butter_highcut=10000,
-    ref_level_db=30,
-    min_level_db=-30,
-    mask_spec=True,
-    n_jobs=-2,
-    verbosity=1,
-    nex=-1,
-)
+# save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
+
+save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "full_dataset.pickle"
+syllable_df = pd.read_pickle(save_loc)
+
 
 # %%
-# create a dataset object
-dataset = DataSet(DATASET_ID, hparams=hparams)
+# Create a dataset object
+
+# hparams = HParams(
+#     num_mel_bins=64,
+#     n_fft=1024,
+#     win_length_ms=15,
+#     hop_length_ms=3,
+#     mel_lower_edge_hertz=1200,
+#     mel_upper_edge_hertz=10000,
+#     butter_lowcut=1200,
+#     butter_highcut=10000,
+#     ref_level_db=30,
+#     min_level_db=-30,
+#     mask_spec=True,
+#     n_jobs=-2,
+#     verbosity=1,
+#     nex=-1,
+# )
+
+
+# , hparams=hparams
+
+
+dataset = DataSet(DATASET_ID)
 dataset.sample_json
 len(dataset.data_files)
 
 # %%
-# dataframe with all metadata
+# Make dataframe with all metadata
 metadata = []
 for key in tqdm(dataset.data_files.keys(), leave=False):
     metadata.append(pd.DataFrame(dataset.data_files[key].data))
 metadata = pd.concat(metadata)
 
-#%%
 
-# Plot songs per nestbox
+# %%
+
+# plot some example syllable spectrograms
+
+bird = "MP66"
+
+sample_specs = syllable_df[syllable_df.indv == bird].spectrogram.values
+sample_specs = np.invert(sample_specs)
+draw_spec_set(
+    sample_specs, cmap="bone", maxrows=7, colsize=15, zoom=3, facecolour="#f2f1f0"
+)
+
+fig_out = (
+    FIGURE_DIR
+    / YEAR
+    / "examples"
+    / (
+        "{}_sample_syllables_".format(bird)
+        + str(datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
+        + ".png"
+    )
+)
+ensure_dir(fig_out)
+
+plt.savefig(
+    fig_out, dpi=300, bbox_inches="tight", pad_inches=0.3, transparent=False,
+)
+# plt.show()
+plt.close()
+
+
+# %%
+# Count the number of syllables per nest
+
+syllable_n = pd.Series(
+    [len(syllable_df[syllable_df.indv == ind]) for ind in syllable_df.indv.unique()]
+)
+
+
+# %%
+# Plot frequency distribution of syllable counts
+
+nbins = 60
+fig = plt.figure(figsize=(10, 4))
+gs = fig.add_gridspec(1, 2, width_ratios=[1, 1], hspace=0, wspace=0.1)
+axes = [fig.add_subplot(gs[i]) for i in range(2)]
+fig.suptitle("Frequency distribution of syllable counts\n".format(indv), fontsize=15)
+# histogram on linear scale
+axes[0].hist(syllable_n, bins=nbins)
+# histogram on log scale.
+# Use non-equal bin sizes, such that they look equal on log scale.
+logbins = np.geomspace(syllable_n.min(), syllable_n.max(), nbins)
+axes[1].hist(syllable_n, bins=nbins)
+for ax in axes:
+    ax.set_facecolor("#f2f1f0")
+    ax.spines["top"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    ax.tick_params(axis=u"both", which=u"both", length=0)
+plt.yscale("log")
+plt.show()
+
+
+# %%
+## Plot frequency distribution of song segment count
 
 freq_data = metadata["nestbox"].value_counts()
 
@@ -274,4 +352,3 @@ song_datetimes = metadata.filter(["nestbox", "datetime"])
 song_datetimes.pivot(index="nestbox", columns="datetime", values="values")
 
 # %%
-
