@@ -83,30 +83,30 @@ syllable_df["pca"] = list(ipca.fit_transform(specs))
 
 # UMAP
 umap_parameters = {
-    "n_neighbors": 50,
-    "min_dist": 0.3,
+    "n_neighbors": 10,
+    "min_dist": 0.1,
     "n_components": 2,
     "verbose": True,
-    "init": "random",
+    "init": "spectral",
     "low_memory": True,
 }
 fit = umap.UMAP(**umap_parameters)
 syllable_df["umap"] = list(fit.fit_transform(specs))
 
 # %%
-
+time = str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
 # Save embeddings
 out_dir = DATA_DIR / "embeddings" / DATASET_ID
 ensure_dir(out_dir)
 
-syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
+syllable_df.to_pickle(out_dir / ("full_dataset_" + time + ".pickle"))
 
 print("Saved")
 
 
 # %%
 # PHATE
-phate_parameters = {"n_jobs": -1, "knn": 10, "n_pca": 19, "gamma": 0}
+phate_parameters = {"n_jobs": -1, "knn": 5, "n_pca": 100, "gamma": 0}
 phate_operator = phate.PHATE(**phate_parameters)
 syllable_df["phate"] = list(phate_operator.fit_transform(specs))
 
@@ -134,11 +134,25 @@ print("Saved")
 # umap_proj = syllable_df["umap"]
 # phate_proj = syllable_df["phate"]
 
+# phate_parameters = {"n_jobs": -1, "knn": 10, "n_pca": 19, "gamma": 0}
+# umap_parameters = {
+#     "n_neighbors": 50,
+#     "min_dist": 0.3,
+#     "n_components": 2,
+#     "verbose": True,
+#     "init": "random",
+#     "low_memory": True,
+# }
+# pca_parameters = {
+#     "n_components": 2,
+#     "batch_size": 10,
+# }
+
 
 #%%
 # labels and palette for plots
 
-labs = syllable_df.dist_m_y.values
+labs = syllable_df.dist_m.values
 
 # cmap = sns.cubehelix_palette(
 #     n_colors=len(np.unique(labs)),
@@ -180,7 +194,7 @@ for proj in [syllable_df["phate"], syllable_df["pca"], syllable_df["umap"]]:
         alpha=1,
         s=0.5,
         color_palette="cubehelix",
-        cmap="gist_earth_r",
+        cmap="RdYlBu",
         show_legend=False,
         facecolour="k",
         colourbar=True,
@@ -216,19 +230,19 @@ for proj in [syllable_df["phate"], syllable_df["pca"], syllable_df["umap"]]:
 # %%
 # Plot KDE
 
-for proj in projections:
+for proj in [syllable_df["phate"], syllable_df["pca"], syllable_df["umap"]]:
 
-    if proj is phate_proj:
+    if proj is syllable_df["phate"]:
         name = "PHATE"
         params = replace_params(phate_parameters)
-    elif proj is pca_proj:
+    elif proj is syllable_df["pca"]:
         name = "PCA"
         params = replace_params(pca_parameters)
     else:
         name = "UMAP"
         params = replace_params(umap_parameters)
 
-    fig, ax = plt.subplots(1, figsize=(11, 10))
+    fig, ax = plt.subplots(1, figsize=(10, 10))
     sns.kdeplot(
         list(proj), n_levels=100, shade=True, cmap="inferno", zorder=0, ax=ax,
     )
@@ -252,3 +266,5 @@ for proj in projections:
 
 
 print("Done")
+
+# %%
