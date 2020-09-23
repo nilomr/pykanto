@@ -1,18 +1,17 @@
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
-import umap
-import matplotlib.pyplot as plt
-from tqdm.autonotebook import tqdm
-import matplotlib.collections as mcoll
+import io
+
+import matplotlib.collections as mc
 import matplotlib.path as mpath
-from matplotlib import collections as mc
+import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
+import umap
+from matplotlib import collections as mc
+from matplotlib import gridspec, lines
 from matplotlib.lines import Line2D
-from matplotlib import gridspec
-from scipy.spatial import Voronoi, voronoi_plot_2d
-from scipy.spatial import cKDTree
-from matplotlib import lines
+from PIL import Image
+from scipy.spatial import Voronoi, cKDTree, voronoi_plot_2d
+from tqdm.autonotebook import tqdm
 
 
 def scatter_projections(
@@ -124,7 +123,6 @@ def scatter_projections(
         # ax.axes.set_aspect("equal")
         cbar.outline.set_visible(False)
 
-        #! Make this work and add colourbar!!
     else:
         ax.scatter(projection[:, 0], projection[:, 1], alpha=alpha, s=s, color=colors)
 
@@ -230,7 +228,7 @@ def colorline(
     z = np.asarray(z)
 
     segments = make_segments(x, y)
-    lc = mcoll.LineCollection(
+    lc = mc.LineCollection(
         segments, array=z, cmap=cmap, norm=norm, linewidth=linewidth, alpha=alpha
     )
 
@@ -320,10 +318,6 @@ def plot_label_cluster_transitions(
         ax.add_collection(lc)
 
     return ax
-
-
-from PIL import Image
-import io
 
 
 def scatter_spec(
