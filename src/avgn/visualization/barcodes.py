@@ -1,12 +1,12 @@
-from scipy.cluster import hierarchy
-from nltk.metrics.distance import edit_distance
-from scipy.cluster.hierarchy import dendrogram, linkage
-from scipy.spatial.distance import squareform
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 from joblib import Parallel, delayed
 from matplotlib import gridspec
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
+from nltk.metrics.distance import edit_distance
+from scipy.cluster import hierarchy
+from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.spatial.distance import squareform
 from tqdm.autonotebook import tqdm
 
 
@@ -38,8 +38,9 @@ def indv_barcode(indv_df, time_resolution=0.02, label="labels", pal="tab20"):
     """ Create a barcode list for an individual
     """
     unique_labels = indv_df[label].unique()
+    unique_labels = unique_labels[unique_labels >= 0]  #! Remove noise label
     # song palette
-    label_pal = np.random.permutation(sns.color_palette(pal, len(unique_labels)))
+    label_pal = sns.color_palette(pal, len(unique_labels))
     label_dict = {lab: str(int(i)).zfill(3) for i, lab in enumerate(unique_labels)}
 
     label_pal_dict = {
@@ -50,10 +51,11 @@ def indv_barcode(indv_df, time_resolution=0.02, label="labels", pal="tab20"):
     # get list of syllables by time
     trans_lists = []
     color_lists = []
-    for key in tqdm(indv_df.key.unique(), leave=False):
+    for key in tqdm(indv_df.key.unique(), leave=True, position=0):
         # dataframe of wavs
         wav_df = indv_df[indv_df["key"] == key]
         labels = wav_df[label].values
+        labels = labels[labels >= 0]  #! Remove noise label
         start_times = wav_df.start_time.values
         stop_times = wav_df.end_time.values
         start_times[:3], stop_times[:3], labels[:3]
@@ -99,7 +101,7 @@ def plot_sorted_barcodes(
 
     # make a matrix for color representations of syllables
     color_item = np.ones((max_list_len, len(list_lens), 3))
-    for li, _list in enumerate(tqdm(color_lists, leave=False)):
+    for li, _list in enumerate(tqdm(color_lists, leave=True)):
         color_item[: len(_list), li, :] = np.squeeze(_list[:max_list_len])
     color_items = color_item.swapaxes(0, 1)
 
@@ -119,7 +121,7 @@ def plot_sorted_barcodes(
     items = [(i, j) for i in range(1, len(cut_lists)) for j in range(0, i)]
     distances = Parallel(n_jobs=n_jobs)(
         delayed(edit_distance)(cut_lists[i], cut_lists[j])
-        for i, j in tqdm(items, leave=False)
+        for i, j in tqdm(items, leave=True, position=0)
     )
     for distance, (i, j) in zip(distances, items):
         dist[i, j] = distance
@@ -132,7 +134,7 @@ def plot_sorted_barcodes(
     # make plot
     if ax == None:
         fig = plt.figure(figsize=figsize)
-        gs = gridspec.GridSpec(1, 2, width_ratios=[1, 10], wspace=0, hspace=0)
+        gs = gridspec.GridSpec(1, 2, width_ratios=[1, 10], wspace=0.02, hspace=0)
         ax0 = plt.subplot(gs[0])
         ax = plt.subplot(gs[1])
 
@@ -146,6 +148,7 @@ def plot_sorted_barcodes(
             link_color_func=lambda k: "k",
             ax=ax0,
             show_contracted=False,
+            no_plot=True,
         )
         ax0.axis("off")
     else:
