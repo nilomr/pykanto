@@ -1,0 +1,272 @@
+---
+title: "Recording great tit songs"
+description: |
+  An exploration of the factors that affect recording success
+author:
+  - name: Nilo M. Recalde
+    url: https://zoology.web.ox.ac.uk/people/nilo-merino-recalde
+    affiliation: Department of Zoology
+    affiliation_url: https://example.com/spacelysprokets
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+```{r setup}
+# Knitr settings: 
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+options(scipen = 999)
+```
+# Import libraries
+```{r library}
+library(tidyverse)
+library(rprojroot)
+library(janitor)
+library(brms)
+library(ggExtra)
+library(readxl)
+library(lubridate)
+library(ggdist)
+
+# Knitr settings: 
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE, fig.path = "../../reports/figures/")
+
+```
+
+```{r pkg, message=FALSE}
+# Source file
+# source()
+```
+
+# Load dataset
+<span style="color:red">Note: This is an example</span>
+
+```{r laod data}
+dataset <-  "GRETI_HQ_2020_segmented"
+year = "2020"
+
+
+data_dir <-  file.path(getwd(), "data", "resources", dataset)
+figures_path <- file.path(getwd(), "reports", "figures", year )
+
+datafile <- file.path(data_dir, "full_dataset.csv" )
+dataset <-  read_csv(datafile) %>% clean_names() %>% select(-contains("Legacy"))
+
+
+```
+
+```{r load recorded nestboxes}
+
+recorded <-
+  read_excel(file.path(data_dir, "already-recorded.xlsx")) %>%
+  clean_names() %>%
+  select(-c(x, y, section)) %>%
+  filter(str_detect(nestbox, "Nestbox", negate = TRUE)) %>%
+  mutate(move_by = ymd(move_by))
+
+
+coords_dir <-
+  file.path(getwd(), "data", "resources", "nestbox_coords.xls")
+
+coords <-
+  read_excel(file.path(coords_dir)) %>%
+  clean_names() %>%
+  mutate_all(., funs(toupper))
+
+
+
+full_dataset <- left_join(dataset, recorded, by = "nestbox") %>% left_join(., coords, by = "nestbox")
+
+# Change NA to 0 if bird was recorded but there are no songs, syllables or syllable types.
+to_0 <- function(df_column) {if_else(!is.na(full_dataset$am) & is.na(df_column), true= 0, false = df_column)}
+full_dataset$n <- to_0(full_dataset$n)
+full_dataset$syll_type_n <- to_0(full_dataset$syll_type_n)
+full_dataset$song_count <- to_0(full_dataset$song_count)
+
+# Add father ID binary column
+full_dataset$father_id <- if_else(is.na(full_dataset$father), true= 0, false = 1)
+
+```
+
+# Plots
+## N syllables vs n syllable types
+```{r explore data}
+# maleID(binary) ~ n_recorded songs
+# r_success ~ n recorded songs
+
+# fill = male == 1
+
+plot <-
+  full_dataset[which(full_dataset$syll_type_n>0),] %>%
+  ggplot(aes(x = n, y = syll_type_n)) +
+  scale_x_continuous(trans = 'log2') +
+  geom_smooth() +
+  geom_point(alpha = 2 / 3) +
+  theme(panel.grid = element_blank(),
+        legend.position = "none")
+plot %>%
+  ggMarginal(.,
+             type = 'histogram',
+             fill = '#f2f2f2',
+             colour = 0)
+
+
+```
+
+```{r}
+
+plot <- full_dataset %>%
+  ggplot(aes(
+    x = song_count,
+    y = factor(father_id),
+    fill = father_id == 1
+  )) +
+  geom_boxplot(fill = NA, colour = "grey") +
+  geom_jitter(aes(colour = father_id == 1), shape = 16, size=2, height = 0.15, alpha = 0.5) +
+  scale_x_continuous(
+    trans = scales::pseudo_log_trans(0.1, base = 10),
+    breaks = c(0, 1, 10, 100, 1000)
+  ) +
+  scale_y_discrete(breaks = NULL) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  scale_colour_manual(
+    values = c( "#E69F00", "#8ea0c9"),
+    name = "Father ID",
+    breaks = c("TRUE", "FALSE"),
+    labels = c("Yes", "No")
+  ) +
+  scale_fill_manual(
+    values = c( "#E69F00", "#8ea0c9"),
+    name = "Father ID",
+    breaks = c("TRUE", "FALSE"),
+    labels = c("Yes", "No")
+  ) +
+  labs(
+    y = element_blank(),
+    x = "\nNumber of songs recorded (log scale)",
+    title = "Identified males vs number of songs") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(panel.background = element_rect(fill='#f2f1f0', colour=NA))
+
+id_males_plot <- plot %>%
+  ggMarginal(data = full_dataset,  
+             groupFill = T,
+             type = 'histogram', 
+             color = "transparent", 
+             size=2, margins = "x")
+
+ggsave(id_males_plot, file= file.path(figures_path, "population", "male_ids_plot.png"), width=16, height=10, units = "cm", dpi=500)
+
+```
+
+
+```{r}
+# models
+
+data <- full_dataset[which(full_dataset$syll_type_n>0),] %>% select(syll_type_n, nestbox, n, song_count, father_id, difference, lay_date)
+```
+
+```{r}
+
+b1 <-
+  brm(data = data, family = zero_inflated_poisson,
+       father_id ~ 1 + song_count,
+      seed = 10)
+
+plot(b1)
+conditional_effects(b1)
+
+```
+
+
+```{r}
+# model number of songs recorded as a function of date and delay
+b2 <-
+  brm(data = data,
+       syll_type_n ~ 1 + differencen,
+      seed = 10)
+
+plot(b2)
+conditional_effects(b2)
+
+```
+
+
+
+```{r}
+
+plot <-
+  full_dataset %>%
+  ggplot(aes(x = n , y = num_fledglings)) +
+  geom_smooth(method='lm') +
+  scale_x_continuous(trans=scales::pseudo_log_trans(base = 2)) +
+  geom_point(alpha = 2 / 3) +
+  theme(panel.grid = element_blank(),
+        legend.position = "none")
+plot %>%
+  ggMarginal(.,
+             type = 'density',
+             fill = '#f2f2f2',
+             colour = NA)
+
+```
+
+
+```{r}
+
+plot <-
+  full_dataset[which(full_dataset$syll_type_n>0),] %>%
+  ggplot(aes(x = lay_date , y = syll_type_n)) +
+  geom_smooth(method='lm') +
+  geom_point(alpha = 0.5) +
+  theme(panel.grid = element_blank(),
+        legend.position = "none")
+plot %>%
+  ggMarginal(.,
+             type = 'density',
+             fill = '#f2f2f2',
+             colour = NA)
+
+```
+
+
+
+```{r}
+
+plot <-
+  full_dataset %>%
+  ggplot(aes(x = song_count, y = n)) +
+   scale_x_continuous(trans = 'log10') +
+   scale_y_continuous(trans = 'log10') +
+  geom_point(alpha = 2 / 3) +
+  theme(panel.grid = element_blank(),
+        legend.position = "none")
+plot %>%
+  ggMarginal(.,
+             type = 'density',
+             fill = '#f2f2f2',
+             color=NA)
+
+```
+
+
+```{r}
+
+plot <-
+  full_dataset %>%
+  ggplot(aes(x = difference, y = song_count)) +
+  geom_point(alpha = 2 / 3) +
+  theme(panel.grid = element_blank(),
+        legend.position = "none")
+plot %>%
+  ggMarginal(.,
+             type = 'density',
+             fill = '#f2f2f2',
+             color=NA)
+
+```
+
+
+
+

@@ -68,6 +68,7 @@ target/
 
 # VS Code
 .vscode/
+*.code-workspace
 
 # Spyder
 .spyproject/
@@ -85,7 +86,10 @@ data
 /resources/fieldwork/
 /test/
 /dependencies/chipper_v1.0_linux
-/reports/
+/reports/figures
+*.pdf
+*.doc
+*.bib
 
 # Mac OS-specific storage files
 .DS_Store
