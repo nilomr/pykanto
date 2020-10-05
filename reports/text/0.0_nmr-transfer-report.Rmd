@@ -29,9 +29,9 @@ csl: animal-behaviour.csl
 
 # Introduction
 
-\hfill *Definitely not a placeholder for a Darwin quote*
-
 ## General introduction
+
+> *Definitely not a placeholder for a Darwin quote*
 
 ### Animal culture and social learning
 
@@ -47,87 +47,91 @@ Whether found in humans or other animals, cultures can be transient or long-last
 
 [For a recent review see @Aplin2018]
 
-Socially learned acoustic signals, such as the song of humpback whales and oscine songbirds, offer incredibly valuable opportunities for answering some of these questions. Songs can convey information about the identity and social position of signallers; they are moulded by natural and sexual selection, stochastic change and cultural processes, and, crucially, can be recorded and analysed in minute detail. 
+This section will bridge the very general introduction above and the more specific overview of bird song below, as well as justify why birds are a good system at all.
 
-Building on a rich tradition of research into passerine song, recent methodological and theoretical advances 21,31,32 have made it possible to study innate structural biases 10,33 and conformist biases 24 in song learning, spatial variation in repertoire sharing and novelty, timing of song acquisition in the wild 36 , relationships between singing rate, personality and territoriality, and song structure and syntax .
+Socially acquired acoustic signals, such as the song of humpback whales and oscine songbirds, offer incredibly valuable opportunities for answering some of these questions. Songs can convey information about the identity and social position of signallers; they are moulded by natural and sexual selection, stochastic processes and directional cultural change, and, crucially, can be recorded and analysed in minute detail. 
 
-Across bird taxa, the importance of social learning for song production is sparse, and the size of the repertoire thus acquired varies greatly . Among the obligate social learners, species whose songs are not exclusively transmitted from father to offspring provide an excellent opportunity to gain a more nuanced understanding of the many factors shaping the evolution of cultural traits.
-
-… why song is great to study this: here comes a brief intro to song.
+And now comes a brief introduction to song:
 
 ## Bird song: a short introduction
 
 #### Historical
 
-Brief introduction to the long history of the study of bird song. Barrington, Marler, Thorpe, Nottebohm, etc.
+Brief introduction to the long history of the study of bird song. Mention Barrington, Marler, Thorpe, Nottebohm, etc., but focus more on how research interests have shifted over the past 50 years or so.
 
 #### Why sing?
 
-Overview of some of the hypothesised ultimate causes behind the evolution of singing in birds, and some of the functions that it may serve in different taxa.
+Overview of some of the ultimate causes that might be responsible the evolution of singing in birds, and some of the functions that it may serve in different taxa.
 
 #### Song learning in phylogenetic perspective
 
 Most birds vocalise, but song learning has only evolved in three orders (Psittaciformes, Apodiformes, and Passeriformes). Within the passerines, oscines learn their songs, while suboscines do not. Briefly, why might social acquisition of song evolve?
 
+#### Song structure and syntax
+
+Among the birds that learn their songs, there is a fantastic range of variation in repertoire size and complexity. A brief overview of work done on the diverse syntactic structures of bird songs, small-world organisation, hierarchical and Markovian organisation, etc. 
+
 ## (Some of) The forces that shape bird song
 
-#### Ecological factors
+First I will discuss, in this order, physiological constraints and phylogenetic inertia, ecological factors, and sexual selection. These are very important but not the focus of my research. I will then introduce some ideas about cultural transmission dynamics, innate biases and spatial, social and demographic factors, which I will explore throughout the thesis.
 
 #### Physiological constraints and phylogenetic inertia
 
+Bio-mechanics of song production and perceptual/cognitive factors determine the degrees of freedom available to the rest of processes.
+
+#### Ecological factors
+
+One of the areas most extensively researched; sensory drive and so on.
+
 #### Sexual selection
+
+Another aspect to which much attention has been paid: how mate choice and competition might select for song complexity and repertoire sharing.
 
 #### Cultural transmission dynamics
 
-#### The interplay of innate constraints and social learning
+Model biases, song content and structure biases, and changes that occur as a direct consequence of transmission. General learning strategies, emphasising the role of conformist learning. Discuss the model of overproduction and selective attrition.
 
-A brief discussion contrasting a) the emphasis placed by some authors on high-fidelity learning with b) ideas more along the lines of Heyes and the french in explaining cultural stability (of song). 
+#### The interplay of innate biases and social learning
 
-Also briefly introduce the experiments of Tchernichovski, Feher et al in light of ideas about convergent transformation, and @Mets2019a, @James2020
+A brief discussion contrasting a) the emphasis placed by some authors on high-fidelity learning with b) ideas more along the lines of Cecilia Heyes and the french in explaining cultural stability. 
 
+Also briefly introduce the experiments of Tchernichovski, Feher et al in light of ideas about convergent transformation.
 
+And @Mets2019, @Mets2017 and @James2020, etc., on genetically inherited learning tendencies and the role of experience. 
 
->  That universal acoustic patterns are observed in the songs of both untutored and early-deafened birds highlights the contribution motor production biases to the emergence of universals in culturally transmitted behaviors. [@James2020]
+#### Spatial, social and demographic factors
 
-> The findings thus suggest that tailoring instruction to suit an individual's natural learning tendencies – which depend on their genes – can enhance learning. [@Mets2019a]
+How do habitat geometry, social network topology, population size, patterns of dispersal, and turnover influence learning opportunities and contribute to shaping song diversity and evolution? 
 
-#### Spatial, social and demographic factors, how they affect songs ( and learning opportunities) in birds
+#### Polymorphic song cultures
 
-
-
-#### Song design and natural variation of song;  constraints and polymorphic cultures
-
-
+Some bird species maintain highly polymorphic song cultures (this is the case of great tits). Songs are caught between divergent forces (e.g., copying errors) and convergence (due to both learning and convergent transformation, the latter as a consequence of the amplification of innate perceptual/cognitive biases); their interplay bounds the diversity available to other processes. @Tchernichovski2017a propose that, at least some species, ‘cultural’ balancing (negatively frequency-dependent) selection could play an important role. It also seems likely that in some or many cases this could simply be a by-product of the spatial distribution of learners that learn a small number of song types from different tutors.
 
 ## Introduction to the study system
 
 #### Great tits
 
-Great Tits, Parus major L., are one such species. Their repertoire consists of 1 to 8 phrases, or song types, that they learn from conspecifics—primarily during their first year of life, until they have established a territory. Male great tits are more likely to share song types with neighbouring breeding males than with their fathers, and similarity in their songs and repertoire novelty and size are known to be influenced by spatial and demographic factors . 
-
-However, despite a wealth of studies on great tit song, the mechanisms that govern its learning and variation remain unclear. Furthermore, characterisation of their features has been generally limited to a few acoustic and temporal parameters that may not be of great biological relevance 
-
-
-
-#### Precedents: 
-
-#### Krebs et al., Fayet 2014
-
-
+Biology of the species and some of the work done with great tit song, especially here in Wytham [e.g., @Hunter1979; @McGregor1982; @Krebs1978; @McGregor1989; @Fayet2014].
 
 ## Concrete aims
 
-What I am actually going to do, specific questions to answer.
+This report aims to do the following:
 
+- Provide a broad overview of the framework and the kinds of questions that my thesis will try to answer ([Introduction](#introduction)).
 
+- Detail some of the methods that I am using to study large amounts of song data in an unsupervised way ([Methods](#Methods)).
 
+- Summarise the dataset acquired during the 2020 breeding season ([Results](#Results-and-discussion)).
 
+- Present an updated plan for next year’s field season ([2021 plan](#Data-collection-plan-for-2021)).
+
+- Introduce a possible outline for the thesis ([Thesis plan](#Thesis-plan)).
 
 # Methods
 
 ## Study system
 
-The study was carried out in Wytham Woods, Oxfordshire, UK (51°46′N, 1°20′W). Wytham woods is a semi-natural deciduous woodland, around 415 hectares in extension, which is surrounded by farmland. Here, a population of great tits is monitored as part of a long-term survey that began in 1947. The majority of great tits nests in nestboxes with know locations. Every year, fieldworkers record the identities of breeding males and females, the dates of clutch initiation and egg hatching, clutch size, and fledgling success under standardised protocols. A large proportion of birds in the population are fitted with a unique British Trust for Ornithology (BTO) metal leg ring either as nestlings or as adults. During the breeding season, from March to June, great tit pairs are socially monogamous and defend territories around their nestboxes [@Hinde1952].
+The study was carried out in Wytham Woods, Oxfordshire, UK (51°46′N, 1°20′W). Wytham woods is a semi-natural deciduous woodland, around 415 hectares in extension, which is surrounded by farmland. Here, a population of great tits is monitored as part of a long-term survey that began in 1947. The majority of great tits nests in nestboxes with known locations. Every year, fieldworkers record the identities of breeding males and females, the dates of clutch initiation and egg hatching, clutch size, and fledgling success under standardised protocols. A large proportion of birds in the population are fitted with a unique British Trust for Ornithology (BTO) metal leg ring either as nestlings or as adults. During the breeding season, from March to June, great tit pairs are socially monogamous and defend territories around their nestboxes [@Hinde1952].
 
 ## Song recording
 
@@ -162,29 +166,39 @@ As a consequence of the automated nature of the recording process, there is a sm
 
 #### Note segmentation
 
-I segmented the resulting song selections into their constituent notes using a dynamic threshold algorithm implemented by @Sainburg2019b. Briefly, the algorithm finds minima in the spectral envelope of an spectrogram, which are considered silences; if the length of the signal between these minima exceeds a maximum note duration, a new local minima is defined that divides the signal in two shorter segments. This is repeated until multiple notes are defined or there are no local minima below a maximum amplitude threshold. Then, segments below a minimum note duration threshold are discarded. The minimum and maximum syllable length thresholds were determined by segmenting a small subset of songs (n = 30) with Chipper, an open-source, Python-based software developed by @Searfoss2020.
+I segmented the resulting song selections into their constituent notes using a dynamic threshold algorithm implemented by @Sainburg2019b. Briefly, the algorithm finds minima in the spectral envelope of an spectrogram, which are considered silences; if the length of the signal between these minima exceeds a maximum note duration, a new local minimum is defined that divides the signal in two shorter segments. This is repeated until multiple notes are defined or there are no local minima below a maximum amplitude threshold. Then, segments below a minimum note duration threshold are discarded. The minimum and maximum note length thresholds were determined by segmenting a small subset of songs (n = 30) with Chipper, an open-source, Python-based software developed by @Searfoss2020.
 
 **Note**: I am currently working on implementing a segmentation algorithm that deals better with reverberation. Sometimes the previous note overlaps with the next and the current algorithm fails to separate them.
 
 #### Spectrograms
 
-I created spectrograms for each individual note in the dataset (See Fig X) from its normalised and band-passed waveform. I then log-scaled each spectrogram and clipped all values within the fifth lowest percentile, to remove background noise of low amplitude. I then zero-padded each spectrogram with length below the longest syllable, and built a dataset containing the metadata for each note and its spectrogram.
+I created spectrograms for each individual note in the dataset (See Fig X) from its normalised and band-passed waveform. I then log-scaled each spectrogram and clipped all values within the fifth lowest percentile, to remove background noise of low amplitude. I then zero-padded each spectrogram with length below the longest note, and built a dataset containing the metadata for each note and its spectrogram.
 
 ### Dimensionality reduction and clustering
 
 #### At the population level
 
-I prepared a $N × d$-dimensional array, with $N =$ total number of syllables in the dataset and $d = 64 × 132$,  the length of a flattened two-dimensional spectrogram array. I then projected this array onto a low-dimensional embeddings found using UMAP (Uniform Manifold Approximation and Projection, [@McInnes2018] ) and PHATE  (Potential of Heat-diffusion for Affinity-based Trajectory Embedding, [@Moon2019]), two non-linear manifold learning and dimensionality reduction algorithms. Full details of the implementation and parameters can be found in the corresponding [code module](#code-availability).
+I prepared a $N × d$-dimensional array, with $N =$ total number of  notes in the dataset and $d = 64 × 132$, the length of a flattened two-dimensional spectrogram array. I then projected the first array onto a low-dimensional embedding found using UMAP (Uniform Manifold Approximation and Projection, [@McInnes2018] ) and PHATE  (Potential of Heat-diffusion for Affinity-based Trajectory Embedding, [@Moon2019]), two non-linear manifold learning and dimensionality reduction algorithms. Full details of the implementation and parameters can be found in the corresponding [code module](#code-availability).
 
 #### For individual birds
 
 In a similar way, I used UMAP to project every note sung by each bird onto a lower-dimensional space. Specifically, I created a two-dimensional projection for visualisation and a ten-dimensional projection for clustering. I then used the latter to infer the note types sung by each bird, by finding areas occupied more densely within the acoustic space using HDBSCAN [@McInnes2017]
 
-**Note:** I am currently defining ‘hard’ clusters, where notes are labelled as either clusters or noise. This makes some clusters a little bit noisy. I might try to implement ‘fuzzy’ clustering, where cluster memberhip is defined by probability vectors, and deal more strictly with outliers.
+**Note:** I am currently defining ‘hard’ clusters, where notes are labelled as either clusters or noise. This makes some clusters a little bit noisy. I might try to implement ‘fuzzy’ clustering, where cluster membership is defined by probability vectors, and deal more strictly with outliers.
 
-### Inferring syllable transitions
+### Inferring note transitions
+
+I defined a directed weighted graph $G = (V, E, w)$ describing the repertoire of each bird, where the vertices $V$ are the set of note clusters with $> 10$ members and the directed edges $E$  and weight $w$ correspond to first-order Markov transition probabilities between them, after removing connections with probability below $0.07$. 
+
+![An illustration of the process used to infer song types](../figures/2020/ind_repertoires/O66_2020-09-22_17:52:07.png)
+
+### Models of sampling success
+
+I modelled the number of recorded songs in a zero-inflated negative binomial mixed effects model with the lag from the onset of egg laying to the date of recording and the lay date as population-level (‘fixed’) effects. Models fit with the brms package [@Burkner2017a], priors, model comparison, etc.
 
 ### Measuring acoustic distance
+
+I am currently extending a method devised by @Mets2018 to measure learning accuracy in the lab to work with unknown tutors and in a larger acoustic space. Once this is ready I will build distance matrices at the note, phrase and song transition levels, and these will be the basis of all subsequent analyses.
 
 ## Code availability:
 
@@ -196,56 +210,121 @@ The code necessary to reproduce all the analyses and figures in this report, alo
 
 ###  Sampling
 
-### Songs and syllables
+Summary of the following:
 
-#### Syllable transitions
+- How many birds recorded
+- How many of those have known IDs
+- How many songs and notes were obtained
+- Spatial coverage
 
+![Frequency distribution of the number of songs recorded per bird](../figures/2020/population/Frequency_distribution_song_n_2020-09-25_14:59.png)
 
+![PHATE projection of every note in the dataset](../figures/population/phate.png)
 
-## Spatial structure
+### Songs and notes
 
+Duration and frequency range statistics for the notes in the dataset, quantifying individual variation.
 
+Distribution of number of note types in the population
+
+![Example of the repertoire of a single bird](../figures/2020/ind_repertoires/B3_repertoire_2020-09-22_17:36:53.png)
+
+![KDE of the distribution of note duration for every bird](../figures/2020/population/syllable_duration_pd_2020-10-04_14:39.png)
+
+![Frequency distribution of note types and counts in the population](../figures/2020/population/Frequency_distribution_note_types_2020-09-28_11:36.png)
+
+### Modelling sampling success
+
+Parameter estimates for models with number of songs recorded as outcome; briefly, 
+
+- More lag from lay date = fewer songs, 
+- Later lay date = fewer songs,
+
+- Father subsequently not ID’d = more likely to have 0 songs,
+
+Cumulative curves for each male (number of songs recorded vs number of note types) 
+
+![Comparison of $y$ to simulated datasets $y^{rep}$ from the posterior predictive distribution](../figures/2020/population/pp_plot_n_songs.png)
+
+![Posterior distribution of model parameters](../figures/2020/population/post_plot.png)
 
 # Data collection plan for 2021
 
-# Outstanding Issues
+What can be done to make sampling more successful in light of the results above? This will be a brief discussion, the main points as follows:
+
+- There is a sharp decrease in singing activity towards the end of egg laying - much sharper than it seemed to me from the literature, but actually matches results from @Mace1987.
+
+- Birds in nests with later lay dates also sing less, but the main correlate of sampling success is time passed since the onset of egg laying. In 2020 I was not able to place more than 10 recorders per day, but for a brief period (~4 days) I would have needed to place ~35 every day. I didn’t recover from the accumulated lag until almost the end of the recording period.
+
+- Therefore, an effort should be made to reduce this lag.
+
+- This requires:
+
+  a) earlier detection of nests with great tit activity, and
+
+  b) better ability to cope with the influx of nests.
+
+- I will discuss potential solutions for a and b.
+
+&nbsp;
+&nbsp;
+
+**Outstanding Issues**
+
+Winter social network data?
 
 # Thesis plan
 
 ## Introduction
 
-This first chapter will provide a general background to the topic of song learning in birds. I will try to integrate ideas from three bodies of research that are sometimes disconected, namely laboratory studies of song ontogeny, 
+The introduction will provide a general background to the topic of song learning in birds. I will try to integrate ideas from three bodies of research that are sometimes disconnected: laboratory studies of song ontogeny, behavioural ecology and cultural evolutionary theory. The structure will be an iteration of the [introduction](#introduction) above.
 
-A literature review with four main sections: i) Cultural evolution and song learning in birds, ii) the factors fostering and limiting song diversity from a cultural evolutionary perspective, ii.i) social learning and learning biases, iv) 
+## 1. What do great tits sing?
 
-An introduction to the study system
+An in-depth description of the variability and similarity of great tit songs, from an acoustic and information-theoretic perspective. This will include a very detailed case study from the Wytham population and comparison with data from across the distribution range of the species.
 
-## What do great tits sing?
+Questions include:
 
-An in-depth description of the variability and similarity of great tit songs, from an acoustic and information-theoretical perspective. transitions, etc
+- Are ‘song types’ meaningful categories at larger spatial scales?
+- Which song traits, from the level of notes to sequential organisation, are more constrained, and which more free to vary? Is variation stochastic?
 
-Establishing… blablabla
+## 2. Song learning and learning biases
 
-at wytham level and european level
+An exploration of the landscape of learning in the study population.
 
-## Learning biases
+Questions include:
 
-who are the tutors?
+- Can the pattern of song sharing be explained in terms of unbiased learning plus the effects of population structure, immigration and dispersal, or does it require further assumptions?
 
-mets etc: repertoires maybe not inheritable, but how about tempo, frequency, etc?
+- Are all songs equally likely to be learnt? Is there evidence for frequency dependence in great tit song learning?
 
-are all songs created equal? some regions of space more dense?
+- Are all males equally likely to serve as tutors?
 
-## How do spatial and demographic factors influence song learning?
+- There is no evidence that repertoire composition or size are inheritable in great tits. Work done in the lab with other species suggests that birds might be better at learning songs that are similar in tempo to those of their fathers. Is there any evidence for this in a wild population?
+- Is there a trade-off between repertoire size and repertoire complexity?
 
-## Transmission fidelity and cultural reinvention of songs
+## 3. Space and demography
 
-how stable
+- How well does community structure predict acoustic structure at different scales?
+- Do any song characteristics change with population density?
+- How is the rate of acoustic change affected by population turnover rates?
+- Does being neighbours with more immigrant birds lead to (a) increased acoustic diversity or (b) having larger repertories?
 
-## The function of songs
+## 4. Copying fidelity and convergence in bird song
+
+Many studies of bird song have concluded that learning is often extremely accurate, with some even estimating that syllable types can persist for longer than 500 years [e.g., @Lachlan2018b]. Although accurate learning does occur, as laboratory studies show, the fact that innate biases alone can give rise to many species-typical song characteristics, even in isolate, deafened, and self-tutored birds [@Feher2017; @Feher2009; James2017d; @James2020], suggests that strong convergent transformation during song ontogeny might difficult the estimation of mutation rates. I will explore this by fitting individual-based simulation models of song change to empirical data gathered in the Wytham population over three years.
+
+## 5. The function of songs
+
+Having a large dataset of songs matched to known individuals will allow us to test questions relating to the current fitness consequences of song-sharing and song performance.
+
+- Is song-sharing beneficial? For whom? Is singing ’popular’ songs beneficial for males?
+- Is spectrotemporal consistency in song performance positively correlated with reproductive success? What about small deviation from small integer ratios in the relationship between note frequencies?
+- If there is a relationship between repertoire size or degree of song-sharing with neighbours and RS, is this mediated by territory quality?
+- Does song production senesce? Are any song traits reliable signals of age?
 
 ## Synthesis
 
-
+A summary integrating the results of every chapter and situating them in a broader theoretic context.
 
 # References
