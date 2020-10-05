@@ -26,6 +26,7 @@ library(ggExtra)
 library(readxl)
 library(lubridate)
 library(ggdist)
+library(bayesplot)
 
 # Knitr settings: 
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
@@ -42,11 +43,11 @@ knitr::opts_chunk$set(echo = TRUE, fig.path = "../../reports/figures/")
 <span style="color:red">Note: This is an example</span>
 
 ```{r laod data}
-dataset <-  "GRETI_HQ_2020_segmented"
+dataset_name <-  "GRETI_HQ_2020_segmented"
 year = "2020"
 
 
-data_dir <-  file.path(getwd(), "data", "resources", dataset)
+data_dir <-  file.path(getwd(), "data", "resources", dataset_name)
 figures_path <- file.path(getwd(), "reports", "figures", year )
 
 datafile <- file.path(data_dir, "full_dataset.csv" )
@@ -60,19 +61,18 @@ dataset <-  read_csv(datafile) %>% clean_names() %>% select(-contains("Legacy"))
 recorded <-
   read_excel(file.path(data_dir, "already-recorded.xlsx")) %>%
   clean_names() %>%
-  select(-c(x, y, section)) %>%
+  select(-c(x, y)) %>%
   filter(str_detect(nestbox, "Nestbox", negate = TRUE)) %>%
   mutate(move_by = ymd(move_by))
 
 
 coords_dir <-
-  file.path(getwd(), "data", "resources", "nestbox_coords.xls")
+  file.path(getwd(), "resources", "nestboxes", "nestbox_coords_transformed.csv")
 
 coords <-
-  read_excel(file.path(coords_dir)) %>%
+  read_csv(coords_dir) %>%
   clean_names() %>%
   mutate_all(., funs(toupper))
-
 
 
 full_dataset <- left_join(dataset, recorded, by = "nestbox") %>% left_join(., coords, by = "nestbox")
@@ -83,10 +83,36 @@ full_dataset$n <- to_0(full_dataset$n)
 full_dataset$syll_type_n <- to_0(full_dataset$syll_type_n)
 full_dataset$song_count <- to_0(full_dataset$song_count)
 
+# Deployed lay date, calculate differences. NOTE: values missing before, check python script
+full_dataset$difference = as.numeric(ymd(full_dataset$lay_date) - ymd(full_dataset$deployed))
+full_dataset$difference_last = as.numeric((ymd(full_dataset$lay_date) + days(full_dataset$clutch_size)) - ymd(full_dataset$deployed))
+
 # Add father ID binary column
 full_dataset$father_id <- if_else(is.na(full_dataset$father), true= 0, false = 1)
 
+# remove early test
+full_dataset = filter(full_dataset, nestbox != "EX5" & lay_date != "2020-05-18")
+
 ```
+
+
+
+```{r}
+# Export coordinates
+
+full_dataset$recorded <- if_else(is.na(full_dataset$am), true= 0, false = 1)
+
+sampling_map_data <- full_dataset %>% select(nestbox, latitude, longitude, recorded, song_count, syll_type_n, april_lay_date)
+
+
+coords_out <- file.path(getwd(), "data", "resources", dataset_name, "map_data_2020.csv")
+
+
+write_csv(sampling_map_data, coords_out)
+
+```
+
+
 
 # Plots
 ## N syllables vs n syllable types
@@ -164,7 +190,10 @@ ggsave(id_males_plot, file= file.path(figures_path, "population", "male_ids_plot
 ```{r}
 # models
 
-data <- full_dataset[which(full_dataset$syll_type_n>0),] %>% select(syll_type_n, nestbox, n, song_count, father_id, difference, lay_date)
+data <- full_dataset %>% select(syll_type_n, nestbox, n, song_count, father_id, difference, difference_last, april_lay_date, lay_date)
+
+data$difference <-  data$difference*-1
+
 ```
 
 ```{r}
@@ -182,16 +211,71 @@ conditional_effects(b1)
 
 ```{r}
 # model number of songs recorded as a function of date and delay
-b2 <-
-  brm(data = data,
-       syll_type_n ~ 1 + differencen,
-      seed = 10)
-
-plot(b2)
-conditional_effects(b2)
+m1 <-
+  brm(bf(song_count ~ 1 + difference + april_lay_date + father_id),
+    data = data,
+    family = zero_inflated_negbinomial(),
+    seed = 10
+  )
 
 ```
 
+
+```{r}
+# model number of songs recorded as a function of date and delay
+m2 <-
+  brm(bf(song_count ~ 1 + difference*april_lay_date),
+    data = data,
+    family = zero_inflated_negbinomial(),
+    seed = 10
+  )
+
+```
+
+```{r}
+m1
+m2
+plot(m1)
+plot(conditional_effects(m1), ask = FALSE)
+
+
+plot(conditional_effects(m1), points= TRUE, theme = theme_tidybayes(), spaghetti =  TRUE)
+
+plot(conditional_effects(m1)) + theme_minimal()
+
+exp(fixef(m2)[-4,-2])
+
+
+pp_check(m1)
+pp_check(m2, nsamples = 50, type = "dens_overlay") + xlim(0, 400) + theme_minimal()
+
+pp_check(m2, type='stat', stat='mean')
+pp_check(m2, type = "stat", stat = 'median', nsamples = 100)
+pp_check(m2, type='error_scatter_avg')
+
+prop_zero <- function(y) mean(y == 0)
+(prop_zero_test2 <- pp_check(m2, plotfun = "stat", stat = "prop_zero"))
+
+```
+
+```{r}
+
+posterior <- as.array(m1)
+dimnames(posterior)
+
+mcmc_areas(
+  posterior,
+  pars = c("b_difference", "b_april_lay_date"),
+  prob = 0.8,
+  # 80% intervals
+  # 99%
+  point_est = "median"
+) + theme_minimal() +
+  ggplot2::labs(title = "Posterior distributions",
+                subtitle = "with medians and 80% intervals")
+
+
+```
 
 
 ```{r}
@@ -215,21 +299,26 @@ plot %>%
 
 ```{r}
 
-plot <-
-  full_dataset[which(full_dataset$syll_type_n>0),] %>%
-  ggplot(aes(x = lay_date , y = syll_type_n)) +
-  geom_smooth(method='lm') +
-  geom_point(alpha = 0.5) +
-  theme(panel.grid = element_blank(),
-        legend.position = "none")
-plot %>%
-  ggMarginal(.,
-             type = 'density',
-             fill = '#f2f2f2',
-             colour = NA)
+
+
+full_dataset %>%
+  ggplot(aes(x = as.numeric(difference)*-1 , y = song_count, color = lay_date)) +
+  geom_smooth(method='loess') +
+  scale_y_continuous(
+    trans = scales::pseudo_log_trans(0.1, base = 10),
+    breaks = c(0, 1, 10, 100, 1000)
+  ) +
+  geom_point() 
+
 
 ```
 
+```{r}
+full_dataset %>%
+  ggplot(aes(x = lay_date , y = difference, color = lay_date)) +
+  geom_smooth(method='loess') +
+  geom_point() 
+```
 
 
 ```{r}
@@ -256,6 +345,23 @@ plot %>%
 plot <-
   full_dataset %>%
   ggplot(aes(x = difference, y = song_count)) +
+  geom_point(alpha = 2 / 3) +
+  theme(panel.grid = element_blank(),
+        legend.position = "none")
+plot %>%
+  ggMarginal(.,
+             type = 'density',
+             fill = '#f2f2f2',
+             color=NA)
+
+```
+
+
+```{r}
+
+plot <-
+  full_dataset %>%
+  ggplot(aes(x = father_id, y = song_count)) +
   geom_point(alpha = 2 / 3) +
   theme(panel.grid = element_blank(),
         legend.position = "none")
