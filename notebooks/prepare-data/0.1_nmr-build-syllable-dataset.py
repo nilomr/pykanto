@@ -45,7 +45,7 @@ from src.greti.read.paths import DATA_DIR
 # %%
 DATASET_ID = "GRETI_HQ_2020_segmented"
 
-n_jobs = -2
+n_jobs = -1
 verbosity = 10
 
 hparams = HParams(
