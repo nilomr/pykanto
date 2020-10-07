@@ -299,13 +299,13 @@ for ax in axes:
         tick.label1 = tick._get_text1()
 plt.yscale("log")
 
-fig.suptitle("Frequency distribution of syllable types and counts", fontsize=15, y=1.03)
+fig.suptitle("Frequency distribution of note types and counts", fontsize=15, y=1.03)
 axes[0].set_ylabel("Number of birds", labelpad=13, fontsize=11)
-axes[0].set_xlabel("Number of syllable types", labelpad=13, fontsize=11)
-axes[1].set_xlabel("Number of syllables", labelpad=13, fontsize=11)
+axes[0].set_xlabel("Number of note types", labelpad=13, fontsize=11)
+axes[1].set_xlabel("Number of notes", labelpad=13, fontsize=11)
 plt.annotate("n = {}".format(len(syllable_n)), xy=(0.1, 0.9), xycoords="axes fraction")
 plt.annotate(
-    "n = {}".format(len(type_counts)), xy=(-1.06, 0.9), xycoords="axes fraction"
+    "n = {}".format(len(type_counts)), xy=(-1.11, 0.9), xycoords="axes fraction"
 )
 
 labels = string.ascii_uppercase[0 : len(axes)]
@@ -330,7 +330,7 @@ fig_out = (
     / YEAR
     / "population"
     / (
-        "Frequency_distribution_syllable_types_"
+        "Frequency_distribution_note_types_"
         + str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
         + ".png"
     )
@@ -453,7 +453,7 @@ ggsave(plot, filename=str(FIGURE_DIR / "count_vs_laydate_2020.png"), res=500)
 fig_dims = (10, 4)
 # sns.set_palette("cubehelix")
 fig, ax = plt.subplots(figsize=fig_dims)
-fig.suptitle("Syllable duration", fontsize=15, y=1.03)
+fig.suptitle("Note duration", fontsize=15, y=1.01)
 
 for indv in np.unique(syllable_df.indv):
     plot = sns.distplot(
@@ -464,7 +464,7 @@ for indv in np.unique(syllable_df.indv):
         label=False,
         rug=False,
         hist=False,
-        kde_kws={"alpha": 0.3, "color": "#8ea0c9", "clip": (0.01, 0.4)},
+        kde_kws={"alpha": 0.3, "color": "#8ea0c9", "clip": (0.0, 0.4)},
         ax=ax,
     )
 
@@ -484,6 +484,15 @@ plot.set_xlabel("Duration (s)", fontsize=11, labelpad=13)
 plot.set_ylabel("Density", fontsize=11, labelpad=13)
 plot.tick_params(labelsize=11)
 
+plt.annotate(
+    "n = {}".format(len(np.unique(syllable_df.indv))),
+    xy=(0.03, 0.9),
+    xycoords="axes fraction",
+)
+
+
+# plt.show()
+
 fig_out = (
     FIGURE_DIR
     / YEAR
@@ -498,7 +507,7 @@ ensure_dir(fig_out)
 plt.savefig(
     fig_out, dpi=300, bbox_inches="tight", pad_inches=0.3, transparent=False,
 )
-# plt.show()
+
 plt.close()
 
 #%%
@@ -506,9 +515,17 @@ plt.close()
 # Plot time of day per song
 
 
-metadata["datetime"] = pd.to_datetime(metadata["datetime"])
-song_datetimes = metadata.filter(["nestbox", "datetime"])
+metadata["hour"] = pd.to_datetime(metadata["datetime"]).dt.hour
+song_datetimes = metadata.filter(["nestbox", "hour"])
 
-song_datetimes.pivot(index="nestbox", columns="datetime", values="values")
+song_datetimes["hour"].value_counts()
+
+# song_datetimes.pivot(index="nestbox", columns="datetime", values="datetime")
+
+times_of_day = song_datetimes["hour"].value_counts()
+
+sns.distplot(song_datetimes["hour"], kde=False, bins=20, kde_kws={"bw": 0.4})
+
 
 # %%
+
