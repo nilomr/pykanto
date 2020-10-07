@@ -1,5 +1,3 @@
-# To add a new cell, type '# %%'
-# To add a new markdown cell, type '# %% [markdown]'
 # %%
 # from IPython import get_ipython
 
@@ -13,30 +11,26 @@ import pickle
 from datetime import datetime
 
 import hdbscan
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import phate
-import scprep
 import seaborn as sns
 import umap
 from joblib import Parallel, delayed
-from matplotlib import gridspec
 from scipy.spatial import distance
 from tqdm.autonotebook import tqdm
 
-from src.avgn.signalprocessing.create_spectrogram_dataset import flatten_spectrograms
+from src.avgn.signalprocessing.create_spectrogram_dataset import (
+    flatten_spectrograms,
+    log_resize_spec,
+)
 from src.avgn.utils.general import save_fig
 from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
 from src.avgn.visualization.network_graph import plot_network_graph
-from src.avgn.visualization.projections import (
-    draw_projection_transitions,
-    plot_label_cluster_transitions,
-    scatter_projections,
-    scatter_spec,
-)
+from src.avgn.visualization.projections import scatter_projections, scatter_spec
 from src.avgn.visualization.quickplots import draw_projection_plots, quad_plot_syllables
+from src.avgn.visualization.spectrogram import draw_spec_set
 from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
 
 # from sklearn.cluster import MiniBatchKMeans
@@ -48,62 +42,11 @@ from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
 # ### get data
 
 DATASET_ID = "GRETI_HQ_2020_segmented"
-year = "2020"
+YEAR = "2020"
 
 save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
 syllable_df = pd.read_pickle(save_loc)
 
-
-# %%
-# indvs = syllable_df.indv.unique()#[:3] # remove subsetting, this is a precaution
-
-indvs = [
-    ind
-    for ind in syllable_df.indv.unique()[:20]
-    if len(syllable_df[syllable_df.indv == ind])
-    > 60  # This threshold is based on the need to have minimum clustr sizes of size >1
-]
-
-len(indvs)
-
-
-# %%
-
-# Add nestbox positions to syllable_df
-
-coords_file = RESOURCES_DIR / "nestboxes" / "nestbox_coords.csv"
-tmpl = pd.read_csv(coords_file)
-
-nestboxes = tmpl[tmpl["nestbox"].isin(syllable_df.indv.unique())]
-nestboxes["east_north"] = nestboxes[["x", "y"]].apply(tuple, axis=1)
-
-
-X = [(447000, 208000)]
-
-for i in nestboxes.index:
-    nestboxes.at[i, "dist_m"] = distance.cdist(
-        X, [nestboxes.at[i, "east_north"]], "euclidean"
-    )[0, 0]
-
-nestboxes.filter(["nestbox", "east_north", "section", "dist_m"])
-
-#  Add to syllable_df
-syllable_df = pd.merge(
-    syllable_df, nestboxes, how="inner", left_on="indv", right_on="nestbox"
-)
-
-# To convert BNG to WGS84:
-
-# import pyproj
-
-# bng=pyproj.Proj(init='epsg:27700')
-# wgs84 = pyproj.Proj(init='epsg:4326')
-
-# def convertCoords(row):
-#     x2,y2 = pyproj.transform(bng,wgs84,row['x'],row['y'])
-#     return pd.Series([x2, y2])
-
-# nestboxes[['long','lat']] = nestboxes[['x', 'y']].apply(convertCoords,axis=1)
 
 # %%
 # Plot settings
@@ -112,13 +55,40 @@ facecolour = "#f2f1f0"
 pal = "Set2"
 
 
+# %%
+# Rescale spectrograms
+
+log_scaling_factor = 10
+
+with Parallel(n_jobs=-1, verbose=10) as parallel:
+    syllables_spec = parallel(
+        delayed(log_resize_spec)(spec, scaling_factor=log_scaling_factor)
+        for spec in tqdm(
+            syllable_df["spectrogram"], desc="scaling spectrograms", leave=False
+        )
+    )
+# %%
+syllable_df["spectrogram"] = syllables_spec
+
+# %%
+# indvs = syllable_df.indv.unique()#[:3] # remove subsetting, this is a precaution
+
+indvs = [
+    ind
+    for ind in syllable_df.indv.unique()[:5]  #! Remove subsetting
+    if len(syllable_df[syllable_df.indv == ind])
+    > 60  # This threshold is based on the need to have minimum clustr sizes of size >1
+]
+
+len(indvs)
+
 # %% [markdown]
 # ###
 
 indv_dfs = {}
 
 for indvi, indv in enumerate(tqdm(indvs)):
-    # if indv != 'Bird5': continue
+
     indv_dfs[indv] = syllable_df[syllable_df.indv == indv]
     indv_dfs[indv] = indv_dfs[indv].sort_values(by=["key", "start_time"])
     print(indv, len(indv_dfs[indv]))
@@ -135,23 +105,25 @@ for indvi, indv in enumerate(tqdm(indvs)):
 
     specs_flattened = flatten_spectrograms(specs)
 
-    # PHATE
-    phate_op = phate.PHATE()
-    phate_operator = phate.PHATE(n_jobs=-1, knn=15, alpha_decay=0)
-    z = list(phate_operator.fit_transform(specs_flattened))
-    indv_dfs[indv]["phate"] = z
+    # # PHATE
+    # phate_operator = phate.PHATE(n_jobs=-1, knn=5, decay=None, t=110, gamma=0)
+    # z = list(phate_operator.fit_transform(specs_flattened))
+    # indv_dfs[indv]["phate"] = z
+
+    # # PHATE_cluster
+    # phate_operator = phate.PHATE(n_jobs=-1, knn=5, decay=30, n_components=5)
+    # z = list(phate_operator.fit_transform(specs_flattened))
+    # indv_dfs[indv]["phate_cluster"] = z
 
     # umap_cluster
     fit = umap.UMAP(
-        n_neighbors=30, min_dist=0.1, n_components=7, verbose=True, init="random"
+        n_neighbors=30, min_dist=0, n_components=5, verbose=True, init="random"
     )
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_cluster"] = z
 
     # umap_viz
-    fit = umap.UMAP(
-        n_neighbors=15, min_dist=0.1, n_components=2, verbose=True, init="random"
-    )
+    fit = umap.UMAP(n_neighbors=30, min_dist=0.3, n_components=2, verbose=True)
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_viz"] = z
 
@@ -163,9 +135,9 @@ for indv in tqdm(indv_dfs.keys()):
     z = list(indv_dfs[indv]["umap_cluster"].values)
     clusterer = hdbscan.HDBSCAN(
         min_cluster_size=int(
-            len(z) * 0.03
+            len(z) * 0.04
         ),  # the smallest size we would expect a cluster to be
-        min_samples=5,  # larger values = more conservative clustering
+        min_samples=15,  # larger values = more conservative clustering
     )
     clusterer.fit(z)
     indv_dfs[indv]["hdbscan_labels"] = clusterer.labels_
@@ -182,109 +154,6 @@ out_dir = DATA_DIR / "embeddings" / DATASET_ID
 ensure_dir(out_dir)
 
 pickle.dump(indv_dfs, open(out_dir / ("individual_embeddings" + ".pickle"), "wb"))
-
-
-# %%
-
-# UMAP and PHATE embeddings to visualise full dataset
-
-specs = list(syllable_df.spectrogram.values)
-specs = [i / np.max(i) for i in specs]
-specs_flattened = flatten_spectrograms(specs)
-
-# UMAP embedding for all birds in dataset
-fit = umap.UMAP(
-    n_neighbors=30, min_dist=0.2, n_components=2, verbose=True, init="random"
-)
-umap_proj = list(fit.fit_transform(specs_flattened))
-
-# PHATE
-phate_op = phate.PHATE()
-phate_operator = phate.PHATE(n_jobs=-1, knn=15, alpha_decay=1)
-phate_proj = list(phate_operator.fit_transform(specs_flattened))
-
-
-# Save embeddings
-out_dir = DATA_DIR / "embeddings" / DATASET_ID
-ensure_dir(out_dir)
-
-syllable_df["umap"] = list(umap_proj)
-syllable_df["phate"] = list(phate_proj)
-
-syllable_df.to_pickle(out_dir / ("full_dataset" + ".pickle"))
-
-# %%
-
-
-# %%
-# Load datasets if they already exist
-
-DATASET_ID = "GRETI_HQ_2020_segmented"
-year = "2020"
-
-syll_loc = DATA_DIR / "embeddings" / DATASET_ID / "full_dataset.pickle"
-syllable_df = pd.read_pickle(syll_loc)
-
-ind_loc = DATA_DIR / "embeddings" / DATASET_ID / "individual_embeddings.pickle"
-indv_dfs = pd.read_pickle(ind_loc)
-
-
-# %%
-# Plot projections of all individuals, colour=distance
-
-umap_proj = list(syllable_df["umap"])
-phate_proj = list(syllable_df["phate"])
-
-labs = syllable_df.dist_m.values
-
-cmap = sns.cubehelix_palette(
-    n_colors=len(np.unique(labs)),
-    start=0,
-    rot=0.8,  # if 0 no hue change
-    gamma=0.7,
-    hue=0.8,
-    light=0.95,
-    dark=0.15,
-    reverse=False,
-    as_cmap=True,
-)
-
-for proj in [phate_proj, umap_proj]:
-
-    if proj is phate_proj:
-        name = "PHATE"
-    elif proj is umap_proj:
-        name = "UMAP"
-
-    scatter_projections(
-        projection=proj,
-        labels=labs,
-        alpha=1,
-        s=1,
-        color_palette="cubehelix",
-        cmap=cmap,
-        show_legend=False,
-        facecolour="k",
-        colourbar=True,
-        figsize=(10, 10),
-    )
-
-    fig_out = (
-        FIGURE_DIR
-        / year
-        / "population"
-        / (
-            "{}_scatter".format(name)
-            + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            + ".svg"
-        )
-    )
-    ensure_dir(fig_out)
-    plt.savefig(
-        fig_out, dpi=300, bbox_inches="tight", pad_inches=0.3, transparent=False,
-    )
-    # plt.show()
-    plt.close()
 
 
 # %%
@@ -323,11 +192,11 @@ for indv in tqdm(indv_dfs.keys()):
 
     fig_out = (
         FIGURE_DIR
-        / year
+        / YEAR
         / "ind_repertoires"
         / (
             "{}_repertoire_".format(indv)
-            + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            + str(datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
             + ".png"
         )
     )
@@ -344,4 +213,20 @@ for indv in tqdm(indv_dfs.keys()):
 # Plot: scatter, transitions, examples, per nestbox
 # Saves figures to FIGURE_DIR / year / "ind_repertoires" / (indv + ".png")
 
-quad_plot_syllables(indv_dfs, year)
+colours = [
+    "#66c2a5",
+    "#fc8d62",
+    "#8da0cb",
+    "#e78ac3",
+    "#a6d854",
+    "#ffd92f",
+    "#e5c494",
+    "#b3b3b3",
+    "#fc6c62",
+    "#7c7cc4",
+    "#57b6bd",
+    "#e0b255",
+]
+
+spectral_mod = sns.set_palette(sns.color_palette(colours))
+quad_plot_syllables(indv_dfs, YEAR, "umap_viz", palette=spectral_mod)
