@@ -148,7 +148,7 @@
          </group>
       </layout>
    </citation>
-   <bibliography entry-spacing="0" hanging-indent="true">
+   <bibliography entry-spacing="0" hanging-indent="true" display="indent">
       <sort>
          <key macro="author-short" names-min="1" names-use-first="1"/>
 		 <key macro="authorcount" names-min="3" names-use-first="3"/>

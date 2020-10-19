@@ -1,0 +1,94 @@
+% Colours
+\usepackage{xcolor}
+\definecolor{orangelink}{HTML}{B33E00}
+\definecolor{lightgray}{HTML}{F2F1F0}
+
+
+\usepackage{sectsty}
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX,Scale=1.02]{Charter}
+\setsansfont[Ligatures=TeX,Scale=1.1]{Lato}
+\allsectionsfont{\sffamily}
+\chapterfont{\sffamily \raggedleft}{\Huge}
+\chapternumberfont{\raggedleft \Huge}
+
+% TOC
+\pagestyle{plain}
+\usepackage{titletoc}
+\contentsmargin[0cm]{0cm}
+\titlecontents{chapter}[0em]{\vskip12pt\bfseries\sffamily\color{orangelink}}
+{\thecontentslabel\enspace}
+{\hspace{1em}}
+{ \hfill\contentspage}[\vskip 3pt]
+\titlecontents{section}[1em]{\sffamily\small\color{black}}
+{\thecontentslabel\enspace}
+{}
+{\titlerule*[1pc]{.}\quad\contentspage}[\vskip 3pt]
+\titlecontents{subsection}[2.7em]{\sffamily\small}
+{\thecontentslabel\enspace}
+{}
+{\titlerule*[1pc]{.}\quad\contentspage}[\vskip 2pt]
+\usepackage{etoolbox}
+\pretocmd{\contentsname}{\sffamily}{}{}
+
+% LOF
+\pagestyle{plain}
+\usepackage{titletoc}
+\contentsmargin[0cm]{0cm}
+\titlecontents{figure}[0em]{\sffamily}
+{\thecontentslabel\enspace}
+{\hspace{1em}}
+{ \hfill\contentspage}[\vskip 3pt]
+\titlecontents{section}[1em]{\sffamily\small}
+{\thecontentslabel\enspace}
+{}
+{\titlerule*[1pc]{.}\quad\contentspage}[\vskip 3pt]
+\titlecontents{subsection}[2.7em]{\sffamily\small}
+{\thecontentslabel\enspace}
+{}
+{\titlerule*[1pc]{.}\quad\contentspage}[\vskip 2pt]
+\usepackage{etoolbox}
+\pretocmd{\contentsname}{\sffamily}{}{}
+
+
+
+% Captions
+\usepackage[bf]{caption}
+\captionsetup{font={footnotesize,sf}}
+\captionsetup[figure]{box=colorbox, boxcolor=lightgray, slc=off}
+
+% Line spaces
+\usepackage{leading}
+\leading{16pt}
+
+% Colour box
+\usepackage{tcolorbox}
+
+
+\AtBeginDocument{\renewcommand{\chaptername}{}{\Huge}}
+
+\usepackage {hyperref}
+\hypersetup {colorlinks = true, linkcolor = orangelink, urlcolor = orangelink}
+
+
+\usepackage{graphicx}
+\graphicspath{ {/home/nilomr/projects/0.0_great-tit-song/reports/figures/} }
+
+
+
+\makeatletter
+\newcommand*{\centerfloat}{%
+  \parindent \z@
+  \leftskip \z@ \@plus 1fil \@minus \textwidth
+  \rightskip\leftskip
+  \parfillskip \z@skip}
+\makeatother
+
+
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\ps@plain}{\thepage}{\small\sffamily\thepage}{}{}
+\makeatother
+\pagestyle{plain}
+
+\usepackage{float}
