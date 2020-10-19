@@ -86,8 +86,9 @@ data
 /resources/fieldwork/
 /test/
 /dependencies/chipper_v1.0_linux
-/reports/figures
-*.pdf
+/reports/figures/*
+!/reports/figures/transfer_report
+
 *.doc
 *.bib
 
