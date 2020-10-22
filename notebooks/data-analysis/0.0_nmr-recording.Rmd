@@ -9,11 +9,13 @@ author:
     affiliation_url: https://example.com/spacelysprokets
 date: "`r Sys.Date()`"
 output: distill::distill_article
+editor_options:
+  chunk_output_type: console
 ---
 ```{r setup}
 # Knitr settings: 
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, cache = TRUE)
 options(scipen = 999)
 ```
 # Import libraries
@@ -27,6 +29,11 @@ library(readxl)
 library(lubridate)
 library(ggdist)
 library(bayesplot)
+library(ape)
+library(patchwork)
+library(ggforce)
+library(tidybayes)
+library(modelr)
 
 # Knitr settings: 
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
@@ -48,7 +55,7 @@ year = "2020"
 
 
 data_dir <-  file.path(getwd(), "data", "resources", dataset_name)
-figures_path <- file.path(getwd(), "reports", "figures", year )
+figures_path <- file.path(getwd(), "reports", "figures")
 
 datafile <- file.path(data_dir, "full_dataset.csv" )
 dataset <-  read_csv(datafile) %>% clean_names() %>% select(-contains("Legacy"))
@@ -90,7 +97,7 @@ full_dataset$difference_last = as.numeric((ymd(full_dataset$lay_date) + days(ful
 # Add father ID binary column
 full_dataset$father_id <- if_else(is.na(full_dataset$father), true= 0, false = 1)
 
-# remove early test
+# remove outlier (a very late second attempt)
 full_dataset = filter(full_dataset, nestbox != "EX5" & lay_date != "2020-05-18")
 
 ```
@@ -113,9 +120,9 @@ write_csv(sampling_map_data, coords_out)
 ```
 
 
-
 # Plots
 ## N syllables vs n syllable types
+
 ```{r explore data}
 # maleID(binary) ~ n_recorded songs
 # r_success ~ n recorded songs
@@ -139,7 +146,7 @@ plot %>%
 
 ```
 
-```{r}
+```{r }
 
 plot <- full_dataset %>%
   ggplot(aes(
@@ -149,10 +156,11 @@ plot <- full_dataset %>%
   )) +
   geom_boxplot(fill = NA, colour = "grey") +
   geom_jitter(aes(colour = father_id == 1), shape = 16, size=2, height = 0.15, alpha = 0.5) +
-  scale_x_continuous(
-    trans = scales::pseudo_log_trans(0.1, base = 10),
-    breaks = c(0, 1, 10, 100, 1000)
-  ) +
+  # scale_x_continuous(
+  #   trans = scales::pseudo_log_trans(0.1, base = 10),
+  #   breaks = c(0, 1, 10, 100, 1000)
+  # ) +
+  xlim(0, 200) +
   scale_y_discrete(breaks = NULL) +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
@@ -184,96 +192,386 @@ id_males_plot <- plot %>%
 
 ggsave(id_males_plot, file= file.path(figures_path, "population", "male_ids_plot.png"), width=16, height=10, units = "cm", dpi=500)
 
+id_males_plot
+
 ```
 
 
 ```{r}
+
 # models
 
-data <- full_dataset %>% select(syll_type_n, nestbox, n, song_count, father_id, difference, difference_last, april_lay_date, lay_date)
+data <- full_dataset %>% select(syll_type_n, nestbox, n, song_count, father_id, difference, difference_last, april_lay_date, lay_date, latitude, longitude) %>% filter(difference <= 0)
 
 data$difference <-  data$difference*-1
-
 ```
+
+# Models
+
+
 
 ```{r}
 
-b1 <-
-  brm(data = data, family = zero_inflated_poisson,
-       father_id ~ 1 + song_count,
-      seed = 10)
+# Test for spatial autocorrelation
+distances <- as.matrix(dist(cbind(data$longitude, data$latitude),diag=T, upper=T), labels=TRUE)
+colnames(distances) <- rownames(distances) <- data$nestbox
+diag(distances) <- 0
 
-plot(b1)
-conditional_effects(b1)
+Moran.I(data$song_count, distances, na.rm = TRUE, scaled = TRUE)
 
 ```
 
+## Number of songs recorded as a function of date and delay
 
 ```{r}
-# model number of songs recorded as a function of date and delay
-m1 <-
-  brm(bf(song_count ~ 1 + difference + april_lay_date + father_id),
-    data = data,
+
+m0 <-
+  brm(bf(song_count ~ 1),
+    data = data, 
     family = zero_inflated_negbinomial(),
     seed = 10
   )
 
+(loo0 <- loo(m0))
+
 ```
 
+```{r}
+
+m1 <-
+  brm(bf(song_count ~ 1 + difference + april_lay_date),
+    data = data, 
+    family = zero_inflated_negbinomial(),
+    seed = 10,
+    control = list(adapt_delta = 0.8),
+    cores = 6,
+    chains = 6,
+    iter = 10000
+  )
+
+(loo1 <- loo(m1))
+
+```
 
 ```{r}
-# model number of songs recorded as a function of date and delay
+
+m1.1 <-
+  brm(bf(song_count ~ 1 + difference + april_lay_date),
+    data = data, 
+    family = hurdle_negbinomial(),
+    seed = 10,
+    control = list(adapt_delta = 0.8),
+    cores = 4,
+    chains = 4,
+    iter = 3000
+  )
+
+(loo1.1 <- loo(m1.1))
+
+```
+
+```{r}
 m2 <-
   brm(bf(song_count ~ 1 + difference*april_lay_date),
-    data = data,
+    data = data, 
     family = zero_inflated_negbinomial(),
-    seed = 10
+    seed = 10,
+    control = list(adapt_delta = 0.8),
+    cores = 4,
+    chains = 4,
+    iter = 6000
   )
+(loo2 <- loo(m2))  
 
 ```
 
 ```{r}
-m1
-m2
-plot(m1)
-plot(conditional_effects(m1), ask = FALSE)
+m3 <-
+  brm(
+    bf(song_count ~ 1 + s(difference)),
+    data = data,
+    family = zero_inflated_negbinomial(),
+    seed = 10,
+    control =
+      list(adapt_delta = 0.95),
+    cores = 4,
+    chains = 4,
+    iter = 3000
+  )
+(loo3 <- loo(m3))
 
+plot(m3)
 
-plot(conditional_effects(m1), points= TRUE, theme = theme_tidybayes(), spaghetti =  TRUE)
-
-plot(conditional_effects(m1)) + theme_minimal()
-
-exp(fixef(m2)[-4,-2])
-
-
-pp_check(m1)
-pp_check(m2, nsamples = 50, type = "dens_overlay") + xlim(0, 400) + theme_minimal()
-
-pp_check(m2, type='stat', stat='mean')
-pp_check(m2, type = "stat", stat = 'median', nsamples = 100)
-pp_check(m2, type='error_scatter_avg')
-
-prop_zero <- function(y) mean(y == 0)
-(prop_zero_test2 <- pp_check(m2, plotfun = "stat", stat = "prop_zero"))
 
 ```
 
+```{r}
+m4 <-
+  brm(
+    bf(song_count ~ 1 + s(difference) + s(april_lay_date)),
+    data = data,
+    family = zero_inflated_negbinomial(),
+    seed = 10,
+    control =
+      list(adapt_delta = 0.97),
+    cores = 4,
+    chains = 4,
+    iter = 7000
+  )
+(loo4 <- loo(m4))
+
+m4
+plot(m4)
+
+
+```
+
+## Plots
+```{r}
+
+exp(fixef(m1)[-4,-2])
+
+max(full_dataset$song_count, na.rm = TRUE)
+
+#####
+
+text_size = 15
+
+ecdf_plot <- pp_check(m1, nsamples = 30, type = "ecdf_overlay") + xlim(0, 500) +
+  theme_minimal() +
+  ylim(0,1.05) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_rect(fill = "#f2f1f0", linetype = 'blank')
+  ) +
+  theme(aspect.ratio=1) +
+  scale_color_manual(labels = c('y', bquote(y^{'rep'})), values = c("#0d0d0d", "#a5b3d4"), name = "") 
+  
+  
+dens_plot <- pp_check(m1, nsamples = 30, type = "dens_overlay") + xlim(0, 500) +
+  theme_minimal() +
+  ylim(-0.001,0.016) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_rect(fill = "#f2f1f0", linetype = 'blank'),
+    axis.title.x = element_text(size = text_size - (text_size / 100 * 20), hjust = -0.7),
+  ) +
+  theme(aspect.ratio=1) +
+  scale_color_manual(labels = c('y', bquote(y^{'rep'})), values = c("#0d0d0d", "#a5b3d4"), name = "") +
+  labs(x = '\nNumber of songs recorded')
+
+
+pp_checks <- (
+  ecdf_plot + annotate(
+    "text",
+    x = 500,
+    y = Inf,
+    hjust = 0.6,
+    vjust = 1.6,
+    label = "A",
+    fontface = 'bold',
+    size = 5
+  ) +
+    dens_plot + annotate(
+      "text",
+      x = 478,
+      y = 0.0152,
+      label = "B",
+      fontface = 'bold',
+      size = 5
+    ) +
+    plot_layout(guides = "collect") +
+    plot_annotation(
+      title = 'Graphical posterior predictive checks',
+      subtitle = expression(
+        'Comparing observed values (y) with simulations from the posterior predictive distribution (' *
+          y ^ rep * ')'*'\n'
+      )
+    ) &
+    theme(
+      text = element_text(size = text_size - (text_size / 100 * 1)),
+      plot.title = element_text(face = "bold", size = text_size + (text_size / 100 * 10), hjust = 0.09),
+      plot.subtitle = element_text(size = text_size - (text_size / 100 * 20), hjust = 0.261)
+    )
+)
+
+ggsave(pp_checks, file= file.path(figures_path, "transfer_report", "pp_checks.pdf"), width=22, height=12, units = "cm", dpi=500)
+ggsave(pp_checks, file= file.path(figures_path, "transfer_report", "pp_checks.png"), width=22, height=12, units = "cm", dpi=500)
+
+```
+
+### Plot posterior of model estimates
 ```{r}
 
 posterior <- as.array(m1)
+
 dimnames(posterior)
+labs <- c('Lag to record', 'April lay date', 'Zero-inflation')
 
-mcmc_areas(
+
+color_scheme_set(c('#A6B3D4',
+'#37425c',
+'#37425c',
+'#37425c',
+'#A6B3D4',
+'#A6B3D4'))
+
+post_plot <- mcmc_areas(
   posterior,
-  pars = c("b_difference", "b_april_lay_date"),
-  prob = 0.8,
-  # 80% intervals
-  # 99%
-  point_est = "median"
-) + theme_minimal() +
-  ggplot2::labs(title = "Posterior distributions",
-                subtitle = "with medians and 80% intervals")
+  pars = c("b_difference", "b_april_lay_date", "zi"),
+  prob = 1,
+  prob_outer=1,
+  point_est = "mean",
+) +
+  theme_minimal() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_rect(fill = "#f2f1f0", linetype = 'blank'),
+    text = element_text(size = text_size - (text_size / 100 * 1)),
+    axis.title.x = element_text(size = text_size - (text_size / 100 * 20)),
+    plot.title = element_text(face = "bold", size = text_size + (text_size / 100 * 10)),
+    aspect.ratio = 1
+  ) +
+  scale_y_discrete(labels = labs, expand = c(0, 0.9)) +
+  labs(title = "Posterior distributions",
+       subtitle = "And means of the parameter estimates<br>in a ZINB **linear** model<br>",
+       x= '\nCoefficient') +
+  theme(plot.subtitle = ggtext::element_markdown(size = text_size - (text_size / 100 * 30)))
 
+post_plot
+
+```
+
+### Plot conditional effects
+
+```{r}
+
+number_ticks <- function(n) {function(limits) pretty(limits, n)}
+
+cond_eff_diff <- conditional_effects(
+    m4,
+    effects = "difference",
+    spaghetti = T,
+    nsamples = 150,
+    robust = FALSE,
+    method = 'posterior_epred')
+
+cond_plot_diff <- (plot(
+  cond_eff_diff,
+  points = T,
+  point_args = c(alpha = 1, size = 0.5),
+  spaghetti_args = c(aes(colour = '#8EA0C9'), size = 0.05),
+  mean = T
+)[[1]] +
+  ylim(0, 400) +
+  theme_minimal() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_rect(fill = "#f2f1f0", linetype = 'blank'),
+    text = element_text(size = text_size - (text_size / 100 * 1)),
+    axis.title.x = element_text(size = text_size - (text_size / 100 * 20)),
+    axis.title.y = element_text(size = text_size - (text_size / 100 * 20)),
+    plot.title = element_text(face = "bold", size = text_size + (text_size / 100 * 10)),
+    aspect.ratio = 1
+  ) +
+  scale_x_continuous(breaks=number_ticks(10)) +
+  labs(title = "Marginal effects",
+       subtitle = "Means of the posterior predictive distributions<br>of the explanatory variables in a ZINB **GAM** model<br>",
+       y= '\nNumber of songs recorded\n',
+       x= '\nLag to record')) +
+  theme(plot.subtitle = ggtext::element_markdown(size = text_size - (text_size / 100 * 30)))
+
+
+cond_eff_laydate <- conditional_effects(
+    m4,
+    effects = "april_lay_date",
+    spaghetti = T,
+    nsamples = 150,
+    robust = FALSE,
+    method = 'posterior_epred')
+
+cond_plot_laydate <- (plot(
+  cond_eff_laydate,
+  points = T,
+  point_args = c(alpha = 1, size = 0.5),
+  spaghetti_args = c(aes(colour = '#8EA0C9'), size = 0.05),
+  mean = T
+)[[1]] +
+  ylim(0, 400) +
+  theme_minimal() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.background = element_rect(fill = "#f2f1f0", linetype = 'blank'),
+    text = element_text(size = text_size - (text_size / 100 * 1)),
+    axis.title.x = element_text(size = text_size - (text_size / 100 * 20)),
+    axis.title.y = element_blank(),
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    plot.title = element_text(face = "bold", size = text_size + (text_size / 100 * 10)),
+    plot.subtitle = element_text(size = text_size - (text_size / 100 * 20)),
+    aspect.ratio = 1
+  ) +
+  scale_x_continuous(breaks=number_ticks(10)) +
+  labs(y= '',
+       x= '\nApril lay date'))
+
+
+
+```
+
+### Combine plots and save
+```{r}
+
+n_songs_model_plot <- (
+  post_plot + annotate(
+    "text",
+    x = Inf,
+    y = 3.59,
+    hjust = 1.8,
+    vjust = 0,
+    label = "A",
+    fontface = 'bold',
+    size = 5
+  ) +
+    cond_plot_diff + annotate(
+      "text",
+      x = Inf,
+      y = 385,
+      hjust = 1.8,
+      vjust = 0,
+      label = "B",
+      fontface = 'bold',
+      size = 5
+    ) +
+    cond_plot_laydate + annotate(
+      "text",
+      x = Inf,
+      y = 385,
+      hjust = 1.8,
+      vjust = 0,
+      label = "C",
+      fontface = 'bold',
+      size = 5
+    )
+)
+
+ggsave(n_songs_model_plot, file= file.path(figures_path, "transfer_report", "n_songs_model_plot.pdf"), width=30, height=12, units = "cm", dpi=500)
+ggsave(n_songs_model_plot, file= file.path(figures_path, "transfer_report", "n_songs_model_plot.png"), width=30, height=12, units = "cm", dpi=500)
 
 ```
 
@@ -344,23 +642,6 @@ plot %>%
 
 plot <-
   full_dataset %>%
-  ggplot(aes(x = difference, y = song_count)) +
-  geom_point(alpha = 2 / 3) +
-  theme(panel.grid = element_blank(),
-        legend.position = "none")
-plot %>%
-  ggMarginal(.,
-             type = 'density',
-             fill = '#f2f2f2',
-             color=NA)
-
-```
-
-
-```{r}
-
-plot <-
-  full_dataset %>%
   ggplot(aes(x = father_id, y = song_count)) +
   geom_point(alpha = 2 / 3) +
   theme(panel.grid = element_blank(),
@@ -370,6 +651,27 @@ plot %>%
              type = 'density',
              fill = '#f2f2f2',
              color=NA)
+
+fatherID_model <- brm(
+    father_id ~ song_count,
+    data = data,
+    family = bernoulli(link = "logit"),
+    seed = 10,
+    control =
+      list(adapt_delta = 0.97),
+    cores = 4,
+    chains = 4,
+    iter = 2000
+  )
+  
+  
+(loo4 <- loo(m4))
+
+plot(marginal_effects(fatherID_model, spaghetti = T))
+
+m4
+plot(m4)
+
 
 ```
 
