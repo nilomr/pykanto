@@ -345,109 +345,6 @@ plt.close()
 
 # %%
 
-# Number of song types versus date
-
-(
-    ggplot(GRETI_dataset_2020, aes(x="date", y="n"))
-    + geom_point()
-    # + geom_smooth(method="lm", se=True, alpha=0.3, span=0.9)
-    # + scale_y_log10(breaks=[1, 10, 100, 1000], labels=[1, 10, 100, 1000])
-    + scale_x_datetime(breaks=date_breaks("7 days"), labels=date_format("%d %b"))
-    + theme(
-        figure_size=(7, 7),
-        panel_grid_major_x=element_blank(),
-        panel_grid_major_y=element_blank(),
-        panel_grid_minor_x=element_blank(),
-        panel_grid_minor_y=element_blank(),
-    )
-    + labs(
-        title="Song count vs date recorded, 2020. n = {}\n".format(len(date_counts)),
-        x="\nDate",
-        y="Song count (log scale)",
-    )
-)
-
-
-# %%
-# Plot count vs date
-plot = (
-    ggplot(date_counts, aes(x="date", y="song_count"))
-    + geom_point()
-    + geom_smooth(method="loess", se=True, alpha=0.3, span=0.9)
-    + scale_y_log10(breaks=[1, 10, 100, 1000], labels=[1, 10, 100, 1000])
-    + scale_x_datetime(breaks=date_breaks("7 days"), labels=date_format("%d %b"))
-    + theme(
-        figure_size=(7, 7),
-        panel_grid_major_x=element_blank(),
-        panel_grid_major_y=element_blank(),
-        panel_grid_minor_x=element_blank(),
-        panel_grid_minor_y=element_blank(),
-    )
-    + labs(
-        title="Song count vs date recorded, 2020. n = {}\n".format(len(date_counts)),
-        x="\nDate",
-        y="Song count (log scale)",
-    )
-)
-ggsave(plot, filename=str(FIGURE_DIR / "count_vs_date_2020.png"), res=500)
-
-
-# %%
-# Plot count vs how long after laydate
-
-plot = (
-    ggplot(date_counts, aes(x="difference", y="song_count"))
-    + geom_point()
-    + geom_smooth(method="loess", se=True, alpha=0.3, span=0.9)
-    + scale_y_log10(breaks=[1, 10, 100, 1000], labels=[1, 10, 100, 1000])
-    + scale_x_reverse()
-    # + scale_x_datetime(breaks=date_breaks("7 days"), labels=date_format("%d %b"))
-    + theme(
-        figure_size=(7, 7),
-        panel_grid_major_x=element_blank(),
-        panel_grid_major_y=element_blank(),
-        panel_grid_minor_x=element_blank(),
-        panel_grid_minor_y=element_blank(),
-    )
-    + labs(
-        title="Song count vs lag (lay date - recording date), 2020. n = {}\n".format(
-            len(date_counts)
-        ),
-        x="\nDifference (days)",
-        y="Song count (log scale)",
-    )
-)
-
-ggsave(plot, filename=str(FIGURE_DIR / "count_vs_lag_2020.png"), res=500)
-
-# %%
-# Plot count vs laydate
-
-plot = (
-    ggplot(date_counts, aes(x="Lay date", y="song_count"))
-    + geom_point()
-    + geom_smooth(method="loess", se=True, alpha=0.3, span=0.9)
-    + scale_y_log10(breaks=[1, 10, 100, 1000], labels=[1, 10, 100, 1000])
-    + scale_x_datetime(breaks=date_breaks("7 days"), labels=date_format("%d %b"))
-    + theme(
-        figure_size=(7, 7),
-        panel_grid_major_x=element_blank(),
-        panel_grid_major_y=element_blank(),
-        panel_grid_minor_x=element_blank(),
-        panel_grid_minor_y=element_blank(),
-    )
-    + labs(
-        title="Song count vs lay date, 2020. n = {}\n".format(len(date_counts)),
-        x="\nLay date",
-        y="Song count (log scale)",
-    )
-)
-
-ggsave(plot, filename=str(FIGURE_DIR / "count_vs_laydate_2020.png"), res=500)
-
-
-# %%
-
 # Plot syllable durations
 
 fig_dims = (10, 4)
@@ -529,3 +426,137 @@ sns.distplot(song_datetimes["hour"], kde=False, bins=20, kde_kws={"bw": 0.4})
 
 # %%
 
+# Plot cumulative curves per bird
+
+## Build dictionary of syllable types per song
+
+song_dict = {}
+
+for indv in np.unique(all_indv_dfs.indv)[:3]:
+    song_loc = [
+        Path(song).name for song in metadata[metadata.nestbox == indv].wav_loc.tolist()
+    ]
+    song_dict[indv] = {}
+    song_n = 0
+
+    for song in song_loc:
+        song_n += 1
+        labels = all_indv_dfs[
+            (all_indv_dfs.indv == indv) & (all_indv_dfs.key == str(song))
+        ].hdbscan_labels.tolist()
+
+        song_dict[indv].update({song_n: labels})
+
+#%%
+
+# pd.DataFrame.from_dict(song_dict)
+
+# pd.concat({k: pd.DataFrame(v).T for k, v in song_dict.items()}, axis=0)
+
+pd.DataFrame.from_dict(
+    {(i, j): song_dict[i][j] for i in song_dict.keys() for j in song_dict[i].keys()},
+    orient="index",
+)
+
+
+#%%
+
+
+for bird, songs in song_dict.items():
+    for number, labels in songs.items():
+        new_list = []
+        for label in labels:
+            for b_number, b_labels in song_dict[
+                bird
+            ].items():  # the rest of songs for the current bird
+                if b_number < number:
+                    if label in b_labels:
+                        new_list.append(0)
+                    else:
+                        new_list.append(1)
+        if 1 in new_list:
+            new = 1
+
+        print(bird, number, new)
+
+        # [key for key in song_dict[bird].keys()][0:number-1]
+
+
+# song_dict.values()
+
+
+#%%
+
+
+Path(metadata[metadata.nestbox == indv].wav_loc.tolist()[0]).name
+
+# all_indv_dfs[all_indv_dfs.indv == 'B11']
+
+
+#%%
+
+for indv in np.unique(all_indv_dfs.indv):
+    print(indv)
+
+#%%
+
+
+fig_dims = (10, 4)
+# sns.set_palette("cubehelix")
+fig, ax = plt.subplots(figsize=fig_dims)
+fig.suptitle("Note duration", fontsize=15, y=1.01)
+
+for indv in np.unique(syllable_df.indv):
+    plot = sns.distplot(
+        (
+            syllable_df[syllable_df.indv == indv]["end_time"]
+            - syllable_df[syllable_df.indv == indv]["start_time"]
+        ),
+        label=False,
+        rug=False,
+        hist=False,
+        kde_kws={"alpha": 0.3, "color": "#8ea0c9", "clip": (0.0, 0.4)},
+        ax=ax,
+    )
+
+ax.grid(False)
+ax.set_facecolor("#f2f1f0")
+ax.spines["top"].set_visible(False)
+ax.spines["bottom"].set_visible(False)
+ax.spines["right"].set_visible(False)
+ax.spines["left"].set_visible(False)
+ax.get_legend().set_visible(False)
+ax.tick_params(axis=u"both", which=u"both", length=0)
+for tick in ax.get_xaxis().get_major_ticks():
+    tick.set_pad(8.0)
+    tick.label1 = tick._get_text1()
+
+plot.set_xlabel("Duration (s)", fontsize=11, labelpad=13)
+plot.set_ylabel("Density", fontsize=11, labelpad=13)
+plot.tick_params(labelsize=11)
+
+plt.annotate(
+    "n = {}".format(len(np.unique(syllable_df.indv))),
+    xy=(0.03, 0.9),
+    xycoords="axes fraction",
+)
+
+
+# plt.show()
+
+fig_out = (
+    FIGURE_DIR
+    / YEAR
+    / "population"
+    / (
+        "syllable_duration_pd_"
+        + str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
+        + ".png"
+    )
+)
+ensure_dir(fig_out)
+plt.savefig(
+    fig_out, dpi=300, bbox_inches="tight", pad_inches=0.3, transparent=False,
+)
+
+plt.close()
