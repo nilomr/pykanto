@@ -53,9 +53,43 @@
 
 
 % Captions
+\usepackage[export]{adjustbox}[2011/08/13]
 \usepackage[bf]{caption}
 \captionsetup{font={footnotesize,sf}}
-\captionsetup[figure]{box=colorbox, boxcolor=lightgray, slc=off}
+%\captionsetup[figure]{box=colorbox, boxcolor=lightgray, slc=off}
+\captionsetup{width=1.4\linewidth}
+\usepackage[many]{tcolorbox}
+\usepackage{floatrow}
+\usepackage{caption}
+\usepackage{graphicx}
+
+
+\DeclareCaptionFormat{tcbcaption}{%
+  \begin{tcolorbox}[
+    nobeforeafter,
+    colback=lightgray,
+    arc=0pt,
+    outer arc=0pt,
+    boxrule=0pt,
+    colupper=black,
+    fontupper=\footnotesize\sffamily,
+    boxsep=0pt
+  ]
+  #1#2#3
+  \end{tcolorbox}%
+}
+\captionsetup{format=tcbcaption}
+\setkeys{Gin}{width=1.4\textwidth}
+\tcbset{colframe=white}
+
+
+\usepackage{xpatch}
+\makeatletter
+% \subcaption@minipage is the last macro call in \subfigure (and \begin{subfigure})
+\xapptocmd{\subcaption@minipage}{\centering}{}{}
+\makeatother
+
+
 
 % Line spaces
 \usepackage{leading}
