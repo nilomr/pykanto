@@ -7,7 +7,7 @@
 \usepackage{sectsty}
 \usepackage{fontspec}
 \setmainfont[Ligatures=TeX,Scale=1.02]{Charter}
-\setsansfont[Ligatures=TeX,Scale=1.1]{Lato}
+\setsansfont[Ligatures=TeX,Scale=1]{Lato}
 \allsectionsfont{\sffamily}
 \chapterfont{\sffamily \raggedleft}{\Huge}
 \chapternumberfont{\raggedleft \Huge}
@@ -56,38 +56,41 @@
 \usepackage[export]{adjustbox}[2011/08/13]
 \usepackage[bf]{caption}
 \captionsetup{font={footnotesize,sf}}
-%\captionsetup[figure]{box=colorbox, boxcolor=lightgray, slc=off}
-\captionsetup{width=1.4\linewidth}
-\usepackage[many]{tcolorbox}
-\usepackage{floatrow}
-\usepackage{caption}
-\usepackage{graphicx}
 
+\usepackage{graphicx,xcolor}
+\usepackage[labelfont=bf]{caption}
+\newcommand\myhrulefill[1]{\noindent\rule{3cm}{0.4pt}}
+\DeclareCaptionFormat{myformat}{{\color[RGB]{48,48,48}\myhrulefill{0.1em}}\\#1#2#3}
+\captionsetup[figure]{format=myformat}
 
-\DeclareCaptionFormat{tcbcaption}{%
-  \begin{tcolorbox}[
-    nobeforeafter,
-    colback=lightgray,
-    arc=0pt,
-    outer arc=0pt,
-    boxrule=0pt,
-    colupper=black,
-    fontupper=\footnotesize\sffamily,
-    boxsep=0pt
-  ]
-  #1#2#3
-  \end{tcolorbox}%
-}
-\captionsetup{format=tcbcaption}
-\setkeys{Gin}{width=1.4\textwidth}
-\tcbset{colframe=white}
-
-
-\usepackage{xpatch}
-\makeatletter
-% \subcaption@minipage is the last macro call in \subfigure (and \begin{subfigure})
-\xapptocmd{\subcaption@minipage}{\centering}{}{}
-\makeatother
+% To draw solid colour box instead of line:
+%\usepackage[many]{tcolorbox}
+%\usepackage{floatrow}
+%\usepackage{caption}
+%\usepackage{graphicx}
+%%\captionsetup[figure]{box=colorbox, boxcolor=lightgray, slc=off}
+%%\captionsetup{width=1.4\linewidth}
+%\DeclareCaptionFormat{tcbcaption}{%
+%  \begin{tcolorbox}[
+%    nobeforeafter,
+%    colback=lightgray,
+%    arc=0pt,
+%    outer arc=0pt,
+%    boxrule=0pt,
+%    colupper=black,
+%    fontupper=\footnotesize\sffamily,
+%    boxsep=0pt
+%  ]
+%  #1#2#3
+%  \end{tcolorbox}%
+%}
+%\captionsetup{format=tcbcaption}
+%%\setkeys{Gin}{width=1.4\textwidth}
+%\tcbset{colframe=white}
+%\usepackage{xpatch}
+%\makeatletter
+%\xapptocmd{\subcaption@minipage}{\centering}{}{}
+%\makeatother
 
 
 
@@ -101,13 +104,13 @@
 
 \AtBeginDocument{\renewcommand{\chaptername}{}{\Huge}}
 
+
 \usepackage {hyperref}
 \hypersetup {colorlinks = true, linkcolor = orangelink, urlcolor = orangelink}
 
 
 \usepackage{graphicx}
 \graphicspath{ {/home/nilomr/projects/0.0_great-tit-song/reports/figures/} }
-
 
 
 \makeatletter
@@ -126,3 +129,27 @@
 \pagestyle{plain}
 
 \usepackage{float}
+
+
+
+\usepackage{hyperref}
+\usepackage{letltxmacro}
+\usepackage{xparse}
+
+
+\AtBeginDocument{%
+  \LetLtxMacro\autoreforig\autoref
+  \RenewDocumentCommand{\autoref}{som}{%
+    \IfBooleanF{#1}{%
+      \hyperref[#3]%
+    }%
+    {%
+      \autoreforig*{#3}\IfValueT{#2}{#2}%
+    }%
+  }
+}
+
+
+% footnote space
+\addtolength{\skip\footins}{2pc plus 4pt}
+\interfootnotelinepenalty=10000
