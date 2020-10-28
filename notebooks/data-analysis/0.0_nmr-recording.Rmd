@@ -1,7 +1,7 @@
 ---
 title: "Recording great tit songs"
 description: |
-  An exploration of the factors that affect recording success
+  An exploration of the factors that affect recording success (for the transfer report)
 author:
   - name: Nilo M. Recalde
     url: https://zoology.web.ox.ac.uk/people/nilo-merino-recalde
@@ -34,6 +34,7 @@ library(patchwork)
 library(ggforce)
 library(tidybayes)
 library(modelr)
+library(skimr)
 
 # Knitr settings: 
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
@@ -55,7 +56,7 @@ year = "2020"
 
 
 data_dir <-  file.path(getwd(), "data", "resources", dataset_name)
-figures_path <- file.path(getwd(), "reports", "figures")
+figures_path <- file.path(getwd(), "reports", "text", "dphil_transfer", "figures")
 
 datafile <- file.path(data_dir, "full_dataset.csv" )
 dataset <-  read_csv(datafile) %>% clean_names() %>% select(-contains("Legacy"))
@@ -98,10 +99,33 @@ full_dataset$difference_last = as.numeric((ymd(full_dataset$lay_date) + days(ful
 full_dataset$father_id <- if_else(is.na(full_dataset$father), true= 0, false = 1)
 
 # remove outlier (a very late second attempt)
-full_dataset = filter(full_dataset, nestbox != "EX5" & lay_date != "2020-05-18")
+#full_dataset = filter(full_dataset, nestbox != "EX5" & lay_date != "2020-05-18")
 
 ```
 
+```{r}
+# A few checks
+
+full_dataset %>% select(am, father_id) %>% drop_na(am)
+
+full_dataset %>% select(am, n) %>% drop_na(am, n)
+
+full_dataset %>% select(n) %>% filter(n!=0) %>% min()
+full_dataset %>% select(n) %>% filter(n!=0) %>% max()
+
+full_dataset %>% select(song_count) %>% filter(song_count!=0) %>% min()
+full_dataset %>% select(song_count) %>% filter(song_count!=0) %>% max()
+
+full_dataset %>% select(am, father_id) %>% drop_na(am) %>% filter(father_id==1)
+
+full_dataset %>% select(syll_type_n) %>% filter(syll_type_n!=0) %>% min()
+full_dataset %>% select(syll_type_n) %>% filter(syll_type_n!=0) %>% max()
+
+
+full_dataset %>% select(syll_type_n, father_id) %>% filter(syll_type_n!=0, father_id==1)
+full_dataset %>% select(syll_type_n, father_id) %>% filter(syll_type_n!=0, father_id==1)
+
+```
 
 
 ```{r}
@@ -329,13 +353,14 @@ plot(m4)
 ## Plots
 ```{r}
 
-exp(fixef(m1)[-4,-2])
+exp(fixef(m2)[-4,-2])
 
 max(full_dataset$song_count, na.rm = TRUE)
 
 #####
 
 text_size = 15
+grey_main = "#787878"
 
 ecdf_plot <- pp_check(m1, nsamples = 30, type = "ecdf_overlay") + xlim(0, 500) +
   theme_minimal() +
@@ -415,12 +440,12 @@ dimnames(posterior)
 labs <- c('Lag to record', 'April lay date', 'Zero-inflation')
 
 
-color_scheme_set(c('#A6B3D4',
+color_scheme_set(c(grey_main,
 '#37425c',
 '#37425c',
-'#37425c',
-'#A6B3D4',
-'#A6B3D4'))
+'#383838',
+grey_main,
+grey_main))
 
 post_plot <- mcmc_areas(
   posterior,
@@ -469,7 +494,7 @@ cond_plot_diff <- (plot(
   cond_eff_diff,
   points = T,
   point_args = c(alpha = 1, size = 0.5),
-  spaghetti_args = c(aes(colour = '#8EA0C9'), size = 0.05),
+  spaghetti_args = c(aes(colour = '#787878'), size = 0.05),
   mean = T
 )[[1]] +
   ylim(0, 400) +
@@ -506,7 +531,7 @@ cond_plot_laydate <- (plot(
   cond_eff_laydate,
   points = T,
   point_args = c(alpha = 1, size = 0.5),
-  spaghetti_args = c(aes(colour = '#8EA0C9'), size = 0.05),
+  spaghetti_args = c(aes(colour = '#787878'), size = 0.05),
   mean = T
 )[[1]] +
   ylim(0, 400) +
@@ -570,8 +595,8 @@ n_songs_model_plot <- (
     )
 )
 
-ggsave(n_songs_model_plot, file= file.path(figures_path, "transfer_report", "n_songs_model_plot.pdf"), width=30, height=12, units = "cm", dpi=500)
-ggsave(n_songs_model_plot, file= file.path(figures_path, "transfer_report", "n_songs_model_plot.png"), width=30, height=12, units = "cm", dpi=500)
+ggsave(n_songs_model_plot, file= file.path(figures_path, "n_songs_model_plot.pdf"), width=30, height=12, units = "cm", dpi=500)
+ggsave(n_songs_model_plot, file= file.path(figures_path, "n_songs_model_plot.png"), width=30, height=12, units = "cm", dpi=500)
 
 ```
 
