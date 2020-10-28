@@ -283,10 +283,10 @@ axes = [fig.add_subplot(gs[i]) for i in range(2)]
 
 
 # histogram of syllable types
-axes[0].hist(type_counts, bins=15, color="#8fa1ca")
+axes[0].hist(type_counts, bins=15, color="#787878")
 # histogram of syllable counts on log scale.
 
-axes[1].hist(syllable_n, bins=nbins, color="#8fa1ca")
+axes[1].hist(syllable_n, bins=nbins, color="#787878")
 for ax in axes:
     ax.set_facecolor("#f2f1f0")
     ax.spines["top"].set_visible(False)
@@ -375,7 +375,7 @@ for indv in np.unique(syllable_df.indv):
         label=False,
         rug=False,
         hist=False,
-        kde_kws={"alpha": 0.3, "color": "#8ea0c9", "clip": (0.0, 0.4)},
+        kde_kws={"alpha": 0.3, "color": "#787878", "clip": (0.0, 0.4)},
         ax=ax,
     )
 
@@ -480,7 +480,7 @@ for nestbox in np.unique(song_datetimes.nestbox):
     )
 
     plot = sns.lineplot(
-        x=counts["time"], y=counts["count"], label=False, color="#8ea0c9", ax=ax,
+        x=counts["time"], y=counts["count"], label=False, color="#787878", ax=ax,
     )
 
 
@@ -597,8 +597,6 @@ for indv in np.unique(all_indv_dfs.indv):
         song_dict[indv].update({song_n: labels})
 
 
-#%%
-
 ## Cumulative new songs
 
 data = []
@@ -649,7 +647,7 @@ for bird in np.unique(cumulative_df.bird):
     # y_data_norm = (y_data - np.min(y_data)) / (np.max(y_data) - np.min(y_data))
 
     plot = sns.lineplot(
-        x=x_data, y=y_data, label=False, color="#8ea0c9", linewidth=4, ax=ax,
+        x=x_data, y=y_data, label=False, color="#787878", linewidth=2.5, ax=ax,
     )
 
 # ax.set(xscale="log")
