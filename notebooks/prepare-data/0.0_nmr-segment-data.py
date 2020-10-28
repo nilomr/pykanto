@@ -3,7 +3,7 @@
 # %%
 from IPython import get_ipython
 
-null.tpl[markdown]
+# null.tpl[markdown]
 # # 0.0 Segment raw data and prepare syllables for analysis
 #
 # > **Note:** this works for the recordings of a given year only
@@ -83,38 +83,38 @@ print(
     + " great tits that bred this year"
 )
 
-null.tpl[markdown]
-# ### Segment raw recordings into bouts
-#  - Songs manually defined in AviaNZ - for now
-#
-# > `batch_segment_bouts()` usis multiprocessing. If you run into problems, use `batch_segment_bouts_single()` (much slower).
+# null.tpl[markdown]
+# # ### Segment raw recordings into bouts
+# #  - Songs manually defined in AviaNZ - for now
+# #
+# # > `batch_segment_bouts()` usis multiprocessing. If you run into problems, use `batch_segment_bouts_single()` (much slower).
 
-# %%
-origin = DATA_DIR / "raw" / year  # Folder to segment
-DT_ID = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")  # Unique name for output folder
-subset = "GRETI_HQ"  # Name of label to select
-DATASET_ID = "GRETI_HQ_2020"  # Name of output dataset
-threshold = 5000  # Amplitude threshold
+# # %%
+# origin = DATA_DIR / "raw" / year  # Folder to segment
+# DT_ID = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")  # Unique name for output folder
+# subset = "GRETI_HQ"  # Name of label to select
+# DATASET_ID = "GRETI_HQ_2020"  # Name of output dataset
+# threshold = 5000  # Amplitude threshold
 
 
-# %%
-batch_segment_songs(
-    origin, DATA_DIR, DT_ID, DATASET_ID, subset=subset, threshold=threshold
-)
+# # %%
+# batch_segment_songs(
+#     origin, DATA_DIR, DT_ID, DATASET_ID, subset=subset, threshold=threshold
+# )
 
-null.tpl[markdown]
-# - Let's check how many songs have been exported:
+# null.tpl[markdown]
+# # - Let's check how many songs have been exported:
 
-# %%
+# # %%
 
-all_songs_path = most_recent_subdirectory(DATA_DIR / "processed" / DATASET_ID)
-all_songs_list = np.sort(list(all_songs_path.glob("**/*.wav")))
-print("There are " + str(len(all_songs_list)) + " songs")
+# all_songs_path = most_recent_subdirectory(DATA_DIR / "processed" / DATASET_ID)
+# all_songs_list = np.sort(list(all_songs_path.glob("**/*.wav")))
+# print("There are " + str(len(all_songs_list)) + " songs")
 
-null.tpl[markdown]
-# # Syllable segmentation
-null.tpl[markdown]
-# ### Create dataset
+# null.tpl[markdown]
+# # # Syllable segmentation
+# null.tpl[markdown]
+# # ### Create dataset
 
 # %%
 
@@ -149,7 +149,7 @@ dataset = DataSet(DATASET_ID, hparams=hparams)
 # Check a sample json
 dataset.sample_json
 
-null.tpl[markdown]
+
 # ### Define parameters
 
 # %%
@@ -173,7 +173,7 @@ parameters = {
 # There needs to be a silence of at least min_silence_for_spec length,
 # and a syllable no longer than max_vocal_for_spec length
 
-null.tpl[markdown]
+
 # ### Check a sample song
 
 # %%
