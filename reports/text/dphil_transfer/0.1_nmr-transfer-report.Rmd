@@ -97,7 +97,7 @@ Some songs might be preferred independently of who sings them—a ‘content bia
 
 Birds can also learn a song based on how frequently they have heard it, or how many other birds sing a particular variant [@VanLeeuwen2015; @Aplin2015a]. The relationship between the frequency of a trait in a population and the probability that it is learnt can be linear: if this is the case, transmission is unbiased. However, if more popular traits are more likely to be learnt than it would expected given their frequency, learning is said to be conformist, or positively frequency-dependent. And if the opposite is true the pattern is one of anti-conformism, or negative frequency-dependence. Conformist learning seems to be a common strategy in nature, perhaps because it can help individuals to leverage collective information to make decisions about locally adaptive behaviour [@Pike2010; @Danchin2018; @Whiten2019]. All else being equal, cultural traits will have a slower rate of change if their learning is conformist. Conversely, anti-conformist biases will cause faster turnover [@Acerbi2014], and might arise if individuals have a preference for novelty [but see @Smaldino2015].
 
-Another determinant of the pace of change of a population’s songs is how accurately birds learn them. Some authors have tried to calculate ‘cultural mutation rates’ for different species to reflect how much songs change from one generation to the next: chaffinches, for example, appear to learn their songs very accurately [@Lachlan2003; @Slater1986], which slows change down. But determining this quantity is complicated by the fact that many other factors also influence the tempo of cultural change. One is the learning strategy used by individuals, already mentioned. Another is the fact that songs can be modified during the learning process in non-random directions, in a process sometimes called convergent transformation or cultural attraction [@Claidiere2018b; @Gray2007a; Morin2016; @Heyes1993]. This can be illustrated by an elegant experiment carried out by @Feher2009: song tutoring lineages were started with birds that were raised in isolation, and each new bird learned from the previous—mimicking natural generations of tutors and pupils. Many of the song features that are typical in the species arose over the course of just a few generations, presumably as a consequence of directional modifications introduced by the learners. 
+Another determinant of the pace of change of a population’s songs is how accurately birds learn them. Some authors have tried to calculate ‘cultural mutation rates’ for different species to reflect how much songs change from one generation to the next: chaffinches, for example, appear to learn their songs very accurately [@Lachlan2003; @Slater1986], which slows change down. But determining this quantity is complicated by the fact that many other factors also influence the tempo of cultural change. One is the learning strategy used by individuals, already mentioned. Another is the fact that songs can be modified during the learning process in non-random directions, in a process sometimes called convergent transformation or cultural attraction [@Claidiere2018b; @Gray2007a; @Morin2016; @Heyes1993]. This can be illustrated by an elegant experiment carried out by @Feher2009: song tutoring lineages were started with birds that were raised in isolation, and each new bird learned from the previous—mimicking natural generations of tutors and pupils. Many of the song features that are typical in the species arose over the course of just a few generations, presumably as a consequence of directional modifications introduced by the learners. 
 
 The available evidence suggests that the changes brought about by cultural dynamics are often neutral or even negative [ref], akin to random genetic drift [@Grant2010].  However, in some cases, cultural change might help birds adapt to novel acoustic landscapes [@Rios-Chelen2012; @Slater2013], or fine-tune the song’s characteristics to better match the shifting perceptual preferences of the receivers [@Renoult2019a]. At larger timescales, the accumulation of either neutral or directional cultural changes in songs might promote reproductive isolation between populations. Nevertheless, and although this possibility has attracted much interest, the evidence for it is lacking [@Verzijden2012; @Yeh2015; @Lachlan2004]. Finally, it is important to note that songs are not necessarily fixed sets of notes or phrases, and different elements might change at different rates and be affected by different cultural, sexual or ecological pressures [see, for example, @Williams2013a and @VanBoheemen2019b]. 
 
@@ -141,6 +141,14 @@ Every nestbox in the study site is checked by fieldworkers at least once a week 
 
 I used 30 AudioMoth recorders  [@Hill2019b], which were housed in waterproof, custom-built enclosures (See Fig X). Recording began approximately one hour before sunrise (~ 05:36 – 04:00 UTC) and consisted of seven 59-minute-long (one hour minus one-minute pauses) recordings with a sample rate of 48 kHz.
 
+&nbsp;
+
+\begin{figure}[h] 
+  \includegraphics[width=1\textwidth, center]{figures/sample_segmented.png}  
+  \caption[Two different song types sung by a male]{Two different song types sung by a male. Each colour represents a different note; a combination of two constitutes a phrase, and each line is a complete song.}  
+  \label{fig:sample-segmented} 
+\end{figure}
+
 ## Definitions
 
 There is not a consistent set of terms used to refer to the different levels at which the acoustic output of a bird can be described. For clarity, these are the definitions that I use throughout this work:
@@ -156,7 +164,7 @@ There is not a consistent set of terms used to refer to the different levels at 
 
 \begin{figure}[h]
   \includegraphics[width=1\textwidth, center]{figures/MP68_sample.png}
-  \caption[A small sample of notes from a male after segmentation and thresholding]{A small sample of notes from a male after segmentation and thresholding.}
+  \caption[A small sample of notes from a male after segmentation and thresholding]{A small sample of notes from a male after preprocessing and segmentation.}
   \label{fig:sample-notes}
 \end{figure}
 
@@ -186,13 +194,19 @@ I segmented the resulting song selections into their constituent notes using a d
 
 #### Spectrograms
 
-I created spectrograms for each individual note in the dataset (See Fig X) from its normalised and band-passed waveform. I then log-scaled each spectrogram and clipped all values within the fifth lowest percentile, to remove background noise of low amplitude. I then zero-padded each spectrogram with length below the longest note and built a dataset containing the metadata for each note and its spectrogram.
+I created spectrograms for each individual note in the dataset from its normalised and band-passed waveform. I then log-scaled each spectrogram and clipped all values within the fifth lowest percentile, to remove background noise of low amplitude. I then zero-padded each spectrogram with length below the longest note and built a dataset containing the metadata for each note and its spectrogram.
 
 ### Dimensionality reduction and clustering
 
 #### At the population level
 
-I prepared a $N × d$-dimensional array, with $N =$ total number of notes in the dataset and $d = 64 × 132$, or the length of a flattened two-dimensional spectrogram array. I then projected the first array onto a low-dimensional embedding found using UMAP (Uniform Manifold Approximation and Projection, [@McInnes2018]) and PHATE  (Potential of Heat-diffusion for Affinity-based Trajectory Embedding, [@Moon2019]), two non-linear manifold learning and dimensionality reduction algorithms. Full details of the implementation and parameters can be found in the corresponding [code module](#code-availability).
+I prepared a $N × d$-dimensional array, with $N =$ total number of notes in the dataset and $d = 64 × 132$, or the length of a flattened two-dimensional spectrogram array. I then projected the first array onto a low-dimensional embedding found using UMAP (Uniform Manifold Approximation and Projection, [@McInnes2018]) and PHATE  (Potential of Heat-diffusion for Affinity-based Trajectory Embedding, [@Moon2019]), two non-linear manifold learning and dimensionality reduction algorithms. Full details of the implementation and parameters can be found in the corresponding [code module](#code-availability); see \autoref{fig:umap} for an example of a projection into two dimensions.
+
+\begin{figure}[H]
+  \includegraphics[width=1.06\textwidth, center]{figures/UMAP_scatter.png}
+  \caption[UMAP embedding of the complete note dataset]{Embedding of the complete dataset using UMAP (Uniform Manifold Approximation and Projection, n = 182.616 notes). Colours represent distance in metres from a randomly selected point in the population.}
+  \label{fig:umap}
+\end{figure}
 
 #### For individual birds
 
@@ -200,20 +214,15 @@ In a similar way, I used UMAP to project every note sung by each bird onto a low
 
 **Note:** I am currently defining ‘hard’ clusters, where notes are labelled as either clusters or noise. This makes some clusters a little bit noisy. I might try to implement ‘fuzzy’ clustering, where cluster membership is defined by probability vectors, and deal more strictly with outliers. Density-based clustering from the UMAP embedding works well, but I will also define clusters using a linear embedding.
 
-\begin{figure}[h]
-  \includegraphics[width=1\textwidth, center]{figures/SW5_2020.png}
-  \caption[An illustration of the process used to classify notes and transitions.]{An illustration of the process used to classify notes and transitions for a random male in the dataset. \textbf{A}: Note clusters are defined using HDBSCAN, a density-based algorithm, on a 10-dimensional UMAP projection. \textbf{B}: a representation of the transitions between notes, where each line joins two notes sung consecutively. \textbf{C}: a directed graph with weights = first-order Markov transition probabilities between notes. \textbf{D}: Examples extracted at random from each cluster defined in A.}
-  \label{fig:transitions}
-\end{figure}
-
 ### Inferring note transitions
 
 I defined a directed weighted graph $G = (V, E, w)$ describing the repertoire of each bird, where the vertices $V$ are the set of note clusters with $> 10$ members and the directed edges $E$  and weight $w$ correspond to first-order Markov transition probabilities between them. When a set of $n$ notes consistently appeared in the same order I considered them a song type (see \autoref{fig:transitions}).
-&nbsp;&nbsp;
+&nbsp;
+
 \begin{figure}[h]
-  \includegraphics[width=1\textwidth, center]{figures/sample_segmented.png}
-  \caption[Two different song types sung by a male]{Two different song types sung by a male, with colours corresponding to note types fund using the method outlined above.}
-  \label{fig:sample-segmented}
+  \includegraphics[width=1\textwidth, center]{figures/SW5_2020.png}
+  \caption[An illustration of the process used to classify notes and transitions]{An illustration of the process used to classify notes and transitions for a random male in the dataset. \textbf{A}: Note clusters are defined using HDBSCAN, a density-based algorithm, on a 10-dimensional UMAP projection. \textbf{B}: a representation of the transitions between notes, where each line joins two notes sung consecutively. \textbf{C}: a directed graph with weights = first-order Markov transition probabilities between notes. \textbf{D}: Examples extracted at random from each cluster defined in A.}
+  \label{fig:transitions}
 \end{figure}
 
 ### Models of sampling success
@@ -260,13 +269,13 @@ The distribution of note counts follows a power law: birds for which there is a 
 
 \autoref{fig:time-of-day} shows how singing activity changed throughout the morning, with most songs recorded between 4 and 5 UTC, and \autoref{fig:durations} shows the distribution of note duration for all males in the dataset. Finally, \autoref{fig:cumulative} plots the cumulative number of song types against the number of songs recorded. Although it is likely that the dataset underrepresents the number of song types sung by some males, most curves reach an asymptote.
 
-\begin{figure}[h]
+\begin{figure}[p]
   \includegraphics[width=1\textwidth, center]{figures/time_plot.png}
   \caption[Singing activity throughout the morning]{Singing activity throughout the morning with one-hour resolution. Each line represent a different bird in the dataset; times are UTC.}
   \label{fig:time-of-day}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[p]
   \includegraphics[width=1.05\textwidth, center]{figures/syllable_duration.png}
   \caption[Distribution of note durations in the dataset]{Kernel density estimation of the distribution of note durations for every male in the 2020 dataset.}
   \label{fig:durations}
