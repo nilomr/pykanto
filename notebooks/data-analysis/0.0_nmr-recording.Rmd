@@ -129,11 +129,46 @@ full_dataset %>% select(syll_type_n, father_id) %>% filter(syll_type_n!=0, fathe
 
 
 ```{r}
+
+# Total number marked as 'g':
+full_dataset %>% nrow() -> total_g
+# Of those, how many with male ID?
+full_dataset %>% select(father_id) %>% drop_na() %>% filter( . == 1) %>%  tally() -> id_g
+percentage_total <-  ( (id_g/total_g) * 100 )
+
+
+# Number where recording was attempted:
+full_dataset %>% select(am) %>% drop_na() %>% tally() -> total_g_attempted
+# Of those, which have ID for father
+full_dataset %>% select(am, father_id) %>% drop_na(am) %>% filter(father_id==1) %>% tally() -> id_g_attempted
+percentage_recorded <-  ( (id_g_attempted/total_g_attempted) * 100 )
+
+
+# Number where recording was attempted and n not 0:
+full_dataset %>% select(am, n) %>% drop_na(am) %>% filter(n!=0) %>% tally() -> total_g_attempted_song
+# Of those, which have ID for father
+full_dataset %>% select(am, father_id, n) %>% drop_na(am) %>% filter(father_id==1, n != 0) %>% tally() -> id_g_attempted_song
+percentage_recorded_song <-  ( (id_g_attempted_song/total_g_attempted_song) * 100 )
+
+# Number where recording was attempted and enough data for analysis:
+full_dataset %>% select(am, syll_type_n) %>% drop_na(am) %>% filter(syll_type_n!=0) %>% tally() -> total_enough_data
+
+# Of those, which have ID for father
+full_dataset %>% select(am, father_id, syll_type_n, incubation_started) %>% drop_na(am) %>% filter(father_id==1, syll_type_n != 0) %>% tally() -> total_enough_data_id
+
+percentage_recorded_song <-  ( (total_enough_data_id/total_enough_data) * 100 )
+
+
+
+```
+
+
+```{r}
 # Export coordinates
 
 full_dataset$recorded <- if_else(is.na(full_dataset$am), true= 0, false = 1)
 
-sampling_map_data <- full_dataset %>% select(nestbox, latitude, longitude, recorded, song_count, syll_type_n, april_lay_date)
+sampling_map_data <- full_dataset %>% select(nestbox, latitude, longitude, recorded, song_count, syll_type_n, april_lay_date, father_id)
 
 
 coords_out <- file.path(getwd(), "data", "resources", dataset_name, "map_data_2020.csv")
