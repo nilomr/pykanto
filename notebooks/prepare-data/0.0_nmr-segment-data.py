@@ -51,17 +51,17 @@ from tqdm.autonotebook import tqdm
 
 # %%
 # Set year
-year = "2020"
+YEAR = "2020"
 
 
 # %%
 # import recorded nestboxes
-files_path = DATA_DIR / "raw" / year
+files_path = DATA_DIR / "raw" / YEAR
 filelist = np.sort(list(files_path.glob("**/*.WAV")))
 recorded_nestboxes = pd.DataFrame(set([file.parent.name for file in filelist]))
 
 # import the latest brood data downloaded from https://ebmp.zoo.ox.ac.uk/broods
-brood_data_path = RESOURCES_DIR / "brood_data" / year
+brood_data_path = RESOURCES_DIR / "brood_data" / YEAR
 list_of_files = glob.glob(fspath(brood_data_path) + "/*.csv")
 latest_file = max(list_of_files, key=os.path.getctime)
 greti_nestboxes = pd.DataFrame(
@@ -90,7 +90,7 @@ print(
 # # > `batch_segment_bouts()` usis multiprocessing. If you run into problems, use `batch_segment_bouts_single()` (much slower).
 
 # # %%
-# origin = DATA_DIR / "raw" / year  # Folder to segment
+# origin = DATA_DIR / "raw" / YEAR  # Folder to segment
 # DT_ID = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")  # Unique name for output folder
 # subset = "GRETI_HQ"  # Name of label to select
 # DATASET_ID = "GRETI_HQ_2020"  # Name of output dataset
@@ -189,7 +189,14 @@ plt.plot(data)
 #%%
 
 results = dynamic_threshold_segmentation(
-    data, rate, **parameters, dereverb=True, echo_range=300, echo_reduction=3
+    data,
+    rate,
+    **parameters,
+    dereverb=True,
+    echo_range=200,
+    echo_reduction=6,
+    gaussian_blur=True,
+    sigma=1,
 )
 
 plot_segmentations(
@@ -213,24 +220,26 @@ len(np.unique(indvs))
 
 # %%
 
-# for indv in tqdm(np.unique(indvs)[90:100], desc="individuals"):
-#     print(indv)
-#     indv_keys = np.array(list(dataset.data_files.keys()))[indvs == indv][7:10]
+for indv in tqdm(np.unique(indvs)[90:92], desc="individuals"):
+    print(indv)
+    indv_keys = np.array(list(dataset.data_files.keys()))[indvs == indv][7:10]
 
-#     joblib.Parallel(n_jobs=1, verbose=0)(
-#         joblib.delayed(segment_spec_custom)(
-#             key,
-#             dataset.data_files[key],
-#             **parameters,
-#             DT_ID=DT_ID,
-#             DATASET_ID=DATASET_ID,
-#             plot=True,
-#             dereverb=True,
-#             echo_range=200,
-#             echo_reduction=6,
-#         )
-#         for key in tqdm(indv_keys, desc="files", leave=False)
-#     )
+    joblib.Parallel(n_jobs=1, verbose=0)(
+        joblib.delayed(segment_spec_custom)(
+            key,
+            dataset.data_files[key],
+            **parameters,
+            DT_ID=DT_ID,
+            DATASET_ID=DATASET_ID,
+            plot=True,
+            dereverb=True,
+            echo_range=200,
+            echo_reduction=6,
+            gaussian_blur=True,
+            sigma=1,
+        )
+        for key in tqdm(indv_keys, desc="files", leave=False)
+    )
 
 ### Segment full dataset
 
