@@ -9,14 +9,13 @@ import numpy as np
 import pandas as pd
 from IPython import get_ipython
 from joblib import Parallel, delayed
-from tqdm.autonotebook import tqdm
-
 from src.avgn.dataset import DataSet
 from src.avgn.signalprocessing.create_spectrogram_dataset import *
 from src.avgn.utils.hparams import HParams
 from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
 from src.avgn.visualization.spectrogram import draw_spec_set
 from src.greti.read.paths import DATA_DIR
+from tqdm.autonotebook import tqdm
 
 # %% [markdown]
 # ## 0.1 Build dataset of song syllables with their spectrograms
@@ -105,6 +104,7 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
             .data["wav_loc"]
             .replace("/home/nilomr", "/data/zool-songbird/shil5293"),
             # dataset.data_files[key].data["wav_loc"], # if local machine
+            # replace with your respective home directiories
             dataset.hparams,
         )
         for key in tqdm(syllable_df.key.unique(), position=0, leave=True)
