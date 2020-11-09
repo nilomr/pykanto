@@ -1,9 +1,10 @@
-from scipy.signal import butter, lfilter
-import numpy as np
-import librosa
-from scipy import signal
 import warnings
+
+import librosa
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy import signal
+from scipy.signal import butter, lfilter
 
 ### General
 
@@ -101,7 +102,7 @@ def plot_spec(
     ax=None,
     rate=None,
     hop_len_ms=None,
-    cmap=plt.cm.afmhot,
+    cmap=plt.cm.gray,
     show_cbar=True,
     spectral_range=None,
     time_range=None,
