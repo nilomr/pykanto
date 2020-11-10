@@ -1,6 +1,8 @@
 # To add a new cell, type '# %%'
 # To add a new markdown cell, type '# %% [markdown]'
 # %%
+from datetime import datetime
+
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
@@ -59,7 +61,7 @@ hparams = HParams(
     ref_level_db=30,
     min_level_db=-19,
     mask_spec=True,
-    n_jobs=-2,
+    n_jobs=-1,
     verbosity=1,
     nex=-1,
 )
@@ -179,17 +181,16 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
 
 # %% [markdown]
 # ### Rescale and pad spectrograms
-# > Rescaling removes duration differences, which you might not want
 
 # %%
 
-# log_scaling_factor = 10
+log_scaling_factor = 10
 
-# with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
-#     syllables_spec = parallel(
-#         delayed(log_resize_spec)(spec, scaling_factor=log_scaling_factor)
-#         for spec in tqdm(syllables_spec, desc="scaling spectrograms", leave=False)
-#     )
+with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
+    syllables_spec = parallel(
+        delayed(log_resize_spec)(spec, scaling_factor=log_scaling_factor)
+        for spec in tqdm(syllables_spec, desc="scaling spectrograms", leave=False)
+    )
 
 
 # %%
@@ -247,8 +248,11 @@ syllable_df["spectrogram"] = syllables_spec
 # ### Save entire dataset
 
 # %%
+DT_ID = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
+save_loc = (
+    DATA_DIR / "syllable_dfs" / DATASET_ID / DT_ID / "{}.pickle".format(DATASET_ID)
+)
 ensure_dir(save_loc)
 syllable_df.drop("audio", 1).to_pickle(save_loc)
 
