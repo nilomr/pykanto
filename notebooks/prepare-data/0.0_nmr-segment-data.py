@@ -30,7 +30,6 @@ import joblib
 # %%
 import numpy as np
 import pandas as pd
-import src
 
 warnings.filterwarnings(action="once")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
@@ -220,7 +219,7 @@ len(np.unique(indvs))
 
 # %%
 
-for indv in tqdm(np.unique(indvs)[90:92], desc="individuals"):
+for indv in tqdm(np.unique(indvs)[100:103], desc="individuals"):
     print(indv)
     indv_keys = np.array(list(dataset.data_files.keys()))[indvs == indv][7:10]
 
@@ -233,18 +232,18 @@ for indv in tqdm(np.unique(indvs)[90:92], desc="individuals"):
             DATASET_ID=DATASET_ID,
             plot=True,
             dereverb=True,
-            echo_range=200,
-            echo_reduction=6,
+            echo_range=130,
+            echo_reduction=8,
             gaussian_blur=True,
             sigma=1,
         )
         for key in tqdm(indv_keys, desc="files", leave=False)
     )
 
-### Segment full dataset
 
+### Segment full dataset
 # %%
-nex = -1
+
 for indv in tqdm(np.unique(indvs), desc="individuals"):
     print(indv)
     indv_keys = np.array(list(dataset.data_files.keys()))[indvs == indv]
@@ -258,8 +257,8 @@ for indv in tqdm(np.unique(indvs), desc="individuals"):
             DATASET_ID=DATASET_ID,
             save=True,
             dereverb=True,
-            echo_range=200,
-            echo_reduction=6,
+            echo_range=130,
+            echo_reduction=8,
         )
         for key in tqdm(indv_keys, desc="files", leave=True)
     )
