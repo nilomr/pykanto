@@ -4,8 +4,6 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from tqdm.autonotebook import tqdm
-
 from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
 from src.avgn.visualization.network_graph import plot_network_graph
 from src.avgn.visualization.projections import (
@@ -16,6 +14,7 @@ from src.avgn.visualization.projections import (
 )
 from src.avgn.visualization.spectrogram import draw_spec_set, plot_example_specs
 from src.greti.read.paths import DATA_DIR, FIGURE_DIR
+from tqdm.autonotebook import tqdm
 
 
 def draw_projection_plots(
