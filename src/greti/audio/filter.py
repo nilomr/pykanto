@@ -63,7 +63,7 @@ def band_pass_filter(seg, low_cutoff_freq, high_cutoff_freq, order):
     return seg.apply_mono_filter_to_each_channel(filter_fn)
 
 
-def dereverberate(spec, echo_range=50, echo_reduction=2, hop_length_ms=3, plot=False):
+def dereverberate(spec, echo_range=100, echo_reduction=2, hop_length_ms=3, plot=False):
     """Function to reduce reverberation in a spectrogram. This is similar to the implementation in Luscinia
     by Robert Lachlan (https://rflachlan.github.io/Luscinia/).
 
@@ -88,7 +88,6 @@ def dereverberate(spec, echo_range=50, echo_reduction=2, hop_length_ms=3, plot=F
 
     for row in spec:
 
-        # position = 0
         newrow = []
         for colindex, amplitude in enumerate(row):
             anterior = row[(colindex - echo_range_2) : colindex]
