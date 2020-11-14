@@ -14,7 +14,9 @@
 # The following two functions are a version of code by
 # (c) 2011 James Robert, http://jiaaro.com
 
+import numpy as np
 from scipy.signal import butter, sosfilt
+from src.avgn.visualization.spectrogram import visualize_spec
 
 # import pydub
 
@@ -61,10 +63,49 @@ def band_pass_filter(seg, low_cutoff_freq, high_cutoff_freq, order):
     return seg.apply_mono_filter_to_each_channel(filter_fn)
 
 
-# convert to mono somewhere here!!!
+def dereverberate(spec, echo_range=100, echo_reduction=2, hop_length_ms=3, plot=False):
+    """Function to reduce reverberation in a spectrogram. This is similar to the implementation in Luscinia
+    by Robert Lachlan (https://rflachlan.github.io/Luscinia/).
 
-test_audio = pydub.AudioSegment.from_wav(
-    "/home/nilomr/Music/trimmed.wav"
-)  # can you do without pydub?
-test_audio_bandpass = band_pass_filter(test_audio, 3000, 9000, order=12)
-test_audio_bandpass.export("/home/nilomr/Music/bandpasseddupdup.wav", format="wav")
+    Args:
+        spec (array): Spectrogram to process
+        echo_range (int, optional): Time range for amplitude reduction. Defaults to 50.
+        echo_reduction (int, optional): Amount of reduction. Defaults to 2.
+        hop_length_ms (int, optional): Hop lenght. Defaults to 3.
+        plot (bool, optional): Wether to plot a comparison with and without echo reduction. Defaults to False.
+
+    Returns:
+        array: an spectrogram with reduced reverberation
+    """
+
+    nbins = len(spec[0])
+
+    echo_range_2 = int(echo_range / hop_length_ms)
+    if echo_range_2 > nbins:
+        echo_range_2 = nbins
+
+    newspec = []
+
+    for row in spec:
+
+        newrow = []
+        for colindex, amplitude in enumerate(row):
+            anterior = row[(colindex - echo_range_2) : colindex]
+            if colindex < echo_range_2:
+                posterior = row[colindex : (colindex + echo_range_2)]
+                newrow.append(amplitude - echo_reduction * (max(posterior) - amplitude))
+            elif (len(anterior) > 0) and (max(anterior) > amplitude):
+                newrow.append(amplitude - echo_reduction * (max(anterior) - amplitude))
+            else:
+                newrow.append(amplitude)
+
+        newspec.append(newrow)
+
+    newspec = np.asarray(newspec)
+
+    if plot is True:
+        # newspec[newspec < 0] = 0
+        # visualize_spec(spec)
+        visualize_spec(newspec)
+
+    return newspec

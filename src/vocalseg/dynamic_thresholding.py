@@ -1,20 +1,21 @@
-from tqdm import tqdm
-from src.vocalseg.utils import _normalize, spectrogram_nn, norm
-import numpy as np
-from scipy import ndimage
-from matplotlib.patches import Rectangle
-from matplotlib.collections import PatchCollection
-from matplotlib import gridspec
-from src.vocalseg.utils import plot_spec
-
 import json
+from datetime import datetime
+
 import librosa
+import numpy as np
+from matplotlib import gridspec
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Rectangle
+from scipy import ndimage
+from scipy.ndimage import gaussian_filter
 from src.avgn.signalprocessing.filtering import butter_bandpass_filter
 from src.avgn.utils.audio import load_wav, read_wav
 from src.avgn.utils.json import NoIndent, NoIndentEncoder
-from src.avgn.utils.paths import most_recent_subdirectory, ensure_dir
+from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
+from src.greti.audio.filter import dereverberate
 from src.greti.read.paths import DATA_DIR
-from datetime import datetime
+from src.vocalseg.utils import _normalize, norm, plot_spec, spectrogram_nn
+from tqdm import tqdm
 
 
 def contiguous_regions(condition):
@@ -63,6 +64,11 @@ def dynamic_threshold_segmentation(
     min_syllable_length_s=0.1,
     spectral_range=None,
     verbose=False,
+    dereverb=False,
+    echo_range=100,
+    echo_reduction=1,
+    gaussian_blur=False,
+    sigma=1,
 ):
     """
     computes a spectrogram from a waveform by iterating through thresholds
@@ -109,6 +115,19 @@ def dynamic_threshold_segmentation(
         pre=pre,
     )
     fft_rate = 1000 / hop_length_ms
+
+    if gaussian_blur is True:
+        spec_orig = gaussian_filter(spec_orig, sigma=sigma)
+
+    if dereverb is True:
+
+        spec_orig = dereverberate(
+            spec_orig,
+            echo_range=echo_range,
+            echo_reduction=echo_reduction,
+            hop_length_ms=hop_length_ms,
+            plot=False,
+        )
 
     if spectral_range is not None:
         spec_bin_hz = (rate / 2) / np.shape(spec_orig)[0]
@@ -204,9 +223,9 @@ def onsets_offsets(signal):
     return np.array([onsets, offsets])
 
 
+import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
-import matplotlib.pyplot as plt
 
 
 def plot_segmented_spec(
@@ -303,6 +322,11 @@ def segment_spec_custom(
     DATA_DIR=DATA_DIR,
     DT_ID=None,
     DATASET_ID=None,
+    dereverb=False,
+    echo_range=100,
+    echo_reduction=1,
+    gaussian_blur=False,
+    sigma=1,
 ):
 
     # load wav
@@ -333,6 +357,11 @@ def segment_spec_custom(
         verbose=True,
         min_syllable_length_s=min_syllable_length_s,
         spectral_range=spectral_range,
+        dereverb=dereverb,
+        echo_range=echo_range,
+        echo_reduction=echo_reduction,
+        gaussian_blur=gaussian_blur,
+        sigma=sigma,
     )
     if results is None:
         return

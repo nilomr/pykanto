@@ -1,177 +1,48 @@
 # %%
-import glob
+
 import string
 from datetime import datetime
-from os import fspath
 
-import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
-import matplotlib.style as style
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import src
 from IPython import get_ipython
-from IPython.display import display
 from joblib import Parallel, delayed
-from mizani.breaks import date_breaks
-from mizani.formatters import date_format
 from plotnine import *
-from src.avgn.dataset import DataSet
 from src.avgn.utils.hparams import HParams
 from src.avgn.utils.paths import ensure_dir
 from src.greti.read.paths import *
-from tqdm import tqdm
 
 get_ipython().run_line_magic("load_ext", "autoreload")
 get_ipython().run_line_magic("autoreload", "2")
-
 
 plt.rcParams["axes.grid"] = False
 
 
 # %%
-
-# ### get data
-
-DATASET_ID = "GRETI_HQ_2020_segmented"
-YEAR = "2020"
-
-# save_loc = DATA_DIR / "syllable_dfs" / DATASET_ID / "{}.pickle".format(DATASET_ID)
-
-save_loc = DATA_DIR / "embeddings" / DATASET_ID / "full_dataset.pickle"
-syllable_df = pd.read_pickle(save_loc)
-
-
-# %%
-# Create a dataset object
-
-dataset = DataSet(DATASET_ID)
-len(dataset.data_files)
-
-
-# %%
-# Make dataframe with all metadata
-metadata = []
-for key in tqdm(dataset.data_files.keys(), leave=False):
-    metadata.append(pd.DataFrame(dataset.data_files[key].data))
-metadata = pd.concat(metadata)
-
-
-# %%
-# Count the number of syllables per nest
-
-syllable_n = pd.Series(
-    [len(syllable_df[syllable_df.indv == ind]) for ind in syllable_df.indv.unique()]
-)
-
-# %%
-# Get data for each individual (with cluster info)
+# ### Import data
 
 DATASET_ID = "GRETI_HQ_2020_segmented"
 YEAR = "2020"
 
-all_indv_dfs = pd.concat(
-    [
-        pd.read_pickle(i)
-        for i in list((DATA_DIR / "indv_dfs" / DATASET_ID).glob("*.pickle"))
-    ]
+syll_dir = DATA_DIR / "embeddings" / DATASET_ID / "full_dataset.pickle"
+syllable_df = pd.read_pickle(syll_dir)
+
+dat_dir = (
+    DATA_DIR / "resources" / DATASET_ID / ("{}_nest_data".format(DATASET_ID) + ".csv")
 )
+GRETI_dataset_2020 = pd.read_csv(dat_dir)
 
-# %%
-# Count the number of song types per bird
-
-grouped = all_indv_dfs.groupby("indv")
-
-type_counts = grouped.apply(
-    lambda x: len(x["hdbscan_labels"].unique()[x["hdbscan_labels"].unique() >= 0])
+meta_dir = (
+    DATA_DIR
+    / "processed"
+    / DATASET_ID
+    / "metadata"
+    / "{}_metadata.pickle".format(DATASET_ID)
 )
-# type_counts=type_counts[type_counts <= 0]
-
-
-# %%
-
-# Get number of songs per nest
-date_counts = []
-for nestbox in metadata["nestbox"].unique():
-    n = metadata.nestbox.str.contains(nestbox).sum()
-    date = min(metadata[metadata.nestbox == nestbox]["date"])
-    date_counts.append([nestbox, n, date])
-
-date_counts = pd.DataFrame(date_counts, columns=["nestbox", "song_count", "date"])
-date_counts["date"] = pd.to_datetime(date_counts["date"])
-date_counts = date_counts[date_counts.date != "2020-03-29"]  # remove early test
-
-# import the latest brood data downloaded from https://ebmp.zoo.ox.ac.uk/broods
-brood_data_path = RESOURCES_DIR / "brood_data" / "2020"
-list_of_files = glob.glob(fspath(brood_data_path) + "/*.csv")
-latest_file = max(list_of_files, key=os.path.getctime)
-greti_nestboxes = pd.DataFrame(
-    (pd.read_csv(latest_file, dayfirst=True).query('Species == "g"'))
-)
-greti_nestboxes["nestbox"] = greti_nestboxes["Pnum"].str[5:]
-greti_nestboxes["Lay date"] = pd.to_datetime(greti_nestboxes["Lay date"], dayfirst=True)
-# Merge
-date_counts = pd.merge(date_counts, greti_nestboxes, on="nestbox", how="outer")
-# Add column = how long after egg laying onset was nest recorded?
-date_counts["difference"] = (date_counts["Lay date"] - date_counts["date"]).dt.days
-
-# %%
-# prepare and save full dataset
-
-cols = ["nestbox", "n", "syll_type_n"]
-data = []
-
-for ind in syllable_df.indv.unique():
-    try:
-        syll_type_n = int(float(type_counts[ind]))
-    except:
-        syll_type_n = 0
-    n = int(len(syllable_df[syllable_df.indv == ind]))
-    zipped = zip(cols, [ind, n, syll_type_n])
-    a_dictionary = dict(zipped)
-    data.append(a_dictionary)
-
-syllable_info = pd.DataFrame(columns=cols)
-syllable_info = syllable_info.append(data, True)
-# syllable_info[syllable_info.syll_type_n > 0].shape[0]
-
-GRETI_dataset_2020 = pd.merge(date_counts, syllable_info, on="nestbox", how="outer")
-out_dir = DATA_DIR / "resources" / DATASET_ID / ("full_dataset" + ".csv")
-ensure_dir(out_dir)
-GRETI_dataset_2020.to_csv(out_dir, index=False)
-
-#####################
-#####################
-#####################
-#####################
-#####################
-#####################
-
-#%%
-# Convert coordinates for mapbox map
-import pyproj
-
-coords_file = RESOURCES_DIR / "nestboxes" / "nestbox_coords.csv"
-coordinates = pd.read_csv(coords_file)
-
-
-bng = pyproj.Proj(init="epsg:27700")
-webmercator = pyproj.Proj(init="epsg:3857")
-wgs84 = pyproj.Proj(init="epsg:4326")
-
-
-def convertCoords(row):
-    x2, y2 = pyproj.transform(bng, wgs84, row["x"], row["y"])
-    return pd.Series([x2, y2])
-
-
-coordinates[["longitude", "latitude"]] = coordinates[["x", "y"]].apply(
-    convertCoords, axis=1
-)
-
-coords_out = RESOURCES_DIR / "nestboxes" / "nestbox_coords_transformed.csv"
-coordinates.to_csv(coords_out, index=False)
+metadata = pd.read_pickle(meta_dir)
 
 # %%
 # plot some example syllable spectrograms
@@ -201,7 +72,6 @@ plt.savefig(
 )
 # plt.show()
 plt.close()
-
 
 # %%
 ## Plot frequency distribution of song counts
@@ -275,6 +145,8 @@ plt.close()
 
 # %%
 # Plot frequency distribution of syllable counts and types
+
+type_counts = GRETI_dataset_2020.syll_type_n.dropna()
 
 nbins = 25
 fig = plt.figure(figsize=(10, 4))
@@ -427,7 +299,6 @@ plt.annotate(
     xycoords="axes fraction",
 )
 
-
 # plt.show()
 
 fig_out = (
@@ -451,13 +322,10 @@ plt.close()
 
 # Plot time of day per song
 
-
 metadata["hour"] = pd.to_datetime(metadata["datetime"]).dt.hour
 song_datetimes = metadata.filter(["nestbox", "hour"])
 
 song_datetimes["hour"].value_counts()
-
-# song_datetimes.pivot(index="nestbox", columns="datetime", values="datetime")
 
 times_of_day = song_datetimes["hour"].value_counts()
 
@@ -548,7 +416,19 @@ plt.close()
 
 # Plot cumulative curves per bird
 
+# %%
+
 ## Build dictionary of syllable types per song
+
+# Load data
+
+loc = (
+    DATA_DIR / "syllable_dfs" / DATASET_ID / "{}_with_labels.pickle".format(DATASET_ID)
+)
+all_indv_dfs = pd.read_pickle(loc)
+
+
+#%%
 
 ## Parellelised code; only run in cluster
 
@@ -627,7 +507,6 @@ for bird, songs in song_dict.items():
         data.append(dict(temp_dict))
 
         # print(dict(zip(bird, number, new)))
-
         # [key for key in song_dict[bird].keys()][0:number-1]
 
 cumulative_df = pd.DataFrame(data)
@@ -708,11 +587,78 @@ fig_out = (
     / "population"
     / ("cumulative_plot" + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + ".png")
 )
-ensure_dir(fig_out)
-plt.savefig(
-    fig_out, dpi=300, bbox_inches="tight", pad_inches=0.3, transparent=False,
-)
+# ensure_dir(fig_out)
+# plt.savefig(
+#     fig_out, dpi=300, bbox_inches="tight", pad_inches=0.3, transparent=False,
+# )
 
-plt.close()
+# plt.close()
+plt.show()
+
+# %%
+
+# Plot cumulative repertoire for each bird
+
+for bird in np.unique(cumulative_df.bird)[:20]:
+
+    fig_dims = (5, 5)
+    fig, ax = plt.subplots(figsize=fig_dims)
+
+    x_data = cumulative_df[cumulative_df.bird == bird]["song_order"]
+    y_data = cumulative_df[cumulative_df.bird == bird]["cumulative_n"]
+    # y_data_norm = (y_data - np.min(y_data)) / (np.max(y_data) - np.min(y_data))
+
+    plot = sns.lineplot(
+        x=x_data, y=y_data, label=False, color="#1f1f1f", linewidth=4, ax=ax,
+    )
+
+    # ax.set(xscale="log")
+    ax.grid(False)
+    ax.set_facecolor("#f2f1f0")
+    ax.spines["top"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    ax.get_legend().set_visible(False)
+
+    # ax.xaxis.set_ticks(np.arange(0, 1100, 100))
+
+    ax.tick_params(axis=u"both", which=u"both", length=0)
+    for tick in ax.get_xaxis().get_major_ticks():
+        tick.set_pad(8.0)
+        tick.label1 = tick._get_text1()
+
+    plt.setp(plot.lines, alpha=0.1)
+    plot.set_xlabel("Number of songs recorded", fontsize=11, labelpad=13)
+    plot.set_ylabel("New songs", fontsize=11, labelpad=13)
+    plot.tick_params(labelsize=11)
+
+    plt.text(
+        x=0.127,
+        y=0.88,
+        s="Cumulative new song types ({})".format(bird),
+        fontsize=14,
+        fontweight="bold",
+        ha="left",
+        transform=fig.transFigure,
+    )
+
+    plt.subplots_adjust(top=0.8, wspace=0.3)
+
+    plt.annotate(
+        "n = {}".format(len(x_data)), xy=(0.83, 0.06), xycoords="axes fraction",
+    )
+
+    plt.show()
+
+# %%
+nsongs = []
+
+for bird in np.unique(cumulative_df.bird):
+    cumulative_df[cumulative_df.bird == bird]
+    nsong = max(cumulative_df[cumulative_df.bird == bird]["song_order"])
+    nsongs.append(nsong)
+
+sum(1 for bird in nsongs if bird >= 40)
 
 # %%

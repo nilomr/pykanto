@@ -1,17 +1,16 @@
+import numbers
+from collections.abc import Iterable
+
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.colors import colorConverter, Colormap, Normalize
-from matplotlib.collections import LineCollection
-from matplotlib.patches import FancyArrowPatch
+import networkx as nx
 import numpy as np
+import seaborn as sns
+from matplotlib.collections import LineCollection
+from matplotlib.colors import Colormap, Normalize, colorConverter
+from matplotlib.patches import FancyArrowPatch
 from networkx.utils import is_string_like
 from tqdm.autonotebook import tqdm
-import networkx as nx
-import seaborn as sns
-
-
-from collections.abc import Iterable
-import numbers
 
 
 def plot_network_graph(
@@ -75,14 +74,7 @@ def plot_network_graph(
     draw_networkx_edges(graph, pos, ax=ax, edge_color=rgba_cols, width=2)
 
     # centroids
-    ax.scatter(
-        pos_locs[:, 0],
-        pos_locs[:, 1],
-        color=np.array(pos_colors) * 0.5,
-        s=250,
-        zorder=100,
-    )
-    ax.scatter(pos_locs[:, 0], pos_locs[:, 1], color=pos_colors, s=150, zorder=100)
+    ax.scatter(pos_locs[:, 0], pos_locs[:, 1], color=pos_colors, s=200, zorder=100)
     ax.set_facecolor(facecolour)
     ax.set_xticks([])  # remove ticks
     ax.set_yticks([])  # remove ticks
@@ -137,7 +129,7 @@ def build_transition_matrix(sequences, min_cluster_samples=0, ignore_elements=[-
     return transition_matrix, element_dict, removed_columns
 
 
-def compute_graph(dense_matrix, min_connections=0.05, column_names=None):
+def compute_graph(dense_matrix, min_connections=0, column_names=None):
     # Add all nodes to the list
     G = nx.DiGraph()
     # For each item in the node list get outgoing connection of the

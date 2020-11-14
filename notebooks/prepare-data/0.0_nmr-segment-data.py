@@ -21,15 +21,15 @@ get_ipython().run_line_magic("load_ext", "autoreload")
 get_ipython().run_line_magic("autoreload", "2")
 
 
+import glob
+import warnings
+from os import fspath
+
+import joblib
+
 # %%
 import numpy as np
 import pandas as pd
-import src
-import glob
-import joblib
-from os import fspath
-
-import warnings
 
 warnings.filterwarnings(action="once")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
@@ -38,30 +38,29 @@ import matplotlib.pyplot as plt
 
 get_ipython().run_line_magic("matplotlib", "inline")
 
-from src.vocalseg.dynamic_thresholding import *
+from IPython import get_ipython
+from IPython.display import HTML, display, display_html
 from src.avgn.dataset import DataSet
 from src.avgn.utils.hparams import HParams
 from src.avgn.utils.paths import most_recent_subdirectory
-from tqdm.autonotebook import tqdm
-from src.greti.read.paths import DATA_DIR, RESOURCES_DIR
 from src.greti.audio.segmentation import *
-from IPython import get_ipython
-from IPython.display import display, HTML, display_html
-
+from src.greti.read.paths import DATA_DIR, RESOURCES_DIR
+from src.vocalseg.dynamic_thresholding import *
+from tqdm.autonotebook import tqdm
 
 # %%
 # Set year
-year = "2020"
+YEAR = "2020"
 
 
 # %%
 # import recorded nestboxes
-files_path = DATA_DIR / "raw" / year
+files_path = DATA_DIR / "raw" / YEAR
 filelist = np.sort(list(files_path.glob("**/*.WAV")))
 recorded_nestboxes = pd.DataFrame(set([file.parent.name for file in filelist]))
 
 # import the latest brood data downloaded from https://ebmp.zoo.ox.ac.uk/broods
-brood_data_path = RESOURCES_DIR / "brood_data" / year
+brood_data_path = RESOURCES_DIR / "brood_data" / YEAR
 list_of_files = glob.glob(fspath(brood_data_path) + "/*.csv")
 latest_file = max(list_of_files, key=os.path.getctime)
 greti_nestboxes = pd.DataFrame(
@@ -90,7 +89,7 @@ print(
 # # > `batch_segment_bouts()` usis multiprocessing. If you run into problems, use `batch_segment_bouts_single()` (much slower).
 
 # # %%
-# origin = DATA_DIR / "raw" / year  # Folder to segment
+# origin = DATA_DIR / "raw" / YEAR  # Folder to segment
 # DT_ID = dt.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")  # Unique name for output folder
 # subset = "GRETI_HQ"  # Name of label to select
 # DATASET_ID = "GRETI_HQ_2020"  # Name of output dataset
@@ -156,16 +155,16 @@ dataset.sample_json
 # Segmentation parameters
 parameters = {
     "n_fft": 1024,
-    "hop_length_ms": 3,
-    "win_length_ms": 10,
-    "ref_level_db": 30,
-    "pre": 0.5,
-    "min_level_db": -25,
-    "min_level_db_floor": -20,
-    "db_delta": 8,
-    "silence_threshold": 0.2,
+    "hop_length_ms": 13,
+    "win_length_ms": 8,
+    "ref_level_db": 20,
+    "pre": 0.9,
+    "min_level_db": -35,
+    "min_level_db_floor": -5,
+    "db_delta": 5,
+    "silence_threshold": 0.3,
     "min_silence_for_spec": 0.001,
-    "max_vocal_for_spec": (0.4,),
+    "max_vocal_for_spec": (0.4),
     "min_syllable_length_s": 0.03,
     "spectral_range": [1200, 10000],
 }
@@ -186,21 +185,30 @@ data = librosa.util.normalize(data)
 plt.figure(figsize=(10.05, 2))
 plt.plot(data)
 
-results = dynamic_threshold_segmentation(data, rate, **parameters)
+#%%
+
+results = dynamic_threshold_segmentation(
+    data,
+    rate,
+    **parameters,
+    dereverb=True,
+    echo_range=200,
+    echo_reduction=6,
+    gaussian_blur=True,
+    sigma=1,
+)
 
 plot_segmentations(
     results["spec"],
     results["vocal_envelope"],
     results["onsets"],
     results["offsets"],
-    hop_length_ms=3,
+    hop_length_ms=13,
     rate=rate,
     figsize=(10, 3),
 )
 
 plt.show()
-
-null.tpl[markdown]
 # ### Test segmentation in a subset of the data
 
 # %%
@@ -211,22 +219,31 @@ len(np.unique(indvs))
 
 # %%
 
-# for indv in tqdm(np.unique(indvs), desc="individuals"):
-#     print(indv)
-#     indv_keys = np.array(list(dataset.data_files.keys()))[indvs == indv][20:25]
+for indv in tqdm(np.unique(indvs)[100:103], desc="individuals"):
+    print(indv)
+    indv_keys = np.array(list(dataset.data_files.keys()))[indvs == indv][7:10]
 
-#     joblib.Parallel(n_jobs=1, verbose=0)(
-#         joblib.delayed(segment_spec_custom)(
-#             key, dataset.data_files[key], **parameters, DT_ID=DT_ID, DATASET_ID=DATASET_ID, plot=True
-#         )
-#         for key in tqdm(indv_keys, desc="files", leave=False)
-#     )
+    joblib.Parallel(n_jobs=1, verbose=0)(
+        joblib.delayed(segment_spec_custom)(
+            key,
+            dataset.data_files[key],
+            **parameters,
+            DT_ID=DT_ID,
+            DATASET_ID=DATASET_ID,
+            plot=True,
+            dereverb=True,
+            echo_range=130,
+            echo_reduction=8,
+            gaussian_blur=True,
+            sigma=1,
+        )
+        for key in tqdm(indv_keys, desc="files", leave=False)
+    )
 
-null.tpl[markdown]
-# ### Segment full dataset
 
+### Segment full dataset
 # %%
-nex = -1
+
 for indv in tqdm(np.unique(indvs), desc="individuals"):
     print(indv)
     indv_keys = np.array(list(dataset.data_files.keys()))[indvs == indv]
@@ -238,7 +255,10 @@ for indv in tqdm(np.unique(indvs), desc="individuals"):
             **parameters,
             DT_ID=DT_ID,
             DATASET_ID=DATASET_ID,
-            save=True
+            save=True,
+            dereverb=True,
+            echo_range=130,
+            echo_reduction=8,
         )
         for key in tqdm(indv_keys, desc="files", leave=True)
     )

@@ -34,7 +34,9 @@ def song_barcode(
     return trans_list, color_list
 
 
-def indv_barcode(indv_df, time_resolution=0.02, label="labels", pal="tab20"):
+def indv_barcode(
+    indv_df, time_resolution=0.02, label="labels", pal="tab20", plot=False
+):
     """ Create a barcode list for an individual
     """
     unique_labels = indv_df[label].unique()
@@ -46,7 +48,8 @@ def indv_barcode(indv_df, time_resolution=0.02, label="labels", pal="tab20"):
     label_pal_dict = {
         label_dict[lab]: color for lab, color in zip(unique_labels, label_pal)
     }
-    sns.palplot(list(label_pal_dict.values()))
+    if plot is True:
+        sns.palplot(list(label_pal_dict.values()))
 
     # get list of syllables by time
     trans_lists = []
