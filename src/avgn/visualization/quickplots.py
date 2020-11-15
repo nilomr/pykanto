@@ -161,7 +161,7 @@ def quad_plot_syllables(
             FIGURE_DIR
             / YEAR
             / "ind_repertoires"
-            / (indv + "_" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + ".png")
+            / (indv + "_" + str(datetime.now().strftime("%Y-%m-%d_%H-%M-%S")) + ".png")
         )
         ensure_dir(fig_out)
         plt.savefig(
