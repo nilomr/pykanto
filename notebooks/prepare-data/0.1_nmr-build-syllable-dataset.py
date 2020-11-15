@@ -184,13 +184,13 @@ with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
 
 # %%
 
-log_scaling_factor = 10
+# log_scaling_factor = 10
 
-with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
-    syllables_spec = parallel(
-        delayed(log_resize_spec)(spec, scaling_factor=log_scaling_factor)
-        for spec in tqdm(syllables_spec, desc="scaling spectrograms", leave=False)
-    )
+# with Parallel(n_jobs=n_jobs, verbose=verbosity) as parallel:
+#     syllables_spec = parallel(
+#         delayed(log_resize_spec)(spec, scaling_factor=log_scaling_factor)
+#         for spec in tqdm(syllables_spec, desc="scaling spectrograms", leave=False)
+#     )
 
 
 # %%
