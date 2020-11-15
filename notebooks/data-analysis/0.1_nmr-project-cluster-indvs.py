@@ -247,7 +247,7 @@ for indv in tqdm(indv_dfs.keys()):
         / "ind_repertoires"
         / (
             "{}_repertoire_".format(indv)
-            + str(datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
+            + str(datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
             + ".png"
         )
     )
