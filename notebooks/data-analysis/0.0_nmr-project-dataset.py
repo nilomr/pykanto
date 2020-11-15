@@ -92,8 +92,8 @@ syllable_df["pca"] = list(ipca.fit_transform(specs))
 
 # UMAP
 umap_parameters = {
-    "n_neighbors": 10,
-    "min_dist": 0.1,
+    "n_neighbors": 400,
+    "min_dist": 0.4,
     "n_components": 3,
     "verbose": True,
     "init": "spectral",
@@ -192,7 +192,7 @@ labs = syllable_df.dist_m.values
 
 
 def replace_params(params_dict):
-    params = str(params_dict).replace(" ", "").replace("'", "")
+    params = str(params_dict).replace(" ", "").replace("'", "").replace(":", "-").replace(",", "_")
     return params
 
 
