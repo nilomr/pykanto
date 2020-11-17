@@ -3,16 +3,18 @@
 
 # get_ipython().run_line_magic("env", "CUDA_DEVICE_ORDER=PCI_BUS_ID")
 # get_ipython().run_line_magic("env", "CUDA_VISIBLE_DEVICES=2")
-# get_ipython().run_line_magic("load_ext", "autoreload")
-# get_ipython().run_line_magic("autoreload", "2")
+%load_ext autoreload
+%autoreload 2
 # get_ipython().run_line_magic("matplotlib", "inline")
 
 import pickle
 from datetime import datetime
 
 import hdbscan
+from matplotlib import colors
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.lib.shape_base import column_stack
 import pandas as pd
 import phate
 import seaborn as sns
@@ -34,7 +36,7 @@ from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
 from tqdm.autonotebook import tqdm
 
 # from sklearn.cluster import MiniBatchKMeans
-# from cuml.manifold.umap import UMAP as cumlUMAP
+
 
 # import importlib
 # importlib.reload(src)
@@ -55,7 +57,7 @@ syllable_df = pd.read_pickle(note_df_dir)
 
 indvs = [
     ind
-    for ind in syllable_df.indv.unique()#[0:5]  #!!!! Remove subsetting !!!!
+    for ind in syllable_df.indv.unique()[13:15]  #!!!! Remove subsetting !!!!
     if len(syllable_df[syllable_df.indv == ind])
     > 80  # This threshold is based on the need to have clusters >1 member
 ]
@@ -69,6 +71,27 @@ syllable_n = pd.Series(
 )
 
 # %%
+# Colours
+
+facecolour = "#f2f1f0"
+colours = [
+    "#66c2a5",
+    "#fc8d62",
+    "#8da0cb",
+    "#e78ac3",
+    "#a6d854",
+    "#ffd92f",
+    "#e5c494",
+    "#b3b3b3",
+    "#fc6c62",
+    "#7c7cc4",
+    "#57b6bd",
+    "#e0b255",
+]
+
+pal = sns.set_palette(sns.color_palette(colours))
+
+# %%
 # # Projections (for clustering and visualisation)
 # + Note sequence information
 
@@ -80,6 +103,12 @@ for indvi, indv in enumerate(tqdm(indvs)):
     indv_dfs[indv] = indv_dfs[indv].sort_values(by=["key", "start_time"])
     print(indv, len(indv_dfs[indv]))
     specs = [i for i in indv_dfs[indv].spectrogram.values]
+
+    with Parallel(n_jobs=-2, verbose=2) as parallel:
+        specs = parallel(
+            delayed(log_resize_spec)(spec, scaling_factor=8)
+            for spec in tqdm(specs, desc="scaling spectrograms", leave=False)
+        )
 
     # Add note sequences to dataframe for later use
     indv_dfs[indv]["syllables_sequence_id"] = None
@@ -105,24 +134,23 @@ for indvi, indv in enumerate(tqdm(indvs)):
     # pca = PCA(n_components=2)
     # indv_dfs[indv]["pca_viz"] = list(pca.fit_transform(specs_flattened))
 
-    pca2 = PCA(n_components=20)
-    indv_dfs[indv]["pca_cluster"] = list(pca2.fit_transform(specs_flattened))
+    # pca2 = PCA(n_components=5)
+    # indv_dfs[indv]["pca_cluster"] = list(pca2.fit_transform(specs_flattened))
 
-    # # umap_cluster
-    # fit = umap.UMAP(
-    #     n_neighbors=20, min_dist=0.05, n_components=20, verbose=True, init="random"
-    # )
+    # # umap_cluster 
+    # fit = umap.UMAP(n_neighbors=20, min_dist=0.05, n_components=10, verbose=True)
     # z = list(fit.fit_transform(specs_flattened))
     # indv_dfs[indv]["umap_cluster"] = z
 
     # Set min distance (for visualisation only) depending on # syllables
-    min_dist = (
-        ((len(specs_flattened) - min(syllable_n)) * (0.4 - 0.2))
-        / (max(syllable_n) - min(syllable_n))
-    ) + 0.2
+    # min_dist = (
+    #     ((len(specs_flattened) - min(syllable_n)) * (0.4 - 0.1))
+    #     / (max(syllable_n) - min(syllable_n))
+    # ) + 0.1
 
     # umap_viz
-    fit = umap.UMAP(n_neighbors=90, min_dist=min_dist, n_components=2, verbose=True)
+    #n_neighbors=60, min_dist=min_dist, n_components=2, verbose=True
+    fit = umap.UMAP(n_components=2, min_dist=0.1)
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_viz"] = z
 
@@ -131,8 +159,8 @@ for indvi, indv in enumerate(tqdm(indvs)):
 # Cluster using HDBSCAN
 
 for indv in tqdm(indv_dfs.keys()):
-    z = list(indv_dfs[indv]["pca_cluster"].values)
-    min_cluster_size = int(len(z) * 0.01) # smallest cluster size allowed
+    z = list(indv_dfs[indv]["umap_viz"].values)
+    min_cluster_size = int(len(z) * 0.04) # smallest cluster size allowed
     if min_cluster_size < 2:
         min_cluster_size = 2
     clusterer = hdbscan.HDBSCAN(
@@ -144,26 +172,27 @@ for indv in tqdm(indv_dfs.keys()):
     indv_dfs[indv]["hdbscan_labels"] = clusterer.labels_
 
     # Plot
+    n_colours = len(indv_dfs[indv]["hdbscan_labels"].unique())
+    color_palette = sns.color_palette("deep", n_colours)
+    cluster_colors = [
+        color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in clusterer.labels_
+    ]
+    cluster_member_colors = [
+        sns.desaturate(x, p) for x, p in zip(cluster_colors, clusterer.probabilities_)
+    ]
 
-    # color_palette = sns.color_palette("deep", 14)
-    # cluster_colors = [
-    #     color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in clusterer.labels_
-    # ]
-    # cluster_member_colors = [
-    #     sns.desaturate(x, p) for x, p in zip(cluster_colors, clusterer.probabilities_)
-    # ]
+    x = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 0]
+    y = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 1]
+    plt.scatter(x, y, s=10, linewidth=0, c=cluster_member_colors, alpha=0.3)
+    plt.show()
 
-    # x = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 0]
-    # y = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 1]
-    # plt.scatter(x, y, s=10, linewidth=0, c=cluster_member_colors, alpha=0.3)
-    # plt.show()
+    clusterer.condensed_tree_.plot(
+        select_clusters=True, selection_palette=sns.color_palette("deep", 14)
+    )
 
-    # clusterer.condensed_tree_.plot(
-    #     select_clusters=True, selection_palette=sns.color_palette("deep", 14)
-    # )
-
-    # plt.show()
-
+    plt.show()
+    
+    # # Plot outliers
     # sns.distplot(clusterer.outlier_scores_[np.isfinite(clusterer.outlier_scores_)], rug=True)
     # plt.show()
     # threshold = pd.Series(clusterer.outlier_scores_).quantile(0.99)
@@ -186,26 +215,6 @@ for indv in tqdm(indv_dfs.keys()):
     indv_dfs[indv].to_pickle(out_dir / (indv + ".pickle"))
 
 
-# %%
-# Plot settings
-
-facecolour = "#f2f1f0"
-colours = [
-    "#66c2a5",
-    "#fc8d62",
-    "#8da0cb",
-    "#e78ac3",
-    "#a6d854",
-    "#ffd92f",
-    "#e5c494",
-    "#b3b3b3",
-    "#fc6c62",
-    "#7c7cc4",
-    "#57b6bd",
-    "#e0b255",
-]
-
-pal = sns.set_palette(sns.color_palette(colours))
 
 # %%
 # ### plot each individual's repertoire
@@ -268,4 +277,277 @@ for indv in tqdm(indv_dfs.keys()):
 quad_plot_syllables(indv_dfs, YEAR, "umap_viz", palette=pal, facecolour=facecolour)
 
 # %%
+import string
+from datetime import datetime
 
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
+from src.avgn.visualization.network_graph import plot_network_graph
+from src.avgn.visualization.projections import (
+    draw_projection_transitions,
+    plot_label_cluster_transitions,
+    scatter_projections,
+    scatter_spec,
+)
+from src.avgn.visualization.spectrogram import draw_spec_set, plot_example_specs
+from src.greti.read.paths import DATA_DIR, FIGURE_DIR
+from tqdm.autonotebook import tqdm
+from matplotlib.lines import Line2D
+
+#%%
+viz_proj="umap_viz"
+pal="tab20"
+#indv = 'MP42'
+
+for indv in tqdm(indv_dfs.keys()):
+
+    f = plt.figure(figsize=(10, 10))
+    gs = f.add_gridspec(ncols=3, nrows=2, width_ratios=[1, 1, 1], height_ratios = [0.5, 1], hspace=0.1, wspace=0.2)
+
+    axes = [f.add_subplot(gs[i]) for i in range(3)]
+    axes = axes + [f.add_subplot(gs[1, :])]
+
+    f.suptitle("Syllable clusters and transitions for {}".format(indv), fontsize=16,)
+
+    hdbscan_labs = indv_dfs[indv]["hdbscan_labels"]
+    labs = hdbscan_labs.values
+    unique_labs = hdbscan_labs.unique()
+    nlabs = len(unique_labs)
+
+
+    proj = np.array(list(indv_dfs[indv][viz_proj].values))[:, 0:2]
+    sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
+    specs = np.invert(indv_dfs[indv].spectrogram.values)
+    specs = np.where(specs == 255, 242, specs)  # grey
+
+    palette = sns.color_palette(pal, n_colors=len(np.unique(labs)))
+
+    # Projection scatterplot, labeled by cluster
+    scatter_projections(
+        projection=proj,
+        labels=labs,
+        color_palette=palette,
+        alpha=0.60,
+        s=2,
+        facecolour=facecolour,
+        show_legend=False,
+        range_pad=0.1,
+        ax=axes[0],
+    )
+
+
+    # Draw lines between consecutive syllables
+    draw_projection_transitions(
+        projections=proj,
+        sequence_ids=indv_dfs[indv]["syllables_sequence_id"],
+        sequence_pos=indv_dfs[indv]["syllables_sequence_pos"],
+        cmap=plt.get_cmap("ocean"),
+        facecolour=facecolour,
+        linewidth=0.8,
+        range_pad=0.05,
+        alpha=0.05,
+        ax=axes[1],
+    )
+
+    # Plot inferred directed network
+    plot_network_graph(
+        labs,
+        proj,
+        sequence_ids,
+        color_palette=palette,
+        min_cluster_samples=0,
+        min_connections=0,
+        facecolour=facecolour,
+        ax=axes[2],
+        edge_width=1,
+        point_size=60
+    )
+
+    # Plot examples of each cluster
+    plot_example_specs(
+        specs=specs,
+        labels=labs,
+        clusters_to_viz=unique_labs[unique_labs >= 0],  # do not show 'noisy' points
+        custom_pal=palette,
+        cmap=plt.cm.bone,
+        nex=10,
+        line_width=5,
+        ax=axes[3],
+    )
+
+    # color labels
+
+    lab_dict = {lab: palette[i] for i, lab in enumerate(np.unique(labs))}
+
+    lab_dict[-1] = (
+        0.83137254902,
+        0.83137254902,
+        0.83137254902
+        )  # colour noisy data grey
+
+    legend_elements = [
+        Line2D([0], [0], marker="o", color=value, label=key)
+        for key, value in lab_dict.items()
+    ]
+
+    axes[3].legend(handles=legend_elements, bbox_to_anchor=(1.04, 0.65))
+
+    # labels = string.ascii_uppercase[0 : len(axes)]
+
+    # for ax, labels in zip(axes, labels):
+    #     bbox = ax.get_tightbbox(f.canvas.get_renderer())
+    #     f.text(
+    #         0.03,
+    #         0.97,
+    #         labels,
+    #         fontsize=25,
+    #         fontweight="bold",
+    #         va="top",
+    #         ha="left",
+    #         transform=ax.transAxes,
+    #     )
+
+    plt.show()
+
+# %%
+
+# Interactive test
+
+import plotly.express as px
+df = px.data.iris()
+fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species")
+fig.show()
+
+scatter_projections(
+    projection=proj,
+    labels=labs,
+    color_palette=palette,
+    alpha=0.60,
+    s=2,
+    facecolour=facecolour,
+    show_legend=False,
+    range_pad=0.1,
+    ax=axes[0],
+)
+
+#%%
+# prepare data
+
+def totuple(a):
+    try:
+        return tuple(totuple(i) for i in a)
+    except TypeError:
+        return a
+
+indv = 'MP42'
+
+labs = indv_dfs[indv]["hdbscan_labels"].values
+palette = sns.color_palette(pal, n_colors=len(np.unique(labs)))
+lab_dict = {lab: palette[i] for i, lab in enumerate(np.unique(labs))}
+lab_dict[-1] = (
+    0.83137254902,
+    0.83137254902,
+    0.83137254902
+    )
+
+x = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 0]
+y = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 1]
+# z = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 2]
+
+colours = np.array([lab_dict[i] for i in labs])
+colour  = {f'{lab}' : f'rgb{tuple((np.array(color)*255).astype(np.uint8))}' for lab, color in lab_dict.items()}
+
+
+df = pd.DataFrame(data = np.column_stack((x.astype(np.object), y.astype(np.object), labs)), columns = ['x', 'y', 'labs'])
+df["labs"] = df["labs"].map(str)
+
+
+# %%
+
+# Plot data
+
+import plotly.express as px
+import plotly.graph_objs as go
+import plotly.offline as py
+
+import pandas as pd
+import numpy as np
+from ipywidgets import interactive, HBox, VBox, widgets
+
+fig = px.scatter(df, x="x", y="y", color = "labs", color_discrete_map= colour)
+
+fig.update_xaxes(showgrid=False, zeroline=False)
+fig.update_yaxes(showgrid=False, zeroline=False)
+
+fig.update_layout(
+    autosize=False,
+    width=600,
+    height=600,
+    legend=dict(
+    orientation="v"),
+    legend_title_text='Label',
+    xaxis_range=(df.x.min() - 1, df.x.max() + 1),
+    yaxis_range=(df.y.min() - 1, df.y.max() + 1),
+    plot_bgcolor=facecolour,
+
+)
+
+fig  = go.FigureWidget(fig)
+
+fig
+
+
+
+# %%
+# Cross-reference indexes
+
+def change_label(label_to_assign = "666"):
+    selection = []
+    for f in fig.data:
+        for name, name_df in df.groupby('labs'):
+            if f.name == name:
+                selection = selection + [name_df.iloc[i].name for i in f.selectedpoints]
+
+    mod_df = df
+
+    for i in selection:
+        df.loc[i, 'labs'] = label_to_assign
+    
+    print(f"Changed {len(selection)} points to label '{label_to_assign}'")
+
+    # update figure
+
+    fig2 = px.scatter(df, x="x", y="y", color = "labs", color_discrete_map= colour)
+
+    fig2.update_xaxes(showgrid=False, zeroline=False)
+    fig2.update_yaxes(showgrid=False, zeroline=False)
+
+    fig2.update_layout(
+        autosize=False,
+        width=600,
+        height=600,
+        legend=dict(
+        orientation="v"),
+        legend_title_text='Label',
+        xaxis_range=(df.x.min() - 1, df.x.max() + 1),
+        yaxis_range=(df.y.min() - 1, df.y.max() + 1),
+        plot_bgcolor=facecolour,
+
+    )
+    #TODO: THIS DOESN'T WORK
+    fig2  = go.FigureWidget(fig2)
+    for f, f2 in zip(fig.data, fig2.data):
+        f.name == f2.name
+        f.y = f2.y
+        f.x = f2.x
+        f.marker = f2.marker
+        f.selectedpoints = []
+
+    #fig.layout.title.text = 'This is a new title';
+
+
+#%%
+
+#fig.show()
