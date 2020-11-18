@@ -7,6 +7,7 @@
 %autoreload 2
 # get_ipython().run_line_magic("matplotlib", "inline")
 
+from os import error, wait
 import pickle
 from datetime import datetime
 
@@ -171,26 +172,26 @@ for indv in tqdm(indv_dfs.keys()):
     clusterer.fit(z)
     indv_dfs[indv]["hdbscan_labels"] = clusterer.labels_
 
-    # Plot
-    n_colours = len(indv_dfs[indv]["hdbscan_labels"].unique())
-    color_palette = sns.color_palette("deep", n_colours)
-    cluster_colors = [
-        color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in clusterer.labels_
-    ]
-    cluster_member_colors = [
-        sns.desaturate(x, p) for x, p in zip(cluster_colors, clusterer.probabilities_)
-    ]
+    # # Plot
+    # n_colours = len(indv_dfs[indv]["hdbscan_labels"].unique())
+    # color_palette = sns.color_palette("deep", n_colours)
+    # cluster_colors = [
+    #     color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in clusterer.labels_
+    # ]
+    # cluster_member_colors = [
+    #     sns.desaturate(x, p) for x, p in zip(cluster_colors, clusterer.probabilities_)
+    # ]
 
-    x = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 0]
-    y = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 1]
-    plt.scatter(x, y, s=10, linewidth=0, c=cluster_member_colors, alpha=0.3)
-    plt.show()
+    # x = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 0]
+    # y = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 1]
+    # plt.scatter(x, y, s=10, linewidth=0, c=cluster_member_colors, alpha=0.3)
+    # plt.show()
 
-    clusterer.condensed_tree_.plot(
-        select_clusters=True, selection_palette=sns.color_palette("deep", 14)
-    )
+    # clusterer.condensed_tree_.plot(
+    #     select_clusters=True, selection_palette=sns.color_palette("deep", 14)
+    # )
 
-    plt.show()
+    # plt.show()
     
     # # Plot outliers
     # sns.distplot(clusterer.outlier_scores_[np.isfinite(clusterer.outlier_scores_)], rug=True)
@@ -311,7 +312,7 @@ for indv in tqdm(indv_dfs.keys()):
 
     f.suptitle("Syllable clusters and transitions for {}".format(indv), fontsize=16,)
 
-    hdbscan_labs = indv_dfs[indv]["hdbscan_labels"]
+    hdbscan_labs = indv_dfs[indv]["hdbscan_labels_fixed"]
     labs = hdbscan_labs.values
     unique_labs = hdbscan_labs.unique()
     nlabs = len(unique_labs)
@@ -435,37 +436,33 @@ scatter_projections(
 #%%
 # prepare data
 
-def totuple(a):
-    try:
-        return tuple(totuple(i) for i in a)
-    except TypeError:
-        return a
+def prepare_interactive_data(indv):
 
-indv = 'MP42'
+    global new_df, colour, palette
 
-labs = indv_dfs[indv]["hdbscan_labels"].values
-palette = sns.color_palette(pal, n_colors=len(np.unique(labs)))
-lab_dict = {lab: palette[i] for i, lab in enumerate(np.unique(labs))}
-lab_dict[-1] = (
-    0.83137254902,
-    0.83137254902,
-    0.83137254902
-    )
+    labs = indv_dfs[indv]["hdbscan_labels"].values
+    palette = sns.color_palette(pal, n_colors=len(np.unique(labs)))
+    lab_dict = {lab: palette[i] for i, lab in enumerate(np.unique(labs))}
+    lab_dict[-1] = (
+        0.83137254902,
+        0.83137254902,
+        0.83137254902
+        )
 
-x = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 0]
-y = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 1]
-# z = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 2]
+    x = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 0]
+    y = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 1]
+    # z = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 2]
 
-colours = np.array([lab_dict[i] for i in labs])
-colour  = {f'{lab}' : f'rgb{tuple((np.array(color)*255).astype(np.uint8))}' for lab, color in lab_dict.items()}
+    #colours = np.array([lab_dict[i] for i in labs])
+    colour  = {f'{lab}' : f'rgb{tuple((np.array(color)*255).astype(np.uint8))}' for lab, color in lab_dict.items()}
 
 
-df = pd.DataFrame(data = np.column_stack((x.astype(np.object), y.astype(np.object), labs)), columns = ['x', 'y', 'labs'])
-df["labs"] = df["labs"].map(str)
+    df = pd.DataFrame(data = np.column_stack((x.astype(np.object), y.astype(np.object), labs)), columns = ['x', 'y', 'labs'])
+    df["labs"] = df["labs"].map(str)
 
+    new_df = df
 
-# %%
-
+#%%
 # Plot data
 
 import plotly.express as px
@@ -476,78 +473,137 @@ import pandas as pd
 import numpy as np
 from ipywidgets import interactive, HBox, VBox, widgets
 
-fig = px.scatter(df, x="x", y="y", color = "labs", color_discrete_map= colour)
 
-fig.update_xaxes(showgrid=False, zeroline=False)
-fig.update_yaxes(showgrid=False, zeroline=False)
+def interactive_scatter():
 
-fig.update_layout(
-    autosize=False,
-    width=600,
-    height=600,
-    legend=dict(
-    orientation="v"),
-    legend_title_text='Label',
-    xaxis_range=(df.x.min() - 1, df.x.max() + 1),
-    yaxis_range=(df.y.min() - 1, df.y.max() + 1),
-    plot_bgcolor=facecolour,
+    global fig, new_df
 
-)
+    newpalette = sns.color_palette(pal, n_colors=len(np.unique(new_df.labs)))
 
-fig  = go.FigureWidget(fig)
+    newlab_dict = {lab: newpalette[i] for i, lab in enumerate(np.unique(new_df.labs)) if newpalette[i] not in palette}
+    newlab_dict[-1] = (
+        0.83137254902,
+        0.83137254902,
+        0.83137254902
+        )
+    newcolour  = {f'{lab}' : f'rgb{tuple((np.array(colour)*255).astype(np.uint8))}' for lab, colour in newlab_dict.items()}
 
-fig
+    newentries = {lab : code for lab, code in newcolour.items() if lab not in colour.keys()}
+    colour.update(newentries)
 
+    fig = px.scatter(new_df, x="x", y="y", color = "labs", color_discrete_map= colour)
 
+    fig.update_xaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
+    fig.update_yaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
 
-# %%
-# Cross-reference indexes
-
-def change_label(label_to_assign = "666"):
-    selection = []
-    for f in fig.data:
-        for name, name_df in df.groupby('labs'):
-            if f.name == name:
-                selection = selection + [name_df.iloc[i].name for i in f.selectedpoints]
-
-    mod_df = df
-
-    for i in selection:
-        df.loc[i, 'labs'] = label_to_assign
-    
-    print(f"Changed {len(selection)} points to label '{label_to_assign}'")
-
-    # update figure
-
-    fig2 = px.scatter(df, x="x", y="y", color = "labs", color_discrete_map= colour)
-
-    fig2.update_xaxes(showgrid=False, zeroline=False)
-    fig2.update_yaxes(showgrid=False, zeroline=False)
-
-    fig2.update_layout(
+    fig.update_layout(
         autosize=False,
         width=600,
         height=600,
         legend=dict(
         orientation="v"),
         legend_title_text='Label',
-        xaxis_range=(df.x.min() - 1, df.x.max() + 1),
-        yaxis_range=(df.y.min() - 1, df.y.max() + 1),
+        title={
+        'text': f"{indv}",
+        'y':0.935,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+        xaxis_range=(new_df.x.min() - 1, new_df.x.max() + 1),
+        yaxis_range=(new_df.y.min() - 1, new_df.y.max() + 1),
         plot_bgcolor=facecolour,
 
     )
-    #TODO: THIS DOESN'T WORK
-    fig2  = go.FigureWidget(fig2)
-    for f, f2 in zip(fig.data, fig2.data):
-        f.name == f2.name
-        f.y = f2.y
-        f.x = f2.x
-        f.marker = f2.marker
-        f.selectedpoints = []
 
-    #fig.layout.title.text = 'This is a new title';
+    fig  = go.FigureWidget(fig)
+
+    return fig
+
+# %%
+# Cross-reference indexes
+
+def change_label(label_to_assign = "666"):
+
+    global fig, new_df
+
+    if not isinstance(label_to_assign, str):
+        raise Exception("Label is not a string")
+
+    selection = []
+    for f in fig.data:
+        for name, name_new_df in new_df.groupby('labs'):
+            if f.name == name:
+                selection = selection + [name_new_df.iloc[i].name for i in f.selectedpoints]
+
+    
+    for i in selection:
+        new_df.loc[i, 'labs'] = label_to_assign
 
 
-#%%
+    fig = interactive_scatter()
+    fig.update_layout(
+    title={
+        'text': f"{indv}: Changed {len(selection)} points to label '{label_to_assign}'",
+        'y':0.935,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'})
 
-#fig.show()
+    return fig
+
+    # #TODO: THIS DOESN'T WORK
+    # fig2  = go.FigureWidget(fig2)
+    # for f, f2 in itertools.zip_longest(fig.data, fig2.data):
+    #     if f2.name == f.name:
+    #         f.legendgroup = f2.legendgroup
+    #         f.y = f2.y
+    #         f.x = f2.x
+    #         f.fillcolor = f2.fillcolor
+    #         f.fill = f2.fill
+    #         f.marker = f2.marker
+    #         f.selectedpoints = []
+    #     elif f is None:
+    #         f2.selectedpoints = []
+    #         fig.add_trace(f2)
+    #     elif f.name not in np.unique(new_df.labs):
+    #         for element in f:
+    #             f[element = []
+
+# %%
+#! CAREFUL
+i = -1
+already_checked = []
+#! CAREFUL
+
+
+# %%
+i += 1
+
+if i >= len(indvs):
+    raise Exception("End of list")
+else:
+    print(len(indvs))
+    indv = indvs[i]
+    already_checked.append(indv)
+
+
+
+
+prepare_interactive_data(indv)
+interactive_scatter()
+
+
+# %%
+
+indv_dfs_tmp = indv_dfs
+
+if len(indv_dfs_tmp[indv]["hdbscan_labels"]) == len(new_df):
+    print('lol')
+    indv_dfs_tmp[indv]["hdbscan_labels_fixed"] = [int(i) for i in new_df.labs]
+
+progress_out = DATA_DIR / 'resources' / DATASET_ID / 'label_fix_progress' / f'progress_{str(datetime.now().strftime("%Y-%m-%d_%H-%M"))}.txt'
+ensure_dir(progress_out)
+
+with open(progress_out, "w") as output:
+    output.write(str(already_checked))
+# %%
