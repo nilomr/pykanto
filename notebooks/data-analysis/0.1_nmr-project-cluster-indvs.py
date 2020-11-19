@@ -58,7 +58,7 @@ syllable_df = pd.read_pickle(note_df_dir)
 
 indvs = [
     ind
-    for ind in syllable_df.indv.unique()[13:15]  #!!!! Remove subsetting !!!!
+    for ind in syllable_df.indv.unique()[5:9]  #!!!! Remove subsetting !!!!
     if len(syllable_df[syllable_df.indv == ind])
     > 80  # This threshold is based on the need to have clusters >1 member
 ]
@@ -135,8 +135,8 @@ for indvi, indv in enumerate(tqdm(indvs)):
     # pca = PCA(n_components=2)
     # indv_dfs[indv]["pca_viz"] = list(pca.fit_transform(specs_flattened))
 
-    # pca2 = PCA(n_components=5)
-    # indv_dfs[indv]["pca_cluster"] = list(pca2.fit_transform(specs_flattened))
+    pca2 = PCA(n_components=10)
+    indv_dfs[indv]["pca_cluster"] = list(pca2.fit_transform(specs_flattened))
 
     # # umap_cluster 
     # fit = umap.UMAP(n_neighbors=20, min_dist=0.05, n_components=10, verbose=True)
@@ -144,14 +144,14 @@ for indvi, indv in enumerate(tqdm(indvs)):
     # indv_dfs[indv]["umap_cluster"] = z
 
     # Set min distance (for visualisation only) depending on # syllables
-    # min_dist = (
-    #     ((len(specs_flattened) - min(syllable_n)) * (0.4 - 0.1))
-    #     / (max(syllable_n) - min(syllable_n))
-    # ) + 0.1
+    min_dist = (
+        ((len(specs_flattened) - min(syllable_n)) * (0.4 - 0.1))
+        / (max(syllable_n) - min(syllable_n))
+    ) + 0.1
 
     # umap_viz
     #n_neighbors=60, min_dist=min_dist, n_components=2, verbose=True
-    fit = umap.UMAP(n_components=2, min_dist=0.1)
+    fit = umap.UMAP(n_components=2, min_dist=min_dist)
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_viz"] = z
 
@@ -160,8 +160,8 @@ for indvi, indv in enumerate(tqdm(indvs)):
 # Cluster using HDBSCAN
 
 for indv in tqdm(indv_dfs.keys()):
-    z = list(indv_dfs[indv]["umap_viz"].values)
-    min_cluster_size = int(len(z) * 0.04) # smallest cluster size allowed
+    z = list(indv_dfs[indv]["pca_cluster"].values)
+    min_cluster_size = int(len(z) * 0.02) # smallest cluster size allowed
     if min_cluster_size < 2:
         min_cluster_size = 2
     clusterer = hdbscan.HDBSCAN(
@@ -312,7 +312,7 @@ for indv in tqdm(indv_dfs.keys()):
 
     f.suptitle("Syllable clusters and transitions for {}".format(indv), fontsize=16,)
 
-    hdbscan_labs = indv_dfs[indv]["hdbscan_labels_fixed"]
+    hdbscan_labs = indv_dfs[indv]["hdbscan_labels"]
     labs = hdbscan_labs.values
     unique_labs = hdbscan_labs.unique()
     nlabs = len(unique_labs)
@@ -412,26 +412,7 @@ for indv in tqdm(indv_dfs.keys()):
 
     plt.show()
 
-# %%
 
-# Interactive test
-
-import plotly.express as px
-df = px.data.iris()
-fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species")
-fig.show()
-
-scatter_projections(
-    projection=proj,
-    labels=labs,
-    color_palette=palette,
-    alpha=0.60,
-    s=2,
-    facecolour=facecolour,
-    show_legend=False,
-    range_pad=0.1,
-    ax=axes[0],
-)
 
 #%%
 # prepare data
@@ -519,6 +500,132 @@ def interactive_scatter():
 
     return fig
 
+#%%
+
+from src.avgn.visualization.projections import colorline
+from itertools import chain
+
+viz_proj="umap_viz"
+pal="tab20"
+
+
+hdbscan_labs = indv_dfs[indv]["hdbscan_labels"]
+labs = hdbscan_labs.values
+unique_labs = hdbscan_labs.unique()
+nlabs = len(unique_labs)
+
+
+projections = np.array(list(indv_dfs[indv][viz_proj].values))[:, 0:2]
+sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
+sequence_pos=indv_dfs[indv]["syllables_sequence_pos"]
+
+
+# Build dataframe with each pair of points separated by a null row
+sequence_list = []
+for sequence in np.unique(sequence_ids):
+    seq_mask = sequence_ids == sequence
+    seq = sequence_pos[seq_mask]
+    projection_seq = [i.tolist() for i in projections[seq_mask]]
+    sequence_list.append(projection_seq)
+
+
+all_coords = pd.DataFrame(list(chain.from_iterable(sequence_list)), columns= ('x', 'y'))
+all_coords['id']=all_coords.index
+tmp_df = (all_coords.iloc[1::2]
+         .assign(id = lambda x: x['id'] + 1, y = np.nan)
+         .rename(lambda x: x + .5))       
+all_coords_nas = pd.concat([all_coords, tmp_df], sort=False).sort_index().reset_index(drop=True)
+all_coords_nas.loc[all_coords_nas.isnull().any(axis=1), :] = np.nan
+
+
+#%%
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+
+# dataframe, sample
+np.random.seed(123)
+cols = ['a','b','c', 'd', 'e', 'f', 'g']
+X = np.random.randn(50,len(cols))  
+df=pd.DataFrame(X, columns=cols)
+df=df.cumsum()
+df['id']=df.index
+
+# dataframe with every nth row containing np.nan
+df2 = (df.iloc[1::2]
+         .assign(id = lambda x: x['id'] + 1, c = np.nan)
+         .rename(lambda x: x + .5))
+df1 = pd.concat([df, df2], sort=False).sort_index().reset_index(drop=True)
+df1.loc[df1.isnull().any(axis=1), :] = np.nan
+df1
+#%%
+
+# plotly figure
+colors = px.colors.qualitative.Plotly
+fig = go.Figure()
+
+for i, col in enumerate(all_coords_nas.columns[:-1]):
+    fig.add_traces(go.Scatter(x=all_coords_nas.x, y=all_coords_nas.y,
+                              mode='lines+markers', line=dict(color="grey", width=0.05)))
+
+fig.update_traces(connectgaps=False)
+
+fig.show()
+
+#%%
+
+#TODO: HERE: new interactive scatter - has lines
+prepare_interactive_data(indv)
+
+newpalette = sns.color_palette(pal, n_colors=len(np.unique(new_df.labs)))
+
+newlab_dict = {lab: newpalette[i] for i, lab in enumerate(np.unique(new_df.labs)) if newpalette[i] not in palette}
+newlab_dict[-1] = (
+    0.83137254902,
+    0.83137254902,
+    0.83137254902
+    )
+newcolour  = {f'{lab}' : f'rgb{tuple((np.array(colour)*255).astype(np.uint8))}' for lab, colour in newlab_dict.items()}
+
+newentries = {lab : code for lab, code in newcolour.items() if lab not in colour.keys()}
+colour.update(newentries)
+
+
+fig = px.scatter(new_df, x="x", y="y", color = "labs", color_discrete_map= colour )
+fig  = go.FigureWidget(fig)
+
+fig.add_traces(go.Scatter(x=all_coords_nas.x, y=all_coords_nas.y,
+                            mode='lines', line=dict(color="rgba(0,0,0,0.5)", width=0.05)))
+
+fig.update_traces(connectgaps=False, marker=dict(size=5))
+
+fig.update_xaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
+fig.update_yaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
+fig.data[-1].name = "T"
+fig.update_layout(
+    autosize=False,
+    width=750,
+    height=700,
+    legend=dict(
+    orientation="v"),
+    legend_title_text='Label',
+    title={
+    'text': f"{indv}",
+    'y':0.95,
+    'x':0.5,
+    'xanchor': 'center',
+    'yanchor': 'top'},
+    xaxis_range=(new_df.x.min() - 1, new_df.x.max() + 1),
+    yaxis_range=(new_df.y.min() - 1, new_df.y.max() + 1),
+    plot_bgcolor=facecolour,
+
+)
+
+# fig  = go.FigureWidget(fig)
+fig.show()
+
+
 # %%
 # Cross-reference indexes
 
@@ -570,6 +677,7 @@ def change_label(label_to_assign = "666"):
     #             f[element = []
 
 # %%
+
 #! CAREFUL
 i = -1
 already_checked = []
@@ -606,4 +714,33 @@ ensure_dir(progress_out)
 
 with open(progress_out, "w") as output:
     output.write(str(already_checked))
+
+
+
 # %%
+import time
+
+for indv in indvs:
+    prepare_interactive_data(indv)
+    interactive_scatter()
+    fig.show()
+    done = input("are you done, you fuckwit? y/n")
+    while done == 'n':
+        new_label = input("1: Select notes. 2: Enter new label and press enter")
+        while [f.selectedpoints for f in fig.data] is None:
+            time.sleep(2)
+        else:
+            change_label(label_to_assign = new_label)
+            fig.show()
+    else:
+        break
+
+
+
+#%%
+
+import time
+
+while True: # Main processing loop
+    while os.path.exists('path/to/file'):
+        time.sleep(1)
