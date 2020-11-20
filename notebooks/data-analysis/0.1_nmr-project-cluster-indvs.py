@@ -417,9 +417,7 @@ for indv in tqdm(indv_dfs.keys()):
 #%%
 # prepare data
 
-def prepare_interactive_data(indv):
-
-    global new_df, colour, palette
+def prepare_interactive_data(indv, pal):
 
     labs = indv_dfs[indv]["hdbscan_labels"].values
     palette = sns.color_palette(pal, n_colors=len(np.unique(labs)))
@@ -441,7 +439,9 @@ def prepare_interactive_data(indv):
     df = pd.DataFrame(data = np.column_stack((x.astype(np.object), y.astype(np.object), labs)), columns = ['x', 'y', 'labs'])
     df["labs"] = df["labs"].map(str)
 
-    new_df = df
+    df
+
+    return df, colour, palette
 
 #%%
 # Plot data
@@ -453,7 +453,9 @@ import plotly.offline as py
 import pandas as pd
 import numpy as np
 from ipywidgets import interactive, HBox, VBox, widgets
-
+from src.avgn.visualization.projections import colorline
+from itertools import chain
+#%%
 
 def interactive_scatter():
 
@@ -500,116 +502,318 @@ def interactive_scatter():
 
     return fig
 
-#%%
+# %%
 
-from src.avgn.visualization.projections import colorline
-from itertools import chain
+def update_colours(new_df, colour, pal_name, palette):
+    """Add new, unused colours to a colour dictionary if there are new labels in the update dataframe.
 
-viz_proj="umap_viz"
-pal="tab20"
+    Args:
+        new_df (dataframe): Data to plot (columns = 'x', 'y', 'labs')
+        colour (dict): Existing dictionary of colours for each label
+        pal_name (str): Name of palette to use
 
+    Returns:
+        dict: Updated colour dictionary
+    """
 
-hdbscan_labs = indv_dfs[indv]["hdbscan_labels"]
-labs = hdbscan_labs.values
-unique_labs = hdbscan_labs.unique()
-nlabs = len(unique_labs)
+    label_list = new_df.labs.unique().tolist()
+    label_list.sort(key=int)
 
+    new = [i for i in label_list if i not in colour.keys()]
 
-projections = np.array(list(indv_dfs[indv][viz_proj].values))[:, 0:2]
-sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
-sequence_pos=indv_dfs[indv]["syllables_sequence_pos"]
+    newpalette = sns.color_palette(pal_name, n_colors=30)
+    newpalette = [col for col in newpalette if col not in palette]
 
+    newlab_dict = {lab: newpalette[i] for i, lab in enumerate(label_list) if lab not in colour.keys()}
+    newlab_dict['-1'] = (
+        0.83137254902,
+        0.83137254902,
+        0.83137254902
+        )
+    newcolour  = {f'{lab}' : f'rgb{tuple((np.array(colour)*255).astype(np.uint8))}' for lab, colour in newlab_dict.items()}
+    newentries = {lab : code for lab, code in newcolour.items() if lab not in colour.keys()}
+    colour.update(newentries)
 
-# Build dataframe with each pair of points separated by a null row
-sequence_list = []
-for sequence in np.unique(sequence_ids):
-    seq_mask = sequence_ids == sequence
-    seq = sequence_pos[seq_mask]
-    projection_seq = [i.tolist() for i in projections[seq_mask]]
-    sequence_list.append(projection_seq)
-
-
-all_coords = pd.DataFrame(list(chain.from_iterable(sequence_list)), columns= ('x', 'y'))
-all_coords['id']=all_coords.index
-tmp_df = (all_coords.iloc[1::2]
-         .assign(id = lambda x: x['id'] + 1, y = np.nan)
-         .rename(lambda x: x + .5))       
-all_coords_nas = pd.concat([all_coords, tmp_df], sort=False).sort_index().reset_index(drop=True)
-all_coords_nas.loc[all_coords_nas.isnull().any(axis=1), :] = np.nan
+    return colour
 
 
 #%%
-import numpy as np
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
 
-# dataframe, sample
-np.random.seed(123)
-cols = ['a','b','c', 'd', 'e', 'f', 'g']
-X = np.random.randn(50,len(cols))  
-df=pd.DataFrame(X, columns=cols)
-df=df.cumsum()
-df['id']=df.index
+# get data ready (transition lines)
 
-# dataframe with every nth row containing np.nan
-df2 = (df.iloc[1::2]
-         .assign(id = lambda x: x['id'] + 1, c = np.nan)
-         .rename(lambda x: x + .5))
-df1 = pd.concat([df, df2], sort=False).sort_index().reset_index(drop=True)
-df1.loc[df1.isnull().any(axis=1), :] = np.nan
-df1
-#%%
+def get_transition_df(indv, viz_proj):
 
-# plotly figure
-colors = px.colors.qualitative.Plotly
-fig = go.Figure()
+    # Prepare sequences
+    projections = np.array(list(indv_dfs[indv][viz_proj].values))[:, 0:2]
+    sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
+    sequence_pos=indv_dfs[indv]["syllables_sequence_pos"]
 
-for i, col in enumerate(all_coords_nas.columns[:-1]):
-    fig.add_traces(go.Scatter(x=all_coords_nas.x, y=all_coords_nas.y,
-                              mode='lines+markers', line=dict(color="grey", width=0.05)))
+    # Build dataframe with each pair of points separated by a null row
+    sequence_list = []
+    for sequence in np.unique(sequence_ids):
+        seq_mask = sequence_ids == sequence
+        projection_seq = [i.tolist() for i in projections[seq_mask]]
+        sequence_list.append(projection_seq)
 
-fig.update_traces(connectgaps=False)
+    all_coords = pd.DataFrame(list(chain.from_iterable(sequence_list)), columns= ('x', 'y'))
+    all_coords['id']=all_coords.index
+    tmp_df = (all_coords.iloc[1::2]
+            .assign(id = lambda x: x['id'] + 1, y = np.nan)
+            .rename(lambda x: x + .5))       
+    all_coords_nas = pd.concat([all_coords, tmp_df], sort=False).sort_index().reset_index(drop=True)
+    all_coords_nas.loc[all_coords_nas.isnull().any(axis=1), :] = np.nan
 
-fig.show()
+    return all_coords_nas
 
-#%%
+# %%
 
-#TODO: HERE: new interactive scatter - has lines
-prepare_interactive_data(indv)
+from plotly.subplots import make_subplots
 
-newpalette = sns.color_palette(pal, n_colors=len(np.unique(new_df.labs)))
+def make_interactive_plot(new_df, all_coords_nas, colour):
 
-newlab_dict = {lab: newpalette[i] for i, lab in enumerate(np.unique(new_df.labs)) if newpalette[i] not in palette}
-newlab_dict[-1] = (
-    0.83137254902,
-    0.83137254902,
-    0.83137254902
+    # Start plotting interactive fig
+    fig = make_subplots(rows=1, cols=2)
+
+    # Add transition lines
+    fig.add_trace(go.Scatter(x=all_coords_nas.x, y=all_coords_nas.y,
+                                mode='lines', name = 'T', line=dict(color="rgba(255,255,255,0.7)", width=0.05)), row=1, col=1)
+    fig.update_traces(connectgaps=False, marker=dict(size=5))
+
+    # Add each label to scatterplot in a loop
+    label_list = new_df.labs.unique().tolist()
+    label_list.sort(key=int)
+    for label in label_list:
+        fig.add_trace(go.Scatter(
+            x = new_df.loc[new_df.labs == label].x,
+            y = new_df.loc[new_df.labs == label].y,
+            mode = 'markers',
+            name = label,
+            marker=dict(size=5, color=colour[label])
+        ),row=1, col=1)
+
+    # Aesthetics
+    fig.update_xaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
+    fig.update_yaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
+    fig.update_layout(
+        autosize=False,
+        width=1300,
+        height=700,
+        legend=dict(
+        orientation="v"),
+        legend_title_text='Label',
+        font_color="#cfcfcf",
+        title_font_color="#cfcfcf",
+        legend_title_font_color="#cfcfcf",
+        title={
+        'text': f"{indv}",
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+        xaxis_range=(new_df.x.min() - 1, new_df.x.max() + 1),
+        yaxis_range=(new_df.y.min() - 1, new_df.y.max() + 1),
+        plot_bgcolor='black',
+        paper_bgcolor = 'black'
+
     )
-newcolour  = {f'{lab}' : f'rgb{tuple((np.array(colour)*255).astype(np.uint8))}' for lab, colour in newlab_dict.items()}
 
-newentries = {lab : code for lab, code in newcolour.items() if lab not in colour.keys()}
-colour.update(newentries)
+    # convert to figurewidget (listen for selections)
+    fig  = go.FigureWidget(fig)
+
+    return fig
+
+#%%
+
+pal_name = "tab20"
+viz_proj="umap_viz"
 
 
-fig = px.scatter(new_df, x="x", y="y", color = "labs", color_discrete_map= colour )
-fig  = go.FigureWidget(fig)
+del new_df, colour, fig
 
-fig.add_traces(go.Scatter(x=all_coords_nas.x, y=all_coords_nas.y,
-                            mode='lines', line=dict(color="rgba(0,0,0,0.5)", width=0.05)))
+# prepare data (scatterplot)
+new_df, colour, palette = prepare_interactive_data(indv, pal_name)
 
+# get data ready (transition lines)
+all_coords_nas = get_transition_df(indv, viz_proj)
+
+fig = make_interactive_plot(new_df, all_coords_nas, colour)
+
+fig
+
+#TODO: it works to this point, but cant update it 
+
+
+
+
+
+
+
+
+#%%
+
+# Add example syllables:
+
+import random
+import matplotlib.transforms as mtrans
+
+def fig2data(fig):
+    """
+    @brief Convert a Matplotlib figure to a 4D numpy array with RGBA channels and return it
+    @param fig a matplotlib figure
+    @return a numpy 3D array of RGBA values
+    """
+    # draw the renderer
+    fig.canvas.draw( )
+ 
+    # Get the RGBA buffer from the figure
+    w,h = fig.canvas.get_width_height()
+    buf = np.frombuffer(fig.canvas.tostring_argb())
+    buf.shape=(w, h, 4)
+ 
+    # canvas.tostring_argb give pixmap in ARGB mode. Roll the ALPHA channel to have it in RGBA mode
+    buf = np.roll(buf, 3, axis = 2)
+    return buf
+
+
+from PIL import Image
+
+def fig2img(fig):
+    """
+    Convert a Matplotlib figure to a PIL Image in RGBA format and return it
+    return a Python Imaging Library ( PIL ) image
+    """
+    # put the figure pixmap into a numpy array
+    buf = fig2data(fig)
+    w, h, d = buf.shape
+    return Image.frombytes("RGBA", (w, h), buf.tostring())
+
+
+#%%
+
+def fig2img(fig):
+    """Convert a Matplotlib figure to a PIL Image and return it"""
+    import io
+    buf = io.BytesIO()
+    fig.savefig(buf, dpi=100, bbox_inches="tight", pad_inches=0, transparent=True)
+    buf.seek(0)
+    img = Image.open(buf)
+    return img
+
+    
+def plot_sample_notes(labels):
+
+    fig, ax = plt.subplots(nrows=len(labels), ncols=15, figsize=(10,10))
+
+    for row, label in zip(ax, labels):
+        specs = indv_dfs[indv][indv_dfs[indv]["hdbscan_labels_fixed"] == label].spectrogram.values
+
+        if len(specs) >= 15:
+            number = 15
+        else:
+            number = len(specs)
+        
+        specs_subset = [specs[i] for i in random.sample(range(len(specs)), number)]
+
+        point_colour = colour[str(label)]
+        point_colour = point_colour[point_colour.find("(")+1:point_colour.find(")")]
+        point_colour = [val / 255.0 for val in tuple(map(int, point_colour.split(', ')))]
+
+        for i, (col, spec) in enumerate(zip(row, specs_subset)):
+            if i == 0:
+                col.add_artist(plt.Circle((0.5, 0.5), 0.25, color=point_colour, alpha=1))
+                col.set_aspect('equal')
+                col.axis('off')
+            else:
+                col.imshow(spec, cmap="Greys_r", aspect = 2)
+                col.axis('off')
+
+
+    plt.subplots_adjust(wspace=0, hspace=0.1)
+
+    fig.patch.set_facecolor('black')
+
+    figure = fig2img(fig) 
+
+    return figure
+
+
+#%%
+
+
+# Start plotting interactive fig
+fig = make_subplots(rows=1, cols=2)
+
+# Add transition lines
+fig.add_trace(go.Scatter(x=all_coords_nas.x, y=all_coords_nas.y,
+                            mode='lines', name = 'T', line=dict(color="rgba(255,255,255,0.7)", width=0.05)), row=1, col=1)
 fig.update_traces(connectgaps=False, marker=dict(size=5))
 
+# Add each label to scatterplot in a loop
+label_list = new_df.labs.unique().tolist()
+label_list.sort(key=int)
+for label in label_list:
+    fig.add_trace(go.Scatter(
+        x = new_df.loc[new_df.labs == label].x,
+        y = new_df.loc[new_df.labs == label].y,
+        mode = 'markers',
+        name = label,
+        marker=dict(size=5, color=colour[label])
+    ),row=1, col=1)
+
+# Add image
+
+from PIL import Image
+
+example_image = plot_sample_notes([int(i) for i in label_list]) #TODO: here - -------------- fix position etc
+
+# image = Image.frombytes('RGB', fig.canvas.get_width_height(), fig.canvas.tostring_rgb())
+
+
+# image = Image.fromarray(image)
+
+
+fig.add_trace(
+    go.Scatter(x=[0, 0.5, 1, 2, 2.2], y=[1.23, 2.5, 0.42, 3, 1]),row=1, col=2
+)
+
+# fig.add_trace(
+#     go.Scatter(
+#         x=[0, img_width * scale_factor],
+#         y=[0, img_height * scale_factor],
+#         mode="markers",
+#         marker_opacity=0
+#     )
+# )
+
+
+fig.add_layout_image(
+        dict(
+            source=example_image,
+            xref="x",
+            yref="y",
+            x=0,
+            y=3,
+            sizex=2,
+            sizey=2,
+            sizing="stretch",
+            opacity=0.5,
+            layer="below"),row=1, col=2
+)
+
+
+# Aesthetics
 fig.update_xaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
 fig.update_yaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
-fig.data[-1].name = "T"
 fig.update_layout(
     autosize=False,
-    width=750,
+    width=1300,
     height=700,
     legend=dict(
     orientation="v"),
     legend_title_text='Label',
+    font_color="#cfcfcf",
+    title_font_color="#cfcfcf",
+    legend_title_font_color="#cfcfcf",
     title={
     'text': f"{indv}",
     'y':0.95,
@@ -618,63 +822,121 @@ fig.update_layout(
     'yanchor': 'top'},
     xaxis_range=(new_df.x.min() - 1, new_df.x.max() + 1),
     yaxis_range=(new_df.y.min() - 1, new_df.y.max() + 1),
-    plot_bgcolor=facecolour,
+    plot_bgcolor='black',
+    paper_bgcolor = 'black'
 
 )
 
-# fig  = go.FigureWidget(fig)
-fig.show()
+# convert to figurewidget (listen for selections)
+fig  = go.FigureWidget(fig)
+
+fig
 
 
-# %%
-# Cross-reference indexes
 
-def change_label(label_to_assign = "666"):
 
-    global fig, new_df
 
-    if not isinstance(label_to_assign, str):
-        raise Exception("Label is not a string")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#%%
+import re
+
+
+def assign_new_label(label_to_assign):
+
+    global colour, fig
+
+    label_to_assign = str(label_to_assign)
+
+    input_num = re.sub("^-", "", label_to_assign)
+
+    if not str.isdigit(input_num):
+        raise SyntaxError(f"{input_num} is not an integral at heart")
+
 
     selection = []
-    for f in fig.data:
-        for name, name_new_df in new_df.groupby('labs'):
-            if f.name == name:
-                selection = selection + [name_new_df.iloc[i].name for i in f.selectedpoints]
+    for f in fig.data[1:]:
+            for name, name_new_df in new_df.groupby('labs'):
+                if f.name == name:
+                    try:
+                        selection = selection + [name_new_df.iloc[i].name for i in f.selectedpoints]
+                        #print(name, len(name_new_df), f.name, len(f.selectedpoints))
+                    except:
+                        print('No selected points')
+                        # print(name, len(name_new_df), f.name, len(f.selectedpoints))
+                        # print([i for i in f.selectedpoints])
 
+    if not selection:
+        raise Exception("There are no selected points")
+
+
+    for index in selection:
+        new_df.loc[index, 'labs'] = label_to_assign
+
+    global colour
+    colour = update_colours(new_df, colour, pal_name, palette)
+
+    label_list = new_df.labs.unique().tolist()
+    label_list.sort(key=int)
+
+    fig.data = [fig.data[0]]
+
+    for label in label_list:
+        fig.add_trace(go.Scatter(
+            x = new_df.loc[new_df.labs == label].x,
+            y = new_df.loc[new_df.labs == label].y,
+            mode = 'markers',
+            name = label,
+            marker=dict(size=5, color=colour[label])
+        ),row=1, col=1);
     
-    for i in selection:
-        new_df.loc[i, 'labs'] = label_to_assign
-
-
-    fig = interactive_scatter()
     fig.update_layout(
-    title={
-        'text': f"{indv}: Changed {len(selection)} points to label '{label_to_assign}'",
-        'y':0.935,
-        'x':0.5,
-        'xanchor': 'center',
-        'yanchor': 'top'})
+        title={
+    'text': f"{indv}: Changed {len(selection)} points to label '{label_to_assign}'",
+    'y':0.935,
+    'x':0.5,
+    'xanchor': 'center',
+    'yanchor': 'top'});
 
-    return fig
 
-    # #TODO: THIS DOESN'T WORK
-    # fig2  = go.FigureWidget(fig2)
-    # for f, f2 in itertools.zip_longest(fig.data, fig2.data):
-    #     if f2.name == f.name:
-    #         f.legendgroup = f2.legendgroup
-    #         f.y = f2.y
-    #         f.x = f2.x
-    #         f.fillcolor = f2.fillcolor
-    #         f.fill = f2.fill
-    #         f.marker = f2.marker
-    #         f.selectedpoints = []
-    #     elif f is None:
-    #         f2.selectedpoints = []
-    #         fig.add_trace(f2)
-    #     elif f.name not in np.unique(new_df.labs):
-    #         for element in f:
-    #             f[element = []
+
+#%%
+#assign_new_label('8')
+
+#*KEEP THIS ON TOP - IMPORTANT
+
+for indv in indv_dfs.keys():
+    if 'hdbscan_labels_fixed' not in indv_dfs[indv]:
+            indv_dfs[indv]['hdbscan_labels_fixed'] = indv_dfs[indv]['hdbscan_labels']
+    else:
+        raise Exception('Column already exists')
+
 
 # %%
 
@@ -695,19 +957,19 @@ else:
     already_checked.append(indv)
 
 
-
-
-prepare_interactive_data(indv)
-interactive_scatter()
+# prepare data (scatterplot)
+new_df, colour, palette = prepare_interactive_data(indv, pal_name)
+# get data ready (transition lines)
+all_coords_nas = get_transition_df(indv, viz_proj)
+fig = make_interactive_plot(new_df, all_coords_nas, colour)
+fig
 
 
 # %%
 
-indv_dfs_tmp = indv_dfs
-
-if len(indv_dfs_tmp[indv]["hdbscan_labels"]) == len(new_df):
-    print('lol')
-    indv_dfs_tmp[indv]["hdbscan_labels_fixed"] = [int(i) for i in new_df.labs]
+if len(indv_dfs[indv]["hdbscan_labels"]) == len(new_df):
+    print('Updating database with new labels')
+    indv_dfs[indv]["hdbscan_labels_fixed"] = [int(i) for i in new_df.labs]
 
 progress_out = DATA_DIR / 'resources' / DATASET_ID / 'label_fix_progress' / f'progress_{str(datetime.now().strftime("%Y-%m-%d_%H-%M"))}.txt'
 ensure_dir(progress_out)
@@ -715,23 +977,27 @@ ensure_dir(progress_out)
 with open(progress_out, "w") as output:
     output.write(str(already_checked))
 
-
-
 # %%
 import time
 
 for indv in indvs:
-    prepare_interactive_data(indv)
-    interactive_scatter()
-    fig.show()
+
+    # prepare data (scatterplot)
+    new_df, colour, palette = prepare_interactive_data(indv, pal_name)
+    # get data ready (transition lines)
+    all_coords_nas = get_transition_df(indv, viz_proj)
+    fig = make_interactive_plot(new_df, all_coords_nas, colour)
+    fig
     done = input("are you done, you fuckwit? y/n")
+
     while done == 'n':
+
         new_label = input("1: Select notes. 2: Enter new label and press enter")
+
         while [f.selectedpoints for f in fig.data] is None:
             time.sleep(2)
         else:
-            change_label(label_to_assign = new_label)
-            fig.show()
+            assign_new_label(new_label)
     else:
         break
 
