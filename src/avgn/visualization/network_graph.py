@@ -23,6 +23,8 @@ def plot_network_graph(
     min_connections=0.05,
     pal_dict=None,
     facecolour="#ededed",
+    edge_width=2,
+    point_size=200
 ):
     """
     """
@@ -71,10 +73,10 @@ def plot_network_graph(
         fig, ax = plt.subplots(figsize=(10, 10))
     graph_weights = [graph[edge[0]][edge[1]]["weight"] for edge in graph.edges()]
     rgba_cols = [[0, 0, 0] + [i] for i in graph_weights]
-    draw_networkx_edges(graph, pos, ax=ax, edge_color=rgba_cols, width=2)
+    draw_networkx_edges(graph, pos, ax=ax, edge_color=rgba_cols, width=edge_width)
 
     # centroids
-    ax.scatter(pos_locs[:, 0], pos_locs[:, 1], color=pos_colors, s=200, zorder=100)
+    ax.scatter(pos_locs[:, 0], pos_locs[:, 1], color=pos_colors, s=point_size, zorder=100)
     ax.set_facecolor(facecolour)
     ax.set_xticks([])  # remove ticks
     ax.set_yticks([])  # remove ticks
