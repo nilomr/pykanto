@@ -624,33 +624,6 @@ def make_interactive_plot(new_df, all_coords_nas, colour):
 
 #%%
 
-pal_name = "tab20"
-viz_proj="umap_viz"
-
-
-del new_df, colour, fig
-
-# prepare data (scatterplot)
-new_df, colour, palette = prepare_interactive_data(indv, pal_name)
-
-# get data ready (transition lines)
-all_coords_nas = get_transition_df(indv, viz_proj)
-
-fig = make_interactive_plot(new_df, all_coords_nas, colour)
-
-fig
-
-#TODO: it works to this point, but cant update it 
-
-
-
-
-
-
-
-
-#%%
-
 # Add example syllables:
 
 import random
@@ -699,8 +672,19 @@ def fig2img(fig):
     img = Image.open(buf)
     return img
 
+
+import base64
+from io import BytesIO
+
+def pil2datauri(img):
+    #converts PIL image to datauri
+    data = BytesIO()
+    img.save(data, "png")
+    data64 = base64.b64encode(data.getvalue())
+    return u'data:img/png;base64,'+data64.decode('utf-8')
+
     
-def plot_sample_notes(labels):
+def plot_sample_notes(labels, colour):
 
     fig, ax = plt.subplots(nrows=len(labels), ncols=15, figsize=(10,10))
 
@@ -732,7 +716,8 @@ def plot_sample_notes(labels):
 
     fig.patch.set_facecolor('black')
 
-    figure = fig2img(fig) 
+    figure = fig2img(fig)
+    plt.close()
 
     return figure
 
@@ -740,137 +725,110 @@ def plot_sample_notes(labels):
 #%%
 
 
-# Start plotting interactive fig
-fig = make_subplots(rows=1, cols=2)
+#%%
+#assign_new_label('8')
 
-# Add transition lines
-fig.add_trace(go.Scatter(x=all_coords_nas.x, y=all_coords_nas.y,
-                            mode='lines', name = 'T', line=dict(color="rgba(255,255,255,0.7)", width=0.05)), row=1, col=1)
-fig.update_traces(connectgaps=False, marker=dict(size=5))
+#*KEEP THIS ON TOP - IMPORTANT
 
-# Add each label to scatterplot in a loop
-label_list = new_df.labs.unique().tolist()
-label_list.sort(key=int)
-for label in label_list:
-    fig.add_trace(go.Scatter(
-        x = new_df.loc[new_df.labs == label].x,
-        y = new_df.loc[new_df.labs == label].y,
-        mode = 'markers',
-        name = label,
-        marker=dict(size=5, color=colour[label])
-    ),row=1, col=1)
-
-# Add image
-
-from PIL import Image
-
-example_image = plot_sample_notes([int(i) for i in label_list]) #TODO: here - -------------- fix position etc
-
-# image = Image.frombytes('RGB', fig.canvas.get_width_height(), fig.canvas.tostring_rgb())
+for indv in indv_dfs.keys():
+    if 'hdbscan_labels_fixed' not in indv_dfs[indv]:
+            indv_dfs[indv]['hdbscan_labels_fixed'] = indv_dfs[indv]['hdbscan_labels']
+    else:
+        raise Exception('Column already exists')
 
 
-# image = Image.fromarray(image)
+#%%
+indv = 'O36'
+pal_name = "tab20"
+viz_proj="umap_viz"
 
+#del new_df, colour, fig
 
-fig.add_trace(
-    go.Scatter(x=[0, 0.5, 1, 2, 2.2], y=[1.23, 2.5, 0.42, 3, 1]),row=1, col=2
-)
+def interactive_plot(indv, pal_name, viz_proj):
 
-# fig.add_trace(
-#     go.Scatter(
-#         x=[0, img_width * scale_factor],
-#         y=[0, img_height * scale_factor],
-#         mode="markers",
-#         marker_opacity=0
-#     )
-# )
+    global colour, new_df
 
+    # prepare data (scatterplot)
+    new_df, colour, palette = prepare_interactive_data(indv, pal_name)
 
-fig.add_layout_image(
-        dict(
-            source=example_image,
-            xref="x",
-            yref="y",
-            x=0,
-            y=3,
-            sizex=2,
-            sizey=2,
-            sizing="stretch",
-            opacity=0.5,
-            layer="below"),row=1, col=2
-)
+    # get data ready (transition lines)
+    all_coords_nas = get_transition_df(indv, viz_proj)
 
+    # Start plotting interactive fig
+    fig = make_subplots(rows=1, cols=2)
 
-# Aesthetics
-fig.update_xaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
-fig.update_yaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
-fig.update_layout(
-    autosize=False,
-    width=1300,
-    height=700,
-    legend=dict(
-    orientation="v"),
-    legend_title_text='Label',
-    font_color="#cfcfcf",
-    title_font_color="#cfcfcf",
-    legend_title_font_color="#cfcfcf",
-    title={
-    'text': f"{indv}",
-    'y':0.95,
-    'x':0.5,
-    'xanchor': 'center',
-    'yanchor': 'top'},
-    xaxis_range=(new_df.x.min() - 1, new_df.x.max() + 1),
-    yaxis_range=(new_df.y.min() - 1, new_df.y.max() + 1),
-    plot_bgcolor='black',
-    paper_bgcolor = 'black'
+    # Add transition lines
+    fig.add_trace(go.Scatter(x=all_coords_nas.x, y=all_coords_nas.y,
+                                mode='lines', name = 'T', line=dict(color="rgba(255,255,255,0.7)", width=0.05)), row=1, col=1)
+    fig.update_traces(connectgaps=False, marker=dict(size=5))
 
-)
+    # Add each label to scatterplot in a loop
+    label_list = new_df.labs.unique().tolist()
+    label_list.sort(key=int)
+    for label in label_list:
+        fig.add_trace(go.Scatter(
+            x = new_df.loc[new_df.labs == label].x,
+            y = new_df.loc[new_df.labs == label].y,
+            mode = 'markers',
+            name = label,
+            marker=dict(size=3, color=colour[label])
+        ),row=1, col=1)
 
-# convert to figurewidget (listen for selections)
-fig  = go.FigureWidget(fig)
+    # Add image
+    example_image = plot_sample_notes([int(i) for i in label_list], colour)
 
-fig
+    fig.add_layout_image(
+            dict(
+                source=example_image,
+                xref="paper",
+                yref="paper",
+                x=-1.2,
+                y=4,
+                sizex=7,
+                sizey=7,
+                opacity=1,
+                layer="above"),
 
+            row=1, col=2
+    )
 
+    # Aesthetics
+    fig.update_xaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
+    fig.update_yaxes(showgrid=False, zeroline=False, visible=False, showticklabels=False)
+    fig.update_layout(
+        autosize=False,
+        width=1300,
+        height=700,
+        legend=dict(
+        orientation="v"),
+        legend_title_text='Toggle element',
+        font_color="#cfcfcf",
+        title_font_color="#cfcfcf",
+        legend_title_font_color="#cfcfcf",
+        title={
+        'text': f"{indv}",
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+        xaxis_range=(new_df.x.min() - 1, new_df.x.max() + 1),
+        yaxis_range=(new_df.y.min() - 1, new_df.y.max() + 1),
+        plot_bgcolor='black',
+        paper_bgcolor = 'black'
 
+    )
 
+    # convert to figurewidget (listen for selections)
+    fig  = go.FigureWidget(fig)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return fig
 
 #%%
 import re
 
-
 def assign_new_label(label_to_assign):
 
-    global colour, fig
+    global colour, fig, new_df, newimage
 
     label_to_assign = str(label_to_assign)
 
@@ -899,7 +857,6 @@ def assign_new_label(label_to_assign):
     for index in selection:
         new_df.loc[index, 'labs'] = label_to_assign
 
-    global colour
     colour = update_colours(new_df, colour, pal_name, palette)
 
     label_list = new_df.labs.unique().tolist()
@@ -913,8 +870,18 @@ def assign_new_label(label_to_assign):
             y = new_df.loc[new_df.labs == label].y,
             mode = 'markers',
             name = label,
-            marker=dict(size=5, color=colour[label])
+            marker=dict(size=3, color=colour[label])
         ),row=1, col=1);
+
+    if len(indv_dfs[indv]["hdbscan_labels"]) == len(new_df):
+        indv_dfs[indv]["hdbscan_labels_fixed"] = [int(i) for i in new_df.labs]
+    else:
+        raise Exception("Different length data structures")
+
+    example_image = plot_sample_notes([int(i) for i in label_list], colour)
+    newimage = pil2datauri(example_image)
+    fig.layout.images[0]['source'] = newimage
+
     
     fig.update_layout(
         title={
@@ -925,17 +892,6 @@ def assign_new_label(label_to_assign):
     'yanchor': 'top'});
 
 
-
-#%%
-#assign_new_label('8')
-
-#*KEEP THIS ON TOP - IMPORTANT
-
-for indv in indv_dfs.keys():
-    if 'hdbscan_labels_fixed' not in indv_dfs[indv]:
-            indv_dfs[indv]['hdbscan_labels_fixed'] = indv_dfs[indv]['hdbscan_labels']
-    else:
-        raise Exception('Column already exists')
 
 
 # %%
@@ -952,24 +908,19 @@ i += 1
 if i >= len(indvs):
     raise Exception("End of list")
 else:
-    print(len(indvs))
     indv = indvs[i]
     already_checked.append(indv)
 
+if 'fig' in locals() or 'fig' in globals():
+    del(fig)
 
-# prepare data (scatterplot)
-new_df, colour, palette = prepare_interactive_data(indv, pal_name)
-# get data ready (transition lines)
-all_coords_nas = get_transition_df(indv, viz_proj)
-fig = make_interactive_plot(new_df, all_coords_nas, colour)
+fig = interactive_plot(indv, pal_name, viz_proj)
 fig
 
 
 # %%
 
-if len(indv_dfs[indv]["hdbscan_labels"]) == len(new_df):
-    print('Updating database with new labels')
-    indv_dfs[indv]["hdbscan_labels_fixed"] = [int(i) for i in new_df.labs]
+
 
 progress_out = DATA_DIR / 'resources' / DATASET_ID / 'label_fix_progress' / f'progress_{str(datetime.now().strftime("%Y-%m-%d_%H-%M"))}.txt'
 ensure_dir(progress_out)
@@ -1010,3 +961,18 @@ import time
 while True: # Main processing loop
     while os.path.exists('path/to/file'):
         time.sleep(1)
+
+
+#%%
+
+
+import base64
+from io import BytesIO
+
+prefix = f'data:image/png;base64,'
+
+prefix + base64.b64encode(example_image).decode('utf-8')
+
+example_image
+# %%
+
