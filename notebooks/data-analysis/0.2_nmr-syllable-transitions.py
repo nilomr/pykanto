@@ -169,12 +169,12 @@ for i in range(8, 10):
     )
 
     from src.greti.audio.filter import dereverberate
+
     spec = dereverberate(spec, echo_range=100, echo_reduction=3, hop_length_ms=3)
     spec[spec < 0] = 0
 
-    
     # plot the spectrogram with labels
-    fig, ax = plt.subplots(figsize=(len(data)*0.00009, 3))
+    fig, ax = plt.subplots(figsize=(len(data) * 0.00009, 3))
     plot_spec(spec, fig, ax, hop_len_ms=3, rate=rate, show_cbar=False, cmap="binary")
     plt.setp(plt.gcf().get_axes(), xticks=[], yticks=[])
     ax.spines["top"].set_visible(False)
@@ -184,7 +184,7 @@ for i in range(8, 10):
     ymin, ymax = ax.get_ylim()
     ax.set_facecolor(facecolour)
     for ix, row in tqdm(syllable_df[syllable_df.key == key].iterrows()):
-        if row.hdbscan_labels >= 0: # don't plot noise
+        if row.hdbscan_labels >= 0:  # don't plot noise
 
             color = indv_dict[row.indv]["label_pal_dict"][
                 indv_dict[row.indv]["label_dict"][row[label]]
@@ -223,7 +223,7 @@ for i in range(8, 10):
 #%%
 # Build transition matrix
 
-#TODO: Build transition matrix for each song independently
+# TODO: Build transition matrix for each song independently
 
 hdbscan_labs = syllable_df[syllable_df.indv == bird]["hdbscan_labels"]
 labs = hdbscan_labs.values
@@ -283,9 +283,9 @@ pos_colours = []
 for i in pos.keys():
     for note, colour in colours.items():
         for original, newlab in element_dict.items():
-                if i == newlab:
-                    if note == original:
-                        pos_colours.append(colour)
+            if i == newlab:
+                if note == original:
+                    pos_colours.append(colour)
 
 # Get positions, weights, widths, colours
 pos_locs = np.vstack(pos.values())
@@ -336,26 +336,14 @@ def guess_seq_len(seq):
     guess = 1
     max_len = len(seq) / 2
     for x in range(2, int(max_len)):
-        if seq[0:x] == seq[x:2*x] :
+        if seq[0:x] == seq[x : 2 * x]:
             return x
 
     return guess
 
+
 for song in sequences_newlabels:
     print(guess_seq_len(song), song)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #%%
