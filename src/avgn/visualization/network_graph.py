@@ -24,10 +24,9 @@ def plot_network_graph(
     pal_dict=None,
     facecolour="#ededed",
     edge_width=2,
-    point_size=200
+    edge_colour="black",  # one of 'black' or 'white'
+    point_size=200,
 ):
-    """
-    """
     sequences = [elements[sequence_ids == i] for i in np.unique(sequence_ids)]
 
     # compute the centers of each label
@@ -72,11 +71,19 @@ def plot_network_graph(
     if ax is None:
         fig, ax = plt.subplots(figsize=(10, 10))
     graph_weights = [graph[edge[0]][edge[1]]["weight"] for edge in graph.edges()]
-    rgba_cols = [[0, 0, 0] + [i] for i in graph_weights]
+
+    if edge_colour is "black":
+        rgb = [0, 0, 0]
+    elif edge_colour is "white":
+        rgb = [1, 1, 1]
+
+    rgba_cols = [rgb + [i] for i in graph_weights]
     draw_networkx_edges(graph, pos, ax=ax, edge_color=rgba_cols, width=edge_width)
 
     # centroids
-    ax.scatter(pos_locs[:, 0], pos_locs[:, 1], color=pos_colors, s=point_size, zorder=100)
+    ax.scatter(
+        pos_locs[:, 0], pos_locs[:, 1], color=pos_colors, s=point_size, zorder=100
+    )
     ax.set_facecolor(facecolour)
     ax.set_xticks([])  # remove ticks
     ax.set_yticks([])  # remove ticks
