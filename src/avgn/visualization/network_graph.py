@@ -2,6 +2,7 @@ import numbers
 from collections.abc import Iterable
 
 import matplotlib
+import matplotlib.patches as mpatch
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
@@ -26,6 +27,7 @@ def plot_network_graph(
     edge_width=2,
     edge_colour="black",  # one of 'black' or 'white'
     point_size=200,
+    arrowsize=10,
 ):
     sequences = [elements[sequence_ids == i] for i in np.unique(sequence_ids)]
 
@@ -78,7 +80,18 @@ def plot_network_graph(
         rgb = [1, 1, 1]
 
     rgba_cols = [rgb + [i] for i in graph_weights]
-    draw_networkx_edges(graph, pos, ax=ax, edge_color=rgba_cols, width=edge_width)
+    draw_networkx_edges(
+        graph,
+        pos,
+        ax=ax,
+        edge_color=rgba_cols,
+        width=edge_width,
+        connectionstyle="arc3, rad = 0.5",
+        arrowstyle=mpatch.ArrowStyle(
+            "Fancy", head_length=0.7, head_width=0.5, tail_width=0.1
+        ),
+        arrowsize=arrowsize,
+    )
 
     # centroids
     ax.scatter(
