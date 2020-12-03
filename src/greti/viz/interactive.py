@@ -15,9 +15,12 @@ from io import BytesIO
 import matplotlib.pyplot as plt
 import re
 import seaborn as sns
+from src.avgn.visualization.network_graph import plot_network_graph
 
 
-def prepare_interactive_data(indv_dfs, indv, pal_name):
+def prepare_interactive_data(
+    indv_dfs, indv, pal_name, original_labels="hdbscan_labels_fixed"
+):
     """This function prepares a dataframe of notes and its corresponding colour palette, which can then be plotted.
 
     Args:
@@ -29,7 +32,7 @@ def prepare_interactive_data(indv_dfs, indv, pal_name):
         df, colour, palette: a dataframe of labels, a colour dictionary and a full palette for a given bird
     """
 
-    labs = indv_dfs[indv]["hdbscan_labels_fixed"].values
+    labs = indv_dfs[indv][original_labels].values
     palette = sns.color_palette(pal_name, n_colors=len(np.unique(labs)))
     lab_dict = {lab: palette[i] for i, lab in enumerate(np.unique(labs))}
 
@@ -69,20 +72,15 @@ def update_colours(new_df, colour, pal_name):
 
     label_list = new_df.labs.unique().tolist()
     label_list.sort(key=int)
-
     newpalette = sns.color_palette(pal_name, n_colors=20)
     newpalette = [
         f"rgb{tuple((np.array(col)*255).astype(np.uint8))}" for col in newpalette
     ]
     newpalette = [col for col in newpalette if col not in colour.values()]
-
     newlabs = [lab for lab in label_list if lab not in colour.keys()]
 
     newlab_dict = {lab: code for lab, code in zip(newlabs, newpalette)}
-
     newlab_dict["-1"] = "rgb(212, 212, 212)"
-
-    print(newlabs, newpalette)
 
     colour.update(newlab_dict)
 
@@ -104,7 +102,6 @@ def get_transition_df(indv_dfs, indv, viz_proj):
     # Prepare sequences
     projections = np.array(list(indv_dfs[indv][viz_proj].values))[:, 0:2]
     sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
-    sequence_pos = indv_dfs[indv]["syllables_sequence_pos"]
 
     # Build dataframe with each pair of points separated by a null row
     sequence_list = []
@@ -135,7 +132,14 @@ def fig2img(fig):
     import io
 
     buf = io.BytesIO()
-    fig.savefig(buf, dpi=100, bbox_inches="tight", pad_inches=0, transparent=True)
+    fig.savefig(
+        buf,
+        dpi=100,
+        bbox_inches="tight",
+        pad_inches=0,
+        transparent=True,
+        facecolor=fig.get_facecolor(),
+    )
     buf.seek(0)
     img = Image.open(buf)
     return img
@@ -149,7 +153,9 @@ def pil2datauri(img):
     return "data:img/png;base64," + data64.decode("utf-8")
 
 
-def plot_sample_notes(indv_dfs, indv, labels, colour):
+def plot_sample_notes(
+    indv_dfs, indv, labels, colour, original_labels="hdbscan_labels_fixed"
+):
     """Make plot containing examples of each existing cluster label, with colour labels
 
     Args:
@@ -166,7 +172,7 @@ def plot_sample_notes(indv_dfs, indv, labels, colour):
 
     for row, label in zip(ax, labels):
         specs = indv_dfs[indv][
-            indv_dfs[indv]["hdbscan_labels_fixed"] == label
+            indv_dfs[indv][original_labels] == label
         ].spectrogram.values
 
         if len(specs) >= 15:
@@ -203,7 +209,56 @@ def plot_sample_notes(indv_dfs, indv, labels, colour):
     return figure
 
 
-def interactive_plot(indv_dfs, indv, pal_name, viz_proj):
+def plot_directed_graph(
+    indv_dfs, indv, viz_proj, colour, original_labels="hdbscan_labels_fixed"
+):
+
+    # Prepare necessary data
+    projections = np.array(list(indv_dfs[indv][viz_proj].values))[:, 0:2]
+
+    hdbscan_labs = indv_dfs[indv][original_labels]
+    labs = hdbscan_labs.values
+
+    sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
+
+    # Convert dictionary to palette, scaling colour values from 0 to 1
+    net_palette = [
+        tuple([int(s) / 255 for s in re.findall(r"\b\d+\b", col)])
+        for col in colour.values()
+    ]
+
+    # Make plot
+    fig, ax = fig, ax = plt.subplots(figsize=(10, 10))
+
+    ax = plot_network_graph(
+        labs,
+        projections,
+        sequence_ids,
+        color_palette=net_palette,
+        min_cluster_samples=0,
+        min_connections=0,
+        facecolour="black",
+        edge_width=0.1,
+        edge_colour="white",
+        point_size=300,
+        arrowsize=30,
+        ax=ax,
+    )
+
+    plt.subplots_adjust(wspace=0, hspace=0.1)
+
+    fig.set_facecolor("black")
+    ax.set_facecolor("black")
+
+    figure = fig2img(fig)
+    plt.close()
+
+    return figure
+
+
+def interactive_plot(
+    indv_dfs, indv, pal_name, viz_proj, original_labels="hdbscan_labels_fixed"
+):
     """Main function to make an interactive scatterplot with a) notes, coloured by label, and their transtions ; b) examples of each label
 
     Args:
@@ -217,13 +272,15 @@ def interactive_plot(indv_dfs, indv, pal_name, viz_proj):
     """
 
     # prepare data (scatterplot)
-    new_df, colour, palette = prepare_interactive_data(indv_dfs, indv, pal_name)
+    new_df, colour, palette = prepare_interactive_data(
+        indv_dfs, indv, pal_name, original_labels=original_labels
+    )
 
     # get data ready (transition lines)
     all_coords_nas = get_transition_df(indv_dfs, indv, viz_proj)
 
     # Start plotting interactive fig
-    fig = make_subplots(rows=1, cols=2)
+    fig = make_subplots(rows=1, cols=3)
 
     # Add transition lines
     fig.add_trace(
@@ -257,7 +314,11 @@ def interactive_plot(indv_dfs, indv, pal_name, viz_proj):
 
     # Add image
     example_image = plot_sample_notes(
-        indv_dfs, indv, [int(i) for i in label_list], colour
+        indv_dfs,
+        indv,
+        [int(i) for i in label_list],
+        colour,
+        original_labels=original_labels,
     )
 
     fig.add_layout_image(
@@ -266,7 +327,7 @@ def interactive_plot(indv_dfs, indv, pal_name, viz_proj):
             xref="paper",
             yref="paper",
             x=-1.2,
-            y=4,
+            y=3.5,
             sizex=7,
             sizey=7,
             opacity=1,
@@ -274,6 +335,26 @@ def interactive_plot(indv_dfs, indv, pal_name, viz_proj):
         ),
         row=1,
         col=2,
+    )
+
+    example_graph = plot_directed_graph(
+        indv_dfs, indv, viz_proj, colour, original_labels=original_labels
+    )
+
+    fig.add_layout_image(
+        dict(
+            source=example_graph,
+            xref="paper",
+            yref="paper",
+            x=-1.2,
+            y=3.5,
+            sizex=7,
+            sizey=7,
+            opacity=1,
+            layer="above",
+        ),
+        row=1,
+        col=3,
     )
 
     # Aesthetics
@@ -285,7 +366,7 @@ def interactive_plot(indv_dfs, indv, pal_name, viz_proj):
     )
     fig.update_layout(
         autosize=False,
-        width=1300,
+        width=1800,
         height=700,
         legend=dict(orientation="v"),
         legend_title_text="Toggle <br> element",
@@ -308,26 +389,26 @@ def interactive_plot(indv_dfs, indv, pal_name, viz_proj):
     # convert to figurewidget (listen for selections)
     fig = go.FigureWidget(fig)
 
-    return fig, colour, new_df, palette
+    return fig, colour, new_df
 
 
 def assign_new_label(
-    indv_dfs, indv, fig, pal_name, palette, colour, new_df, label_to_assign
+    indv_dfs, indv, fig, pal_name, colour, new_df, label_to_assign, relabel_noise=False
 ):
-    """Assign new labels to selection in current interactive plot. It updates the global colour dictionary, fig, and dataframe.
+    """Assign new labels to selection in current interactive plot. 
+    It updates the global colour dictionary, fig, and dataframe.
 
     Args:
         label_to_assign (int): the numeric label to assign (e.g. -1 for noise, 5)
 
     """
-
+    # Check and clean label imput
     label_to_assign = str(label_to_assign)
-
     input_num = re.sub("^-", "", label_to_assign)
-
     if not str.isdigit(input_num):
         raise SyntaxError(f"{input_num} is not an integral at heart")
 
+    # Get real indexes of selected notes (and check if there are selected notes)
     selection = []
     for f in fig.data[1:]:
         for name, name_new_df in new_df.groupby("labs"):
@@ -336,25 +417,28 @@ def assign_new_label(
                     selection = selection + [
                         name_new_df.iloc[i].name for i in f.selectedpoints
                     ]
-                    # print(name, len(name_new_df), f.name, len(f.selectedpoints))
                 except:
                     print("No selected points")
-                    # print(name, len(name_new_df), f.name, len(f.selectedpoints))
-                    # print([i for i in f.selectedpoints])
-
     if not selection:
         raise Exception("There are no selected points")
 
+    # Re-label notes (with option to relabel noise)
     for index in selection:
-        new_df.loc[index, "labs"] = label_to_assign
+        if relabel_noise is False:
+            if new_df.loc[index, "labs"] > "-1":
+                new_df.loc[index, "labs"] = label_to_assign
+        elif relabel_noise is True:
+            new_df.loc[index, "labs"] = label_to_assign
 
+    # Update colour list to add new labels
     colour = update_colours(new_df, colour, pal_name)
-
     label_list = new_df.labs.unique().tolist()
     label_list.sort(key=int)
 
+    # Clear existing data in figure
     fig.data = [fig.data[0]]
 
+    # Add updated data
     for label in label_list:
         fig.add_trace(
             go.Scatter(
@@ -368,17 +452,26 @@ def assign_new_label(
             col=1,
         )
 
+    # Add new labels to main dataframe
     if len(indv_dfs[indv]["hdbscan_labels"]) == len(new_df):
         indv_dfs[indv]["hdbscan_labels_fixed"] = [int(i) for i in new_df.labs]
     else:
         raise Exception("Different length data structures")
 
-    print(label_list, colour)
+    # Build plot with example note spectrograms and add it to plot
     example_image = plot_sample_notes(
         indv_dfs, indv, [int(i) for i in label_list], colour
     )
     newimage = pil2datauri(example_image)
     fig.layout.images[0]["source"] = newimage
+
+    # Plot directed graph and add to plot
+    example_graph = plot_directed_graph(
+        indv_dfs, indv, "umap_viz", colour
+    )  # Note: can change projection used for visualisation if needed
+
+    newimage1 = pil2datauri(example_graph)
+    fig.layout.images[1]["source"] = newimage1
 
     fig.update_layout(
         title={
@@ -390,5 +483,7 @@ def assign_new_label(
         }
     )
 
+    # Return updated colour dictionary,
+    # which will be input in the same function if further relabelling is needed.
     return colour
 
