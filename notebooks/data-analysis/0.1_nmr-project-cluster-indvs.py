@@ -145,9 +145,9 @@ for indvi, indv in enumerate(tqdm(indvs)):
 
     # Set min distance (for visualisation only) depending on # syllables
     min_dist = (
-        ((len(specs_flattened) - min(syllable_n)) * (0.4 - 0.1))
+        ((len(specs_flattened) - min(syllable_n)) * (0.3 - 0.07))
         / (max(syllable_n) - min(syllable_n))
-    ) + 0.1
+    ) + 0.07
 
     # umap_viz
     #n_neighbors=60, min_dist=min_dist, n_components=2, verbose=True
@@ -511,8 +511,8 @@ else:
 if 'fig' in locals() or 'fig' in globals():
     del(fig)
 
-fig, colour, new_df, palette = interactive_plot(indv_dfs, indv, pal_name, viz_proj)
-
+fig, colour, new_df = interactive_plot(indv_dfs, indv, pal_name, viz_proj, original_labels="hdbscan_labels");
+# change to original_labels="hdbscan_labels_fixed" if you don't want to reset
 fig
 
 
@@ -565,38 +565,138 @@ example_image
 
 
 # %%
+import re
+from src.avgn.visualization.network_graph import plot_network_graph
 
-#TODO: Integrate this in interactive plot
+def plot_directed_graph():
 
-projections = np.array(list(indv_dfs[indv][viz_proj].values))[:, 0:2]
+    # Prepare necessary data
+    projections = np.array(list(indv_dfs[indv][viz_proj].values))[:, 0:2]
 
-hdbscan_labs = indv_dfs[indv]["hdbscan_labels_fixed"]
-labs = hdbscan_labs.values
-unique_labs = hdbscan_labs.unique()
-nlabs = len(unique_labs)
+    hdbscan_labs = indv_dfs[indv]["hdbscan_labels_fixed"]
+    labs = hdbscan_labs.values
+    unique_labs = hdbscan_labs.unique()
+    nlabs = len(unique_labs)
 
-sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
+    sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
 
-# pal_dict
+    # Convert dictionary to palette, scaling colour values from 0 to 1
+    net_palette = [tuple([int(s) / 255 for s in re.findall(r'\b\d+\b', col)]) for col in colour.values()]
 
-plot_network_graph(
-    labs,
-    projections,
-    sequence_ids,
-    color_palette=palette,
-    min_cluster_samples=0,
-    min_connections=0,
-    facecolour='k',
-    edge_width=1,
-    edge_colour='white',
-    point_size=200
-)
+    # Make plot
+    fig, ax = fig, ax = plt.subplots(figsize=(10, 10))
 
+    ax = plot_network_graph(
+        labs,
+        projections,
+        sequence_ids,
+        color_palette=net_palette,
+        min_cluster_samples=0,
+        min_connections=0,
+        facecolour='black',
+        edge_width=0.1,
+        edge_colour='white',
+        point_size=300,
+        arrowsize = 40,
+        ax=ax,
+    )
 
+    plt.subplots_adjust(wspace=0, hspace=0.1)
 
+    fig.set_facecolor("black")
+    ax.set_facecolor("black")
+
+    figure = fig2img(fig)
+    plt.close()
+
+    figure
 
 #%%
 from src.avgn.visualization.barcodes import indv_barcode
 from src.avgn.visualization.network_graph import build_transition_matrix, compute_graph
 import networkx as nx
 import matplotlib as mpl
+from PIL import Image
+import random
+import librosa
+import matplotlib.patches as mpatches
+
+
+
+from src.vocalseg.utils import (
+    butter_bandpass_filter,
+    int16tofloat32,
+    plot_spec,
+    spectrogram,
+)
+
+#TODO: get a few sample songs with labels to aid classification
+
+# first get index of wavs that contain desired labels 
+
+label = 3
+original_labels="hdbscan_labels_fixed"
+
+len_label = len(indv_dfs[indv].loc[indv_dfs[indv]['hdbscan_labels_fixed'] == label].key)
+
+#for i in random.sample(range(len_label), 3)
+
+# load the wav
+key = indv_dfs[indv].loc[indv_dfs[indv]['hdbscan_labels_fixed'] == label].key.iloc[i]
+wav_dir = most_recent_subdirectory(DATA_DIR / "processed" / DATASET_ID.replace('_segmented', ''), only_dirs=True) / 'WAV' / key
+wav, rate = librosa.core.load(wav_dir, sr=None)
+
+# Bandpass
+data = butter_bandpass_filter(wav, 1200, 10000, rate)
+
+# Create the spectrogram
+spec = spectrogram(
+    data,
+    rate,
+    n_fft=1024,
+    hop_length_ms=3,
+    win_length_ms=15,
+    ref_level_db=30,
+    min_level_db=-60,
+)
+
+# Label colours
+
+lab_colours = {int(lab) : tuple([int(s) / 255 for s in re.findall(r"\b\d+\b", col)]) for lab, col in colour.items()} 
+
+# from src.greti.audio.filter import dereverberate
+
+# spec = dereverberate(spec, echo_range=100, echo_reduction=3, hop_length_ms=3)
+# spec[spec < 0] = 0
+
+# plot the spectrogram with labels
+fig, ax = plt.subplots(figsize=(len(data) * 0.00009, 3))
+plot_spec(spec, fig, ax, hop_len_ms=3, rate=rate, show_cbar=False, cmap="binary")
+plt.setp(plt.gcf().get_axes(), xticks=[], yticks=[])
+ax.spines["top"].set_visible(False)
+ax.spines["bottom"].set_visible(False)
+ax.spines["right"].set_visible(False)
+ax.spines["left"].set_visible(False)
+ymin, ymax = ax.get_ylim()
+ax.set_facecolor(facecolour)
+
+#! now invert spectrogram etc etc
+
+for ix, row in indv_dfs[indv][indv_dfs[indv].key == key].iterrows():
+    if row[original_labels] > -1:  # don't plot noise
+
+        color = lab_colours[row[original_labels]]
+        ax.add_patch(
+            mpatches.Rectangle(
+                [row.start_time, ymax - (ymax - ymin) / 10],
+                row.end_time - row.start_time,
+                (ymax - ymin) / 10,
+                ec="none",
+                color=color,
+            )
+        )
+# ax.set_xlim([0.7, 9.3])
+ax.xaxis.tick_bottom()
+
+
+plt.show()
