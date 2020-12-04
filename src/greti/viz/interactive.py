@@ -209,6 +209,149 @@ def plot_sample_notes(
     return figure
 
 
+import librosa
+from src.avgn.utils.paths import most_recent_subdirectory
+from src.greti.read.paths import DATA_DIR
+import matplotlib.patches as mpatches
+
+from src.vocalseg.utils import (
+    butter_bandpass_filter,
+    plot_spec,
+    spectrogram,
+)
+
+
+def plot_sample_labelled_song(
+    DATASET_ID, indv_dfs, indv, colour, label, original_labels="hdbscan_labels_fixed"
+):
+
+    # Plot a randomly chosen song
+    len_label = len(
+        indv_dfs[indv].loc[indv_dfs[indv]["hdbscan_labels_fixed"] == label].key
+    )
+    index = random.sample(range(len_label), 1)[0]
+
+    # load the wav
+    key = (
+        indv_dfs[indv]
+        .loc[indv_dfs[indv]["hdbscan_labels_fixed"] == label]
+        .key.iloc[index]
+    )
+    wav_dir = (
+        most_recent_subdirectory(
+            DATA_DIR / "processed" / DATASET_ID.replace("_segmented", ""),
+            only_dirs=True,
+        )
+        / "WAV"
+        / key
+    )
+    wav, rate = librosa.core.load(wav_dir, sr=None)
+
+    # Bandpass
+    data = butter_bandpass_filter(wav, 1200, 10000, rate)
+
+    # Create the spectrogram
+    spec = spectrogram(
+        data,
+        rate,
+        n_fft=1024,
+        hop_length_ms=3,
+        win_length_ms=15,
+        ref_level_db=30,
+        min_level_db=-60,
+    )
+
+    # Trim or pad spectrogram
+    if spec.shape[1] < 500:
+
+        pad_left = 0
+        pad_right = 500 - np.shape(spec)[1]
+        spec = np.pad(
+            spec, [(0, 0), (pad_left, pad_right)], "constant", constant_values=0
+        )
+
+    else:
+        spec = spec[:, 0:500]
+
+    # Narrower frequency band
+    spec = spec[0:200]
+
+    # clip to add contrast
+    spec[spec < 0.5] = 0
+
+    # Prepare label colours
+    lab_colours = {
+        int(lab): tuple([int(s) / 255 for s in re.findall(r"\b\d+\b", col)])
+        for lab, col in colour.items()
+    }
+
+    # Plot the spectrogram with labels
+    figure, ax = plt.subplots(figsize=(7, 3))
+    plot_spec(spec, figure, ax, hop_len_ms=3, rate=rate, show_cbar=False, cmap="bone")
+    plt.setp(plt.gcf().get_axes(), xticks=[], yticks=[])
+    ax.spines["top"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    ymin, ymax = ax.get_ylim()
+
+    # Plot label rectangles
+
+    for ix, row_2 in indv_dfs[indv][indv_dfs[indv].key == key].iterrows():
+        # if row[original_labels] > -1:  # don't plot noise
+
+        color = lab_colours[row_2[original_labels]]
+        ax.add_patch(
+            mpatches.Rectangle(
+                [row_2.start_time, (ymax - (ymax - ymin) / 10)],
+                row_2.end_time - row_2.start_time,
+                (ymax - ymin) / 10,
+                ec="none",
+                color=color,
+            )
+        )
+
+    ax.xaxis.tick_bottom()
+
+    figure_img = fig2img(figure)
+
+    plt.close()
+    return figure_img
+
+
+def plot_sample_songs_set(
+    DATASET_ID, indv_dfs, indv, new_df, colour, original_labels="hdbscan_labels_fixed",
+):
+
+    label_list = new_df.labs.unique().tolist()
+    labels = [int(i) for i in label_list]
+    fig, ax = plt.subplots(nrows=len(labels), ncols=2, figsize=(4, 5))
+
+    for row, label in zip(ax, labels):
+        if label > -1:  # do not create a row for noise
+            for col in row:
+                figure_img = plot_sample_labelled_song(
+                    DATASET_ID,
+                    indv_dfs,
+                    indv,
+                    colour,
+                    label,
+                    original_labels=original_labels,
+                )
+                col.imshow(figure_img, aspect=1)
+                col.axis("off")
+
+    plt.subplots_adjust(wspace=0, hspace=0)
+
+    fig.patch.set_facecolor("black")
+
+    figure_img_full = fig2img(fig)
+
+    plt.close()
+
+    return figure_img_full
+
+
 def plot_directed_graph(
     indv_dfs, indv, viz_proj, colour, original_labels="hdbscan_labels_fixed"
 ):
@@ -257,7 +400,12 @@ def plot_directed_graph(
 
 
 def interactive_plot(
-    indv_dfs, indv, pal_name, viz_proj, original_labels="hdbscan_labels_fixed"
+    DATASET_ID,
+    indv_dfs,
+    indv,
+    pal_name,
+    viz_proj,
+    original_labels="hdbscan_labels_fixed",
 ):
     """Main function to make an interactive scatterplot with a) notes, coloured by label, and their transtions ; b) examples of each label
 
@@ -312,13 +460,14 @@ def interactive_plot(
             col=1,
         )
 
-    # Add image
-    example_image = plot_sample_notes(
+    # Add sample songs with note labels
+    example_image = plot_sample_songs_set(
+        DATASET_ID,
         indv_dfs,
         indv,
-        [int(i) for i in label_list],
+        new_df,
         colour,
-        original_labels=original_labels,
+        original_labels="hdbscan_labels_fixed",
     )
 
     fig.add_layout_image(
@@ -327,7 +476,7 @@ def interactive_plot(
             xref="paper",
             yref="paper",
             x=-1.2,
-            y=3.5,
+            y=3.8,
             sizex=7,
             sizey=7,
             opacity=1,
@@ -337,6 +486,7 @@ def interactive_plot(
         col=2,
     )
 
+    # Add directed graph
     example_graph = plot_directed_graph(
         indv_dfs, indv, viz_proj, colour, original_labels=original_labels
     )
@@ -369,7 +519,7 @@ def interactive_plot(
         width=1800,
         height=700,
         legend=dict(orientation="v"),
-        legend_title_text="Toggle <br> element",
+        legend_title_text="Toggle <br> element <br>",
         font_color="#cfcfcf",
         title_font_color="#cfcfcf",
         legend_title_font_color="#cfcfcf",
@@ -393,7 +543,15 @@ def interactive_plot(
 
 
 def assign_new_label(
-    indv_dfs, indv, fig, pal_name, colour, new_df, label_to_assign, relabel_noise=False
+    DATASET_ID,
+    indv_dfs,
+    indv,
+    fig,
+    pal_name,
+    colour,
+    new_df,
+    label_to_assign,
+    relabel_noise=False,
 ):
     """Assign new labels to selection in current interactive plot. 
     It updates the global colour dictionary, fig, and dataframe.
@@ -459,9 +617,16 @@ def assign_new_label(
         raise Exception("Different length data structures")
 
     # Build plot with example note spectrograms and add it to plot
-    example_image = plot_sample_notes(
-        indv_dfs, indv, [int(i) for i in label_list], colour
+
+    example_image = plot_sample_songs_set(
+        DATASET_ID,
+        indv_dfs,
+        indv,
+        new_df,
+        colour,
+        original_labels="hdbscan_labels_fixed",
     )
+
     newimage = pil2datauri(example_image)
     fig.layout.images[0]["source"] = newimage
 
