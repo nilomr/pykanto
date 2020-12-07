@@ -11,11 +11,21 @@ import random
 import matplotlib.transforms as mtrans
 from PIL import Image
 import base64
+from pathlib2 import Path
 from io import BytesIO
 import matplotlib.pyplot as plt
 import re
 import seaborn as sns
 from src.avgn.visualization.network_graph import plot_network_graph
+import librosa
+from src.avgn.utils.paths import most_recent_subdirectory
+from src.greti.read.paths import DATA_DIR
+import matplotlib.patches as mpatches
+from src.vocalseg.utils import (
+    butter_bandpass_filter,
+    plot_spec,
+    spectrogram,
+)
 
 
 def prepare_interactive_data(
@@ -154,7 +164,12 @@ def pil2datauri(img):
 
 
 def plot_sample_notes(
-    indv_dfs, indv, labels, colour, original_labels="hdbscan_labels_fixed"
+    indv_dfs,
+    indv,
+    labels,
+    colour,
+    original_labels="hdbscan_labels_fixed",
+    reset_bird=False,
 ):
     """Make plot containing examples of each existing cluster label, with colour labels
 
@@ -167,6 +182,8 @@ def plot_sample_notes(
     Returns:
         PIL image: The plot, converted to PIL so that it can be embedded in a plotly figure
     """
+    if reset_bird is True:
+        original_labels = "hdbscan_labels"
 
     fig, ax = plt.subplots(nrows=len(labels), ncols=15, figsize=(10, 10))
 
@@ -209,34 +226,24 @@ def plot_sample_notes(
     return figure
 
 
-import librosa
-from src.avgn.utils.paths import most_recent_subdirectory
-from src.greti.read.paths import DATA_DIR
-import matplotlib.patches as mpatches
-
-from src.vocalseg.utils import (
-    butter_bandpass_filter,
-    plot_spec,
-    spectrogram,
-)
-
-
 def plot_sample_labelled_song(
-    DATASET_ID, indv_dfs, indv, colour, label, original_labels="hdbscan_labels_fixed"
+    DATASET_ID,
+    indv_dfs,
+    indv,
+    colour,
+    label,
+    original_labels="hdbscan_labels_fixed",
+    reset_bird=False,
 ):
+    if reset_bird is True:
+        original_labels = "hdbscan_labels"
 
     # Plot a randomly chosen song
-    len_label = len(
-        indv_dfs[indv].loc[indv_dfs[indv]["hdbscan_labels_fixed"] == label].key
-    )
+    len_label = len(indv_dfs[indv].loc[indv_dfs[indv][original_labels] == label].key)
     index = random.sample(range(len_label), 1)[0]
 
     # load the wav
-    key = (
-        indv_dfs[indv]
-        .loc[indv_dfs[indv]["hdbscan_labels_fixed"] == label]
-        .key.iloc[index]
-    )
+    key = indv_dfs[indv].loc[indv_dfs[indv][original_labels] == label].key.iloc[index]
     wav_dir = (
         most_recent_subdirectory(
             DATA_DIR / "processed" / DATASET_ID.replace("_segmented", ""),
@@ -320,8 +327,17 @@ def plot_sample_labelled_song(
 
 
 def plot_sample_songs_set(
-    DATASET_ID, indv_dfs, indv, new_df, colour, original_labels="hdbscan_labels_fixed",
+    DATASET_ID,
+    indv_dfs,
+    indv,
+    new_df,
+    colour,
+    original_labels="hdbscan_labels_fixed",
+    reset_bird=False,
 ):
+
+    if reset_bird is True:
+        original_labels = "hdbscan_labels"
 
     label_list = new_df.labs.unique().tolist()
     labels = [int(i) for i in label_list]
@@ -337,6 +353,7 @@ def plot_sample_songs_set(
                     colour,
                     label,
                     original_labels=original_labels,
+                    reset_bird=reset_bird,
                 )
                 col.imshow(figure_img, aspect=1)
                 col.axis("off")
@@ -353,8 +370,16 @@ def plot_sample_songs_set(
 
 
 def plot_directed_graph(
-    indv_dfs, indv, viz_proj, colour, original_labels="hdbscan_labels_fixed"
+    indv_dfs,
+    indv,
+    viz_proj,
+    colour,
+    original_labels="hdbscan_labels_fixed",
+    reset_bird=False,
 ):
+
+    if reset_bird is True:
+        original_labels = "hdbscan_labels"
 
     # Prepare necessary data
     projections = np.array(list(indv_dfs[indv][viz_proj].values))[:, 0:2]
@@ -365,19 +390,20 @@ def plot_directed_graph(
     sequence_ids = np.array(indv_dfs[indv]["syllables_sequence_id"])
 
     # Convert dictionary to palette, scaling colour values from 0 to 1
-    net_palette = [
-        tuple([int(s) / 255 for s in re.findall(r"\b\d+\b", col)])
-        for col in colour.values()
-    ]
+    net_palette_dict = {
+        int(lab): tuple([int(s) / 255 for s in re.findall(r"\b\d+\b", col)])
+        for lab, col in colour.items()
+    }
 
     # Make plot
-    fig, ax = fig, ax = plt.subplots(figsize=(10, 10))
+    fig, ax = plt.subplots(figsize=(10, 10))
 
     ax = plot_network_graph(
         labs,
         projections,
         sequence_ids,
-        color_palette=net_palette,
+        color_palette="tab20",
+        pal_dict=net_palette_dict,
         min_cluster_samples=0,
         min_connections=0,
         facecolour="black",
@@ -406,6 +432,7 @@ def interactive_plot(
     pal_name,
     viz_proj,
     original_labels="hdbscan_labels_fixed",
+    reset_bird=False,
 ):
     """Main function to make an interactive scatterplot with a) notes, coloured by label, and their transtions ; b) examples of each label
 
@@ -418,6 +445,9 @@ def interactive_plot(
     Returns:
         FigureWidget: An interactive plotly figure
     """
+
+    if reset_bird is True:
+        original_labels = "hdbscan_labels"
 
     # prepare data (scatterplot)
     new_df, colour, palette = prepare_interactive_data(
@@ -467,7 +497,8 @@ def interactive_plot(
         indv,
         new_df,
         colour,
-        original_labels="hdbscan_labels_fixed",
+        original_labels=original_labels,
+        reset_bird=reset_bird,
     )
 
     fig.add_layout_image(
@@ -488,7 +519,12 @@ def interactive_plot(
 
     # Add directed graph
     example_graph = plot_directed_graph(
-        indv_dfs, indv, viz_proj, colour, original_labels=original_labels
+        indv_dfs,
+        indv,
+        viz_proj,
+        colour,
+        original_labels=original_labels,
+        reset_bird=reset_bird,
     )
 
     fig.add_layout_image(
@@ -652,3 +688,50 @@ def assign_new_label(
     # which will be input in the same function if further relabelling is needed.
     return colour
 
+
+def check_new_bird(
+    DATASET_ID,
+    dfs_dir,
+    indv_dfs,
+    indv,
+    indvs,
+    i,
+    pal_name,
+    viz_proj,
+    original_labels="hdbscan_labels",
+    reset_bird=False,
+):
+
+    # Save the previous bird dataframe
+    if i > -1:
+        indv_dfs[indv].to_pickle(dfs_dir / (indv + "_labelled_checked.pickle"))
+
+    if reset_bird is False or i == -1:
+        i += 1
+
+    if i >= len(indvs):
+        raise Exception("End of list")
+
+    if reset_bird is False:
+        while Path(dfs_dir / (indvs[i] + "_labelled_checked.pickle")).is_file() is True:
+            i += 1
+            print("This bird has already been checked, checking the next")
+            if i >= len(indvs):
+                raise Exception("All birds have been checked")
+
+    indv = indvs[i]
+
+    if "fig" in locals() or "fig" in globals():
+        del fig
+
+    fig, colour, new_df = interactive_plot(
+        DATASET_ID,
+        indv_dfs,
+        indv,
+        pal_name,
+        viz_proj,
+        original_labels=original_labels,
+        reset_bird=reset_bird,
+    )  # change to original_labels="hdbscan_labels_fixed" if you don't want to reset
+
+    return fig, i, colour, new_df, indv
