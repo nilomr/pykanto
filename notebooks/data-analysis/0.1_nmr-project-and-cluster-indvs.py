@@ -40,7 +40,7 @@ syllable_df = pd.read_pickle(note_df_dir)
 
 indvs = [
     ind
-    for ind in syllable_df.indv.unique()[0:10]  #!!!! Remove subsetting !!!!
+    for ind in syllable_df.indv.unique()[10:20]  #!!!! Remove subsetting !!!!
     if len(syllable_df[syllable_df.indv == ind])
     > 80  # This threshold is based on the need to have clusters >1 member
 ]
@@ -127,13 +127,13 @@ for indvi, indv in enumerate(tqdm(indvs)):
 
     # Set min distance (for visualisation only) depending on # syllables
     min_dist = (
-        ((len(specs_flattened) - min(syllable_n)) * (0.2 - 0.05))
+        ((len(specs_flattened) - min(syllable_n)) * (0.1 - 0.02))
         / (max(syllable_n) - min(syllable_n))
-    ) + 0.05
+    ) + 0.02
 
     # umap_viz
     #n_neighbors=60, min_dist=min_dist, n_components=2, verbose=True
-    fit = umap.UMAP(n_components=2, n_neighbors=100, min_dist=min_dist)
+    fit = umap.UMAP(n_components=2, n_neighbors=80, min_dist=min_dist)
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_viz"] = z
 

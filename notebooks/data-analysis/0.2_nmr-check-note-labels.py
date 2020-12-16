@@ -1,12 +1,9 @@
 #%%
 
-from warnings import WarningMessage
-
-from matplotlib.pyplot import figimage
-from src.greti.viz.interactive import assign_new_label, interactive_plot, check_new_bird
-from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
+from src.greti.viz.interactive import check_new_bird
+from src.greti.read.paths import DATA_DIR
 import pandas as pd
-from src.avgn.utils.paths import ensure_dir
+import pickle
 
 %load_ext autoreload
 %autoreload 2
@@ -99,3 +96,7 @@ colour = assign_new_label(
 fig
 
 #%%
+
+# Once you are done, save a single dictionary with all individuals:
+
+pickle.dump(indv_dfs, open(dfs_dir / (f"{DATASET_ID}_labelled_checked.pickle"), "wb"))
