@@ -1,5 +1,7 @@
 # %%
+import ast
 import pickle
+import random
 import re
 import string
 from datetime import datetime
@@ -21,23 +23,29 @@ from networkx.classes import ordered
 from scipy.spatial import distance
 from src.avgn.dataset import DataSet
 from src.avgn.signalprocessing.create_spectrogram_dataset import (
-    flatten_spectrograms, log_resize_spec)
+    flatten_spectrograms,
+    log_resize_spec,
+)
 from src.avgn.utils.general import save_fig
 from src.avgn.utils.hparams import HParams
 from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
 from src.avgn.visualization.barcodes import indv_barcode, plot_sorted_barcodes
-from src.avgn.visualization.network_graph import (build_transition_matrix,
-                                                  compute_graph,
-                                                  draw_networkx_edges,
-                                                  plot_network_graph)
-from src.avgn.visualization.projections import (scatter_projections,
-                                                scatter_spec)
-from src.avgn.visualization.quickplots import (draw_projection_plots,
-                                               quad_plot_syllables)
+from src.avgn.visualization.network_graph import (
+    build_transition_matrix,
+    compute_graph,
+    draw_networkx_edges,
+    plot_network_graph,
+)
+from src.avgn.visualization.projections import scatter_projections, scatter_spec
+from src.avgn.visualization.quickplots import draw_projection_plots, quad_plot_syllables
 from src.avgn.visualization.spectrogram import draw_spec_set
 from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
-from src.vocalseg.utils import (butter_bandpass_filter, int16tofloat32,
-                                plot_spec, spectrogram)
+from src.vocalseg.utils import (
+    butter_bandpass_filter,
+    int16tofloat32,
+    plot_spec,
+    spectrogram,
+)
 from tqdm.autonotebook import tqdm
 
 # from sklearn.cluster import MiniBatchKMeans
@@ -109,7 +117,6 @@ def dict_keys_to_symbol(labs):
         for lab, symbol in zip(unique_labs, list(string.ascii_uppercase[0:nlabs]))
     }
     return symbolic_dict
-
 
 
 # %%
@@ -207,7 +214,7 @@ for song in sequences:
 
 # %%
 
-# Define song types
+# * Define song types
 
 # Convert int labels to symbolic labels
 sym_dict = dict_keys_to_symbol(labs)
@@ -222,11 +229,11 @@ seq_str = ["".join(map(str, seq)) for seq in sequences]
 pattern, result = re.compile(r"(.+?)\1+"), []
 [result.extend(pattern.findall(item)) for item in seq_str]
 
-# Duplicate 1-grams
-result = duplicate_1grams(result)
+# Duplicate 1-grams and make set
+result_d1 = duplicate_1grams(result)
 
 # Keep one of each pair of palindromes
-minus_palindromes = remove_palindromes(result)
+minus_palindromes = remove_palindromes(result_d1)
 
 # Remove collapsible sequences
 clean_list = remove_long_ngrams(minus_palindromes)
@@ -252,8 +259,8 @@ final_dict = dict_keys_to_int(counts, sym_dict)
 # TODO: remove combinations that ocurr very infrequently?
 
 #%%
-import random
-import ast
+
+# * Get wav files
 
 songs = [ast.literal_eval(key) for key in final_dict.keys()]
 
@@ -263,20 +270,96 @@ keys = indv_dfs[bird].key.values
 ids = np.array(indv_dfs[bird]["syllables_sequence_id"])
 k_keys = [keys[ids == i] for i in np.unique(ids)]
 
-
+# get song keys for each song type
 song_type_keys = {}
-for label in list(counts.keys()):
+for lab in list(counts.keys()):
     length = 0
     keylist = []
     for seq, key in zip(seq_str, k_keys):
-        if label in seq:
+        if lab in seq:
             length += len(key[0][0])
             keylist.append(key[0])
-        
     song_type_keys[label] = keylist
 
-#TODO: select one of each and plot spec
 
+# TODO: add song type column to main dataframe, then extract and join spectrograms for further analysis
+
+
+#%%
+
+# Plot average of each note type
+bird = "W99A"
+# note_labels = np.unique(indv_dfs[bird].hdbscan_labels.values)
+note_labels = [
+    note for note in np.unique(indv_dfs["MP69"].hdbscan_labels.values) if note != -1
+]
+
+
+average_specs = {}
+fig, ax = plt.subplots(nrows=1, ncols=len(note_labels), figsize=(20, 10))
+for col, note in zip(ax, note_labels):
+    specs = [
+        np.array(spec)
+        for spec in indv_dfs[bird][indv_dfs[bird][label] == note].spectrogram.values
+    ]
+    avg = np.array(np.mean(specs, axis=(0)))
+    col.imshow(avg, cmap="bone")
+    col.axis("off")
+
+
+# %%
+# TODO: select one of each and plot spec
+
+len_all = len([key for sublist in song_type_keys.values() for key in sublist])
+len_unique = len({key for sublist in song_type_keys.values() for key in sublist})
+
+
+sequ_label = "AA"
+key_n = song_type_keys[sequ_label][0]
+
+wav_dir = (
+    most_recent_subdirectory(
+        DATA_DIR / "processed" / DATASET_ID.replace("_segmented", ""), only_dirs=True,
+    )
+    / "WAV"
+    / key_n
+)
+
+data, rate = librosa.core.load(wav_dir, sr=22050)
+from src.greti.audio.filter import dereverberate
+
+spec = spectrogram(
+    data,
+    rate,
+    n_fft=512,
+    hop_length_ms=3,
+    win_length_ms=15,
+    ref_level_db=20,
+    min_level_db=-40,
+)
+
+spec = dereverberate(spec, echo_range=130, echo_reduction=8, hop_length_ms=3)
+spec[spec < 0] = 0
+
+plot_spec(
+    spec,
+    fig=None,
+    ax=None,
+    rate=rate,
+    hop_len_ms=3,
+    cmap=plt.cm.viridis,
+    show_cbar=True,
+    spectral_range=(5000, 10000),
+    time_range=None,
+    figsize=(20, 6),
+)
+
+
+# %%
+# get spec for each song type
+
+indv_dfs[bird]
+seq_types = [ast.literal_eval(key) for key in final_dict.keys()]
 
 
 #%%
@@ -293,36 +376,17 @@ for key, label in zip(keys, label_list):
     if label in songs[index_label]:
         key
 
-
-index_label = 0
 length = len(indv_dfs[bird][indv_dfs[bird][label].isin(songs[index_label])])
 
-for index in range(length):
-    key = indv_dfs[bird][indv_dfs[bird][label].isin(songs[index_label])].iloc[index].key
-    key2 = indv_dfs[bird][indv_dfs[bird][label].isin(songs[index_label])].iloc[index+1].key
-    
-    if 
-    if indv_dfs[bird][indv_dfs[bird][label].isin(songs[index_label])].iloc[index]
 
-
-
-
-
-
-for index, row in enumerate(indv_dfs[bird][indv_dfs[bird][label].isin(songs[index_label])].iloc[:]):
+for index, row in enumerate(
+    indv_dfs[bird][indv_dfs[bird][label].isin(songs[index_label])].iloc[:]
+):
     if index < 3:
         print(row)
 
 #%%
 
-
-
-songs[0]
-for label in indv_dfs[bird][indv_dfs[bird][label] in songs[0]]:
-    if 
-
-
-counts
 
 len_label = len(indv_dfs[bird].loc[indv_dfs[bird][label] == lab].key)
 index = random.sample(range(len_label), 1)[0]
