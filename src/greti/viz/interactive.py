@@ -1,14 +1,10 @@
-import plotly.express as px
 import plotly.graph_objs as go
 import plotly.offline as py
 import pandas as pd
 import numpy as np
-from ipywidgets import interactive, HBox, VBox, widgets
-from src.avgn.visualization.projections import colorline
 from itertools import chain
 from plotly.subplots import make_subplots
 import random
-import matplotlib.transforms as mtrans
 from PIL import Image
 import base64
 from pathlib2 import Path
@@ -712,12 +708,19 @@ def check_new_bird(
     if i >= len(indvs):
         raise Exception("End of list")
 
+    already_checked = 0
+
     if reset_bird is False:
         while Path(dfs_dir / (indvs[i] + "_labelled_checked.pickle")).is_file() is True:
             i += 1
-            print("This bird has already been checked, checking the next")
+            already_checked += 1
             if i >= len(indvs):
                 raise Exception("All birds have been checked")
+
+    if already_checked > 0 and not i >= len(indvs):
+        print(
+            f"{already_checked} birds have already been checked, returning the next bird that hasn't"
+        )
 
     indv = indvs[i]
 
