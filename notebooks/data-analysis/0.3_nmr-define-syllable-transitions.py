@@ -47,7 +47,7 @@ from src.vocalseg.utils import (
     spectrogram,
 )
 from tqdm.autonotebook import tqdm
-
+from itertools import chain, repeat
 # from sklearn.cluster import MiniBatchKMeans
 # from cuml.manifold.umap import UMAP as cumlUMAP
 
@@ -59,6 +59,99 @@ get_ipython().run_line_magic("autoreload", "2")
 
 # %%
 
+def build_indv_dict(bird, label, pal):
+    """Returns a dictionary of note labels and colours
+    """    
+    indv_dict = {}
+    color_lists, trans_lists, label_pal_dict, label_pal, label_dict = indv_barcode(
+        indv_dfs[bird], time_resolution=0.02, label=label, pal=pal,
+    )
+    indv_dict[bird] = {"label_pal_dict": label_pal_dict, "label_dict": label_dict}
+    return indv_dict
+
+def list_sequences(bird, label, min_cluster_samples=10):
+    """Returns a lists of lists where each list contains the sequence of notes in one song
+    """
+    
+    # TODO: Optimise this
+    labs = indv_dfs[bird][label].values
+    sequence_ids = np.array(indv_dfs[bird]["syllables_sequence_id"])
+    sequences = [labs[sequence_ids == i] for i in np.unique(sequence_ids)]
+
+    transition_matrix, element_dict, drop_list = build_transition_matrix(
+        sequences, min_cluster_samples=10
+    )
+
+    element_dict_r = {v: k for k, v in element_dict.items()}
+
+    #true_label = get_true_labels(transition_matrix, drop_list)
+
+    ## Transition matrix in DataFrame format, with true labels
+    # matrix = pd.DataFrame(transition_matrix, columns=true_label, index=true_label)
+    # sns.heatmap(matrix)
+
+    # Substitute labels
+    sequences_newlabels = [list(seq) for seq in sequences]
+
+    return sequences_newlabels, labs
+
+
+
+def find_song_types(sequences_newlabels, labs, bird, label, plot=False):
+    """Finds repeating notes and returns a dictionary of average song type spectrograms
+    """    
+    # Convert int labels to symbolic labels
+    sym_dict = dict_keys_to_symbol(labs)
+    sequences = [[sym_dict[b] for b in i] for i in sequences_newlabels]
+
+    # Find n-grams
+    # Convert lists to strings
+    seq_str = ["".join(map(str, seq)) for seq in sequences]
+
+    # Find repeating motifs;
+    pattern = re.compile(r"(.+?)(?=\1)")
+    result = {
+        seq: duplicate_1grams(pattern.findall(seq))
+        if len(pattern.findall(seq)) > 0
+        else [seq]
+        for seq in seq_str
+    }
+
+    # Frequencies for each combination
+    tally = get_seq_frequencies(result, seq_str)
+
+    # Symbols to original labels
+    final_dict = dict_keys_to_int(tally, sym_dict)
+
+    # Build dic tionary with spectrograms for all combinations
+    spec_dict = get_all_spec_combinations(final_dict, bird, label)
+
+    # Plot test
+    if plot is True:
+        plt.figure(figsize = (10, 4))
+        plt.imshow(spec_dict[list(spec_dict.keys())[-1]], cmap="bone", origin="lower")
+        col.axis("off")
+
+    return spec_dict
+
+
+
+def get_seq_frequencies(result, seq_str):
+    """Returns a sorted dictionary of sequence frequencies in the entire output of an individual bird
+    Args:
+        result (dict): A dictionary with repeated sequencies for each song
+    Returns:
+        dict: Sorted dictionary
+    """    
+    unique_seqs = set([seq for subset in list(result.values()) for seq in subset])
+    tally = {}
+    for seq in unique_seqs:
+        n = 0
+        for element in seq_str:
+            n += element.count(seq)
+        tally[seq] = n
+    tally = dict(sorted(tally.items(), key=lambda x: x[1], reverse=True))
+    return tally
 
 def get_true_labels(transition_matrix, drop_list):
     # Get the labels used to classify notes in the dataset
@@ -118,6 +211,41 @@ def dict_keys_to_symbol(labs):
     }
     return symbolic_dict
 
+def dict_keys_to_int(counts, sym_dict):
+    # Change keys back to int matching use in syllable_df
+    sym_dict_r = {v: k for k, v in sym_dict.items()}
+    return {
+        str([sym_dict_r[element] for element in key]): value
+        for key, value in counts.items()
+    }
+
+
+def get_average_note(bird, label, note):
+    """Returns the average of all spectrograms of a same note type
+    """    
+    specs = [
+        np.array(spec)
+        for spec in indv_dfs[bird][indv_dfs[bird][label] == note].spectrogram.values
+    ]
+    avg = np.array(np.mean(specs, axis=(0)))
+    return avg
+
+
+def get_all_spec_combinations(final_dict, bird, label):
+    """Returns a dictionary with average spectrograms for each note combination found in a bird's repertoire
+    Returns:
+        dict: keys are sequences, values are average combined spectrograms
+    """    
+    seq_combinations = [ast.literal_eval(key) for key in final_dict.keys()]
+    spec_dict = {}
+    for notes in seq_combinations:
+        spec = []
+        for note in notes:
+            average = get_average_note(bird, label, note)
+            spec.append(average)
+        spec = np.concatenate(spec, axis=1)
+        spec_dict[str(notes)] = spec.astype(np.uint8)
+    return spec_dict
 
 # %%
 
@@ -172,49 +300,71 @@ unique_indvs = list(indv_dfs.keys())[:2]
 
 # %%
 # Select one bird to test
+# bird = "SW5"
+all_song_type_specs = {}
 
-bird = "SW5"
+for bird in indvs[:10]:
 
+    #indv_dict = build_indv_dict(bird, label, pal) #! Needed?
 
-indv_dict = {}
+    # Build transition matrix
+    sequences_newlabels, labs = list_sequences(bird, label, min_cluster_samples=10)
 
-color_lists, trans_lists, label_pal_dict, label_pal, label_dict = indv_barcode(
-    indv_dfs[bird], time_resolution=0.02, label=label, pal=pal,
-)
+    # * Define song types.
+    spec_dict = find_song_types(sequences_newlabels, labs, bird, label)
 
-indv_dict[bird] = {"label_pal_dict": label_pal_dict, "label_dict": label_dict}
-
-
-#%%
-
-# Build transition matrix
-# TODO: Optimise this
-
-labs = indv_dfs[bird][label].values
-sequence_ids = np.array(indv_dfs[bird]["syllables_sequence_id"])
-sequences = [labs[sequence_ids == i] for i in np.unique(sequence_ids)]
-
-transition_matrix, element_dict, drop_list = build_transition_matrix(
-    sequences, min_cluster_samples=10
-)
-
-element_dict_r = {v: k for k, v in element_dict.items()}
-
-true_label = get_true_labels(transition_matrix, drop_list)
-
-# Transition matrix in DataFrame format, with true labels
-matrix = pd.DataFrame(transition_matrix, columns=true_label, index=true_label)
-sns.heatmap(matrix)
-
-# Substitute labels
-sequences_newlabels = []
-for song in sequences:
-    sequences_newlabels.append([element_dict.get(n, n) for n in song])
+    all_song_type_specs[bird] = list(spec_dict.values())
 
 
 # %%
 
-# * Define song types
+# UMAP projection of songs
+all_specs = [spec[:,:64] for specs in list(all_song_type_specs.values()) for spec in specs] #TODO: find out max lenth and pad accordingly
+scatter_labs = list(chain.from_iterable(repeat(indv, len(values)) for indv, values in all_song_type_specs.items()))
+specs = flatten_spectrograms([i / np.max(i) for i in all_specs])
+
+colourcodes
+
+#%%
+# project
+# UMAP
+umap_parameters = {
+    "n_neighbors": 20,
+    "min_dist": 0.2,
+    "n_components": 2,
+    "verbose": True,
+    "init": "spectral",
+    "low_memory": True,
+}
+fit = umap.UMAP(**umap_parameters)
+umap_embed = fit.fit_transform(specs)
+#%%
+
+sns.scatterplot(umap_embed[:, 0], umap_embed[:, 1], hue=scatter_labs, si)
+#%%
+# Duplicate 1-grams and make set
+result_d1 = duplicate_1grams(result)
+
+# Keep one of each pair of palindromes
+minus_palindromes = remove_palindromes(result_d1)
+
+# Remove collapsible sequences
+clean_list = remove_long_ngrams(minus_palindromes)
+
+# Count how many occurrences of each ngram
+counts = {seq: sum(seq in s for s in seq_str) for seq in clean_list}
+
+# Sort dictionary
+counts = dict(sorted(counts.items(), key=lambda x: x[1], reverse=True))
+
+final_dict = dict_keys_to_int(counts, sym_dict)
+
+# TODO: remove combinations that ocurr very infrequently?
+
+# %%
+
+
+# * Define song types. Legacy method
 
 # Convert int labels to symbolic labels
 sym_dict = dict_keys_to_symbol(labs)
@@ -245,18 +395,10 @@ counts = {seq: sum(seq in s for s in seq_str) for seq in clean_list}
 counts = dict(sorted(counts.items(), key=lambda x: x[1], reverse=True))
 
 
-def dict_keys_to_int(counts, sym_dict):
-    # Change keys back to int matching use in syllable_df
-    sym_dict_r = {v: k for k, v in sym_dict.items()}
-    return {
-        str([sym_dict_r[element] for element in key]): value
-        for key, value in counts.items()
-    }
+
 
 
 final_dict = dict_keys_to_int(counts, sym_dict)
-
-# TODO: remove combinations that ocurr very infrequently?
 
 #%%
 
@@ -287,23 +429,23 @@ for lab in list(counts.keys()):
 
 #%%
 
-# Plot average of each note type
-bird = "W99A"
-# note_labels = np.unique(indv_dfs[bird].hdbscan_labels.values)
-note_labels = [
-    note for note in np.unique(indv_dfs["MP69"].hdbscan_labels.values) if note != -1
-]
-
-
-average_specs = {}
-fig, ax = plt.subplots(nrows=1, ncols=len(note_labels), figsize=(20, 10))
-for col, note in zip(ax, note_labels):
+def get_average_note(bird, label, note):
     specs = [
         np.array(spec)
         for spec in indv_dfs[bird][indv_dfs[bird][label] == note].spectrogram.values
     ]
     avg = np.array(np.mean(specs, axis=(0)))
-    col.imshow(avg, cmap="bone")
+    return avg
+
+
+# Plot average of each note type
+note_labels = [
+    note for note in np.unique(indv_dfs[bird].hdbscan_labels.values) if note != -1
+]
+fig, ax = plt.subplots(nrows=1, ncols=len(note_labels), figsize=(10, 4))
+for col, note in zip(ax, note_labels):
+    avg = get_average_note(bird, label, note)
+    col.imshow(avg, cmap="bone", origin="lower")
     col.axis("off")
 
 
@@ -481,12 +623,14 @@ plt.plot(sorted(edge_widthds))
 
 # %%
 # Get longest repeated string for each song
+
+
 def guess_seq_len(seq):
     guess = 1
     max_len = len(seq) / 2
     for x in range(2, int(max_len)):
         if seq[0:x] == seq[x : 2 * x]:
-            return x
+            return x, seq[0:x]
     return guess
 
 
