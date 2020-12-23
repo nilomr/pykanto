@@ -1,28 +1,18 @@
 # %%
-# from IPython import get_ipython
-
-# get_ipython().run_line_magic("env", "CUDA_DEVICE_ORDER=PCI_BUS_ID")
-# get_ipython().run_line_magic("env", "CUDA_VISIBLE_DEVICES=2")
 %load_ext autoreload
 %autoreload 2
-# get_ipython().run_line_magic("matplotlib", "inline")
 
 import pickle
-import hdbscan
+from collections import ChainMap
 import matplotlib.pyplot as plt
 import numpy as np
-from numpy.lib.shape_base import column_stack
 import pandas as pd
-import phate
 import seaborn as sns
-import umap
 from joblib import Parallel, delayed
-from sklearn.decomposition import PCA
-from src.avgn.signalprocessing.create_spectrogram_dataset import (flatten_spectrograms, log_resize_spec)
 from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
-from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
+from src.greti.clustering.indvs import cluster_individual, project_individual
+from src.greti.read.paths import DATA_DIR
 from tqdm.autonotebook import tqdm
-
 
 # %%
 
@@ -30,6 +20,7 @@ from tqdm.autonotebook import tqdm
 
 DATASET_ID = "GRETI_HQ_2020_segmented"
 YEAR = "2020"
+n_jobs = -4
 
 note_df_dir = (
     most_recent_subdirectory(DATA_DIR / "syllable_dfs" / DATASET_ID, only_dirs=True) / "{}.pickle".format(DATASET_ID)
@@ -40,7 +31,7 @@ syllable_df = pd.read_pickle(note_df_dir)
 
 indvs = [
     ind
-    for ind in syllable_df.indv.unique()#[10:20]  #!!!! Remove subsetting !!!!
+    for ind in syllable_df.indv.unique()[10:12]  #!!!! Remove subsetting !!!!
     if len(syllable_df[syllable_df.indv == ind])
     > 80  # This threshold is based on the need to have clusters >1 member
 ]
@@ -54,138 +45,29 @@ syllable_n = pd.Series(
 )
 
 # %%
-# Colours
-
-facecolour = "#f2f1f0"
-colours = [
-    "#66c2a5",
-    "#fc8d62",
-    "#8da0cb",
-    "#e78ac3",
-    "#a6d854",
-    "#ffd92f",
-    "#e5c494",
-    "#b3b3b3",
-    "#fc6c62",
-    "#7c7cc4",
-    "#57b6bd",
-    "#e0b255",
-]
-
-pal = sns.set_palette(sns.color_palette(colours))
-
-# %%
-# # Projections (for clustering and visualisation)
+# Projections (for clustering and visualisation)
 # + Note sequence information
 
 indv_dfs = {}
 
-for indvi, indv in enumerate(tqdm(indvs)):
+with Parallel(n_jobs=n_jobs, verbose=2) as parallel:
+    indv_dfs = parallel(
+        delayed(project_individual)(syllable_df, indv_dfs, indv, syllable_n)
+        for indv in tqdm(indvs, desc="projecting individuals", leave=False)
+    ) 
 
-    indv_dfs[indv] = syllable_df[syllable_df.indv == indv]
-    indv_dfs[indv] = indv_dfs[indv].sort_values(by=["key", "start_time"])
-    print(indv, len(indv_dfs[indv]))
-    specs = [i for i in indv_dfs[indv].spectrogram.values]
-
-    with Parallel(n_jobs=-2, verbose=2) as parallel:
-        specs = parallel(
-            delayed(log_resize_spec)(spec, scaling_factor=8)
-            for spec in tqdm(specs, desc="scaling spectrograms", leave=False)
-        )
-
-    # Add note sequences to dataframe for later use
-    indv_dfs[indv]["syllables_sequence_id"] = None
-    indv_dfs[indv]["syllables_sequence_pos"] = None
-    for ki, key in enumerate(indv_dfs[indv].key.unique()):
-        indv_dfs[indv].loc[indv_dfs[indv].key == key, "syllables_sequence_id"] = ki
-        indv_dfs[indv].loc[
-            indv_dfs[indv].key == key, "syllables_sequence_pos"
-        ] = np.arange(np.sum(indv_dfs[indv].key == key))
-
-    specs_flattened = flatten_spectrograms(specs)
-
-    # # PHATE
-    # phate_operator = phate.PHATE(n_jobs=-1, knn=5, decay=None, t=110, gamma=0)
-    # z = list(phate_operator.fit_transform(specs_flattened))
-    # indv_dfs[indv]["phate"] = z
-
-    # # PHATE_cluster
-    # phate_operator = phate.PHATE(n_jobs=-1, knn=5, decay=30, n_components=5)
-    # z = list(phate_operator.fit_transform(specs_flattened))
-    # indv_dfs[indv]["phate_cluster"] = z
-
-    # pca = PCA(n_components=2)
-    # indv_dfs[indv]["pca_viz"] = list(pca.fit_transform(specs_flattened))
-
-    pca2 = PCA(n_components=10)
-    indv_dfs[indv]["pca_cluster"] = list(pca2.fit_transform(specs_flattened))
-
-    # # umap_cluster 
-    # fit = umap.UMAP(n_neighbors=20, min_dist=0.05, n_components=10, verbose=True)
-    # z = list(fit.fit_transform(specs_flattened))
-    # indv_dfs[indv]["umap_cluster"] = z
-
-    # Set min distance (for visualisation only) depending on # syllables
-    min_dist = (
-        ((len(specs_flattened) - min(syllable_n)) * (0.1 - 0.02))
-        / (max(syllable_n) - min(syllable_n))
-    ) + 0.02
-
-    # umap_viz
-    #n_neighbors=60, min_dist=min_dist, n_components=2, verbose=True
-    fit = umap.UMAP(n_components=2, n_neighbors=80, min_dist=min_dist)
-    z = list(fit.fit_transform(specs_flattened))
-    indv_dfs[indv]["umap_viz"] = z
-
+indv_dfs = dict(ChainMap(*indv_dfs))
 
 # %%
 # Cluster using HDBSCAN
 
-for indv in tqdm(indv_dfs.keys()):
-    z = list(indv_dfs[indv]["pca_cluster"].values)
-    min_cluster_size = int(len(z) * 0.02) # smallest cluster size allowed
-    if min_cluster_size < 2:
-        min_cluster_size = 2
-    clusterer = hdbscan.HDBSCAN(
-        min_cluster_size=min_cluster_size,  
-        min_samples=10,  # larger values = more conservative clustering
-        cluster_selection_method="eom",
-    )
-    clusterer.fit(z)
-    indv_dfs[indv]["hdbscan_labels"] = clusterer.labels_
+with Parallel(n_jobs=n_jobs, verbose=2) as parallel:
+    indv_dfs_labelled = parallel(
+        delayed(cluster_individual)(indv_dfs, indv)
+        for indv in tqdm(indv_dfs.keys(), desc="projecting individuals", leave=False)
+    ) 
 
-    # # Plot
-    # n_colours = len(indv_dfs[indv]["hdbscan_labels"].unique())
-    # color_palette = sns.color_palette("deep", n_colours)
-    # cluster_colors = [
-    #     color_palette[x] if x >= 0 else (0.5, 0.5, 0.5) for x in clusterer.labels_
-    # ]
-    # cluster_member_colors = [
-    #     sns.desaturate(x, p) for x, p in zip(cluster_colors, clusterer.probabilities_)
-    # ]
-
-    # x = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 0]
-    # y = np.array(list(indv_dfs[indv]["umap_viz"].values))[:, 1]
-    # plt.scatter(x, y, s=10, linewidth=0, c=cluster_member_colors, alpha=0.3)
-    # plt.show()
-
-    # clusterer.condensed_tree_.plot(
-    #     select_clusters=True, selection_palette=sns.color_palette("deep", 14)
-    # )
-
-    # plt.show()
-    
-    # # Plot outliers
-    # sns.distplot(clusterer.outlier_scores_[np.isfinite(clusterer.outlier_scores_)], rug=True)
-    # plt.show()
-    # threshold = pd.Series(clusterer.outlier_scores_).quantile(0.99)
-    # outliers = np.where(clusterer.outlier_scores_ > threshold)[0]
-    # plt.scatter(x,y, s=10, linewidth=0, c='gray', alpha=0.25)
-    # plt.scatter(x[outliers], y[outliers], s=10, linewidth=0, c='red', alpha=0.5)
-    # plt.show()
-
-    # Count labels
-    print(indv + ":" + str(len(indv_dfs[indv]["hdbscan_labels"].unique())))
+indv_dfs_labelled = dict(ChainMap(*indv_dfs_labelled))
 
 # %%
 
@@ -194,12 +76,11 @@ out_dir = DATA_DIR / "indv_dfs" / DATASET_ID
 ensure_dir(out_dir)
 
 # Save all dataframes in a single object
-pickle.dump(indv_dfs, open(out_dir / (f"{DATASET_ID}_labelled.pickle"), "wb"))
+pickle.dump(indv_dfs_labelled, open(out_dir / (f"{DATASET_ID}_labelled.pickle"), "wb"))
 
 # Save dataframe for each individual
 out_dir = DATA_DIR / "indv_dfs" / DATASET_ID
 ensure_dir(out_dir)
-for indv in tqdm(indv_dfs.keys()):
-    indv_dfs[indv].to_pickle(out_dir / (indv + "_labelled.pickle"))
+for indv in tqdm(indv_dfs_labelled.keys()):
+    indv_dfs_labelled[indv].to_pickle(out_dir / (indv + "_labelled.pickle"))
 
-# %%
