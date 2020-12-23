@@ -40,7 +40,7 @@ syllable_df = pd.read_pickle(note_df_dir)
 
 indvs = [
     ind
-    for ind in syllable_df.indv.unique()[10:20]  #!!!! Remove subsetting !!!!
+    for ind in syllable_df.indv.unique()#[10:20]  #!!!! Remove subsetting !!!!
     if len(syllable_df[syllable_df.indv == ind])
     > 80  # This threshold is based on the need to have clusters >1 member
 ]
