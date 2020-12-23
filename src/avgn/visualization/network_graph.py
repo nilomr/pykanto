@@ -2,6 +2,7 @@ import numbers
 from collections.abc import Iterable
 
 import matplotlib
+import matplotlib.patches as mpatch
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
@@ -23,9 +24,11 @@ def plot_network_graph(
     min_connections=0.05,
     pal_dict=None,
     facecolour="#ededed",
+    edge_width=2,
+    edge_colour="black",  # one of 'black' or 'white'
+    point_size=200,
+    arrowsize=10,
 ):
-    """
-    """
     sequences = [elements[sequence_ids == i] for i in np.unique(sequence_ids)]
 
     # compute the centers of each label
@@ -70,11 +73,30 @@ def plot_network_graph(
     if ax is None:
         fig, ax = plt.subplots(figsize=(10, 10))
     graph_weights = [graph[edge[0]][edge[1]]["weight"] for edge in graph.edges()]
-    rgba_cols = [[0, 0, 0] + [i] for i in graph_weights]
-    draw_networkx_edges(graph, pos, ax=ax, edge_color=rgba_cols, width=2)
+
+    if edge_colour is "black":
+        rgb = [0, 0, 0]
+    elif edge_colour is "white":
+        rgb = [1, 1, 1]
+
+    rgba_cols = [rgb + [i] for i in graph_weights]
+    draw_networkx_edges(
+        graph,
+        pos,
+        ax=ax,
+        edge_color=rgba_cols,
+        width=edge_width,
+        connectionstyle="arc3, rad = 0.5",
+        arrowstyle=mpatch.ArrowStyle(
+            "Fancy", head_length=0.7, head_width=0.5, tail_width=0.1
+        ),
+        arrowsize=arrowsize,
+    )
 
     # centroids
-    ax.scatter(pos_locs[:, 0], pos_locs[:, 1], color=pos_colors, s=200, zorder=100)
+    ax.scatter(
+        pos_locs[:, 0], pos_locs[:, 1], color=pos_colors, s=point_size, zorder=100
+    )
     ax.set_facecolor(facecolour)
     ax.set_xticks([])  # remove ticks
     ax.set_yticks([])  # remove ticks
