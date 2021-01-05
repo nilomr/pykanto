@@ -707,7 +707,8 @@ def check_new_bird(
 
     if i >= len(indvs):
         raise Exception("End of list")
-
+    
+    # Check if bird has already been checked, else find next unchecked
     already_checked = 0
 
     if reset_bird is False:
