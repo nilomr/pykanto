@@ -64,7 +64,7 @@ indv_dfs = dict(ChainMap(*indv_dfs))
 with Parallel(n_jobs=n_jobs, verbose=2) as parallel:
     indv_dfs_labelled = parallel(
         delayed(cluster_individual)(indv_dfs, indv)
-        for indv in tqdm(indv_dfs.keys(), desc="projecting individuals", leave=False)
+        for indv in tqdm(indv_dfs.keys(), desc="clustering individuals", leave=False)
     ) 
 
 indv_dfs_labelled = dict(ChainMap(*indv_dfs_labelled))
