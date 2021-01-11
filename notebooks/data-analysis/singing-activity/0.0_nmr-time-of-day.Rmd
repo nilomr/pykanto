@@ -1,0 +1,75 @@
+---
+title: "Singing activity trohoughout the breeding season"
+author: "Nilo Merino Recalde<br>"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+editor_options:
+  chunk_output_type: console
+---
+<br>
+
+```{r setup}
+# Knitr settings: 
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+options(scipen = 999)
+```
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(gganimate)
+library(lubridate)
+
+```
+
+```{r}
+# Paths
+dataset_id = 'GRETI_HQ_2020_segmented'
+data_path = file.path(getwd(), "data")
+sheet_path = file.path(data_path,
+                       "processed",
+                       dataset_id,
+                       "metadata",
+                       paste0(dataset_id, '_metadata.csv'))
+
+
+data = read_csv(sheet_path)[, -1] %>% clean_names() %>% mutate(date = ymd(date)) %>% filter(date != "2020-03-29")
+
+
+cc <-
+  scales::div_gradient_pal("#d64e0d", "#ae9b76", "#00707d", "Lab")(seq(0, 1, length.out =
+                                                                         nrow(unique(data[c("date")]))))
+
+
+plot =
+  data %>% ggplot(aes(x = time, fill = as.factor(date))) +
+  geom_histogram(binwidth = 300) + # 5 min bins
+  scale_x_time() +
+  scale_fill_manual(values = cc) +
+  labs(y = 'Songs\n',
+       x = "\nTime",
+       title = "Singing activity thoughout the day") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    panel.background = element_rect(fill = '#f2f1f0', colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    legend.position = "none"
+  )
+
+animated_plot =
+  plot + transition_time(date) +
+  labs(title = "Day: {frame_time}") +
+  #view_follow(fixed_x = TRUE) +
+  shadow_mark(alpha = 0.3, size = 3) 
+  
+animate(animated_plot, renderer = gifski_renderer(), nframes = 6, fps = 4, width = 600, height = 300)
+
+#TODO: include sunrise times, fix aesthetics
+```
