@@ -51,6 +51,17 @@ save_loc = (
 ensure_dir(save_loc)
 metadata.to_pickle(save_loc)
 
+# Save time metadata to csv:
+save_loc = (
+    DATA_DIR
+    / "processed"
+    / DATASET_ID
+    / "metadata"
+    / "{}_metadata.csv".format(DATASET_ID)
+)
+
+metadata.filter(['nestbox', 'date', 'time']).to_csv(save_loc)
+
 
 # %%
 # Count the number of syllables per nest
