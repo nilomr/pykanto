@@ -267,9 +267,12 @@ dfs_dir = DATA_DIR / "indv_dfs" / DATASET_ID
 indv_dfs = pd.read_pickle(dfs_dir / (f"{DATASET_ID}_labelled_checked.pickle")) #! Change to this once manual check done
 indvs = list(indv_dfs.keys())
 
+exclude = ['CP34', 'EX38A', 'SW119', 'B11', 'MP20', 'B161', 'EX34', 'CP28', 'B49', 'SW116'] # Data for these are too noisy, judged from UMAP scatterplot in previous step
+indvs = [indv for indv in indvs if indv not in exclude]
+
+
 #%%
 # If testing before manual check of labels use the below instead
-
 # indv_dfs = pd.read_pickle(
 #     "/media/nilomr/SONGDATA/syllable_dfs/GRETI_HQ_2020_segmented/GRETI_HQ_2020_segmented_with_labels.pickle"
 # )
@@ -279,7 +282,6 @@ indvs = list(indv_dfs.keys())
 #%%
 
 # Prepare colour palettes
-
 # label = "hdbscan_labels" # unchecked
 facecolour = "#f2f1f0"
 colourcodes = [
@@ -306,9 +308,11 @@ unique_indvs = list(indv_dfs.keys())
 #bird = "EX21"
 cluster_labels = "hdbscan_labels_fixed"
 
+#TODO: remove seqs that arise due to undetected (not noise) note in the middle
+# Otherwise this function ready
 
-def find_syllable_sequences(bird, cluster_labels):
-    #* Define sequences
+def find_syllable_sequences(bird, cluster_labels, remove_noise=True, remove_redundant=True):
+    # Define sequences
     sequences_newlabels, labs = list_sequences(bird, cluster_labels, min_cluster_samples=5)
     sym_dict = dict_keys_to_symbol(labs)
     sequences = [[sym_dict[b] for b in i] for i in sequences_newlabels]
@@ -330,8 +334,13 @@ def find_syllable_sequences(bird, cluster_labels):
     # Frequencies for each combination
     tally = get_seq_frequencies(result, seq_str)
 
-    # Remove sequences with noise (-1 labels)
-    tally = {key : n for key, n in tally.items() if 'Z' not in key}
+    if remove_noise:
+        # Remove sequences with noise (-1 labels)
+        tally = {key : n for key, n in tally.items() if 'Z' not in key}
+
+    if remove_redundant:
+        # Remove sequences already contained in other, shorter sequences (where the longest of the pair does not have new notes)
+        tally = {k:v for k,v in tally.items() if k in remove_long_ngrams([key for key in tally.keys()])}
 
     # Build dictionary of songs containing each sequence (allows duplicates)
     song_dict = {}
@@ -352,6 +361,10 @@ def find_syllable_sequences(bird, cluster_labels):
     final_dict = dict_keys_to_int(song_dict, sym_dict)
 
     return final_dict, len(sequences_newlabels), sequences_newlabels, dict_keys_to_int(tally, sym_dict)
+
+#%%
+
+
 
 #%%
 
@@ -385,10 +398,9 @@ def subfinder(mylist, pattern):
             matches.append([i, i+len(pattern)-1])
     return matches
 
-def right_pad_spec(spec, maxlen, values='minimum'):
-    values = values
+def right_pad_spec(spec, maxlen, values='minimum', constant_values=(-0.4)):
     pad = maxlen - spec.shape[1]
-    spec = np.pad(spec, ((0, 0), (0, pad)), values)
+    spec = np.pad(spec, ((0, 0), (0, pad)), values, constant_values=constant_values)
     return spec
 
 
@@ -397,7 +409,7 @@ import operator
 def get_max_list_in_list(list_of_lists):
     all_dict = {i:np.max(l) for i, l in enumerate(list_of_lists)}
     index = max(all_dict.items(), key=operator.itemgetter(1))[0]
-    return list_of_lists[index]
+    return list_of_lists[index][0] if isinstance(list_of_lists[index][0], list) else list_of_lists[index] # this works but I don't really know why, check at some point
 
 
 
@@ -415,77 +427,85 @@ hparams = HParams(
 
 #%%
 #!
-#TODO: this works for indvs[6:7] but not for other, fucking weird, fix
 
 syllable_type_dict = {}
 
-for indv in tqdm(indvs[6:7], desc="birds processed", leave=True):
+for indv in tqdm(indvs[2:4], desc="birds processed", leave=True):
 
-    final_dict, n_seqs, _, _ = find_syllable_sequences(indv, cluster_labels)
+    final_dict, n_seqs, _, _ = find_syllable_sequences(indv, cluster_labels, remove_noise=True, remove_redundant=True)
+    # remove keys that do not appear in at least 2 songs
+    # final_dict = {key:val for key, val in final_dict.items() if len(val) > 1}
 
     syll_audio = {}
 
-    for song in tqdm(range(n_seqs), desc="Getting syllable audio data and metadata; building mel spectrograms", leave=True):
-        index_list = [item for sublist in list(final_dict.values()) for item in sublist]
+    index_list = [item for sublist in list(final_dict.values()) for item in sublist]
 
-        if index_list.count(song) < 2:
-            continue # Skip if there aren't at least 2 songs that contain a given sequence
-        else:
-            # get audio key, starts and ends for this song
-            file_key = indv_dfs[indv][indv_dfs[indv].syllables_sequence_id == song].key[0]
-            indv_dfs[indv][indv_dfs[indv].key == file_key]
-            starts = indv_dfs[indv][indv_dfs[indv].key == file_key].start_time.values
-            ends = indv_dfs[indv][indv_dfs[indv].key == file_key].end_time.values
+    for song in tqdm(index_list, desc="Getting syllable audio data and metadata; building mel spectrograms", leave=True):
 
-            # load song audio
-            wav_loc = most_recent_subdirectory(DATA_DIR /'processed'/ DATASET_ID.replace('_segmented', ''), only_dirs=True) / 'WAV' / file_key
-            data, sr = librosa.load(wav_loc, sr = 32000)
-            data = butter_bandpass_filter(
-                data, hparams.butter_lowcut, hparams.butter_highcut, sr, order=5
-            )
+        # get audio key, starts and ends for this song
+        file_key = indv_dfs[indv][indv_dfs[indv].syllables_sequence_id == song].key[0]
+        indv_dfs[indv][indv_dfs[indv].key == file_key]
+        starts = indv_dfs[indv][indv_dfs[indv].key == file_key].start_time.values
+        ends = indv_dfs[indv][indv_dfs[indv].key == file_key].end_time.values
 
-            # get sequences present in song
-            seqlist = []
-            for seq, keys in final_dict.items():
-                for key in keys:
-                    if key == song:
-                        seqlist.append(ast.literal_eval(seq))
-            seqlist = seqlist if any(isinstance(el, list) for el in seqlist) else [seqlist[0]]
+        # load song audio
+        wav_loc = most_recent_subdirectory(DATA_DIR /'processed'/ DATASET_ID.replace('_segmented', ''), only_dirs=True) / 'WAV' / file_key
+        data, sr = librosa.load(wav_loc, sr = 32000)
+        data = butter_bandpass_filter(
+            data, hparams.butter_lowcut, hparams.butter_highcut, sr, order=5
+        )
 
-            # list labels in this song
-            labels = list(indv_dfs[indv][indv_dfs[indv].key == file_key].hdbscan_labels_fixed)
+        # get sequences present in song
+        seqlist = []
+        for seq, keys in final_dict.items():
+            for key in keys:
+                if key == song:
+                    seqlist.append(ast.literal_eval(seq))
+        seqlist = seqlist if any(isinstance(el, list) for el in seqlist) else [seqlist[0]]
 
-            # Add instances of each sequence to dictionary
+        # list labels in this song
+        labels = list(indv_dfs[indv][indv_dfs[indv].key == file_key].hdbscan_labels_fixed)
 
-            for seq in seqlist:
-                positions = subfinder(labels, seq) # get starts and ends of syllables
-                sts = starts[[position[0] for position in positions]]
-                ets = ends[[position[1] for position in positions]]
+        # Add instances of each sequence to dictionary
 
-                for st, et in zip(sts, ets):
-                    audio = data[int(st * sr) : int(et * sr)]
+        for seq in seqlist:
+            positions = subfinder(labels, seq) # get starts and ends of syllables
+            sts = starts[[position[0] for position in positions]]
+            ets = ends[[position[1] for position in positions]]
 
-                    if f'{seq}' in syll_audio:
-                        syll_audio[f'{seq}'].append([list(audio)])
-                    else:
-                        syll_audio[f'{seq}'] = [list(audio)]
+            for st, et in zip(sts, ets):
+                audio = data[int(st * sr) : int(et * sr)]
+
+                if f'{seq}' in syll_audio:
+                    syll_audio[f'{seq}'].append([list(audio)])
+                else:
+                    syll_audio[f'{seq}'] = [list(audio)]
 
     indv_songs = {}
 
+    mfcc_ = False
+
     # keep clearest syllable and make mel spectrogram
     for seq, specs in syll_audio.items():
-        if len(specs) > 1: # discard if only one - reduce cases of noisy segmentation
-            exemplar = np.array(get_max_list_in_list(specs)[0])
-            melspec = librosa.util.normalize(create_melspec(hparams, exemplar, sr, logscale=True))
-            melspec[melspec <= -0.3] = -0.3
-            indv_songs[seq] = melspec
+        if len(specs) > 2: # discard if only one - reduce cases of noisy segmentation
+            try:
+                exemplar = np.array(get_max_list_in_list(specs))
+                if mfcc_:
+                    indv_songs[seq] = librosa.feature.mfcc(exemplar, sr, n_mfcc=13)
+                else:
+                    indv_songs[seq] = librosa.util.normalize(create_melspec(hparams, exemplar, sr, logscale=True))
+            except:
+                print('Problema')
         else:
             continue
 
     syllable_type_dict[indv] = indv_songs
 
-#pickle.dump(syllable_type_dict, open(dfs_dir / (f"{DATASET_ID}_song_types.pickle"), "wb"))
+# pickle.dump(syllable_type_dict, open(dfs_dir / (f"{DATASET_ID}_song_types.pickle"), "wb"))
 
+#%%
+# Load data
+syllable_type_dict = pd.read_pickle(dfs_dir / (f"{DATASET_ID}_song_types.pickle"))
 
 #%%
 # Prepare data for DTW distance calculation
@@ -500,46 +520,101 @@ for indv, repertoire in syllable_type_dict.items():
 all_specs = [spec.T for spec in tqdm(syllable_specs)]
 
 #%%
-
 # DTW distance matrix
 from dtaidistance import dtw
 ds = dtw.distance_matrix_fast(all_specs)
+ds = ds/(ds.max()/1)
 
 #%%
-# Load data
-syllable_type_dict = pd.read_pickle(dfs_dir / (f"{DATASET_ID}_song_types.pickle"))
+# Slower test
+from scipy.spatial.distance import cosine
+from fastdtw import fastdtw
+dist = lambda p1, p2: fastdtw(p1.T, p2.T, dist=cosine)[0]
+dm = np.asarray([[dist(p1, p2) for p2 in syllable_specs] for p1 in tqdm(syllable_specs)])
+
+#%% 
+# all sylls
+
+dist_df = pd.DataFrame(np.tril(prox_mat, k=-1), columns=bird_list, index=bird_list)
+y = list(dist_df.stack())
+
+# Build matrix of distances in metres
+coords = [
+    list(nestboxes[nestboxes["nestbox"] == bird].east_north.values[0]) for bird in bird_list
+]
+spatial_dist = distance.cdist(coords, coords)
+spatial_dist_df = pd.DataFrame(np.tril(spatial_dist, k=-1), columns=bird_list, index=bird_list)
+x = list(spatial_dist_df.stack())
+
 
 #%%
-# Plot all sequences
+# indvs = indvs[20:30]
 
-for bird, dic in syllable_type_dict.items():
-    ncols = len(dic.keys())
-    fig, axes = plt.subplots(1, ncols, figsize=(20, 4))
-    for (key, spec), (i, ax) in zip(dic.items(), enumerate(axes)):
-        spec[spec <= -0.3] = -0.3
-        ax.imshow(spec, origin='lower',  aspect="auto")
-        ax.axis('off')
-        ax.title.set_text(str(i) + " " + key)
+length = len(np.unique(bird_list))
+birds = np.unique(bird_list)
+
+dist_df = pd.DataFrame(np.tril(prox_mat, k=-1), columns=bird_list, index=bird_list)
+
+matrix = np.zeros((length, length))
+
+for index, indv_1 in tqdm(enumerate(birds), desc="Building distance matrix", leave=True):
+    for index2, indv_2 in enumerate(birds):
+        if indv_1 == indv_2:
+            matrix[index, index] = 0
+        elif matrix[index, index2] == 0 and matrix[index, index2] == 0:
+            mean_dist = np.mean(np.mean(dist_df[indv_1].loc[indv_2]))
+            matrix[index, index2] = mean_dist
+            matrix[index2, index] = mean_dist
+
+# sim matrix
+# matrix = 1 - (matrix / np.max(matrix))
+distances_df = pd.DataFrame(np.tril(matrix, k=-1), columns=birds, index=birds)
+y = list(distances_df.stack())
 
 #%%
+from scipy.spatial import distance
 
-bird_list = []
-syllable_specs = []
+# Import nestbox coordinates
+from src.greti.read.paths import RESOURCES_DIR
 
-for indv, repertoire in syllable_type_dict.items():
-    for key, spec in repertoire.items():
-        syllable_specs.append(spec)
-        bird_list.append(indv)
+coords_file = RESOURCES_DIR / "nestboxes" / "nestbox_coords.csv"
+tmpl = pd.read_csv(coords_file)
+nestboxes = tmpl[tmpl["nestbox"].isin(birds)]
+nestboxes["east_north"] = nestboxes[["x", "y"]].apply(tuple, axis=1)
 
-all_specs = [spec.T for spec in tqdm(syllable_specs, desc="padding specs", leave=True)]
+# Build matrix of distances in metres
+coords = [
+    list(nestboxes[nestboxes["nestbox"] == bird].east_north.values[0]) for bird in birds
+]
+spatial_dist = distance.cdist(coords, coords)
+spatial_dist_df = pd.DataFrame(np.tril(spatial_dist, k=-1), columns=birds, index=birds)
+x = list(spatial_dist_df.stack())
 
+# %%
+# Plot acoustic distance vs spatial distance
+# y_norm = list((np.array(y) - min(y))/(max(y)-min(y)))
 
-maxlen = np.max([spec.shape[1] for spec in syllable_specs])
-all_specs = [spec.T for spec in tqdm(syllable_specs, desc="padding specs", leave=True)]
+df = pd.DataFrame({"s_dist": x, "a_dist": y})
+#df = df[df["a_dist"] != 0]
+#df = df[df["s_dist"] < 1250]
+df = df[df["s_dist"] != 0]
 
-#specs = flatten_spectrograms(syllable_specs)
+fig_dims = (5, 5)
+fig, ax = plt.subplots(figsize=fig_dims)
+sns.regplot(
+    x="s_dist", y="a_dist", data=df, marker="o", scatter_kws={"s": 7, "alpha": 0.01}
+)
+#plt.yscale("log")
 
-#.flatten(order='F')
+fig_dims = (5, 5)
+fig, ax = plt.subplots(figsize=fig_dims)
+sns.regplot(x="s_dist", y="a_dist", data=df, x_bins=10)
+
+fig_dims = (5, 5)
+fig, ax = plt.subplots(figsize=fig_dims)
+sns.regplot(x="s_dist", y="a_dist", data=df, lowess=True, scatter=True, scatter_kws={"s": 7, "alpha": 0.01})
+#plt.yscale("log")
+
 #%%
 # dtw
 
@@ -580,8 +655,6 @@ from fastdtw import fastdtw
 dist = lambda p1, p2: fastdtw(p1.T, p2.T, dist=cosine)[0]
 dm = np.asarray([[dist(p1, p2) for p2 in syllable_specs] for p1 in tqdm(syllable_specs)])
 
-#%%
-ds = ds/(ds.max()/1)
 
 #%%
 
@@ -603,31 +676,99 @@ for index, indv_1 in tqdm(enumerate(indvs), desc="Building distance matrix", lea
             matrix[index, index2] = mean_dist
             matrix[index2, index] = mean_dist
 
-
+#%%
+# Plot all sequences
+n = 0
+for bird, dic in syllable_type_dict.items():
+    print(bird, len(dic))
+    n +=1
+    if n == 10:
+        break
+    ncols = len(dic.keys())
+    fig, axes = plt.subplots(1, ncols, figsize=(20, 4))
+    plt.suptitle(bird)
+    for (key, spec), (i, ax) in zip(dic.items(), enumerate(axes)):
+        ax.imshow(spec, origin='lower',  aspect='equal')
+        ax.axis('off')
+        ax.title.set_text(str(i) + " " + key)
 
 #%%
+
+#TODO =====================
+#* To pad
+# check distribution of sequence lengths and pad/trim to a reasonable point
 
 #!#################### URF TESTS HERE ################################
 
-from sklearn.datasets import load_iris
 from URF.main import random_forest_cluster, plot_cluster_result
 
-# iris = load_iris()
-# X = iris.data
-# y = iris.target
-# print(len(list(set(y))))
 
-clf, prox_mat, cluster_ids = random_forest_cluster(np.array(all_specs_padded), k=100, max_depth=None, n_estimators = 500, random_state=0)
-# plot_cluster_result(prox_mat, cluster_ids, marker=y)
+def pad_spectrogram(spectrogram, pad_length):
+    """ Pads a spectrogram to being a certain length
+    """
+    excess_needed = pad_length - np.shape(spectrogram)[1]
+    pad_left = np.floor(float(excess_needed) / 2).astype("int")
+    pad_right = np.ceil(float(excess_needed) / 2).astype("int")
+    return np.pad(
+        spectrogram, [(0, 0), (pad_left, pad_right)], "constant", constant_values=0
+    )
+
+
+timelengths = [spec.shape[1] for spec in syllable_specs]
+sns.distplot(timelengths) # check dist of lengths
+pad_length = 40
+padded_specs = [pad_spectrogram(spec, pad_length) if spec.shape[1] < pad_length else spec[:,:40] for spec in syllable_specs]
+
+specs = [i.flatten() for i in padded_specs]
+#%%
+
+clf, prox_mat, cluster_ids = random_forest_cluster(np.array(specs), k=100, max_depth=None, n_estimators = 300, random_state=0)
+
 
 #%%
-# indvs = indvs[20:30]
-dist_df = pd.DataFrame(np.tril(ds, k=-1), columns=bird_list, index=bird_list)
+# Dist matrix for all song types
 
-matrix = np.zeros((len(indvs), len(indvs)))
+from scipy.spatial import distance
+from joblib import Parallel, delayed
+from src.avgn.signalprocessing.create_spectrogram_dataset import pad_spectrogram
 
-for index, indv_1 in tqdm(enumerate(indvs), desc="Building distance matrix", leave=True):
-    for index2, indv_2 in enumerate(indvs):
+syll_lens = [np.shape(i)[1] for i in syllable_specs]
+pad_length = np.max(syll_lens)
+
+
+def pad_spectrogram(spectrogram, pad_length):
+    """ Pads a spectrogram to being a certain length
+    """
+    excess_needed = pad_length - np.shape(spectrogram)[1]
+    pad_left = np.floor(float(excess_needed) / 2).astype("int")
+    pad_right = np.ceil(float(excess_needed) / 2).astype("int")
+    return np.pad(
+        spectrogram, [(0, 0), (pad_left, pad_right)], "constant", constant_values=-0.4
+    )
+
+
+with Parallel(n_jobs=-2, verbose=2) as parallel:
+    all_specs_padded = parallel(
+        delayed(pad_spectrogram)(spec, pad_length)
+        for spec in tqdm(
+            syllable_specs, desc="padding spectrograms", leave=False
+        )
+    )
+
+
+specs = flatten_spectrograms([i for i in all_specs_padded])
+#%%
+m = distance.cdist(specs, specs, "cosine")
+dist_df = pd.DataFrame(np.tril(m, k=-1), columns=bird_list, index=bird_list)
+
+#%%
+# Dist matrix (pairwise average distances)
+length = len(np.unique(bird_list))
+birds = np.unique(bird_list)
+
+matrix = np.zeros((len(birds), len(birds)))
+for index, indv_1 in tqdm(enumerate(birds), desc="Building distance matrix", leave=True):
+    for index2, indv_2 in enumerate(birds):
         if indv_1 == indv_2:
             matrix[index, index] = 0
         elif matrix[index, index2] == 0 and matrix[index, index2] == 0:
@@ -637,165 +778,94 @@ for index, indv_1 in tqdm(enumerate(indvs), desc="Building distance matrix", lea
 
 # sim matrix
 # matrix = 1 - (matrix / np.max(matrix))
-distances_df = pd.DataFrame(np.tril(matrix, k=-1), columns=indvs, index=indvs)
+distances_df = pd.DataFrame(np.tril(matrix, k=-1), columns=birds, index=birds)
 y = list(distances_df.stack())
 
-#%%
-from scipy.spatial import distance
-
-# Import nestbox coordinates
-from src.greti.read.paths import RESOURCES_DIR
-
-coords_file = RESOURCES_DIR / "nestboxes" / "nestbox_coords.csv"
-tmpl = pd.read_csv(coords_file)
-nestboxes = tmpl[tmpl["nestbox"].isin(indvs)]
-nestboxes["east_north"] = nestboxes[["x", "y"]].apply(tuple, axis=1)
-
-# Build matrix of distances in metres
-coords = [
-    list(nestboxes[nestboxes["nestbox"] == bird].east_north.values[0]) for bird in indvs
-]
-spatial_dist = distance.cdist(coords, coords)
-spatial_dist_df = pd.DataFrame(np.tril(spatial_dist, k=-1), columns=indvs, index=indvs)
-x = list(spatial_dist_df.stack())
-
-
-# %%
-# Plot acoustic distance vs spatial distance
-
-df = pd.DataFrame({"s_dist": x, "a_dist": y})
-#df = df[df["a_dist"] != 0]
-df = df[df["s_dist"] < 600]
-df = df[df["s_dist"] != 0]
-
-fig_dims = (5, 5)
-fig, ax = plt.subplots(figsize=fig_dims)
-sns.regplot(
-    x="s_dist", y="a_dist", data=df, marker="o", scatter_kws={"s": 12, "alpha": 0.06}
-)
-#plt.yscale("log")
-
-fig_dims = (5, 5)
-fig, ax = plt.subplots(figsize=fig_dims)
-sns.regplot(x="s_dist", y="a_dist", data=df, x_bins=10)
-
-fig_dims = (5, 5)
-fig, ax = plt.subplots(figsize=fig_dims)
-sns.regplot(x="s_dist", y="a_dist", data=df, lowess=True, scatter=True, scatter_kws={"s": 12, "alpha": 0.06})
-#plt.yscale("log")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#%%
-# Dist matrix for all song types
-
-m = cdist(note_specs, note_specs, "euclidean")
-dist_df = pd.DataFrame(np.tril(m, k=-1), columns=bird_list, index=bird_list)
-
-# Dist matrix (pairwise average distances)
-
-matrix = np.zeros((len(indvs), len(indvs)))
-for index, indv_1 in tqdm(enumerate(indvs), desc="Building distance matrix", leave=True):
-    for index2, indv_2 in enumerate(indvs):
-        if indv_1 == indv_2:
-            matrix[index, index] = 0
-        elif matrix[index, index2] == 0 and matrix[index, index2] == 0:
-            mean_dist = np.mean(np.mean(dist_df[indv_1].loc[indv_2]))
-            matrix[index, index2] = mean_dist
-            matrix[index2, index] = mean_dist
-
-# sim matrix
-matrix = 1 - (matrix / np.max(matrix))
-distances_df = pd.DataFrame(np.tril(matrix, k=-1), columns=indvs, index=indvs)
-y = list(distances_df.stack())
-
-
-
-# %%
-# Network plot
-
-import networkx as nx
-
-G = nx.from_numpy_matrix(matrix)
-pos = {node: np.array(position) for node, position in zip(list(G.nodes), coords)}
-
-
-fig_dims = (15, 14)
-fig, ax = plt.subplots(figsize=fig_dims)
-nx.draw(
-    G,
-    pos,
-    edge_color=[i[2]["weight"] for i in G.edges(data=True)],
-    edge_cmap=plt.cm.magma,
-)
-#%%
-nx.draw_networkx(G, pos, edge_cmap=plt.cm.magma)
-
-for edge in G.edges(data="weight"):
-    nx.draw_networkx_edges(G, pos, edgelist=[edge], width=edge[2], alpha=0.1)
-
-
-# labels = nx.get_edge_attributes(G,'weight')
-# nx.draw_networkx_edge_labels(G,pos,edge_labels=labels)
 
 
 #%%
 
 scatter_labs = list(
     chain.from_iterable(
-        repeat(indv, len(values)) for indv, values in all_song_type_specs.items()
+        repeat(indv, len(values)) for indv, values in syllable_type_dict.items()
     )
 )
 scatter_labs = [item[0] for item in scatter_labs]
-specs = flatten_spectrograms([i / np.max(i) for i in all_specs_padded])
+
 
 # colourcodes
+#%%
+
 
 #%%
 # project
 from sklearn.decomposition import PCA
+from joblib import Parallel, delayed
+from src.avgn.signalprocessing.create_spectrogram_dataset import pad_spectrogram
+
+syll_lens = [np.shape(i)[1] for i in syllable_specs]
+pad_length = np.max(syll_lens)
+
+
+def pad_spectrogram(spectrogram, pad_length):
+    """ Pads a spectrogram to being a certain length
+    """
+    excess_needed = pad_length - np.shape(spectrogram)[1]
+    pad_left = np.floor(float(excess_needed) / 2).astype("int")
+    pad_right = np.ceil(float(excess_needed) / 2).astype("int")
+    return np.pad(
+        spectrogram, [(0, 0), (pad_left, pad_right)], "constant", constant_values=-0.4
+    )
+
+
+with Parallel(n_jobs=-2, verbose=2) as parallel:
+    all_specs_padded = parallel(
+        delayed(pad_spectrogram)(spec, pad_length)
+        for spec in tqdm(
+            syllable_specs, desc="padding spectrograms", leave=False
+        )
+    )
+
+
+specs = flatten_spectrograms([i for i in all_specs_padded])
+
+#%%
+
+# First build a dtw with `dtw_metric = build_dtw_mse(x[0].shape),
+# then umap.UMAP(metric=dtw_metric).fit_transform(x.reshape(len(x), -1))
+
+
+
+#%%
+import umap
 
 # PCA
-pca2 = PCA(n_components=2)
-pca_embed = pca2.fit_transform(specs)
+# pca2 = PCA(n_components=2)
+# pca_embed = pca2.fit_transform(specs)
 
 # UMAP
 umap_parameters = {
-    "n_neighbors": 40,
-    "min_dist": 0.05,
+    "n_neighbors": 60,
+    "min_dist": 0.8,
     "n_components": 2,
     "verbose": True,
     "init": "spectral",
     "low_memory": True,
 }
+
+#all_specs_padded = np.array(all_specs_padded)
+
+
+# dtw_metric = build_dtw_mse(all_specs_padded[0].shape)
+# umap_embed = umap.UMAP(metric=dtw_metric, **umap_parameters).fit_transform(all_specs_padded.reshape(len(all_specs_padded), -1))
+
 fit = umap.UMAP(**umap_parameters)
-umap_embed = fit.fit_transform(specs)
+umap_embed =fit.fit_transform(specs)
 
 
 #%%
 plt.figure(figsize=(12, 12))
-sns.scatterplot(umap_embed[:, 0], umap_embed[:, 1], hue=scatter_labs)
+sns.scatterplot(umap_embed[:, 0], umap_embed[:, 1], hue=bird_list)
 
 # %%
 
@@ -859,64 +929,8 @@ final_dict = dict_keys_to_int(counts, sym_dict)
 # %%
 
 
-# * Define song types. Legacy method
-
-# Convert int labels to symbolic labels
-sym_dict = dict_keys_to_symbol(labs)
-sequences = [[sym_dict[b] for b in i] for i in sequences_newlabels]
-
-# Find n-grams
-
-# Convert lists to strings
-seq_str = ["".join(map(str, seq)) for seq in sequences]
-
-# Find repeating motifs
-pattern, result = re.compile(r"(.+?)\1+"), []
-[result.extend(pattern.findall(item)) for item in seq_str]
-
-# Duplicate 1-grams and make set
-result_d1 = duplicate_1grams(result)
-
-# Keep one of each pair of palindromes
-minus_palindromes = remove_palindromes(result_d1)
-
-# Remove collapsible sequences
-clean_list = remove_long_ngrams(minus_palindromes)
-
-# Count how many occurrences of each ngram
-counts = {seq: sum(seq in s for s in seq_str) for seq in clean_list}
-
-# Sort dictionary
-counts = dict(sorted(counts.items(), key=lambda x: x[1], reverse=True))
-
-
-final_dict = dict_keys_to_int(counts, sym_dict)
 
 #%%
-
-# * Get wav files
-
-songs = [ast.literal_eval(key) for key in final_dict.keys()]
-
-counts_r = {v: k for k, v in counts.items()}
-
-keys = indv_dfs[bird].key.values
-ids = np.array(indv_dfs[bird]["syllables_sequence_id"])
-k_keys = [keys[ids == i] for i in np.unique(ids)]
-
-# get song keys for each song type
-song_type_keys = {}
-for lab in list(counts.keys()):
-    length = 0
-    keylist = []
-    for seq, key in zip(seq_str, k_keys):
-        if lab in seq:
-            length += len(key[0][0])
-            keylist.append(key[0])
-    song_type_keys[label] = keylist
-
-
-# TODO: add song type column to main dataframe, then extract and join spectrograms for further analysis
 
 
 #%%
