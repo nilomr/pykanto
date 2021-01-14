@@ -30,6 +30,16 @@ indv_dfs = {indv : indv_dfs[indv_dfs.indv == indv] for indv in indv_dfs.indv.uni
 
 indvs = list(indv_dfs.keys())
 
+# IMPORT NESTBOX COORDINATES
+
+from src.greti.read.paths import RESOURCES_DIR
+
+coords_file = RESOURCES_DIR / "nestboxes" / "nestbox_coords.csv"
+tmpl = pd.read_csv(coords_file)
+
+nestboxes = tmpl[tmpl["nestbox"].isin(indvs)]
+nestboxes["east_north"] = nestboxes[["x", "y"]].apply(tuple, axis=1)
+
 def norm(a):
     """normalizes a string by its average and sd"""
     a = (np.array(a) - np.average(a)) / np.std(a)
@@ -152,13 +162,6 @@ distances_df = pd.DataFrame(np.tril(matrix, k=-1), columns=indvs, index=indvs)
 #%%
 # Build matrix of spatial distances
 
-from src.greti.read.paths import RESOURCES_DIR
-
-coords_file = RESOURCES_DIR / "nestboxes" / "nestbox_coords.csv"
-tmpl = pd.read_csv(coords_file)
-
-nestboxes = tmpl[tmpl["nestbox"].isin(indvs)]
-nestboxes["east_north"] = nestboxes[["x", "y"]].apply(tuple, axis=1)
 
 # %%
 

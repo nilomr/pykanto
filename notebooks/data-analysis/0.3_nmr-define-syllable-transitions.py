@@ -1,10 +1,14 @@
 # %%
+from src.greti.sequencing.seqfinder import remove_bad_syllables
 import ast
+import operator
 import pickle
 import random
 import re
 import string
+from collections.abc import Iterable
 from datetime import datetime
+from itertools import chain, repeat
 
 import hdbscan
 import librosa
@@ -17,43 +21,43 @@ import pandas as pd
 import phate
 import seaborn as sns
 import umap
+from dtaidistance import dtw
+from dtw import dtw
+from fastdtw import fastdtw
 from joblib import Parallel, delayed
+from librosa.display import specshow
 from matplotlib.collections import PatchCollection
 from networkx.classes import ordered
+from numpy.linalg import norm
 from scipy.spatial import distance
+from scipy.spatial.distance import cosine
+from sklearn.decomposition import PCA
 from src.avgn.dataset import DataSet
 from src.avgn.signalprocessing.create_spectrogram_dataset import (
-    flatten_spectrograms,
-    log_resize_spec,
-)
+    flatten_spectrograms, log_resize_spec, make_spec, pad_spectrogram,
+    prepare_wav)
 from src.avgn.utils.general import save_fig
 from src.avgn.utils.hparams import HParams
 from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
 from src.avgn.visualization.barcodes import indv_barcode, plot_sorted_barcodes
-from src.avgn.visualization.network_graph import (
-    build_transition_matrix,
-    compute_graph,
-    draw_networkx_edges,
-    plot_network_graph,
-)
-from src.avgn.visualization.projections import scatter_projections, scatter_spec
-from src.avgn.visualization.quickplots import draw_projection_plots, quad_plot_syllables
+from src.avgn.visualization.network_graph import (build_transition_matrix,
+                                                  compute_graph,
+                                                  draw_networkx_edges,
+                                                  plot_network_graph)
+from src.avgn.visualization.projections import (scatter_projections,
+                                                scatter_spec)
+from src.avgn.visualization.quickplots import (draw_projection_plots,
+                                               quad_plot_syllables)
 from src.avgn.visualization.spectrogram import draw_spec_set
+from src.greti.audio.filter import dereverberate
 from src.greti.read.paths import DATA_DIR, FIGURE_DIR, RESOURCES_DIR
-from src.vocalseg.utils import (
-    butter_bandpass_filter,
-    int16tofloat32,
-    plot_spec,
-    spectrogram,
-)
+from src.vocalseg.utils import (butter_bandpass_filter, int16tofloat32,
+                                plot_spec, spectrogram)
 from tqdm.autonotebook import tqdm
-from itertools import chain, repeat
-import pickle
-
-from src.avgn.signalprocessing.create_spectrogram_dataset import prepare_wav, make_spec
-from librosa.display import specshow
+from URF.main import plot_cluster_result, random_forest_cluster
 
 
+from src.greti.sequencing.seqfinder import find_syllable_sequences, get_missegment_index
 # from sklearn.cluster import MiniBatchKMeans
 # from cuml.manifold.umap import UMAP as cumlUMAP
 
@@ -73,35 +77,9 @@ def build_indv_dict(bird, label, pal):
     color_lists, trans_lists, label_pal_dict, label_pal, label_dict = indv_barcode(
         indv_dfs[bird], time_resolution=0.02, label=label, pal=pal,
     )
-    indv_dict[bird] = {"label_pal_dict": label_pal_dict, "label_dict": label_dict}
+    indv_dict[bird] = {"label_pal_dict": label_pal_dict,
+        "label_dict": label_dict}
     return indv_dict
-
-
-def list_sequences(bird, label, min_cluster_samples=10):
-    """Returns a lists of lists where each list contains the sequence of notes in one song
-    """
-
-    # TODO: Optimise this
-    labs = indv_dfs[bird][label].values
-    sequence_ids = np.array(indv_dfs[bird]["syllables_sequence_id"])
-    sequences = [labs[sequence_ids == i] for i in np.unique(sequence_ids)]
-
-    transition_matrix, element_dict, drop_list = build_transition_matrix(
-        sequences, min_cluster_samples=10
-    )
-
-    element_dict_r = {v: k for k, v in element_dict.items()}
-
-    # true_label = get_true_labels(transition_matrix, drop_list)
-
-    ## Transition matrix in DataFrame format, with true labels
-    # matrix = pd.DataFrame(transition_matrix, columns=true_label, index=true_label)
-    # sns.heatmap(matrix)
-
-    # Substitute labels
-    sequences_newlabels = [list(seq) for seq in sequences]
-
-    return sequences_newlabels, labs
 
 
 def find_song_types(sequences_newlabels, labs, bird, label, plot=False):
@@ -136,28 +114,11 @@ def find_song_types(sequences_newlabels, labs, bird, label, plot=False):
     # Plot test
     if plot is True:
         plt.figure(figsize=(10, 4))
-        plt.imshow(spec_dict[list(spec_dict.keys())[-1]], cmap="bone", origin="lower")
+        plt.imshow(spec_dict[list(spec_dict.keys())[-1]],
+                   cmap="bone", origin="lower")
         col.axis("off")
 
     return spec_dict
-
-
-def get_seq_frequencies(result, seq_str):
-    """Returns a sorted dictionary of sequence frequencies in the entire output of an individual bird
-    Args:
-        result (dict): A dictionary with repeated sequencies for each song
-    Returns:
-        dict: Sorted dictionary
-    """
-    unique_seqs = set([seq for subset in list(result.values()) for seq in subset])
-    tally = {}
-    for seq in unique_seqs:
-        n = 0
-        for element in seq_str:
-            n += element.count(seq)
-        tally[seq] = n
-    tally = dict(sorted(tally.items(), key=lambda x: x[1], reverse=True))
-    return tally
 
 
 def get_true_labels(transition_matrix, drop_list):
@@ -193,41 +154,16 @@ def remove_palindromes(result):
     return minus_palindromes
 
 
-def remove_long_ngrams(minus_palindromes):
-    # Remove collapsible sequences
-    remove = [
-        seq2
-        for seq2 in minus_palindromes
-        for seq in minus_palindromes
-        if seq != seq2
-        and seq in seq2
-        and not [
-            substr2 for substr2 in seq2 if substr2 not in seq
-        ]  # contains no new notes
-    ]
-    return [seq for seq in minus_palindromes if seq not in remove]
-
-
 def dict_keys_to_symbol(labs):
     # Change keys from int to symbol: this is necessary to be able to search for patterns where int labels >9
     unique_labs = np.unique(labs)
     nlabs = len(unique_labs)
     sym_list = list(string.ascii_uppercase[0:nlabs])
     symbolic_dict = {
-        lab : (symbol if lab != -1 else 'Z')
+        lab: (symbol if lab != -1 else 'Z')
         for lab, symbol in zip(unique_labs, sym_list)
     }
     return symbolic_dict
-
-
-
-def dict_keys_to_int(counts, sym_dict):
-    # Change keys back to int matching use in syllable_df
-    sym_dict_r = {v: k for k, v in sym_dict.items()}
-    return {
-        str([sym_dict_r[element] for element in key]): value
-        for key, value in counts.items()
-    }
 
 
 def get_average_note(bird, label, note):
@@ -264,14 +200,17 @@ DATASET_ID = "GRETI_HQ_2020_segmented"
 YEAR = "2020"
 
 dfs_dir = DATA_DIR / "indv_dfs" / DATASET_ID
-indv_dfs = pd.read_pickle(dfs_dir / (f"{DATASET_ID}_labelled_checked.pickle")) #! Change to this once manual check done
+# ! Change to this once manual check done
+indv_dfs = pd.read_pickle(dfs_dir / (f"{DATASET_ID}_labelled_checked.pickle"))
 indvs = list(indv_dfs.keys())
 
-exclude = ['CP34', 'EX38A', 'SW119', 'B11', 'MP20', 'B161', 'EX34', 'CP28', 'B49', 'SW116'] # Data for these are too noisy, judged from UMAP scatterplot in previous step
+# Data for these are too noisy, judged from UMAP scatterplot in previous step
+exclude = ['CP34', 'EX38A', 'SW119', 'B11',
+    'MP20', 'B161', 'EX34', 'CP28', 'B49', 'SW116']
 indvs = [indv for indv in indvs if indv not in exclude]
+cluster_labels = "hdbscan_labels_fixed"
 
-
-#%%
+# %%
 # If testing before manual check of labels use the below instead
 # indv_dfs = pd.read_pickle(
 #     "/media/nilomr/SONGDATA/syllable_dfs/GRETI_HQ_2020_segmented/GRETI_HQ_2020_segmented_with_labels.pickle"
@@ -279,7 +218,7 @@ indvs = [indv for indv in indvs if indv not in exclude]
 # indv_dfs = {indv: indv_dfs[indv_dfs.indv == indv] for indv in indv_dfs.indv.unique()}
 # indvs = list(indv_dfs.keys())
 
-#%%
+# %%
 
 # Prepare colour palettes
 # label = "hdbscan_labels" # unchecked
@@ -305,73 +244,19 @@ unique_indvs = list(indv_dfs.keys())
 
 # %%
 # Select one bird to test
-#bird = "EX21"
-cluster_labels = "hdbscan_labels_fixed"
+# bird = "EX21"
 
-#TODO: remove seqs that arise due to undetected (not noise) note in the middle
+
+# TODO: remove seqs that arise due to undetected (not noise) note in the middle
 # Otherwise this function ready
 
-def find_syllable_sequences(bird, cluster_labels, remove_noise=True, remove_redundant=True):
-    # Define sequences
-    sequences_newlabels, labs = list_sequences(bird, cluster_labels, min_cluster_samples=5)
-    sym_dict = dict_keys_to_symbol(labs)
-    sequences = [[sym_dict[b] for b in i] for i in sequences_newlabels]
 
-    # Find n-grams
-    # Convert lists to strings
-    seq_str = ["".join(map(str, seq)) for seq in sequences]
-    seq_str_dict = {key : seq for key, seq in enumerate(seq_str)}
-
-    # Find repeating motifs;
-    pattern = re.compile(r"(.+?)(?=\1)")
-    result = {
-        key : (duplicate_1grams(pattern.findall(seq))
-        if len(pattern.findall(seq)) > 0
-        else [seq])
-        for key, seq in seq_str_dict.items()
-    }
-
-    # Frequencies for each combination
-    tally = get_seq_frequencies(result, seq_str)
-
-    if remove_noise:
-        # Remove sequences with noise (-1 labels)
-        tally = {key : n for key, n in tally.items() if 'Z' not in key}
-
-    if remove_redundant:
-        # Remove sequences already contained in other, shorter sequences (where the longest of the pair does not have new notes)
-        tally = {k:v for k,v in tally.items() if k in remove_long_ngrams([key for key in tally.keys()])}
-
-    # Build dictionary of songs containing each sequence (allows duplicates)
-    song_dict = {}
-    for sequence, n in tally.items():
-        seqlist = []
-        for key, seqs in result.items():
-            if len(seqs) > 1:
-                for seq in seqs:
-                    if seq == sequence:
-                        seqlist.append(key)
-            else:
-                if seqs == sequence:
-                    seqlist.append(key)
-                
-        song_dict[sequence] = seqlist
-
-    # Symbols to original labels
-    final_dict = dict_keys_to_int(song_dict, sym_dict)
-
-    return final_dict, len(sequences_newlabels), sequences_newlabels, dict_keys_to_int(tally, sym_dict)
-
-#%%
-
-
-
-#%%
+# %%
 
 
 def create_melspec(hparams, data, sr, logscale=True):
-    Sb = librosa.feature.melspectrogram(data, 
-                                       sr=sr, 
+    Sb = librosa.feature.melspectrogram(data,
+                                       sr=sr,
                                        n_mels=hparams.num_mel_bins,
                                        hop_length=hparams.hop_length_ms,
                                        n_fft=hparams.n_fft,
@@ -384,12 +269,14 @@ def create_melspec(hparams, data, sr, logscale=True):
     Sb = Sb.astype(np.float32)
     return Sb
 
-def display_melspec(hparams, mels, sr): 
+
+def display_melspec(hparams, mels, sr):
     specshow(mels, x_axis='time', y_axis='mel',
                              sr=sr, hop_length=hparams.hop_length_ms,
                              fmin=hparams.butter_lowcut, fmax=(sr // 2))
     plt.colorbar()
     plt.show()
+
 
 def subfinder(mylist, pattern):
     matches = []
@@ -398,19 +285,19 @@ def subfinder(mylist, pattern):
             matches.append([i, i+len(pattern)-1])
     return matches
 
+
 def right_pad_spec(spec, maxlen, values='minimum', constant_values=(-0.4)):
     pad = maxlen - spec.shape[1]
-    spec = np.pad(spec, ((0, 0), (0, pad)), values, constant_values=constant_values)
+    spec = np.pad(spec, ((0, 0), (0, pad)), values,
+                  constant_values=constant_values)
     return spec
 
 
-import operator
-
 def get_max_list_in_list(list_of_lists):
-    all_dict = {i:np.max(l) for i, l in enumerate(list_of_lists)}
+    all_dict = {i: np.max(l) for i, l in enumerate(list_of_lists)}
     index = max(all_dict.items(), key=operator.itemgetter(1))[0]
-    return list_of_lists[index][0] if isinstance(list_of_lists[index][0], list) else list_of_lists[index] # this works but I don't really know why, check at some point
-
+    # this works but I don't really know why, check at some point
+    return list_of_lists[index][0] if isinstance(list_of_lists[index][0], list) else list_of_lists[index]
 
 
 hparams = HParams(
@@ -425,32 +312,74 @@ hparams = HParams(
     mask_spec=True,
 )
 
-#%%
+# %%
 #!
+
+
+# %%
+
+
+for indv in tqdm(indvs[2:4], desc="indvs processed", leave=True):
+    final_dict, n_seqs, _, _ = find_syllable_sequences(
+        indv, cluster_labels, remove_noise=True, remove_redundant=True, min_freq=3, min_songs=2)
+
+    try:
+        note_label = [ast.literal_eval(key)[0] for key in final_dict.keys() if len(
+            set(ast.literal_eval(key))) == 1]
+    except:
+        note_label = False
+        print('No same-same sequences')
+
+    if note_label is not False or note_label == 0:
+        for label in note_label if isinstance(note_label, Iterable) else [note_label]:
+
+            index_list = [item for sublist in list(
+                final_dict.values()) for item in sublist]
+
+            for song in tqdm(index_list, leave=True):
+                file_key = indv_dfs[indv][indv_dfs[indv]
+                    .syllables_sequence_id == song].key[0]
+                missegment, duration, interval = get_missegment_index(
+                    label, indv, file_key, threshold=0.5)
+
+                if missegment:
+                    print(indv, label)
+                    final_dict = {
+                        k: v for k, v in final_dict.items() if k != f'[{label}, {label}]'}
+                    break
+
+
+# %%
+
 
 syllable_type_dict = {}
 
-for indv in tqdm(indvs[2:4], desc="birds processed", leave=True):
+for indv in tqdm(indvs[2:3], desc="birds processed", leave=True):
 
-    final_dict, n_seqs, _, _ = find_syllable_sequences(indv, cluster_labels, remove_noise=True, remove_redundant=True)
-    # remove keys that do not appear in at least 2 songs
-    # final_dict = {key:val for key, val in final_dict.items() if len(val) > 1}
+    final_dict, n_seqs, _, _ = find_syllable_sequences(
+        indv_dfs, indv, cluster_labels, remove_noise=True, remove_redundant=True, collapse_palindromes=True, min_freq=2, min_songs=1)
+
+    final_dict = remove_bad_syllables(
+        indv_dfs, indv, cluster_labels, final_dict, threshold=0.4)
 
     syll_audio = {}
 
-    index_list = [item for sublist in list(final_dict.values()) for item in sublist]
+    index_list = [item for sublist in list(
+        final_dict.values()) for item in sublist]
 
     for song in tqdm(index_list, desc="Getting syllable audio data and metadata; building mel spectrograms", leave=True):
 
         # get audio key, starts and ends for this song
         file_key = indv_dfs[indv][indv_dfs[indv].syllables_sequence_id == song].key[0]
         indv_dfs[indv][indv_dfs[indv].key == file_key]
-        starts = indv_dfs[indv][indv_dfs[indv].key == file_key].start_time.values
+        starts = indv_dfs[indv][indv_dfs[indv].key ==
+            file_key].start_time.values
         ends = indv_dfs[indv][indv_dfs[indv].key == file_key].end_time.values
 
         # load song audio
-        wav_loc = most_recent_subdirectory(DATA_DIR /'processed'/ DATASET_ID.replace('_segmented', ''), only_dirs=True) / 'WAV' / file_key
-        data, sr = librosa.load(wav_loc, sr = 32000)
+        wav_loc = most_recent_subdirectory(
+            DATA_DIR / 'processed' / DATASET_ID.replace('_segmented', ''), only_dirs=True) / 'WAV' / file_key
+        data, sr = librosa.load(wav_loc, sr=32000)
         data = butter_bandpass_filter(
             data, hparams.butter_lowcut, hparams.butter_highcut, sr, order=5
         )
@@ -461,20 +390,23 @@ for indv in tqdm(indvs[2:4], desc="birds processed", leave=True):
             for key in keys:
                 if key == song:
                     seqlist.append(ast.literal_eval(seq))
-        seqlist = seqlist if any(isinstance(el, list) for el in seqlist) else [seqlist[0]]
+        seqlist = seqlist if any(isinstance(el, list)
+                                 for el in seqlist) else [seqlist[0]]
 
         # list labels in this song
-        labels = list(indv_dfs[indv][indv_dfs[indv].key == file_key].hdbscan_labels_fixed)
+        labels = list(indv_dfs[indv][indv_dfs[indv].key ==
+                      file_key].hdbscan_labels_fixed)
 
         # Add instances of each sequence to dictionary
 
         for seq in seqlist:
-            positions = subfinder(labels, seq) # get starts and ends of syllables
+            # get starts and ends of syllables
+            positions = subfinder(labels, seq)
             sts = starts[[position[0] for position in positions]]
             ets = ends[[position[1] for position in positions]]
 
             for st, et in zip(sts, ets):
-                audio = data[int(st * sr) : int(et * sr)]
+                audio = data[int(st * sr): int(et * sr)]
 
                 if f'{seq}' in syll_audio:
                     syll_audio[f'{seq}'].append([list(audio)])
@@ -487,13 +419,15 @@ for indv in tqdm(indvs[2:4], desc="birds processed", leave=True):
 
     # keep clearest syllable and make mel spectrogram
     for seq, specs in syll_audio.items():
-        if len(specs) > 2: # discard if only one - reduce cases of noisy segmentation
+        if len(specs) > 2:  # discard if only one - reduce cases of noisy segmentation
             try:
                 exemplar = np.array(get_max_list_in_list(specs))
                 if mfcc_:
-                    indv_songs[seq] = librosa.feature.mfcc(exemplar, sr, n_mfcc=13)
+                    indv_songs[seq] = librosa.feature.mfcc(
+                        exemplar, sr, n_mfcc=13)
                 else:
-                    indv_songs[seq] = librosa.util.normalize(create_melspec(hparams, exemplar, sr, logscale=True))
+                    indv_songs[seq] = librosa.util.normalize(
+                        create_melspec(hparams, exemplar, sr, logscale=True))
             except:
                 print('Problema')
         else:
@@ -503,11 +437,29 @@ for indv in tqdm(indvs[2:4], desc="birds processed", leave=True):
 
 # pickle.dump(syllable_type_dict, open(dfs_dir / (f"{DATASET_ID}_song_types.pickle"), "wb"))
 
-#%%
-# Load data
-syllable_type_dict = pd.read_pickle(dfs_dir / (f"{DATASET_ID}_song_types.pickle"))
+# %%
+# Plot all sequences
+n = 0
+for bird, dic in syllable_type_dict.items():
+    dic = dic if isinstance(dic, Iterable) else [dic]
+    print(bird, len(dic))
+    n += 1
+    if n == 10:
+        break
+    ncols = len(dic.keys()) if len(dic.keys()) > 1 else 2
+    fig, axes = plt.subplots(1, ncols, figsize=(20, 4))
+    plt.suptitle(bird)
+    for (key, spec), (i, ax) in zip(dic.items(), enumerate(axes)):
+        ax.imshow(spec, origin='lower',  aspect='equal')
+        ax.axis('off')
+        ax.title.set_text(str(i) + " " + key)
 
-#%%
+# %%
+# Load data
+syllable_type_dict = pd.read_pickle(
+    dfs_dir / (f"{DATASET_ID}_song_types.pickle"))
+
+# %%
 # Prepare data for DTW distance calculation
 bird_list = []
 syllable_specs = []
@@ -519,23 +471,22 @@ for indv, repertoire in syllable_type_dict.items():
 
 all_specs = [spec.T for spec in tqdm(syllable_specs)]
 
-#%%
+# %%
 # DTW distance matrix
-from dtaidistance import dtw
 ds = dtw.distance_matrix_fast(all_specs)
 ds = ds/(ds.max()/1)
 
-#%%
+# %%
 # Slower test
-from scipy.spatial.distance import cosine
-from fastdtw import fastdtw
 dist = lambda p1, p2: fastdtw(p1.T, p2.T, dist=cosine)[0]
-dm = np.asarray([[dist(p1, p2) for p2 in syllable_specs] for p1 in tqdm(syllable_specs)])
+dm = np.asarray([[dist(p1, p2) for p2 in syllable_specs]
+                for p1 in tqdm(syllable_specs)])
 
-#%% 
+# %%
 # all sylls
 
-dist_df = pd.DataFrame(np.tril(prox_mat, k=-1), columns=bird_list, index=bird_list)
+dist_df = pd.DataFrame(np.tril(prox_mat, k=-1),
+                       columns=bird_list, index=bird_list)
 y = list(dist_df.stack())
 
 # Build matrix of distances in metres
@@ -543,17 +494,19 @@ coords = [
     list(nestboxes[nestboxes["nestbox"] == bird].east_north.values[0]) for bird in bird_list
 ]
 spatial_dist = distance.cdist(coords, coords)
-spatial_dist_df = pd.DataFrame(np.tril(spatial_dist, k=-1), columns=bird_list, index=bird_list)
+spatial_dist_df = pd.DataFrame(
+    np.tril(spatial_dist, k=-1), columns=bird_list, index=bird_list)
 x = list(spatial_dist_df.stack())
 
 
-#%%
+# %%
 # indvs = indvs[20:30]
 
 length = len(np.unique(bird_list))
 birds = np.unique(bird_list)
 
-dist_df = pd.DataFrame(np.tril(prox_mat, k=-1), columns=bird_list, index=bird_list)
+dist_df = pd.DataFrame(np.tril(prox_mat, k=-1),
+                       columns=bird_list, index=bird_list)
 
 matrix = np.zeros((length, length))
 
@@ -571,11 +524,9 @@ for index, indv_1 in tqdm(enumerate(birds), desc="Building distance matrix", lea
 distances_df = pd.DataFrame(np.tril(matrix, k=-1), columns=birds, index=birds)
 y = list(distances_df.stack())
 
-#%%
-from scipy.spatial import distance
+# %%
 
 # Import nestbox coordinates
-from src.greti.read.paths import RESOURCES_DIR
 
 coords_file = RESOURCES_DIR / "nestboxes" / "nestbox_coords.csv"
 tmpl = pd.read_csv(coords_file)
@@ -587,7 +538,8 @@ coords = [
     list(nestboxes[nestboxes["nestbox"] == bird].east_north.values[0]) for bird in birds
 ]
 spatial_dist = distance.cdist(coords, coords)
-spatial_dist_df = pd.DataFrame(np.tril(spatial_dist, k=-1), columns=birds, index=birds)
+spatial_dist_df = pd.DataFrame(
+    np.tril(spatial_dist, k=-1), columns=birds, index=birds)
 x = list(spatial_dist_df.stack())
 
 # %%
@@ -595,8 +547,8 @@ x = list(spatial_dist_df.stack())
 # y_norm = list((np.array(y) - min(y))/(max(y)-min(y)))
 
 df = pd.DataFrame({"s_dist": x, "a_dist": y})
-#df = df[df["a_dist"] != 0]
-#df = df[df["s_dist"] < 1250]
+# df = df[df["a_dist"] != 0]
+# df = df[df["s_dist"] < 1250]
 df = df[df["s_dist"] != 0]
 
 fig_dims = (5, 5)
@@ -604,7 +556,7 @@ fig, ax = plt.subplots(figsize=fig_dims)
 sns.regplot(
     x="s_dist", y="a_dist", data=df, marker="o", scatter_kws={"s": 7, "alpha": 0.01}
 )
-#plt.yscale("log")
+# plt.yscale("log")
 
 fig_dims = (5, 5)
 fig, ax = plt.subplots(figsize=fig_dims)
@@ -612,59 +564,58 @@ sns.regplot(x="s_dist", y="a_dist", data=df, x_bins=10)
 
 fig_dims = (5, 5)
 fig, ax = plt.subplots(figsize=fig_dims)
-sns.regplot(x="s_dist", y="a_dist", data=df, lowess=True, scatter=True, scatter_kws={"s": 7, "alpha": 0.01})
-#plt.yscale("log")
+sns.regplot(x="s_dist", y="a_dist", data=df, lowess=True,
+            scatter=True, scatter_kws={"s": 7, "alpha": 0.01})
+# plt.yscale("log")
 
-#%%
+# %%
 # dtw
 
-from dtaidistance import dtw
-#all_specs_padded = [right_pad_spec(spec, maxlen).flatten() for spec in tqdm(syllable_specs, desc="padding specs", leave=True)]
+# all_specs_padded = [right_pad_spec(spec, maxlen).flatten() for spec in tqdm(syllable_specs, desc="padding specs", leave=True)]
 ds = dtw.distance_matrix_fast(all_specs)
 
-#%%
+# %%
 # Test DTW
 
-from dtw import dtw
-from numpy.linalg import norm
-import matplotlib.pyplot as plt
-from scipy.spatial.distance import cosine
 
 for i in range(len(syllable_specs)):
-    dist, cost, acc_cost, path = dtw(syllable_specs[0].T, syllable_specs[i].T, dist=cosine)
+    dist, cost, acc_cost, path = dtw(
+        syllable_specs[0].T, syllable_specs[i].T, dist=cosine)
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
     fig.suptitle(dist)
-    ax1.imshow(cost.T, origin='lower', cmap=plt.cm.gray_r, interpolation='nearest')
+    ax1.imshow(cost.T, origin='lower', cmap=plt.cm.gray_r,
+               interpolation='nearest')
     ax1.plot(path[0], path[1], 'w')
-    ax2.imshow(syllable_specs[0], origin='lower', cmap=plt.cm.gray, interpolation='nearest')
-    ax3.imshow(syllable_specs[i], origin='lower', cmap=plt.cm.gray, interpolation='nearest')
+    ax2.imshow(syllable_specs[0], origin='lower',
+               cmap=plt.cm.gray, interpolation='nearest')
+    ax3.imshow(syllable_specs[i], origin='lower',
+               cmap=plt.cm.gray, interpolation='nearest')
     ax1.set_xlim([-0.5, cost.shape[0]-0.5])
     ax1.set_ylim([-0.5, cost.shape[1]-0.5])
 
     for ax in [ax1, ax2, ax3]:
         ax.axis('off')
 
-#%%
+# %%
 # Build DTW distance matrix
-from dtw import dtw
 dist = lambda p1, p2: dtw(p1.T, p2.T, dist=cosine)[0]
-dm = np.asarray([[dist(p1, p2) for p2 in syllable_specs] for p1 in tqdm(syllable_specs)])
+dm = np.asarray([[dist(p1, p2) for p2 in syllable_specs]
+                for p1 in tqdm(syllable_specs)])
 
-#%%
-from fastdtw import fastdtw
+# %%
 dist = lambda p1, p2: fastdtw(p1.T, p2.T, dist=cosine)[0]
-dm = np.asarray([[dist(p1, p2) for p2 in syllable_specs] for p1 in tqdm(syllable_specs)])
+dm = np.asarray([[dist(p1, p2) for p2 in syllable_specs]
+                for p1 in tqdm(syllable_specs)])
 
 
-#%%
+# %%
 
 
-#%%
-from fastdtw import fastdtw
+# %%
 distance, path = fastdtw(all_specs_padded[0], all_specs_padded[1], dist=cosine)
-from scipy.spatial.distance import cosine
 
-all_specs_padded = [right_pad_spec(spec, maxlen) for spec in tqdm(syllable_specs, desc="padding specs", leave=True)]
+all_specs_padded = [right_pad_spec(spec, maxlen) for spec in tqdm(
+    syllable_specs, desc="padding specs", leave=True)]
 distance, path = fastdtw(all_specs_padded[0], all_specs_padded[1], dist=cosine)
 
 for index, indv_1 in tqdm(enumerate(indvs), desc="Building distance matrix", leave=True):
@@ -676,31 +627,15 @@ for index, indv_1 in tqdm(enumerate(indvs), desc="Building distance matrix", lea
             matrix[index, index2] = mean_dist
             matrix[index2, index] = mean_dist
 
-#%%
-# Plot all sequences
-n = 0
-for bird, dic in syllable_type_dict.items():
-    print(bird, len(dic))
-    n +=1
-    if n == 10:
-        break
-    ncols = len(dic.keys())
-    fig, axes = plt.subplots(1, ncols, figsize=(20, 4))
-    plt.suptitle(bird)
-    for (key, spec), (i, ax) in zip(dic.items(), enumerate(axes)):
-        ax.imshow(spec, origin='lower',  aspect='equal')
-        ax.axis('off')
-        ax.title.set_text(str(i) + " " + key)
+# %%
 
-#%%
+# %%
 
-#TODO =====================
-#* To pad
+# TODO =====================
+# * To pad
 # check distribution of sequence lengths and pad/trim to a reasonable point
 
 #!#################### URF TESTS HERE ################################
-
-from URF.main import random_forest_cluster, plot_cluster_result
 
 
 def pad_spectrogram(spectrogram, pad_length):
@@ -715,22 +650,21 @@ def pad_spectrogram(spectrogram, pad_length):
 
 
 timelengths = [spec.shape[1] for spec in syllable_specs]
-sns.distplot(timelengths) # check dist of lengths
+sns.distplot(timelengths)  # check dist of lengths
 pad_length = 40
-padded_specs = [pad_spectrogram(spec, pad_length) if spec.shape[1] < pad_length else spec[:,:40] for spec in syllable_specs]
+padded_specs = [pad_spectrogram(spec, pad_length) if spec.shape[1]
+                                < pad_length else spec[:, :40] for spec in syllable_specs]
 
 specs = [i.flatten() for i in padded_specs]
-#%%
+# %%
 
-clf, prox_mat, cluster_ids = random_forest_cluster(np.array(specs), k=100, max_depth=None, n_estimators = 300, random_state=0)
+clf, prox_mat, cluster_ids = random_forest_cluster(
+    np.array(specs), k=100, max_depth=None, n_estimators=300, random_state=0)
 
 
-#%%
+# %%
 # Dist matrix for all song types
 
-from scipy.spatial import distance
-from joblib import Parallel, delayed
-from src.avgn.signalprocessing.create_spectrogram_dataset import pad_spectrogram
 
 syll_lens = [np.shape(i)[1] for i in syllable_specs]
 pad_length = np.max(syll_lens)
@@ -757,11 +691,11 @@ with Parallel(n_jobs=-2, verbose=2) as parallel:
 
 
 specs = flatten_spectrograms([i for i in all_specs_padded])
-#%%
+# %%
 m = distance.cdist(specs, specs, "cosine")
 dist_df = pd.DataFrame(np.tril(m, k=-1), columns=bird_list, index=bird_list)
 
-#%%
+# %%
 # Dist matrix (pairwise average distances)
 length = len(np.unique(bird_list))
 birds = np.unique(bird_list)
@@ -782,8 +716,7 @@ distances_df = pd.DataFrame(np.tril(matrix, k=-1), columns=birds, index=birds)
 y = list(distances_df.stack())
 
 
-
-#%%
+# %%
 
 scatter_labs = list(
     chain.from_iterable(
@@ -794,14 +727,11 @@ scatter_labs = [item[0] for item in scatter_labs]
 
 
 # colourcodes
-#%%
+# %%
 
 
-#%%
+# %%
 # project
-from sklearn.decomposition import PCA
-from joblib import Parallel, delayed
-from src.avgn.signalprocessing.create_spectrogram_dataset import pad_spectrogram
 
 syll_lens = [np.shape(i)[1] for i in syllable_specs]
 pad_length = np.max(syll_lens)
@@ -829,15 +759,13 @@ with Parallel(n_jobs=-2, verbose=2) as parallel:
 
 specs = flatten_spectrograms([i for i in all_specs_padded])
 
-#%%
+# %%
 
 # First build a dtw with `dtw_metric = build_dtw_mse(x[0].shape),
 # then umap.UMAP(metric=dtw_metric).fit_transform(x.reshape(len(x), -1))
 
 
-
-#%%
-import umap
+# %%
 
 # PCA
 # pca2 = PCA(n_components=2)
@@ -853,17 +781,17 @@ umap_parameters = {
     "low_memory": True,
 }
 
-#all_specs_padded = np.array(all_specs_padded)
+# all_specs_padded = np.array(all_specs_padded)
 
 
 # dtw_metric = build_dtw_mse(all_specs_padded[0].shape)
 # umap_embed = umap.UMAP(metric=dtw_metric, **umap_parameters).fit_transform(all_specs_padded.reshape(len(all_specs_padded), -1))
 
 fit = umap.UMAP(**umap_parameters)
-umap_embed =fit.fit_transform(specs)
+umap_embed = fit.fit_transform(specs)
 
 
-#%%
+# %%
 plt.figure(figsize=(12, 12))
 sns.scatterplot(umap_embed[:, 0], umap_embed[:, 1], hue=bird_list)
 
@@ -894,7 +822,7 @@ scatter_spec(
     facecolour="#f2f1f0",
 )
 
-#%%
+# %%
 
 fig, ax = plt.subplots(1, figsize=(10, 10))
 sns.kdeplot(
@@ -906,7 +834,7 @@ ax.set_yticks([])
 fig.tight_layout()
 
 
-#%%
+# %%
 # Duplicate 1-grams and make set
 result_d1 = duplicate_1grams(result)
 
@@ -929,11 +857,10 @@ final_dict = dict_keys_to_int(counts, sym_dict)
 # %%
 
 
+# %%
 
-#%%
 
-
-#%%
+# %%
 
 
 def get_average_note(bird, label, note):
@@ -960,7 +887,8 @@ for col, note in zip(ax, note_labels):
 # TODO: select one of each and plot spec
 
 len_all = len([key for sublist in song_type_keys.values() for key in sublist])
-len_unique = len({key for sublist in song_type_keys.values() for key in sublist})
+len_unique = len({key for sublist in song_type_keys.values()
+                 for key in sublist})
 
 
 sequ_label = "AA"
@@ -975,7 +903,6 @@ wav_dir = (
 )
 
 data, rate = librosa.core.load(wav_dir, sr=22050)
-from src.greti.audio.filter import dereverberate
 
 spec = spectrogram(
     data,
@@ -1011,7 +938,7 @@ indv_dfs[bird]
 seq_types = [ast.literal_eval(key) for key in final_dict.keys()]
 
 
-#%%
+# %%
 
 np.unique(indv_dfs[bird].key.values)
 seq_str
@@ -1034,7 +961,7 @@ for index, row in enumerate(
     if index < 3:
         print(row)
 
-#%%
+# %%
 
 
 len_label = len(indv_dfs[bird].loc[indv_dfs[bird][label] == lab].key)
@@ -1052,17 +979,18 @@ wav_dir = (
 wav, rate = librosa.core.load(wav_dir, sr=None)
 
 
-#%%
+# %%
 
 
 labs = indv_dfs[bird][label].values
 sequence_ids = np.array(indv_dfs[bird]["syllables_sequence_id"])
 
 
-#%%
+# %%
 
 # Compute graph
-G = compute_graph(transition_matrix, min_connections=0, column_names=true_label)
+G = compute_graph(transition_matrix, min_connections=0,
+                  column_names=true_label)
 
 # Plot graph
 
@@ -1136,7 +1064,7 @@ def guess_seq_len(seq):
     guess = 1
     max_len = len(seq) / 2
     for x in range(2, int(max_len)):
-        if seq[0:x] == seq[x : 2 * x]:
+        if seq[0:x] == seq[x: 2 * x]:
             return x, seq[0:x]
     return guess
 
@@ -1145,7 +1073,7 @@ for song in sequences_newlabels:
     print(guess_seq_len(song), song)
 
 
-#%%
+# %%
 
 
 # %%
@@ -1162,14 +1090,14 @@ birds = np.array([list(i)[0] for i in dataset.json_indv])
 facecolour = "#f2f1f0"
 
 
-#%%
+# %%
 
 # for each individual in the dataset
 
 indv_dict = {}
 for indv in tqdm(unique_indvs, desc="clustering individuals", leave=True)):
-    color_lists, trans_lists, label_pal_dict, label_pal, label_dict = indv_barcode(
-        indv_dfs[bird], time_resolution=0.03, label=label, pal=pal,
+    color_lists, trans_lists, label_pal_dict, label_pal, label_dict=indv_barcode(
+        indv_dfs[bird], time_resolution = 0.03, label = label, pal = pal,
     )
     indv_dict[indv] = {"label_pal_dict": label_pal_dict, "label_dict": label_dict}
     fig, ax = plt.subplots(figsize=(8, 3))
