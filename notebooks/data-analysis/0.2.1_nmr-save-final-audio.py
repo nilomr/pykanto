@@ -1,21 +1,37 @@
 # %%
+import ast
 import collections
-from collections.abc import Iterable
 import re
 import string
-import seaborn as sns
-import ast
+from collections.abc import Iterable
 from random import randrange
-
+import json
+from joblib import Parallel, delayed
 import librosa
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from prometheus_client import Counter
+import seaborn as sns
+from src.avgn.utils.general import flatten
 from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
 from src.greti.read.paths import DATA_DIR
-from src.greti.sequencing.seqfinder import dict_keys_to_symbol, find_syllable_sequences
+from src.greti.sequencing.seqfinder import (collapse_palindromic_keys,
+                                            collapse_slidable_seqs,
+                                            dict_keys_to_int,
+                                            dict_keys_to_symbol,
+                                            find_syllable_sequences,
+                                            get_mostfreq_pattern,
+                                            get_seq_frequencies,
+                                            list_sequences,
+                                            remove_bad_syllables,
+                                            remove_long_ngrams,
+                                            remove_repeat_songs)
 from src.vocalseg.utils import butter_bandpass_filter
 from tqdm.autonotebook import tqdm
-from src.avgn.utils.general import flatten
+import random
+
+from src.greti.write.save_syllables import save_syllable_audio
 
 %load_ext autoreload
 %autoreload 2
@@ -49,8 +65,16 @@ indvs = [indv for indv in all_birds if indv not in exclude]
 butter_lowcut = 1200
 butter_highcut = 10000
 
-out_dir = DATA_DIR / "processed" / f"{DATASET_ID}_notes"
-ensure_dir(out_dir)
+out_dir_notes_wav = DATA_DIR / "processed" / f"{DATASET_ID}_notes" / 'WAV'
+out_dir_notes_json = DATA_DIR / "processed" / f"{DATASET_ID}_notes" / 'JSON'
+out_dir_syllables_wav = DATA_DIR / "processed" / \
+    f"{DATASET_ID}_syllables" / 'WAV'
+out_dir_syllables_json = DATA_DIR / "processed" / \
+    f"{DATASET_ID}_syllables" / 'JSON'
+
+
+[ensure_dir(dir) for dir in [out_dir_notes_wav, out_dir_notes_json,
+                             out_dir_syllables_wav, out_dir_syllables_json]]
 
 # %%
 for indv in tqdm(indvs, desc="Saving wav files for each note", leave=True):
@@ -61,15 +85,8 @@ for indv in tqdm(indvs, desc="Saving wav files for each note", leave=True):
             index = randrange(nrows)  # choose one for now
             data = indv_dfs[indv][indv_dfs[indv]
                                   [cluster_labels] == label].iloc[index]
-            wav_loc = (
-                most_recent_subdirectory(
-                    DATA_DIR / "processed" /
-                    DATASET_ID.replace("_segmented", ""),
-                    only_dirs=True,
-                )
-                / "WAV"
-                / data.key
-            )
+            wav_loc = get_song_dir(DATASET_ID, data.key)
+
             # Load and trim audio
             y, sr = librosa.load(wav_loc, sr=32000)
             y = y[int(data.start_time * sr): int(data.end_time * sr)]
@@ -83,69 +100,188 @@ for indv in tqdm(indvs, desc="Saving wav files for each note", leave=True):
 # TODO: with sequences inferred, export syllable dataset in order, then read in R etc
 
 # First make a dictionary with each bird's inferred repertoire
+# NOTE: There is some stochasticity here - not much, but might want to make deterministic.
+# Slight variations probably come from cases where two alternative song types are found the same number of times.
 syllable_type_dict = {}
-for indv in tqdm(indvs, desc="birds processed", leave=True):
+for indv in tqdm(indvs, desc="Inferring song type repertoires", leave=True):
     final_dict, n_seqs, _, _ = find_syllable_sequences(
-        indv_dfs, indv, cluster_labels, min_freq=1, min_songs=1)
+        indv_dfs, indv, cluster_labels, min_freq=1, min_songs=1, double_note_threshold=0.5)
     syllable_type_dict[indv] = [ast.literal_eval(
         key) for key in list(final_dict.keys())]
 
 # %%
+# Plot distribution of repertoire size
+sns.set_style("dark")
+repsize = [len(d) for indv, d in syllable_type_dict.items()]
+sns.countplot(repsize, color='grey')
+# %%
+# Check maximum sequence length:
+seqlen = [len(seq) for indv, d in syllable_type_dict.items() for seq in d]
+ax, fig = plt.subplots(figsize=(3, 5))
+sns.countplot(seqlen, color='grey')
+for n, freq in dict(sorted(collections.Counter(seqlen).items(),
+                           key=lambda item: item[1],
+                           reverse=True)).items():
+    print(f'{n} notes = {freq} cases')
+
+# %%
+# Save syllables and their metadata
+
+for indv, repertoire in tqdm(syllable_type_dict.items(), desc="Saving syllable audio and metadata", leave=True):
+    save_syllable_audio(DATASET_ID,
+                        indv_dfs,
+                        indv,
+                        repertoire,
+                        cluster_labels,
+                        out_dir_syllables_wav,
+                        out_dir_syllables_json,
+                        shuffle_songs=True,
+                        max_seqlength=3,
+                        max_n_sylls=10)
+# %%
+
+
+# Parallel:
+n_jobs = 3
+with Parallel(n_jobs=n_jobs, verbose=2) as parallel:
+    all_specs_padded = parallel(
+        delayed(save_syllable_audio)(DATASET_ID,
+                                     indv_dfs,
+                                     indv,
+                                     repertoire,
+                                     cluster_labels,
+                                     out_dir_syllables_wav,
+                                     out_dir_syllables_json,
+                                     shuffle_songs=True,
+                                     max_seqlength=3,
+                                     max_n_sylls=10)
+        for indv, repertoire in tqdm(
+            syllable_type_dict.items(), desc="Saving syllable audio and metadata", leave=True
+        )
+    )
+
+# %%
 # TESTING========================
 
+indv = 'MP69'
 
+# indv_dfs,
+# indv,
+cluster_labels,
+remove_noise = True,
+remove_redundant = True,
+collapse_palindromes = True,
+collapse_subsequences = True,
+remove_double_count_notes = True,
+remove_double_count_songs = True,
+use_n_songs = True,
+min_freq = 1
+min_songs = 1
+double_note_threshold = 0.5  # half of the note duration
+
+sequences_newlabels, labs = list_sequences(
+    indv_dfs, indv, cluster_labels)
+sym_dict = dict_keys_to_symbol(labs)
+sequences = [[sym_dict[b] for b in i] for i in sequences_newlabels]
+
+# Find n-grams
+# Convert lists to strings
+seq_str = ["".join(map(str, seq)) for seq in sequences]
+seq_str_dict = {key: seq for key, seq in enumerate(seq_str)}
+
+# Find repeating motifs; get most frequent in each song
+result = get_mostfreq_pattern(seq_str_dict)
+
+#!!
+print(result)
+
+# Frequencies for each combination
+if use_n_songs:  # Whether to count total occurrences or total number of songs where it appears
+    tally = get_seq_frequencies(result, seq_str)
+else:
+    tally = get_seq_frequencies(result, seq_str, by_song=False)
+
+if remove_noise:
+    # Remove sequences with noise (-1 labels)
+    tally = {key: n for key, n in tally.items() if 'Z' not in key}
+
+#!!
+print(tally)
+
+if remove_redundant:
+    # Remove sequences already contained in other, shorter sequences
+    # (where the longest of the pair does not have new notes)
+    tally = {k: v for k, v in tally.items() if k in remove_long_ngrams([
+        key for key in tally.keys()])}
+
+#!!
+print(tally, 'HERE')
+
+# Remove absolute infrequent combinations (can help get rid of noise)
+tally = {k: v for k, v in tally.items() if v >= min_freq}
+
+#!!
+print(tally, 'HERE2')
+
+# if collapse_palindromes:  # Take the one that appears first in sequence most often
+#     tally = collapse_palindromic_keys(tally, seq_str)
+
+# #!!
+# print(tally)
+
+
+if collapse_subsequences:
+    tally = collapse_slidable_seqs(tally, seq_str)
+
+#!!
+print(tally, 'DUP')
+
+# Build dictionary of songs containing each sequence (allows duplicates)
+song_dict = {}
+for sequence, n in tally.items():
+    seqlist = []
+    for key, songseq in seq_str_dict.items():
+        if sequence in songseq:
+            seqlist.append(key)
+    song_dict[sequence] = seqlist
+
+# Remove sequences if present in fewer than min_songs
+song_dict = {k: v for k, v in song_dict.items() if len(v) >= min_songs}
+
+#!!
+print(song_dict)
+
+# Symbols to original labels
+final_dict = dict_keys_to_int(song_dict, sym_dict)
+
+#!!
+print(final_dict)
+
+# Remove double-counted notes?
+if remove_double_count_notes:
+    final_dict = remove_bad_syllables(
+        indv_dfs, indv, cluster_labels, final_dict, threshold=double_note_threshold)
+
+#!!
+print(final_dict)
+
+# Remove double-counted songs? #!EXPERIMENTAL
+if remove_double_count_songs:
+    for _ in range(10):
+        final_dict, state = remove_repeat_songs(final_dict)
+        if state:
+            break
+
+#!!
+print(final_dict)
 # %%
 
-indv = 'MP58'
-
-final_dict, n_seqs, seqs, tally = find_syllable_sequences(
-    indv_dfs, indv, cluster_labels, min_freq=1, min_songs=1)
-
-testdic = tally
-seq_str = seqs
 #indv_dfs['B165'][indv_dfs['B165']['syllables_sequence_id'] == 10]
 # %%
-# remove sliding snakes
-
-
-def collapse_slidable_seqs(tally):
-    """
-    Removes sequences that are contained in other sequences if repeated, 
-    keeping those that serve as the start of a song most frerquently.
-    """
-    conflict = []
-    for k in tally.keys():
-        reference = k*4
-        for k2 in tally.keys():
-            if k2 != k and k2 in reference:
-                print(k2, reference)
-                conflict.append(k2)
-    how_many_first = {pattrn: sum(
-        [seq.startswith(pattrn) for seq in seq_str]) for pattrn in set(conflict)}
-    maxkey = max(how_many_first, key=lambda key: how_many_first[key])
-    remove = [key for key in conflict if key != maxkey]
-    no_sliders = dict((k, tally[k])
-                      for k in tally.keys() if k not in remove)
-    return no_sliders
-
-# %%
-
-
-testdict = final_dict
 
 
 # %%
-for _ in range(3):
-    testdict, state = remove_repeat_songs(testdict)
-    print(testdict.keys())
-    if state:
-        break
 
-# %%
-# Plot distribution of repertoire size
-
-repsize = [len(d) for indv, d in syllable_type_dict.items()]
-sns.countplot(repsize)
 
 # %%
 # Now save examples of each syllable
