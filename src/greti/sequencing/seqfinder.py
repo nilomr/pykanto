@@ -115,6 +115,47 @@ def dict_keys_to_int(counts, sym_dict):
     }
 
 
+def collapse_slidable_seqs(tally, seq_str):
+    """
+    Removes sequences that are contained in other sequences if repeated, 
+    keeping those that serve as the start of a song most frerquently.
+    """
+    conflict = []
+    for k in tally.keys():
+        reference = k*4
+        for k2 in tally.keys():
+            if k2 != k and k2 in reference:
+                conflict.append([k, k2])
+
+    def to_remove(seq_str, conflictlist):
+        """Which sequences to remove based on frequency as song start.
+        """
+        outer_remove = []
+        for item in conflictlist:
+            how_many_first = {pattrn: sum(
+                [seq.startswith(pattrn) for seq in seq_str]) for pattrn in item}
+            maxkey = max(how_many_first, key=lambda key: how_many_first[key])
+            inner_remove = [key for key in item if key != maxkey]
+            outer_remove.append(inner_remove[0])
+        return outer_remove
+
+    if len(conflict) == 0:
+        return tally
+    elif len(conflict) == 1:
+        outer_remove = to_remove(seq_str, conflict)
+    else:
+        newconflict = []
+        for item in conflict:
+            for item2 in conflict:
+                if item == item2[::-1] and item[::-1] not in newconflict and item2[::-1] not in newconflict:
+                    newconflict.append(item)
+        outer_remove = to_remove(seq_str, newconflict)
+
+    no_sliders = dict((k, tally[k])
+                      for k in tally.keys() if k not in outer_remove)
+    return no_sliders
+
+
 def get_missegment_index(indv_dfs, cluster_labels, note_label, indv, file_key, threshold=0.5):
     """
     Threshold as ratio between note and interval duration, eg: 0.5 means that sequences 
@@ -215,6 +256,7 @@ def find_syllable_sequences(
     remove_noise=True,
     remove_redundant=True,
     collapse_palindromes=True,
+    collapse_subsequences=True,
     remove_double_count_notes=True,
     remove_double_count_songs=True,
     use_n_songs=True,
@@ -254,8 +296,12 @@ def find_syllable_sequences(
     # Remove absolute infrequent combinations (can help get rid of noise)
     tally = {k: v for k, v in tally.items() if v >= min_freq}
 
-    if collapse_palindromes:  # Take the one that appears first in sequence most often
-        tally = collapse_palindromic_keys(tally, seq_str)
+    # if collapse_palindromes:  # Take the one that appears first in sequence most often
+    #     tally = collapse_palindromic_keys(tally, seq_str)
+    # This is made redundant by the more general collapse_slidable_seqs()
+
+    if collapse_subsequences:
+        tally = collapse_slidable_seqs(tally, seq_str)
 
     # Build dictionary of songs containing each sequence (allows duplicates)
     song_dict = {}
@@ -277,7 +323,8 @@ def find_syllable_sequences(
         final_dict = remove_bad_syllables(
             indv_dfs, indv, cluster_labels, final_dict, threshold=double_note_threshold)
 
-    # Remove double-counted songs? EXPERIMENTAL
+    # Remove double-counted songs? #!EXPERIMENTAL
+    if remove_double_count_songs:
         for _ in range(10):
             final_dict, state = remove_repeat_songs(final_dict)
             if state:
