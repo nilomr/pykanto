@@ -77,25 +77,6 @@ out_dir_syllables_json = DATA_DIR / "processed" / \
                              out_dir_syllables_wav, out_dir_syllables_json]]
 
 # %%
-for indv in tqdm(indvs, desc="Saving wav files for each note", leave=True):
-    for label in indv_dfs[indv][cluster_labels].unique():
-        if label != -1:
-            nrows = len(indv_dfs[indv][indv_dfs[indv]
-                                       [cluster_labels] == label])
-            index = randrange(nrows)  # choose one for now
-            data = indv_dfs[indv][indv_dfs[indv]
-                                  [cluster_labels] == label].iloc[index]
-            wav_loc = get_song_dir(DATASET_ID, data.key)
-
-            # Load and trim audio
-            y, sr = librosa.load(wav_loc, sr=32000)
-            y = y[int(data.start_time * sr): int(data.end_time * sr)]
-
-            # Save note audio
-            out_filedir = out_dir / f"{data.key[:-4]}-L{label}-I{index}.wav"
-            librosa.output.write_wav(out_filedir, y, sr, norm=True)
-
-# %%
 
 # TODO: with sequences inferred, export syllable dataset in order, then read in R etc
 
