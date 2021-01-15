@@ -69,7 +69,7 @@ animated_plot =
   #view_follow(fixed_x = TRUE) +
   shadow_mark(alpha = 0.3, size = 3) 
   
-animate(animated_plot, renderer = gifski_renderer(), nframes = 6, fps = 4, width = 600, height = 300)
+animate(animated_plot, renderer = gifski_renderer(), nframes = 60, fps = 4, width = 600, height = 300)
 
 #TODO: include sunrise times, fix aesthetics
 ```
