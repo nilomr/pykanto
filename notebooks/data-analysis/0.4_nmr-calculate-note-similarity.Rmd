@@ -101,7 +101,7 @@ if (FALSE){
 # Prepare acoustic features for analysis
 
 # Measure spectral parameters
-sp <- specan(est,parallel=ncores)
+sp <- specan(est,parallel=ncores, threshold = 10)
 # Spectrogram cross-correlation
 xc <- xcorr(est,bp=c(1,5), parallel = ncores)
 # MDS for cross-correlation 

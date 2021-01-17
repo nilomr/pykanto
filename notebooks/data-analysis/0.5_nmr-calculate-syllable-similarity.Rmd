@@ -1,5 +1,5 @@
 ---
-title: "Build RF similarity matrix for each syllable type in the dataset"
+title: "Build RF similarity matrix for each syllable in the dataset"
 author: "Nilo Merino Recalde<br>"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
@@ -59,7 +59,7 @@ aa <- lapply(x, function(y) {
 # Paths
 dataset_name <-  "GRETI_HQ_2020_segmented_notes"
 data_dir <-  file.path(getwd(), "data", "processed", dataset_name)
-est.file.name <- file.path(data_dir, 'selection_table.RDS')
+est.file.name <- file.path(data_dir, 'selection_table_2.RDS')
 specs_dir <-  file.path(data_dir, 'spectrograms')
 coords_dir = file.path(getwd(), "resources", "nestboxes", "nestbox_coords.csv")
 
@@ -75,7 +75,7 @@ warbleR_options(
   f = 32000,
   wl = 512,
   flim = c(1.2, 10),
-  ovlp = 50,
+  ovlp = 90,
   bp = c(1.2, 10),
   parallel = ncores
 )
@@ -91,17 +91,20 @@ save(est,file=est.file.name)
 ```
 
 ```{r}
-if (FALSE){
+if (TRUE){
   specreator(est[1:10,], propwidth = F, parallel = 1, dest.path = specs_dir)
 }
 ```
 
 # Prepare acoustic measures
 ```{r}
+
+# TODO: automate run several times (based on different examples of same note types) and average results
+
 # Prepare acoustic features for analysis
 
 # Measure spectral parameters
-sp <- specan(est,parallel=ncores)
+sp <- specan(est,parallel=ncores, threshold = 10)
 # Spectrogram cross-correlation
 xc <- xcorr(est,bp=c(1,5), parallel = ncores)
 # MDS for cross-correlation 
@@ -109,7 +112,7 @@ xc.mds <- cmdscale(1 - xc, k = 5)
 # Translate MDS output into 5-D coordinates that we'll use as features
 colnames(xc.mds) <- paste0("xc.dim.", 1:5)
 # Dynamic time warping of frequency contours
-dtw.dist <- dfDTW(est, pb=TRUE, parallel = ncores)
+dtw.dist <- dfDTW(est, pb=TRUE, parallel = ncores, img=FALSE, threshold = 10)
 # MDS on DTW distance 
 dtw.mds <- cmdscale(dtw.dist, k = 5)
 # Translate DTW MDS into 5-D coordinates we'll use as features
@@ -120,81 +123,93 @@ cps.cf <- mfcc_stats(est, parallel = ncores)
 prms <- data.frame(est[, c("sound.files", "Call.Type")], sp[, -c(1:4)], xc.mds, dtw.mds, cps.cf[, -c(1:2)])
 
 ## save acoustic parms so we can just load these later
-saveRDS(prms, file.path(data_dir,"acoustic parameters.RDS"))
-write.csv(prms,file.path(data_dir,"acoustic parameters.csv"),row.names = FALSE)
-prms <- read.csv(file.path(data_dir,"acoustic parameters.csv"), stringsAsFactors = FALSE)
+saveRDS(prms, file.path(data_dir,"acoustic_parameters_2.RDS"))
+write.csv(prms,file.path(data_dir,"acoustic_parameters_2.csv"),row.names = FALSE)
+
+
+```
+
+```{r}
+# prms = parameters from here on
+
+parameters <- read.csv(file.path(data_dir,"acoustic_parameters_mean.csv"), stringsAsFactors = FALSE,  colClasses=c("code" = "character"))
 
 # Create dataframe that has all feature measurements
-acous.meas <- prms
+acous.meas <- parameters
 
 # Remove colinear, boxcox transform and scale/center
 # Remove any columns that have filenames, etc when doing this (here this is just column 1)
-preprms <- preProcess(acous.meas[, -c(1)], method=c("center", "scale", "BoxCox", "corr"))
-prms <- predict(preprms, acous.meas)
-nums <- unlist(lapply(prms, is.numeric))  
-prms <- prms[ , nums]
+preparameters <- preProcess(acous.meas[, -c(1)], method=c("center", "scale", "BoxCox", "corr"))
+parameters <- predict(preparameters, acous.meas)
+nums <- unlist(lapply(parameters, is.numeric))  
+parameters <- parameters[ , nums]
 
 # Remove highly correlated vars
-cm <- cor(prms, use="pairwise.complete.obs")
+cm <- cor(parameters, use="pairwise.complete.obs")
 high.corr <- findCorrelation(cm, cutoff = .95)
 print("Removed colinear parameters (r > 0.95)")
-names(prms)[high.corr]
-prms <- prms[, !names(prms) %in% names(prms)[high.corr]]
+names(parameters)[high.corr]
+parameters <- parameters[, !names(parameters) %in% names(parameters)[high.corr]]
 
 # Save this file so we can skip these steps later
-new.file.name <- file.path(data_dir,"Transformed non-colinear acous meas.csv")
-write.csv(prms, new.file.name, row.names = FALSE)
+out_name <- file.path(data_dir,"transformed_noncolinear_param_mean.csv")
+write.csv(parameters, out_name, row.names = FALSE)
 
 ```
 
 # Load measurements
 ```{r}
 # Load data if previous step already done
-new.file.name <- file.path(data_dir,"Transformed non-colinear acous meas.csv")
-prms <- read.csv(file.path(data_dir,"acoustic parameters.csv"), stringsAsFactors = FALSE)
-acous.meas <- prms
-prms <- read.csv( new.file.name, stringsAsFactors = FALSE)
+out_name <- file.path(data_dir, "transformed_noncolinear_param_mean.csv")
+parameters <- read.csv(out_name, stringsAsFactors = FALSE)
 
 ```
 
 # Random Forest
 ```{r}
-ap.trans.urf = randomForest(prms, proximity=T, ntree = 10000)
+
+URF_output = randomForest(parameters, proximity=T, ntree = 10000)
 # Save random forest so we can easily load it later
-new.file.name <- file.path(data_dir,"ap.trans.urf.rda")
-save(ap.trans.urf, file = new.file.name)
+rf_out <- file.path(data_dir, "syllables_URF.rda")
+save(URF_output, file = rf_out)
 
 ```
 
 # RF distance matrix
 ```{r}
-new.file.name <- file.path(data_dir,"ap.trans.urf.rda")
-load(new.file.name)
+
+rf_out <- file.path(data_dir, "syllables_URF.rda")
+load(rf_out)
+
+names_df <-
+  read.csv(
+    file.path(data_dir, "acoustic_parameters_mean.csv"),
+    stringsAsFactors = FALSE,
+    colClasses = c("code" = "character")
+  ) [c(1, 2)]
 
 # Make distance matrix from URF output
-ap.trans.urf.dist = 1 - ap.trans.urf$proximity
+URF_output_dist = 1 - URF_output$proximity
 
 # Take a look at the fist few rows 
-ap.trans.urf.dist[1:5, 1:5]
-range(ap.trans.urf.dist)
+URF_output_dist[1:5, 1:5]
+range(URF_output_dist)
 
 # See which variables are most useful for finding structure in the data
-measurement_ranks <- order(ap.trans.urf$importance, decreasing = TRUE)
+measurement_ranks <- order(URF_output$importance, decreasing = TRUE)
 # Look at top ten most useful variables
-names(prms[measurement_ranks[1:10]])
+names(parameters[measurement_ranks[1:10]])
 
 # OOB error rate - gives an idea of how well data separates into discrete classes
-sum(ap.trans.urf$votes[,1] < ap.trans.urf$votes[,2]) / length(ap.trans.urf$votes[,1])
+sum(URF_output$votes[,1] < URF_output$votes[,2]) / length(URF_output$votes[,1])
 
 # Get distance matrix between sound files
-RFdist = 1 - ap.trans.urf$proximity
-#RFdist = ap.trans.urf$proximity # proximity
+RFdist = 1 - URF_output$proximity
+# RFdist = URF_output$proximity # proximity
 
 # Get and set row and col names
-birds = unname(lapply(prms[1], function(x) str_extract(x, "[^-]+"))) # only nestbox
-birds_keys = unname(prms[1])[[1]]
-rownames(RFdist) = birds_keys
-colnames(RFdist) = birds_keys
+rownames(RFdist) = names_df[[1]]
+colnames(RFdist) = names_df[[1]]
 dist_data <- as.dist(RFdist)
 
 # Convert to dataframe
@@ -210,31 +225,33 @@ acoustic_dist = data.frame(xy, acoustic_dist=RFdist[xy])
 # Many ways to do this, here we use PAM
 sil_width <- c(NA)
 # TODO: Change this to the max number of cluster you want to allow (e.g. maximum expected repertoire size)
-sil_max <- 200 
+sil_max <- 100
 
-for(i in 2:sil_max){
+for (i in 2:sil_max) {
   print(i)
-  pam_fit <- pam(RFdist,diss = TRUE,k = i)
+  pam_fit <- pam(RFdist, diss = TRUE, k = i)
   sil_width[i] <- pam_fit$silinfo$avg.width
 }
 # Find the optimal number of clusters
-num_clusts<- which.max(sil_width) # this is nonsense so select manually for now
-num_clusts<- 20
-clusters_pam <- pam(1-ap.trans.urf$proximity, k=num_clusts, diss = TRUE)
+num_clusts <-
+  which.max(sil_width) # this is nonsense so select manually for now
+num_clusts <- 100
+clusters_pam <-
+  pam(1 - URF_output$proximity, k = num_clusts, diss = TRUE)
 acous.meas$cluster <- clusters_pam$clustering
-pam_fit <- pam(dist_data,diss = TRUE,k = num_clusts)
+pam_fit <- pam(dist_data, diss = TRUE, k = num_clusts)
 
 # Take a look at how well the data clusters
 plot(1:sil_max, sil_width, pch=19,
      xlab = "Number of clusters",
      ylab = "Silhouette Width",
-     xaxp  = c(1, sil_max, 10),
-     main=sprintf("optimal number clusters = %i",num_clusts))
+     xaxp  = c(1, sil_max, 200),
+     main=sprintf("optimal number clusters = %i", num_clusts))
 lines(1:sil_max, sil_width)
 
 # Visualize clustered  sound files using t-SNE
 # We use 2-D t-SNE here
-tsne_obj <- Rtsne(dist_data, is_distance = TRUE, perplexity = 10)
+tsne_obj <- Rtsne(dist_data, is_distance = TRUE, perplexity = 30)
 tsne_data <- tsne_obj$Y %>%
   data.frame() %>%
   setNames(c("X", "Y")) %>%
@@ -262,39 +279,22 @@ ggplot(aes(x = mds1, y = mds2), data = tsne_data) +
   xlab("acoustic space") + 
   ylab(" ") +
   theme(legend.position="none")
-
-
-# Calculate acoustic space occupancy
-# We use 2-D MDS here
-mds <- isoMDS(RFdist, y = cmdscale(RFdist, k = 2), k = 2, maxit = 5, trace = FALSE, tol = 1e-3, p = 2)
-
-# Standardize to 0-1 range
-mds$points[, 1] <- mds$points[, 1] / max(mds$points[, 1])
-mds$points[, 2] <- mds$points[, 2] / max(mds$points[, 2])
-
-# Put truth labels and MDS vectors together
-labels <- prms$elm.type
-Y <- data.frame(id = 1:nrow(mds$points), labels, X1 = mds$points[, 1], X2 = mds$points[, 2])
-coords <- SpatialPoints(Y[, c("X1", "X2")])
-
-# This produces the acoustic area estimate
-area <- mcp(coords)
-
 ```
 
 # Acoustic vs spatial distance
+
 ```{r}
 
-nestbox_coords = read_csv(coords_dir) %>% filter(nestbox %in% birds[[1]]) # only keep relevant birds
+nestbox_coords = read_csv(coords_dir) %>% filter(nestbox %in% names_df[[1]]) # only keep relevant birds
 new_order <-
-  sapply(birds[[1]], function(x, nestbox_coords) {
+  sapply(names_df[[1]], function(x, nestbox_coords) {
     which(nestbox_coords$nestbox == x)
   }, nestbox_coords)
 coords <- nestbox_coords[new_order,]
 
 space_dist_matrix = as.matrix(dist(coords[0:2], upper = T))
-rownames(space_dist_matrix) = birds_keys
-colnames(space_dist_matrix) = birds_keys
+rownames(space_dist_matrix) = names_df[[1]]
+colnames(space_dist_matrix) = names_df[[1]]
 spatial_dist_data <- as.dist(space_dist_matrix)
 
 # Convert to dataframe
@@ -316,16 +316,16 @@ df_complete = dplyr::inner_join(df_complete, cluster_m, by = 'key2') %>%
 cc <-
   scales::div_gradient_pal("#000000", "#6e6e6e", "#b5b5b5", "Lab")(seq(0, 1, length.out =
                                                                          nrow(unique(df_complete[c("cluster")]))))
-
-df_complete %>% filter(spatial_dist != 0) %>% drop_na() %>% #filter(cluster==1) %>% 
+df_complete %>% filter(spatial_dist != 0) %>% #filter(stringr::str_detect(key1, 'MP')) %>% filter(stringr::str_detect(key2, 'MP')) %>% 
+#df_complete %>% filter(spatial_dist != 0) %>% #drop_na() %>%
   #sample_n(50000, replace = FALSE) %>%
   ggplot(aes(
     x = spatial_dist,
     y = acoustic_dist,
-    colour = as.factor(cluster)
+    #color = as.factor(cluster)
   )) +
-  geom_smooth(method = "lm", fill = NA) +
-  geom_point(size = 0.5, alpha = 0.3) +
+  geom_smooth(method = "lm", fill = NA, se=TRUE) +
+  geom_point(size = 0.2, alpha = 0.1) +
   #scale_y_log10(breaks = scales::log_breaks(n = 10)) +
   #annotation_logticks(sides = "b") +
   theme(aspect.ratio=1) +
@@ -337,6 +337,102 @@ df_complete %>% filter(spatial_dist != 0) %>% drop_na() %>% #filter(cluster==1) 
     axis.ticks.y = element_blank(),
     axis.ticks.x = element_blank(),
     legend.position = "none"
-  )
+  ) +
+    labs(y = 'Acoustic distance\n',
+       x = "\nSpatial distance (m)",
+       title = "Pairwise distances (every song)") 
 
 ```
+
+```{r}
+# Geo clustering by song
+df_complete %>% filter(spatial_dist != 0) %>%
+  ggplot(aes(x=as.factor(cluster), y = spatial_dist)) +
+  geom_boxplot()
+
+```
+
+```{r}
+library(ade4)
+library(vegan)
+
+mantel = mantel.rtest(spatial_dist_data, dist_data, nrepet = 9999)
+
+mantel(spatial_dist_data, mean_acoustic_dist,  permutations = 999 , method= "pearson")
+
+```
+
+```{r}
+
+df_complete
+```
+
+
+```{r}
+# average distance matrix
+meancols = sapply(split(seq_len(ncol(RFdist)),colnames(RFdist)),function(cis) rowMeans(RFdist[,cis,drop=F]))
+mean = aggregate(meancols, list(row.names(meancols)), mean)
+mean_RFdist <- mean[,-1]
+rownames(mean_RFdist) <- mean[,1]
+diag(mean_RFdist) <- 0
+
+# Convert to dataframe
+xy <- t(combn(colnames(mean_RFdist), 2))
+mean_acoustic_dist_df = data.frame(xy, acoustic_dist=mean_RFdist[xy])
+mean_acoustic_dist <- as.dist(mean_RFdist)
+
+# import coords
+nestbox_coords = read_csv(coords_dir) %>% filter(nestbox %in% colnames(mean_RFdist)) # only keep relevant birds
+new_order <-
+  sapply(colnames(mean_RFdist), function(x, nestbox_coords) {
+    which(nestbox_coords$nestbox == x)
+  }, nestbox_coords)
+coords <- nestbox_coords[new_order,]
+
+space_dist_matrix = as.matrix(dist(coords[0:2], upper = T))
+rownames(space_dist_matrix) = colnames(mean_RFdist)
+colnames(space_dist_matrix) = colnames(mean_RFdist)
+spatial_dist_data <- as.dist(space_dist_matrix)
+
+# Convert to dataframe
+xy <- t(combn(colnames(space_dist_matrix), 2))
+spatial_dist = data.frame(xy, spatial_dist = space_dist_matrix[xy])
+df = full_join(spatial_dist, mean_acoustic_dist_df) %>%  distinct(X1, X2, .keep_all =
+                                                            TRUE) %>% rename(key1 = X1, key2 = X2)
+
+df %>% filter(spatial_dist != 0) %>% 
+  #sample_n(50000, replace = FALSE) %>%
+  ggplot(aes(
+    x = spatial_dist,
+    y = acoustic_dist,
+    #color = as.factor(cluster)
+  )) +
+  geom_smooth(method = "lm", fill = NA, se=TRUE) +
+  geom_point(size = 0.5, alpha = 0.3) +
+  #scale_y_log10(breaks = scales::log_breaks(n = 10)) +
+  #annotation_logticks(sides = "b") +
+  theme(aspect.ratio=1) +
+  # scale_color_manual(values = cc) +
+  theme(
+    panel.background = element_rect(fill = '#f2f1f0', colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    legend.position = "none"
+  ) + ylim(0.8,1)
+
+```
+
+
+
+# Plot voronoi neighbours
+
+```{r}
+# library(sp); library(rgeos); library(deldir)
+
+# http://www.spatialecology.com/gme/rdeldir.htm
+
+```
+
+
