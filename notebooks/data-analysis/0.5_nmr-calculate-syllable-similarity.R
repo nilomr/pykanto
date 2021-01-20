@@ -24,8 +24,6 @@ x <- c(
     "tidyverse"
   )
 
-# library(reshape2)
-
 # load packages 
 aa <- lapply(x, function(y) {
   if (!y %in% installed.packages()[, "Package"])  {
@@ -34,7 +32,8 @@ aa <- lapply(x, function(y) {
   try(require(y, character.only = T), silent = T)
 })
 
-# Paths 
+# Paths
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 dataset_name <-  "GRETI_HQ_2020_notes"
 data_dir <-  file.path(getwd(), "data", "processed", dataset_name, 'WAV')
 out_dir = file.path(getwd(), "data", 'note_dfs', dataset_name)
