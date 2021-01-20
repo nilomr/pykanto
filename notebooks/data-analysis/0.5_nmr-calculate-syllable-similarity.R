@@ -33,14 +33,13 @@ aa <- lapply(x, function(y) {
 })
 
 # Paths
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+root.dir = rprojroot::find_rstudio_root_file()
 dataset_name <-  "GRETI_HQ_2020_notes"
-data_dir <-  file.path(getwd(), "data", "processed", dataset_name, 'WAV')
-out_dir = file.path(getwd(), "data", 'note_dfs', dataset_name)
+data_dir <-  file.path(root.dir, "data", "processed", dataset_name, 'WAV')
+out_dir = file.path(root.dir, "data", 'note_dfs', dataset_name)
 
 est.file.name <- file.path(out_dir, 'selection_table.RDS')
 specs_dir <-  file.path(out_dir, 'spectrograms')
-coords_dir = file.path(getwd(), "resources", "nestboxes", "nestbox_coords.csv")
 
 if (!dir.exists(specs_dir)) {
   dir.create(specs_dir, recursive = TRUE)
