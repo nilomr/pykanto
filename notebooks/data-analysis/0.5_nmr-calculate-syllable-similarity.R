@@ -65,7 +65,7 @@ est <- selection_table(whole.recs = T, extended = T, confirm.extended = F)
 save(est,file=est.file.name)
 
 # Test subset ====================
-# est = est %>% slice(1:20)
+est = est %>% slice(1:20)
 # Test subset 
 
 
