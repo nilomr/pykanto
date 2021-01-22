@@ -50,34 +50,33 @@ import phate
 DATASET_ID = "GRETI_HQ_2020_segmented"
 YEAR = "2020"
 cluster_labels = "hdbscan_labels_fixed"
-
-
 dfs_dir = DATA_DIR / "indv_dfs" / DATASET_ID
 indv_dfs = pd.read_pickle(dfs_dir / (f"{DATASET_ID}_labelled_checked.pickle"))
 
-all_birds = list(indv_dfs.keys())
 
-exclude = [
-    "CP34",
-    "EX38A",
-    "SW119",
-    "B11",
-    "MP20",
-    "B161",
-    "EX34",
-    "CP28",
-    "B49",
-    "SW116",
-]  # Data for these are too noisy, judged from UMAP scatterplot in previous step
-indvs = [indv for indv in all_birds if indv not in exclude]
+# all_birds = list(indv_dfs.keys())
 
-butter_lowcut = 1200
-butter_highcut = 10000
+# exclude = [
+#     "CP34",
+#     "EX38A",
+#     "SW119",
+#     "B11",
+#     "MP20",
+#     "B161",
+#     "EX34",
+#     "CP28",
+#     "B49",
+#     "SW116",
+# ]  # Data for these are too noisy, judged from UMAP scatterplot in previous step
+# indvs = [indv for indv in all_birds if indv not in exclude]
 
-out_dir_notes_wav = DATA_DIR / "processed" / f"{DATASET_ID}_notes" / 'WAV'
-out_dir_notes_json = DATA_DIR / "processed" / f"{DATASET_ID}_notes" / 'JSON'
-out_dir_syllables_wav = DATA_DIR / "processed" / \
-    f"{DATASET_ID}_syllables" / 'WAV'
+# butter_lowcut = 1200
+# butter_highcut = 10000
+# out_dir_notes_wav = DATA_DIR / "processed" / f"{DATASET_ID}_notes" / 'WAV'
+# out_dir_notes_json = DATA_DIR / "processed" / f"{DATASET_ID}_notes" / 'JSON'
+# out_dir_syllables_wav = DATA_DIR / "processed" / \
+#     f"{DATASET_ID}_syllables" / 'WAV'
+
 out_dir_syllables_json = DATA_DIR / "processed" / \
     f"{DATASET_ID}_syllables" / 'JSON'
 
@@ -99,9 +98,12 @@ syllables_df = pd.DataFrame(dict_list)
 
 
 # %%
+
+
+# %%
 # Get spectrograms (no time information)
 for bdict in tqdm(dict_list):
-    indv = bdict['Bird']
+    indv = bdict['bird']
     key = bdict['song_wav_loc'].split(os.sep)[-1]
     df = indv_dfs[indv][indv_dfs[indv]['key'] == key]
     spec1 = df[df['syllables_sequence_pos'] ==

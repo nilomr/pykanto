@@ -1,37 +1,23 @@
 # %%
 import ast
+from src.greti.read.paths import safe_makedir
 import collections
-import re
-import string
-from collections.abc import Iterable
-from random import randrange
 import json
-from joblib import Parallel, delayed
-import librosa
+import random
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from prometheus_client import Counter
+from pathlib2 import Path
 import seaborn as sns
-from src.avgn.utils.general import flatten
-from src.avgn.utils.paths import ensure_dir, most_recent_subdirectory
+from joblib import Parallel, delayed
+from src.avgn.utils.paths import ensure_dir
 from src.greti.read.paths import DATA_DIR
-from src.greti.sequencing.seqfinder import (collapse_palindromic_keys,
-                                            collapse_slidable_seqs,
-                                            dict_keys_to_int,
-                                            dict_keys_to_symbol,
-                                            find_syllable_sequences,
-                                            get_mostfreq_pattern,
-                                            get_seq_frequencies,
-                                            list_sequences,
-                                            remove_bad_syllables,
-                                            remove_long_ngrams,
-                                            remove_repeat_songs)
-from src.vocalseg.utils import butter_bandpass_filter
+from src.greti.sequencing.seqfinder import find_syllable_sequences
+from src.greti.write.save_syllables import find_sublist, get_song_dir, is_a_in_x, save_syllable_audio, trim_or_extend_songtype, save_note_audio
 from tqdm.autonotebook import tqdm
-import random
-
-from src.greti.write.save_syllables import save_syllable_audio
+import librosa
+import os
 
 %load_ext autoreload
 %autoreload 2
@@ -60,25 +46,17 @@ exclude = [
     "B49",
     "SW116",
 ]  # Data for these are too noisy, judged from UMAP scatterplot in previous step
+
 indvs = [indv for indv in all_birds if indv not in exclude]
 
 butter_lowcut = 1200
 butter_highcut = 10000
 
-out_dir_notes_wav = DATA_DIR / "processed" / f"{DATASET_ID}_notes" / 'WAV'
-out_dir_notes_json = DATA_DIR / "processed" / f"{DATASET_ID}_notes" / 'JSON'
-out_dir_syllables_wav = DATA_DIR / "processed" / \
-    f"{DATASET_ID}_syllables" / 'WAV'
-out_dir_syllables_json = DATA_DIR / "processed" / \
-    f"{DATASET_ID}_syllables" / 'JSON'
+out_dir = DATA_DIR / "processed" / DATASET_ID.replace('_segmented', "")
+safe_makedir(out_dir)
 
-
-[ensure_dir(dir) for dir in [out_dir_notes_wav, out_dir_notes_json,
-                             out_dir_syllables_wav, out_dir_syllables_json]]
 
 # %%
-
-# TODO: with sequences inferred, export syllable dataset in order, then read in R etc
 
 # First make a dictionary with each bird's inferred repertoire
 # NOTE: There is some stochasticity here - not much, but might want to make deterministic.
@@ -96,6 +74,7 @@ sns.set_style("dark")
 repsize = [len(d) for indv, d in syllable_type_dict.items()]
 sns.countplot(repsize, color='grey')
 # %%
+
 # Check maximum sequence length:
 seqlen = [len(seq) for indv, d in syllable_type_dict.items() for seq in d]
 ax, fig = plt.subplots(figsize=(3, 5))
@@ -106,298 +85,162 @@ for n, freq in dict(sorted(collections.Counter(seqlen).items(),
     print(f'{n} notes = {freq} cases')
 
 # %%
-# Save syllables and their metadata #TODO: add seq id etc to this function's output JSONs, also remove caps from 'Bird' key!
-
-for indv, repertoire in tqdm(syllable_type_dict.items(), desc="Saving syllable audio and metadata", leave=True):
+# Save syllables and their metadata
+for indv, repertoire in tqdm(syllable_type_dict.items(),
+                             desc="Saving syllable audio and metadata",
+                             leave=True):
     save_syllable_audio(DATASET_ID,
                         indv_dfs,
                         indv,
                         repertoire,
                         cluster_labels,
-                        out_dir_syllables_wav,
-                        out_dir_syllables_json,
+                        out_dir,
                         shuffle_songs=True,
                         max_seqlength=3,
                         max_n_sylls=10)
 # %%
 
-# Parallel:
-n_jobs = 3
-with Parallel(n_jobs=n_jobs, verbose=2) as parallel:
-    all_specs_padded = parallel(
-        delayed(save_syllable_audio)(DATASET_ID,
-                                     indv_dfs,
-                                     indv,
-                                     repertoire,
-                                     cluster_labels,
-                                     out_dir_syllables_wav,
-                                     out_dir_syllables_json,
-                                     shuffle_songs=True,
-                                     max_seqlength=3,
-                                     max_n_sylls=10)
-        for indv, repertoire in tqdm(
-            syllable_type_dict.items(), desc="Saving syllable audio and metadata", leave=True
-        )
-    )
+# Save individual notes
+for indv, repertoire in tqdm(syllable_type_dict.items(),
+                             desc="Saving note audio and metadata",
+                             leave=True):
+    save_note_audio(DATASET_ID,
+                    indv_dfs,
+                    indv,  # dict keys
+                    # dict values (lists of lists, where sublists are song types)
+                    repertoire,
+                    cluster_labels,
+                    out_dir,
+                    shuffle_songs=True,  # Useful to avoud using very similar examples
+                    max_seqlength=3,  # There is no warrantee that this will work with greater lenghts as is
+                    max_n_sylls=10,
+                    frontpad=0.004,
+                    endpad=0.03  # the segmentation algo shaves very closely - add some padding to each note
+                    )
+
+# %% Save metadata as csv to read with R (for individual notes)
+
+DATASET_ID = "GRETI_HQ_2020_notes"
+out_dir_notes_json = DATA_DIR / "processed" / DATASET_ID / 'JSON'
+
+# Prepare metadata
+json_files = [pos_json for pos_json in os.listdir(
+    out_dir_notes_json) if pos_json.endswith('.json')]
+dict_list = []
+for index, js in tqdm(enumerate(json_files)):
+    with open(os.path.join(out_dir_notes_json, js)) as json_file:
+        dict_list.append(json.load(json_file))
+syllables_df = pd.DataFrame(dict_list)
+syllables_df['key'] = syllables_df['syll_wav_loc'].apply(
+    lambda x: Path(x).stem)
+syllables_df[['silence_1', 'silence_2']] = (syllables_df['silences']
+                                            .transform([lambda x:x[0], lambda x:x[1]])
+                                            .set_axis(['silence_1', 'silence_2'],
+                                                      axis=1,
+                                                      inplace=False)
+                                            )
+
+# Save
+out_dir = (DATA_DIR / "note_dfs" / DATASET_ID / str(DATASET_ID + ".csv"))
+ensure_dir(out_dir)
+syllables_df.to_csv(out_dir, index=False)
 
 # %%
-# TESTING========================
 
-indv = 'MP69'
+# %%
 
-# indv_dfs,
-# indv,
+
+DATASET_ID,
+indv_dfs,
+indv,  # dict keys
+# dict values (lists of lists, where sublists are song types)
+repertoire,
 cluster_labels,
-remove_noise = True,
-remove_redundant = True,
-collapse_palindromes = True,
-collapse_subsequences = True,
-remove_double_count_notes = True,
-remove_double_count_songs = True,
-use_n_songs = True,
-min_freq = 1
-min_songs = 1
-double_note_threshold = 0.5  # half of the note duration
+out_dir,
+shuffle_songs = True,  # Useful to avoud using very similar examples
+max_seqlength = 3  # There is no warrantee that this will work with greater lenghts as is
+max_n_sylls = 10
+frontpad = 0.006
+endpad = 0.03  # the segmentation algo shaves very closely - add some padding to each note
 
-sequences_newlabels, labs = list_sequences(
-    indv_dfs, indv, cluster_labels)
-sym_dict = dict_keys_to_symbol(labs)
-sequences = [[sym_dict[b] for b in i] for i in sequences_newlabels]
+# Prepare paths
+out_dir_notes_wav = Path(str(out_dir) + '_notes') / 'WAV'
+out_dir_notes_json = Path(str(out_dir) + '_notes') / 'JSON'
+safe_makedir(out_dir_notes_wav)
+safe_makedir(out_dir_notes_json)
 
-# Find n-grams
-# Convert lists to strings
-seq_str = ["".join(map(str, seq)) for seq in sequences]
-seq_str_dict = {key: seq for key, seq in enumerate(seq_str)}
+# Get list of unique files (one per song)
+songs = np.unique(indv_dfs[indv].key.values.tolist())
+if shuffle_songs:
+    random.shuffle(songs)
+songtype_counter = {}
+for song in songs:
+    # Get song sequence
+    sequence = indv_dfs[indv][indv_dfs[indv]
+                              ['key'] == song][cluster_labels].tolist()
+    for songtype in repertoire:
+        # Trim or extend syllable
+        songtype = trim_or_extend_songtype(max_seqlength, songtype)
+        typestring = ''.join(str(e) for e in songtype)
 
-# Find repeating motifs; get most frequent in each song
-result = get_mostfreq_pattern(seq_str_dict)
+        # Check which song type is present in the sequence
+        if is_a_in_x(songtype, sequence):
+            # Extract a sequence (of max_seqlength length)
+            indexes = find_sublist(songtype, sequence)
+            for index in indexes:
+                # Get syllable times
+                starts = indv_dfs[indv][indv_dfs[indv]
+                                        ['key'] == song].start_time.values.tolist()
+                ends = indv_dfs[indv][indv_dfs[indv]
+                                      ['key'] == song].end_time.values.tolist()
 
-#!!
-print(result)
+                # Get IOIs, silences, etc, build dictionary
+                substarts = [starts[i]
+                             for i in [index[0], index[0]+1, index[1]]]
+                subends = [ends[i]
+                           for i in [index[0], index[0]+1, index[1]]]
+                subdurs = [y - x for x, y in zip(substarts, subends)]
+                subIOIs = [y - x for x, y in zip(substarts, substarts[1:])]
+                subsilences = [y - x for x,
+                               y in zip(subends, substarts[1:])]
 
-# Frequencies for each combination
-if use_n_songs:  # Whether to count total occurrences or total number of songs where it appears
-    tally = get_seq_frequencies(result, seq_str)
-else:
-    tally = get_seq_frequencies(result, seq_str, by_song=False)
+                # Add to songtype counter dictionary
+                if typestring in songtype_counter:
+                    songtype_counter[typestring] += 1
+                    # Stop if max number reached
+                    if songtype_counter[typestring] > max_n_sylls:
+                        break
+                else:
+                    songtype_counter[typestring] = 0
 
-if remove_noise:
-    # Remove sequences with noise (-1 labels)
-    tally = {key: n for key, n in tally.items() if 'Z' not in key}
+                wav_loc = get_song_dir(DATASET_ID, song)
 
-#!!
-print(tally)
+                # Fetch, trim, and save audio
+                y, sr = librosa.load(wav_loc, sr=32000)
 
-if remove_redundant:
-    # Remove sequences already contained in other, shorter sequences
-    # (where the longest of the pair does not have new notes)
-    tally = {k: v for k, v in tally.items() if k in remove_long_ngrams([
-        key for key in tally.keys()])}
+                for syll in range(max_seqlength):
 
-#!!
-print(tally, 'HERE')
+                    out_filedir = out_dir_notes_wav / \
+                        f"{indv}-{typestring}-{songtype_counter[typestring]}-{syll}.wav"
 
-# Remove absolute infrequent combinations (can help get rid of noise)
-tally = {k: v for k, v in tally.items() if v >= min_freq}
+                    # Get note audio
+                    ynote = y[int((substarts[syll] - frontpad) * sr)                              : int((subends[syll] + endpad) * sr)]
+                    librosa.output.write_wav(out_filedir, ynote, sr, norm=True)
 
-#!!
-print(tally, 'HERE2')
+                    # Save dictionary
+                    syllable_dict = {'bird': indv,
+                                     'start_time': substarts[0], 'end_time': subends[-1],
+                                     'starts': substarts, 'ends': subends,
+                                     'total_duration': subends[-1] - substarts[0],
+                                     'note_index': syll,
+                                     'durations': subdurs, 'IOIs': subIOIs, 'silences': subsilences,
+                                     'rate': sr,
+                                     'position': index, 'sequence': songtype,
+                                     'song_wav_loc': str(wav_loc),
+                                     'syll_wav_loc': str(out_filedir)}
 
-# if collapse_palindromes:  # Take the one that appears first in sequence most often
-#     tally = collapse_palindromic_keys(tally, seq_str)
+                    out_filejson = out_dir_notes_json / \
+                        f"{indv}-{typestring}-{songtype_counter[typestring]}-{syll}.json"
 
-# #!!
-# print(tally)
-
-
-if collapse_subsequences:
-    tally = collapse_slidable_seqs(tally, seq_str)
-
-#!!
-print(tally, 'DUP')
-
-# Build dictionary of songs containing each sequence (allows duplicates)
-song_dict = {}
-for sequence, n in tally.items():
-    seqlist = []
-    for key, songseq in seq_str_dict.items():
-        if sequence in songseq:
-            seqlist.append(key)
-    song_dict[sequence] = seqlist
-
-# Remove sequences if present in fewer than min_songs
-song_dict = {k: v for k, v in song_dict.items() if len(v) >= min_songs}
-
-#!!
-print(song_dict)
-
-# Symbols to original labels
-final_dict = dict_keys_to_int(song_dict, sym_dict)
-
-#!!
-print(final_dict)
-
-# Remove double-counted notes?
-if remove_double_count_notes:
-    final_dict = remove_bad_syllables(
-        indv_dfs, indv, cluster_labels, final_dict, threshold=double_note_threshold)
-
-#!!
-print(final_dict)
-
-# Remove double-counted songs? #!EXPERIMENTAL
-if remove_double_count_songs:
-    for _ in range(10):
-        final_dict, state = remove_repeat_songs(final_dict)
-        if state:
-            break
-
-#!!
-print(final_dict)
-# %%
-
-#indv_dfs['B165'][indv_dfs['B165']['syllables_sequence_id'] == 10]
-# %%
-
-
-# %%
-
-
-# %%
-# Now save examples of each syllable
-
-for indv, l in tqdm(syllable_type_dict.items(), desc="Saving wav files for each note", leave=True):
-    for label in set(flatten(l)):
-        nrows = len(indv_dfs[indv][indv_dfs[indv]
-                                   [cluster_labels] == label])
-        # choose a random note. #TODO select more based on SNR
-        index = randrange(nrows)
-        data = indv_dfs[indv][indv_dfs[indv]
-                              [cluster_labels] == label].iloc[index]
-        wav_loc = (
-            most_recent_subdirectory(
-                DATA_DIR / "processed" /
-                DATASET_ID.replace("_segmented", ""),
-                only_dirs=True,
-            )
-            / "WAV"
-            / data.key
-        )
-
-        # Load and trim audio
-        y, sr = librosa.load(wav_loc, sr=32000)
-        y = y[int(data.start_time * sr): int(data.end_time * sr)]
-        # Save note audio
-        out_filedir = out_dir / f"{indv}-{label}.wav"
-        librosa.output.write_wav(out_filedir, y, sr, norm=True)
-
-# %%
-
-syllable_type_dict
-
-
-# Provisional - read 2 csvs, get mean of each cell, then create song vectors according to dict
-
-df1 = pd.read_csv(out_dir / 'acoustic_parameters.csv')
-df2 = pd.read_csv(out_dir / 'acoustic_parameters_2.csv')
-df = pd.concat([df1, df2])
-by_row_index = df.groupby(df.index)
-df_means = by_row_index.mean()
-df_means.insert(0, 'key', df2.iloc[:, 0])
-
-df_means['key'] = df_means['key'].apply(lambda x: x[:-6])
-
-df_means.insert(1, 'indv', df_means['key'].apply(lambda x: x.split('-')[0]))
-df_means.insert(2, 'note', df_means['key'].apply(lambda x: x.split('-')[1]))
-
-
-full_dict = {}
-
-for indv, l in tqdm(syllable_type_dict.items()):
-    indv_df = df_means[df_means['indv'] == indv]
-    indv_dict = {}
-    for subl in l:
-        if len(subl) > 2:  # if len is 3 do nothing, if 2 repeat the first note
-            newrow = []
-            code = f'{subl[0]}{subl[1]}{subl[2]}'
-            for note in subl:
-                newrow.append(indv_df[indv_df['note'] ==
-                                      str(note)].values.tolist()[0][3:])
-            newrow = [indv] + [code] + newrow
-            indv_dict[code] = list(flatten(newrow))
-        else:
-            newrow = []
-            code = f'{subl[0]}{subl[1]}{subl[0]}'
-            for note in subl:
-                newrow.append(indv_df[indv_df['note'] ==
-                                      str(note)].values.tolist()[0][3:])
-            newrow.append(indv_df[indv_df['note'] == str(
-                subl[0])].values.tolist()[0][3:])
-            newrow = [indv] + [code] + newrow
-            indv_dict[code] = list(flatten(newrow))
-    full_dict[indv] = indv_dict
-
-concat_df = pd.concat(
-    {k: pd.DataFrame(v).T for k, v in full_dict.items()}, axis=0)
-colnames = list(df_means.columns.values)[3:]
-newcolnames = ['indv', 'code'] + colnames + [colname +
-                                             '_2' for colname in colnames] + [colname + '_3' for colname in colnames]
-concat_df.columns = newcolnames
-
-concat_df.to_csv(out_dir / 'acoustic_parameters_mean.csv',
-                 index=False, index_label=False)
-
-
-# %%
-# no average
-
-
-# Provisional - read 2 csvs, get mean of each cell, then create song vectors according to dict
-
-df1 = pd.read_csv(out_dir / 'acoustic_parameters.csv')
-
-df1.insert(0, 'key', df1.iloc[:, 0])
-df1 = df1.drop(columns=df1.columns[1])
-
-df1['key'] = df1['key'].apply(lambda x: x[:-6])
-
-df1.insert(1, 'indv', df1['key'].apply(lambda x: x.split('-')[0]))
-df1.insert(2, 'note', df1['key'].apply(lambda x: x.split('-')[1]))
-
-
-full_dict = {}
-
-for indv, l in tqdm(syllable_type_dict.items()):
-    indv_df = df1[df1['indv'] == indv]
-    indv_dict = {}
-    for subl in l:
-        if len(subl) > 2:  # if len is 3 do nothing, if 2 repeat the first note
-            newrow = []
-            code = f'{subl[0]}{subl[1]}{subl[2]}'
-            for note in subl:
-                newrow.append(indv_df[indv_df['note'] ==
-                                      str(note)].values.tolist()[0][3:])
-            newrow = [indv] + [code] + newrow
-            indv_dict[code] = list(flatten(newrow))
-        else:
-            newrow = []
-            code = f'{subl[0]}{subl[1]}{subl[0]}'
-            for note in subl:
-                newrow.append(indv_df[indv_df['note'] ==
-                                      str(note)].values.tolist()[0][3:])
-            newrow.append(indv_df[indv_df['note'] == str(
-                subl[0])].values.tolist()[0][3:])
-            newrow = [indv] + [code] + newrow
-            indv_dict[code] = list(flatten(newrow))
-    full_dict[indv] = indv_dict
-
-
-concat_df = pd.concat(
-    {k: pd.DataFrame(v).T for k, v in full_dict.items()}, axis=0)
-colnames = list(df_means.columns.values)[3:]
-newcolnames = ['indv', 'code'] + colnames + [colname +
-                                             '_2' for colname in colnames] + [colname + '_3' for colname in colnames]
-concat_df.columns = newcolnames
-
-concat_df.to_csv(out_dir / 'acoustic_parameters_mean.csv',
-                 index=False, index_label=False)
+                    json.dump(syllable_dict, open(out_filejson,
+                                                  'w', encoding="utf8"), sort_keys=True)

@@ -6,21 +6,20 @@ import glob
 import os
 from datetime import date
 from os import fspath
-
 import numpy as np
 import pandas as pd
 import pathlib2
 from pathlib2 import Path
-
-# Setup
-
-
-level = 0 if __name__ == "__main__" else 2
+import git
 
 
 # Define directories:
 
-PROJECT_DIR = Path("__file__").resolve().parents[level]
+# level = 0 if __name__ == "__main__" else 2
+# PROJECT_DIR = Path("__file__").resolve().parents[level]
+repo = git.Repo('.', search_parent_directories=True)
+PROJECT_DIR = Path(repo.working_tree_dir)  # If working with a git repo
+
 DATA_DIR = PROJECT_DIR / "data"
 FIGURE_DIR = PROJECT_DIR / "reports" / "figures"
 RESOURCES_DIR = PROJECT_DIR / "resources"

@@ -226,19 +226,6 @@ def batch_segment_songs(
         print("total time (s)= " + str(end - start))
 
 
-####################################
-
-# 1 - Make function to split wavs to processed data folder
-# (you need to create a directory in paths.py for this purpose)
-# update: now can subset, ***needs better filenames AND platform-independent path creation
-
-# 2 - get data from the .data file, add coordinates and other information
-# and make a nice, tidy .jason file following src.avgn format
-
-
-# * parse chipper gzips (see /utils.py)
-
-
 # ---------------------------------------------------------
 #   Read syllable segmentation information from Chipper
 # ---------------------------------------------------------
