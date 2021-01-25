@@ -1,6 +1,6 @@
 #%%
 
-from src.greti.viz.interactive import check_new_bird
+from src.greti.viz.interactive import check_new_bird, assign_new_label
 from src.greti.read.paths import DATA_DIR
 import pandas as pd
 import pickle
@@ -93,10 +93,28 @@ colour = assign_new_label(
 )
 """
 
-fig
+fig # do not delete
 
 #%%
-
 # Once you are done, save a single dictionary with all individuals:
+
+pickle.dump(indv_dfs, open(dfs_dir / (f"{DATASET_ID}_labelled_checked.pickle"), "wb"))
+
+# %%
+# Else if you forget to run the last step:
+
+from tqdm import tqdm
+
+DATASET_ID = "GRETI_HQ_2020_segmented"
+YEAR = "2020"
+
+all_indv_dfs = pd.concat(
+    [
+        pd.read_pickle(indv)
+        for indv in tqdm(list((DATA_DIR / "indv_dfs" / DATASET_ID).glob("*_labelled_checked.pickle")))
+    ]
+)
+
+indv_dfs = {indv: all_indv_dfs[all_indv_dfs.indv == indv] for indv in all_indv_dfs.indv.unique()}
 
 pickle.dump(indv_dfs, open(dfs_dir / (f"{DATASET_ID}_labelled_checked.pickle"), "wb"))

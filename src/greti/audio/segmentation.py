@@ -105,12 +105,14 @@ def segment_songs(wavfile, DATA_DIR, DT_ID, DATASET_ID, subset="GRETI_HQ", thres
                     seg_datetime = datetime + dt.timedelta(seconds=seg[0])
                     meta = audio_metadata.load(wavfile)
                     tags = audio_metadata.load(wavfile)["tags"].comment[0]
-                    audiomoth = re.search(r"AudioMoth.(.*?) at gain", tags).group(1)
+                    audiomoth = re.search(
+                        r"AudioMoth.(.*?) at gain", tags).group(1)
 
                     json_dict = {}
                     json_dict["species"] = species
                     json_dict["nestbox"] = wavfile.parts[-2]
-                    json_dict["indvs"] = {wavfile.parts[-2]: {"species": species}}
+                    json_dict["indvs"] = {
+                        wavfile.parts[-2]: {"species": species}}
                     json_dict["recorder"] = audiomoth
                     json_dict["recordist"] = "Nilo Merino Recalde"
                     json_dict["source_datetime"] = str(datetime)
@@ -132,7 +134,8 @@ def segment_songs(wavfile, DATA_DIR, DT_ID, DATASET_ID, subset="GRETI_HQ", thres
                     from src.avgn.utils.json import NoIndent, NoIndentEncoder
 
                     # Dump json
-                    json_txt = json.dumps(json_dict, cls=NoIndentEncoder, indent=2)
+                    json_txt = json.dumps(
+                        json_dict, cls=NoIndentEncoder, indent=2)
                     json_out = (
                         DATA_DIR
                         / "processed"
@@ -223,19 +226,6 @@ def batch_segment_songs(
         print("total time (s)= " + str(end - start))
 
 
-####################################
-
-# 1 - Make function to split wavs to processed data folder
-# (you need to create a directory in paths.py for this purpose)
-# update: now can subset, ***needs better filenames AND platform-independent path creation
-
-# 2 - get data from the .data file, add coordinates and other information
-# and make a nice, tidy .jason file following src.avgn format
-
-
-# * parse chipper gzips (see /utils.py)
-
-
 # ---------------------------------------------------------
 #   Read syllable segmentation information from Chipper
 # ---------------------------------------------------------
@@ -243,10 +233,10 @@ def batch_segment_songs(
 
 def open_gzip(file):
     """Reads syllable segmentation generated with chipper
-    
+
     Args:
         file (path): path to the .gzip file
-    
+
     Returns:
         list: params, onsets, offsets
     """
@@ -256,17 +246,3 @@ def open_gzip(file):
     song_data = pickle.loads(data, encoding="utf-8")
 
     return song_data[0], song_data[1]
-
-
-# ---------------------------------------------------------
-#   Save JSON dictionaries including all pertinent
-#   information for each song.
-# ---------------------------------------------------------
-
-# file = "/media/nilomr/SONGDATA/interim/2020/W100/SegSyllsOutput_20200407_T191217/SegSyllsOutput_W100-BLUETI-20200327_040000-27.gzip"
-# open_gzip(file)[0]['BoutRange']
-
-# json_dict = {}
-# json_dict["species"] = "European starling"
-# json_dict["common_name"] = "Sturnus vulgaris"
-

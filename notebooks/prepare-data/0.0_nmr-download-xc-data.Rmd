@@ -1,0 +1,53 @@
+---
+title: "Build RF similarity matrix for each syllable in the dataset"
+author: "Nilo Merino Recalde<br>"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  github_document:
+    toc: true
+    toc_depth: 4
+editor_options:
+  chunk_output_type: console
+---
+<br>
+
+# Settings and paths
+
+```{r setup}
+# Knitr settings: 
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+options(scipen = 999)
+```
+
+```{r}
+library(warbleR)
+ncores = parallel::detectCores() - 1
+```
+# Paths
+
+```{r}
+# Paths
+dataset_name <-  "GRETI_XC_2021"
+data_dir <-  file.path(getwd(), "data", 'raw', dataset_name, 'MP3')
+if (!dir.exists(data_dir)) {
+  dir.create(data_dir, recursive = TRUE)
+}
+csv_dir <-  file.path(getwd(), "data", 'resources', dataset_name)
+if (!dir.exists(csv_dir)) {
+  dir.create(csv_dir, recursive = TRUE)
+}
+```
+
+# Download XC data
+```{r}
+
+# Query and save metadata
+dataframe <- querxc(qword = 'Parus major type:song q_gt:C', download = FALSE, path = data_dir, parallel = ncores)
+write.csv(dataframe, file.path(csv_dir, 'metadata.csv'), row.names = FALSE)
+# Download files
+querxc(qword = 'Parus major type:song q_gt:C', download = TRUE, path = data_dir, parallel = ncores)
+
+```
+ 
+ 

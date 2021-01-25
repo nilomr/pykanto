@@ -1,15 +1,13 @@
-
-import phate
-import umap
 import hdbscan
 import numpy as np
 import pandas as pd
+import phate
 import seaborn as sns
+import umap
 from sklearn.decomposition import PCA
-from tqdm.autonotebook import tqdm
-
 from src.avgn.signalprocessing.create_spectrogram_dataset import (
     flatten_spectrograms, log_resize_spec)
+from tqdm.autonotebook import tqdm
 
 
 def project_individual(syllable_df, indv_dfs, indv, syllable_n):
@@ -20,7 +18,7 @@ def project_individual(syllable_df, indv_dfs, indv, syllable_n):
         indv_dfs (dict): Dictionary where to add the bird dataframe
         indv (str): Bird to project
         syllable_n (pandas series): Series with number of syllables per bird, used to calculate parameters for UMAP visualization
-    """    
+    """
 
     indv_dfs[indv] = syllable_df[syllable_df.indv == indv]
     indv_dfs[indv] = indv_dfs[indv].sort_values(by=["key", "start_time"])
@@ -30,7 +28,6 @@ def project_individual(syllable_df, indv_dfs, indv, syllable_n):
     specs_scaled = []
     for spec in tqdm(specs, desc="scaling spectrograms", leave=False):
         specs_scaled.append(log_resize_spec(spec, scaling_factor=8))
-
 
     # with Parallel(n_jobs=n_jobs, verbose=2) as parallel:
     #     specs = parallel(
@@ -65,7 +62,7 @@ def project_individual(syllable_df, indv_dfs, indv, syllable_n):
     pca2 = PCA(n_components=10)
     indv_dfs[indv]["pca_cluster"] = list(pca2.fit_transform(specs_flattened))
 
-    # # umap_cluster 
+    # # umap_cluster
     # fit = umap.UMAP(n_neighbors=20, min_dist=0.05, n_components=10, verbose=True)
     # z = list(fit.fit_transform(specs_flattened))
     # indv_dfs[indv]["umap_cluster"] = z
@@ -77,12 +74,12 @@ def project_individual(syllable_df, indv_dfs, indv, syllable_n):
     ) + 0.02
 
     # umap_viz
-    #n_neighbors=60, min_dist=min_dist, n_components=2, verbose=True
+    # n_neighbors=60, min_dist=min_dist, n_components=2, verbose=True
     fit = umap.UMAP(n_components=2, n_neighbors=80, min_dist=min_dist)
     z = list(fit.fit_transform(specs_flattened))
     indv_dfs[indv]["umap_viz"] = z
 
-    return {indv : indv_dfs[indv]}
+    return {indv: indv_dfs[indv]}
 
 
 def cluster_individual(indv_dfs, indv):
@@ -94,13 +91,13 @@ def cluster_individual(indv_dfs, indv):
 
     Returns:
         dict: Same dictionary with cluster membership added to selected data
-    """    
+    """
     z = list(indv_dfs[indv]["pca_cluster"].values)
-    min_cluster_size = int(len(z) * 0.02) # smallest cluster size allowed
+    min_cluster_size = int(len(z) * 0.02)  # smallest cluster size allowed
     if min_cluster_size < 2:
         min_cluster_size = 2
     clusterer = hdbscan.HDBSCAN(
-        min_cluster_size=min_cluster_size,  
+        min_cluster_size=min_cluster_size,
         min_samples=10,  # larger values = more conservative clustering
         cluster_selection_method="eom",
     )
@@ -127,7 +124,7 @@ def cluster_individual(indv_dfs, indv):
     # )
 
     # plt.show()
-    
+
     # # Plot outliers
     # sns.distplot(clusterer.outlier_scores_[np.isfinite(clusterer.outlier_scores_)], rug=True)
     # plt.show()
@@ -139,4 +136,5 @@ def cluster_individual(indv_dfs, indv):
 
     # Count labels
     # print(indv + ":" + str(len(indv_dfs[indv]["hdbscan_labels"].unique())))
-    return {indv : indv_dfs[indv]}
+    return {indv: indv_dfs[indv]}
+

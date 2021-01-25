@@ -1,6 +1,6 @@
 # %%
-%load_ext autoreload
-%autoreload 2
+# %load_ext autoreload
+# %autoreload 2
 
 import pickle
 from collections import ChainMap
@@ -20,7 +20,7 @@ from tqdm.autonotebook import tqdm
 
 DATASET_ID = "GRETI_HQ_2020_segmented"
 YEAR = "2020"
-n_jobs = -4
+n_jobs = -1
 
 note_df_dir = (
     most_recent_subdirectory(DATA_DIR / "syllable_dfs" / DATASET_ID, only_dirs=True) / "{}.pickle".format(DATASET_ID)
@@ -31,7 +31,7 @@ syllable_df = pd.read_pickle(note_df_dir)
 
 indvs = [
     ind
-    for ind in syllable_df.indv.unique()[10:12]  #!!!! Remove subsetting !!!!
+    for ind in syllable_df.indv.unique()#[10:12]  #!!!! Remove subsetting !!!!
     if len(syllable_df[syllable_df.indv == ind])
     > 80  # This threshold is based on the need to have clusters >1 member
 ]
@@ -64,7 +64,7 @@ indv_dfs = dict(ChainMap(*indv_dfs))
 with Parallel(n_jobs=n_jobs, verbose=2) as parallel:
     indv_dfs_labelled = parallel(
         delayed(cluster_individual)(indv_dfs, indv)
-        for indv in tqdm(indv_dfs.keys(), desc="projecting individuals", leave=False)
+        for indv in tqdm(indv_dfs.keys(), desc="clustering individuals", leave=False)
     ) 
 
 indv_dfs_labelled = dict(ChainMap(*indv_dfs_labelled))

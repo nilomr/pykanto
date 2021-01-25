@@ -8,6 +8,15 @@ from src.avgn.utils.paths import ensure_dir
 from tqdm.autonotebook import tqdm
 import matplotlib.pyplot as plt
 from zipfile import BadZipFile
+from collections.abc import Iterable
+
+
+def flatten(l):
+    for el in l:
+        if isinstance(el, Iterable) and not isinstance(el, (str, bytes)):
+            yield from flatten(el)
+        else:
+            yield el
 
 
 def prepare_env(GPU=[]):
@@ -63,7 +72,8 @@ def save_fig(
     transparent=False,
 ):
     if save_pdf:
-        plt.savefig(str(loc) + ".pdf", dpi=dpi, bbox_inches="tight", pad_inches=0)
+        plt.savefig(str(loc) + ".pdf", dpi=dpi,
+                    bbox_inches="tight", pad_inches=0)
     if save_svg:
         plt.savefig(
             str(loc) + ".svg",
@@ -84,4 +94,3 @@ def save_fig(
         plt.savefig(
             str(loc) + ".jpg", dpi=int(dpi / 2), bbox_inches="tight", pad_inches=0
         )
-

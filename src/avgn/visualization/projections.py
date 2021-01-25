@@ -72,7 +72,8 @@ def scatter_projections(
     mask = mask[mask >= 0]  # remove 'noisy' label
 
     if labels is not None:
-        labels = np.array(labels[mask])
+        if not isinstance(labels[0], str):
+            labels = np.array(labels[mask])
 
     projection = projection[mask]
 
@@ -557,3 +558,5 @@ def scatter_spec(
         plt.close(fig)
 
     return fig, axs, main_ax
+
+
