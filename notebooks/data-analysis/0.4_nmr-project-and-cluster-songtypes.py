@@ -3,6 +3,7 @@ import math
 import os
 import hdbscan
 import ast
+import matplotlib
 from scipy.spatial import distance
 import collections
 import re
@@ -80,9 +81,7 @@ indv_dfs = pd.read_pickle(dfs_dir / (f"{DATASET_ID}_labelled_checked.pickle"))
 out_dir_syllables_json = DATA_DIR / "processed" / \
     f"{DATASET_ID}_syllables" / 'JSON'
 
-
-[ensure_dir(dir) for dir in [out_dir_notes_wav, out_dir_notes_json,
-                             out_dir_syllables_wav, out_dir_syllables_json]]
+ensure_dir(out_dir_syllables_json)
 
 # %%
 
@@ -103,7 +102,7 @@ syllables_df = pd.DataFrame(dict_list)
 # %%
 # Get spectrograms (no time information)
 for bdict in tqdm(dict_list):
-    indv = bdict['bird']
+    indv = bdict['Bird']
     key = bdict['song_wav_loc'].split(os.sep)[-1]
     df = indv_dfs[indv][indv_dfs[indv]['key'] == key]
     spec1 = df[df['syllables_sequence_pos'] ==
@@ -125,9 +124,9 @@ specs = flatten_spectrograms(specs)
 # %%
 
 umap_parameters = {
-    "n_neighbors": 30,
+    "n_neighbors": 10,
     "min_dist": 0.1,
-    "n_components": 5,
+    "n_components": 3,
     "verbose": True,
     "init": "spectral",
     "low_memory": True,
@@ -175,21 +174,6 @@ sns.scatterplot([item[0] for item in projection], [item[1]
                                                    for item in projection], hue=labs)
 
 # %%
-labs = list(syllable_df.Bird)
-projection = syllable_df["pca"].tolist()
-plt.figure(figsize=(12, 12))
-sns.scatterplot([item[0] for item in projection], [item[1]
-                                                   for item in projection], hue=labs)
-
-# %%
-
-labs = list(syllable_df.Bird)
-projection = syllable_df["phate"].tolist()
-plt.figure(figsize=(12, 12))
-sns.scatterplot([item[0] for item in projection], [item[1]
-                                                   for item in projection], hue=labs)
-
-# %%
 
 # Add nestbox positions to syllable_df
 coords_file = RESOURCES_DIR / "nestboxes" / "nestbox_coords.csv"
@@ -215,7 +199,6 @@ syllable_df = pd.merge(
 # Add syllable identifier to df
 syllable_df['syll_id'] = syllable_df['Bird'] + '-' + \
     syllable_df['sequence'].apply(lambda x: "".join(str(i) for i in x))
-
 
 df_array = [*syllable_df["east_north"]]
 spatial_dist = distance.cdist(df_array, df_array)
@@ -244,7 +227,7 @@ data_frame = pd.DataFrame.from_records(data_list,  columns=[
 # Plot sharing vs distance
 sns.set_style("darkgrid")
 
-data_1km = data_frame[data_frame['dist'] < 2000]
+data_1km = data_frame[data_frame['dist'] < 4000]
 x = data_1km[data_1km['share'] == 'NO'].dist.values
 y = data_1km[data_1km['share'] == 'YES'].dist.values
 
@@ -296,9 +279,89 @@ sns.regplot(x='dist', y='rep_index', scatter_kws={
 
 # %%
 
+
+# %% Save data to plot IOIs
+n = 0
+IOIlist = []
+for dic in dict_list:
+    # n +=1
+    # if n > 2: break
+    dic['Bird']
+    IOIlist.append(dic['IOIs'])
+
+IOIdf = pd.DataFrame(IOIlist, columns=['x', 'y'])
+IOI_out = DATA_DIR / "resources" / DATASET_ID / 'IOIs.csv'
+
+IOIdf.to_csv(IOI_out, index=False)
+
+
+# %%
+# Sequences to str
+syllables_df['sequence_str'] = syllables_df['sequence'].apply(
+    lambda x: "".join(str(e) for e in x))
+
+avg_IOIs = []
+for bird in np.unique(syllables_df.Bird.values.tolist()):
+    for song in set(syllables_df[syllables_df['Bird'] == bird].sequence_str.values):
+        caca = syllables_df[(syllables_df['Bird'] == bird) & (
+            syllables_df['sequence_str'] == song)].IOIs.values.tolist()
+        avg_IOIs.append(list(map(lambda x: sum(x)/len(x), zip(*caca))))
+
+avg_IOI_df = pd.DataFrame(avg_IOIs, columns=['x', 'y'])
+avg_IOI_out = DATA_DIR / "resources" / DATASET_ID / 'avg_IOIs.csv'
+
+avg_IOI_df.to_csv(avg_IOI_out, index=False)
+
+# syllables_df
+# %% Plot
+matplotlib.rcParams['axes.formatter.useoffset'] = False
+
+
+def rand_jitter(arr):
+    stdev = .005 * (max(arr) - min(arr))
+    return arr + np.random.randn(len(arr)) * stdev
+
+
+def jitter(x, y, s=20, c='b', marker='o', cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, hold=None, **kwargs):
+    return plt.scatter(rand_jitter(x), rand_jitter(y), s=s, c=c, marker=marker, cmap=cmap, norm=norm, vmin=vmin, vmax=vmax, alpha=alpha, linewidths=linewidths, **kwargs)
+
+
+x, y = map(list, zip(*IOIlist))
+fig, ax = plt.subplots(figsize=(15, 15))
+jitter(x, y, s=8, c='red', alpha=0.1)
+plt.xlim(0, 0.6)
+plt.ylim(0, 0.6)
+
+plt.gca().set_aspect('equal', adjustable='box')
+ax.plot(ax.get_xlim(), ax.get_ylim(), ls="--", c=".3")
+
+fig, ax = plt.subplots(figsize=(15, 15))
+sns.scatterplot('x', 'y', data=IOIdf, x_jitter=6, y_jitter=6)
+plt.xlim(0, 0.2)
+plt.ylim(0, 0.2)
+plt.gca().set_aspect('equal', adjustable='box')
+ax.plot(ax.get_xlim(), ax.get_ylim(), ls="--", c=".3")
+
+# sns.displot(IOIdf, x='x',y='y', kind="kde")
+sns.set_theme()
+
+plt.figure(figsize=(12, 12))
+sns.jointplot(
+    data=IOIdf,
+    x="x", y="y",
+    kind="kde", thresh=.08, levels=20
+)
+plt.xlim(0, 0.6)
+plt.ylim(0, 0.6)
+plt.axis('equal')
+
+
+plt.gca().set_aspect('equal', adjustable='box')
+ax.plot(ax.get_xlim(), ax.get_ylim(), ls="--", c=".3")
+
+# %%
 data_1km.share.replace(['NO', 'YES'], [0, 1], inplace=True)
 
-sns.regplot(x='dist', y='share', data=data_1km, n_boot=500, logistic=True)
 
 # %%
 
