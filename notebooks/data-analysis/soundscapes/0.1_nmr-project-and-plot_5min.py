@@ -65,24 +65,26 @@ m5_chunks_df.replace({'section': {'MP': 'Marley Plantation', 'C': 'Bean Wood', '
 
 # Get relevant data
 # same time across woods
-m5_chunks_df = m5_chunks_df[m5_chunks_df['hour'] == 4]
+# m5_chunks_df = m5_chunks_df[m5_chunks_df['hour'] == 4]
 
-# m5_chunks_df = m5_chunks_df[m5_chunks_df['section'] == 'Marley Plantation']
+m5_chunks_df = m5_chunks_df[m5_chunks_df.section ==
+                            'Marley Wood']  # MP on a day with a lot of data
+m5_chunks_df = m5_chunks_df[m5_chunks_df.hour < 5]
 
 
 # %% susbet for tests
 # m5_chunks_df = m5_chunks_df.iloc[0:10000]
-m5_chunks_df = m5_chunks_df.sample(frac=0.5, replace=True, random_state=1)
+m5_chunks_df = m5_chunks_df.sample(frac=0.4, replace=True, random_state=1)
+# Prepare spectrograms
+# specs = [normalise_01(spec) for spec in m5_chunks_df.spec.values]
+specs = [spec for spec in m5_chunks_df.spec.values]
 
-# %% Prepare spectrograms
-specs = [normalise_01(spec) for spec in m5_chunks_df.spec.values]
-# specs = [spec for spec in m5_chunks_df.spec.values]
 
 # %% Project UMAP
 
 umap_parameters = {
-    "n_neighbors": 30,
-    "min_dist": 0.2,
+    "n_neighbors": 10,
+    "min_dist": 0.25,
     "n_components": 3,
     "verbose": True,
     "init": "spectral",
@@ -93,8 +95,8 @@ m5_chunks_df["umap"] = list(fit.fit_transform(specs))
 
 # %% PHATE
 
-phate_parameters = {"n_jobs": -1, "knn": 15,
-                    "n_pca": 100, "gamma": 1, 'n_components': 3}
+phate_parameters = {"n_jobs": -1, "knn": 10,
+                    "n_pca": 100, "gamma": 0, 'n_components': 3}
 phate_operator = phate.PHATE(**phate_parameters)  # **phate_parameters
 m5_chunks_df["phate"] = list(phate_operator.fit_transform(np.array(specs)))
 
@@ -149,40 +151,41 @@ def animate_zoom(ax, zoom_steps):
 
 # Paths and data
 proj_str = 'phate'  # projection to use
-fig_dir = FIGURE_DIR / DATASET_ID / "gifs" / "time_of_day"
+fig_dir = FIGURE_DIR / DATASET_ID / "gifs" / "4am"
 safe_makedir(fig_dir)
 fp_in = str(fig_dir) + '/*.png'
-fp_out = str(fig_dir / 'animation.gif')
+fp_out = str(fig_dir / '4am.gif')
 data = np.vstack(m5_chunks_df[proj_str])
 
 # Settings
 initial_point_size = 4
 end_point_size = 8
 cat_palette = "husl"
-cont_palette = "icefire_r"
+cont_palette = "RdYlBu_r"
 textcol = '#b3b3b3'
-by_time_of_day = False
-by_area_of_woods, select_labs = True, True
+by_time_of_day = True
+by_area_of_woods, select_labs = True, False
 by_nestbox = False
-n_frames = 400  # TODO: why no work with 360
+n_frames = 700
+max_alpha = 0.1
 
 # %%
 # Plot figure
 
 # Start figure
-fig = plt.figure(figsize=(10, 10))
+fig = plt.figure(figsize=(15, 15))
 fig.patch.set_facecolor('k')
 fig.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
 ax = fig.add_subplot(111, projection='3d')
 ax.set_facecolor('k')
 pointsize = [initial_point_size] * n_frames
-alpha = 1
+
 
 if by_time_of_day:
     labs = [x for x in list(m5_chunks_df.hour)]
     colors, lab_dict = make_cat_palette(labs, cont_palette)
     scat = ax.scatter(data[:, 0], data[:, 1], data[:, 2], zdir='z',
-                      depthshade=True, s=pointsize, color=colors, marker='o', linewidth=0)
+                      depthshade=True, s=pointsize, color=colors, alpha=max_alpha, marker='o', linewidth=0)
 
 elif by_area_of_woods:
     labs = [x for x in list(m5_chunks_df.section)]
@@ -190,21 +193,21 @@ elif by_area_of_woods:
         colors, lab_dict = make_cat_palette(labs, cat_palette)
     else:
         colors, lab_dict = selection_palette(
-            labs, colors=['#e60000', '#0088ff'], rest_col='#636363', select_labels=['Bean Wood', 'Marley Plantation'])
+            labs, colors=['#e63b15', '#2081e3'], rest_col='#3b3a36', select_labels=['Bean Wood', 'Marley Plantation'])
     scat = ax.scatter(data[:, 0], data[:, 1], data[:, 2], zdir='z',
-                      depthshade=True, s=pointsize, color=colors, alpha=alpha, marker='o', linewidth=0)
+                      depthshade=True, s=pointsize, color=colors, alpha=max_alpha, marker='o', linewidth=0)
 
 elif by_nestbox:
     labs = [x for x in list(m5_chunks_df.nestbox)]
     colors, lab_dict = make_cat_palette(labs, cat_palette)
     scat = ax.scatter(data[:, 0], data[:, 1], data[:, 2], zdir='z',
-                      depthshade=True, s=pointsize, color=colors, marker='o', linewidth=0)
+                      depthshade=True, s=pointsize, color=colors, alpha=max_alpha, marker='o', linewidth=0)
 
 plt.axis('off')
 fig.tight_layout()
 
 # Set zoom
-start_zoom = 1.4
+start_zoom = 1
 end_zoom = 0.2
 ax = set_zoom(start_zoom, ax)  # set initial zoom level
 # end zoom level, as proportion of whole figure under initial zoom level
@@ -214,41 +217,41 @@ pointsize_steps = (end_point_size - initial_point_size) / n_frames  # that
 # Run this to check different zoom levels, etc #!remove before saving animation
 # ax = set_zoom(end_zoom, ax)
 
-# Legend and title
-legend_elements = [
-    Line2D([0], [0], marker="o", linestyle="None", color=value, label=key)
-    for key, value in lab_dict.items()
-]
-leg = ax.legend(handles=legend_elements, markerscale=1.3, labelspacing=1,
-                facecolor='black', edgecolor=None, framealpha=0.3,
-                loc='upper right', fontsize=12
-                )
-leg.get_frame().set_linewidth(0.0)
-for text in leg.get_texts():
-    text.set_color(textcol)
-# fig.suptitle("A big long suptitle that runs into the title\n",
-#              y=0.85, fontweight='bold', color=textcol)
+# # Legend and title
+# legend_elements = [
+#     Line2D([0], [0], marker="o", linestyle="None", color=value, label=key)
+#     for key, value in lab_dict.items()
+# ]
+# leg = ax.legend(handles=legend_elements, markerscale=1.3, labelspacing=1,
+#                 facecolor='black', edgecolor=None, framealpha=0.3,
+#                 loc='upper right', fontsize=12
+#                 )
+# leg.get_frame().set_linewidth(0.0)
+# for text in leg.get_texts():
+#     text.set_color(textcol)
+# # fig.suptitle("A big long suptitle that runs into the title\n",
+# #              y=0.85, fontweight='bold', color=textcol)
 
-frame_duration = 1000 / (n_frames / 24)
+frame_duration = 1000/24
 gif_lenght_s = frame_duration*n_frames/1000
-fade_length_s = 2
-n_transition_frames = 2*1000 / frame_duration
+fade_length_s = 4.5
+n_transition_frames = fade_length_s*1000 / frame_duration
 
 # Export images
 for i in tqdm(range(0, n_frames)):
-    azimuth = i * 360 / n_frames
-    elevation = ((i - 0) / (n_frames)) * (180 + 180) - 180
+    azimuth = i * 100 / n_frames
+    elevation = ((i - 0) / (n_frames)) * (90 + 90) - 90
     ax.view_init(elev=elevation, azim=azimuth)
     ax, new_lims = animate_zoom(ax, zoom_steps)
     pointsize = [p + pointsize_steps for p in pointsize]
-    if i < n_transition_frames:
-        alpha = (((i - 0) * 1) / n_transition_frames) + 0
-    if i > n_frames - n_transition_frames:
-        alpha = (((i - (n_frames - n_transition_frames)) * -1) /
-                 n_transition_frames) + 1  # smth wrong with this perhaps
+    # if i <= n_transition_frames:
+    #     alpha = (((i - 0) * max_alpha) / n_transition_frames) + 0
+    # if i >= n_frames - n_transition_frames:
+    #     alpha = (((i - (n_frames - n_transition_frames)) * - max_alpha) /
+    #              n_transition_frames) + max_alpha
 
     scat.set_sizes(pointsize)
-    scat.set_alpha(alpha)
+    # scat.set_alpha(alpha)
     # print(
     #     f'Iteration: {i}, elevation: {elevation}, pointsize: {pointsize[0]}, lims: {new_lims}')
     plt.savefig(fig_dir / str(str(i).zfill(3) + '.png'),
@@ -261,7 +264,7 @@ plt.close()
 # Put gif together
 img, *imgs = [Image.open(f) for f in sorted(glob.glob(fp_in))]
 img.save(fp=fp_out, format='GIF', append_images=imgs,
-         save_all=True, duration=1000 / (n_frames / 24), loop=0)
+         save_all=True, duration=1000/24, loop=0)
 
 # %%
 # Export images
