@@ -1,5 +1,7 @@
 # %%
+import shutil
 import ast
+import glob
 from src.greti.read.paths import safe_makedir
 import collections
 import json
@@ -118,6 +120,50 @@ for indv, repertoire in tqdm(syllable_type_dict.items(),
                     endpad=0.03  # the segmentation algo shaves very closely - add some padding to each note
                     )
 
+
+# %%
+# Save 'stiched' notes
+
+
+test = '_test'  # * change to test = '' if not testing!
+
+# Prepare in paths
+in_dir_notes_wav = Path(str(out_dir) + f'_notes{test}') / 'WAV'
+in_dir_notes_json = Path(str(out_dir) + f'_notes{test}') / 'JSON'
+
+# Prepare out paths
+out_dir_notes_wav = Path(str(out_dir) + f'_joined_notes{test}') / 'WAV'
+out_dir_notes_json = Path(str(out_dir) + f'_joined_notes{test}') / 'JSON'
+safe_makedir(out_dir_notes_wav)
+safe_makedir(out_dir_notes_json)
+
+# Build dictionary of paths
+syll_dict = {}
+for filename in tqdm(glob.glob(os.path.join(in_dir_notes_wav, '*.wav'))):
+    syll = Path(filename).stem[:-2]
+    if syll in syll_dict:
+        syll_dict[syll].append(filename)
+    else:
+        syll_dict[syll] = [filename]
+
+# Now join notes into syllables, saving also corresponding JSON dicts
+for k, v in tqdm(syll_dict.items()):
+    v.sort()
+    syll_data = []
+    for filename in v:
+        data, sr = librosa.load(filename)
+        syll_data.append(data)
+
+    out_filedir = out_dir_notes_wav / f"{k}.wav"
+    librosa.output.write_wav(
+        out_filedir, np.concatenate(syll_data, axis=0), sr, norm=False)
+
+    in_json = in_dir_notes_json / \
+        f'{Path(filename).stem}.json'  # just use last note
+    out_json = out_dir_notes_json / f'{k}.json'
+    shutil.copy(in_json, out_json)
+
+
 # %% Save metadata as csv to read with R (for individual notes)
 
 DATASET_ID = "GRETI_HQ_2020_notes"
@@ -224,7 +270,8 @@ for song in songs:
                         f"{indv}-{typestring}-{songtype_counter[typestring]}-{syll}.wav"
 
                     # Get note audio
-                    ynote = y[int((substarts[syll] - frontpad) * sr)                              : int((subends[syll] + endpad) * sr)]
+                    ynote = y[int((substarts[syll] - frontpad) * sr)
+                                  : int((subends[syll] + endpad) * sr)]
                     librosa.output.write_wav(out_filedir, ynote, sr, norm=True)
 
                     # Save dictionary

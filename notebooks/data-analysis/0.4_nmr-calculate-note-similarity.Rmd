@@ -20,13 +20,13 @@ options(scipen = 999)
 ```
 
 ```{r}
-# # clear the R workspace
-# rm(list = ls())
+# Code to calculate acoustic distances, after Keen et al 2021
 
-# put any packages we'll need in here
+# Settings and paths --------------------------------------
+# # clear the R workspace
+rm(list = ls())
 x <- gc()
-x <-
-  c(
+x <- c(
     "parallel",
     "vegan",
     "bioacoustics",
@@ -34,7 +34,6 @@ x <-
     "ggplot2",
     "Rraven",
     "cluster",
-    "Rtsne",
     "randomForest",
     "MASS",
     "fossil",
@@ -43,12 +42,13 @@ x <-
     "Sim.DiffProc",
     "caret",
     "e1071",
-    "tidyverse"
+    "tidyverse",
+    "pracma",
+    'dtwclust',
+    'fastcluster'
   )
 
-library(reshape2)
-
-# load packages
+# load packages 
 aa <- lapply(x, function(y) {
   if (!y %in% installed.packages()[, "Package"])  {
     install.packages(y)
@@ -57,11 +57,13 @@ aa <- lapply(x, function(y) {
 })
 
 # Paths
-dataset_name <-  "GRETI_HQ_2020_segmented_notes"
-data_dir <-  file.path(getwd(), "data", "processed", dataset_name)
-est.file.name <- file.path(data_dir, 'selection_table.RDS')
-specs_dir <-  file.path(data_dir, 'spectrograms')
-coords_dir = file.path(getwd(), "resources", "nestboxes", "nestbox_coords.csv")
+root.dir = rprojroot::find_rstudio_root_file()
+dataset_name <-  "GRETI_HQ_2020_joined_notes_test" #! remove _test after done #!
+data_dir <-  file.path(root.dir, "data", "processed", dataset_name, 'WAV')
+out_dir = file.path(root.dir, "data", 'note_dfs', dataset_name)
+
+est.file.name <- file.path(out_dir, 'selection_table.RDS')
+specs_dir <-  file.path(out_dir, 'spectrograms')
 
 if (!dir.exists(specs_dir)) {
   dir.create(specs_dir, recursive = TRUE)
@@ -74,12 +76,11 @@ warbleR_options(
   wav.path = data_dir,
   f = 32000,
   wl = 512,
-  flim = c(1.2, 10),
-  ovlp = 50,
-  bp = c(1.2, 10),
+  flim = c(1.2, 8),
+  ovlp = 95,
+  bp = c(1.2, 8.5),
   parallel = ncores
 )
-
 ```
 
 # Make selection table
@@ -90,10 +91,66 @@ est <- selection_table(whole.recs = T, extended = T, confirm.extended = F)
 save(est,file=est.file.name)
 ```
 
+# Load selection table
 ```{r}
-if (FALSE){
-  specreator(est[1:10,], propwidth = F, parallel = 1, dest.path = specs_dir)
-}
+load(est.file.name)
+```
+
+```{r}
+#DTW
+res$sound.files <-
+  lapply(res$sound.files, function(x)
+    gsub("\\..*", "", x))
+
+# Extract dominant frequency
+res <- dfts(est,
+    pb = TRUE,
+    parallel = ncores,
+    img = T,
+    threshold.time = 3,
+    threshold.freq = 3,
+    fsmooth = 0.1,
+    clip.edges = TRUE,
+    track_harm = TRUE, 
+    length.out = 20)
+
+res %>% slice(36) %>% gather() %>% slice(3:nrow(.)) %>% select(value) %>%  plot()
+
+# Calculate DTW distances
+system.time(dtw_dist <- proxy::dist(res[c(-1,-2)], method = "DTW_BASIC", norm = "L2", window.size = 10)) # series are of same length so distances are symmetrix even with a window applied
+dtw_dist_matrix =as.matrix(dtw_dist)
+rownames(dtw_dist_matrix) = res$sound.files
+colnames(dtw_dist_matrix) = res$sound.files
+heatmap(dtw_dist_matrix)
+
+distst = as.dist(dtw_dist)
+
+hclust(distst, method="centroid")
+
+
+data("uciCT")
+
+pc <- tsclust(CharTraj, type = "partitional", k = 10L,
+              distance = "dtw_basic", centroid = "pam", 
+              seed = 3247L, trace = TRUE,
+              args = tsclust_args(dist = list(window.size = 20L)))
+
+plot(pc)
+
+
+dtw.dist <-
+  dfDTW(
+    est,
+    pb = TRUE,
+    parallel = ncores,
+    img = TRUE,
+    threshold.time = 10,
+    threshold.freq = 10,
+    fsmooth = 0.2,
+    clip.edges = TRUE,
+    track_harm = TRUE
+  )
+
 ```
 
 # Prepare acoustic measures
@@ -350,4 +407,37 @@ df_complete %>% filter(spatial_dist != 0) %>% drop_na() %>% #filter(cluster==1) 
 
 ```
 
+
+```{r}
+# track harmonic frequencu contour
+
+file = '/media/nilomr/SONGDATA/processed/GRETI_HQ_2020_joined_notes_test/WAV/B3-545-3.wav'
+file = '/media/nilomr/SONGDATA/processed/GRETI_HQ_2020_joined_notes_test/WAV/B3-545-1.wav'
+wave = tuneR::readWave(file)
+
+kk = track_harm(
+  wave,
+  wl = 512,
+  wn = "hanning",
+  ovlp = 70,
+  fftw = FALSE,
+  at = NULL,
+  tlim = NULL,
+  threshold = 5,
+  clip = NULL,
+  plot = TRUE,
+  xlab = "Times (s)",
+  ylab = "Frequency (kHz)",
+  adjust.wl = TRUE,
+  dfrq = TRUE
+)
+
+
+
+# plot spectrogram
+
+spectro(sm_sng, grid = F, scale = F, f = f, ovlp = ovlp, palette = reverse.topo.colors, 
+        collevels = cl, wl = wl, osc = F, flim = flm, 
+        main = "warbleR's 'track_harm'")
+```
 
