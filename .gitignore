@@ -88,9 +88,13 @@ data
 /dependencies/chipper_v1.0_linux
 /reports/figures/*
 !/reports/figures/transfer_report
+/reports/text/talks
 
 *.doc
 *.bib
+*.mp4
+*.pdf
+
 
 # Mac OS-specific storage files
 .DS_Store
