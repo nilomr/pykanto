@@ -24,7 +24,8 @@ options(scipen = 999)
 
 # Settings and paths --------------------------------------
 # # clear the R workspace
-rm(list = ls())
+# rm(list = ls())
+
 x <- gc()
 x <- c(
     "parallel",
@@ -45,7 +46,10 @@ x <- c(
     "tidyverse",
     "pracma",
     'dtwclust',
-    'fastcluster'
+    'fastcluster',
+    'dynamicTreeCut',
+    'dbscan'
+    
   )
 
 # load packages 
@@ -59,8 +63,13 @@ aa <- lapply(x, function(y) {
 # Paths
 root.dir = rprojroot::find_rstudio_root_file()
 dataset_name <-  "GRETI_HQ_2020_joined_notes_test" #! remove _test after done #!
+# dataset_name <-  "GRETI_HQ_2020_joined_notes" #! change to this if not test
+
 data_dir <-  file.path(root.dir, "data", "processed", dataset_name, 'WAV')
 out_dir = file.path(root.dir, "data", 'note_dfs', dataset_name)
+coords_dir = file.path(getwd(), "resources", "nestboxes", "nestbox_coords.csv")
+dom_freqs_name <- file.path(out_dir, 'dominant_frequencies.RDS')
+dtw_dist_name <- file.path(out_dir, 'dtw_dist.RDS')
 
 est.file.name <- file.path(out_dir, 'selection_table.RDS')
 specs_dir <-  file.path(out_dir, 'spectrograms')
@@ -81,77 +90,178 @@ warbleR_options(
   bp = c(1.2, 8.5),
   parallel = ncores
 )
+
+# Integrate with above at some point
+# devtools::install_github('thomasp85/ggraph')
+library(ggraph)
+library(tidygraph)
+library(progressr)
+library(reshape2)
+library(Matrix)
+# handlers(global = TRUE)
+# with_progress()
+
+# Functions
+stdize = function(x, ...) {(x - min(x, ...)) / (max(x, ...) - min(x, ...))}
 ```
 
-# Make selection table
+# Make or load selection table
 ```{r}
-wi <- wav_info()
-summary(wi)
-est <- selection_table(whole.recs = T, extended = T, confirm.extended = F)
-save(est,file=est.file.name)
+
+if (file.exists(est.file.name)) {
+  load(est.file.name)
+} else {
+  wi <- wav_info()
+  summary(wi)
+  est <- selection_table(whole.recs = T, extended = T, confirm.extended = F)
+  save(est,file=est.file.name)
+}
+
 ```
 
-# Load selection table
-```{r}
-load(est.file.name)
-```
-
+# Extract dominant frequencies
 ```{r}
 #DTW
-res$sound.files <-
-  lapply(res$sound.files, function(x)
-    gsub("\\..*", "", x))
+# dom_freqs$sound.files <-
+#   lapply(dom_freqs$sound.files, function(x)
+#     gsub("\\..*", "", x))
 
-# Extract dominant frequency
-res <- dfts(est,
-    pb = TRUE,
-    parallel = ncores,
-    img = T,
-    threshold.time = 3,
-    threshold.freq = 3,
-    fsmooth = 0.1,
-    clip.edges = TRUE,
-    track_harm = TRUE, 
-    length.out = 20)
+# Extract dominant frequency, save
 
-res %>% slice(36) %>% gather() %>% slice(3:nrow(.)) %>% select(value) %>%  plot()
+if (file.exists(dom_freqs_name)) {
+  load(dom_freqs_name)
+  
+} else {
+  dom_freqs <- dfts(est,
+      pb = TRUE,
+      parallel = ncores,
+      img = T,
+      threshold.time = 3,
+      threshold.freq = 3,
+      fsmooth = 0.1,
+      clip.edges = TRUE,
+      track_harm = TRUE, 
+      length.out = 20)
+  
+  save(dom_freqs, file=dom_freqs_name)
+}
+```
 
 # Calculate DTW distances
-system.time(dtw_dist <- proxy::dist(res[c(-1,-2)], method = "DTW_BASIC", norm = "L2", window.size = 10)) # series are of same length so distances are symmetrix even with a window applied
-dtw_dist_matrix =as.matrix(dtw_dist)
-rownames(dtw_dist_matrix) = res$sound.files
-colnames(dtw_dist_matrix) = res$sound.files
-heatmap(dtw_dist_matrix)
+```{r}
+# dom_freqs %>% slice(36) %>% gather() %>% slice(3:nrow(.)) %>% select(value) %>%  plot() # check one trace
 
-distst = as.dist(dtw_dist)
+# Calculate DTW distances, save
+if (file.exists(dtw_dist_name)) {
+  load(dtw_dist_name)
+} else {
+  with_progress(system.time(dtw_dist <- proxy::dist(dom_freqs[c(-1,-2)], method = "DTW_BASIC", norm = "L2", window.size = 10))) # series are of same length so distances are symmetric even with a window applied
+  dtw_dist_matrix = as.matrix(dtw_dist) %>% stdize() # convert to matrix and range 0-1
+  rownames(dtw_dist_matrix) = dom_freqs$sound.files
+  colnames(dtw_dist_matrix) = dom_freqs$sound.files
+  save(dtw_dist_matrix, file=dtw_dist_name)
+}
 
-hclust(distst, method="centroid")
-
-
-data("uciCT")
-
-pc <- tsclust(CharTraj, type = "partitional", k = 10L,
-              distance = "dtw_basic", centroid = "pam", 
-              seed = 3247L, trace = TRUE,
-              args = tsclust_args(dist = list(window.size = 20L)))
-
-plot(pc)
-
-
-dtw.dist <-
-  dfDTW(
-    est,
-    pb = TRUE,
-    parallel = ncores,
-    img = TRUE,
-    threshold.time = 10,
-    threshold.freq = 10,
-    fsmooth = 0.2,
-    clip.edges = TRUE,
-    track_harm = TRUE
-  )
+# heatmap(dtw_dist_matrix)
+dtw_dist_matrix[!is.finite(dtw_dist_matrix)] # check that there are no infinites
 
 ```
+
+# Clustering
+```{r}
+# Hierarchical clustering
+DTWdist = as.dist(dtw_dist_matrix)
+dendrogram = hclust(DTWdist, method = "average", xdist = TRUE)
+clusters <-
+  cutreeDynamic(
+    dendrogram,
+    distM = as.matrix(DTWdist),
+    deepSplit = 2,
+    # This works well (i.e. cluster membership makes sense; 
+    # 3 leads to 1 cluster per song type/bird, 
+    # 1 to obviously different songs in same cluster)
+    minClusterSize = 4, # Set to smallest sample size for any song type
+    method = 'hybrid',
+    verbose = 4
+  )
+print(str_glue('Number of clusters: {length(unique(clusters))}'))
+cluster_membership = tibble(file = dom_freqs$sound.files, cluster = clusters) %>% 
+  mutate(name = lapply(file, function(x)
+  gsub("\\..*", "", x))) %>% 
+  mutate(note = gsub('-[^-]*$', '', name), bird = gsub('-[^-]*', '', name))
+
+# HDBSCAN clustering
+# detects song types by bird very well, but this is not what we want - need a more relaxed solution, like above
+hdbscan_clusters = hdbscan(DTWdist, minPts = 4)
+plot(hdbscan_clusters, show_flat = TRUE)
+plot(DTWdist, col=hdbscan_clusters$cluster+1L, cex = .5)
+plot(hdbscan_clusters$hc, main="HDBSCAN* Hierarchy")
+cluster_membership = cluster_membership %>% mutate(hdbscan_cluster = hdbscan_clusters$cluster)
+```
+
+# Graph
+## Prepare data
+```{r}
+# Build song-sharing matrix
+summary_songs = cluster_membership %>% distinct(note, cluster, .keep_all = TRUE)
+match_matrix = as.matrix(dist(summary_songs$cluster, upper=TRUE, diag=FALSE))
+match_matrix[match_matrix > 0] <- NA
+match_matrix[match_matrix == 0] <- 1
+match_matrix[is.na(match_matrix)] <-  0
+diag(match_matrix) <- 0
+rownames(match_matrix) = summary_songs$bird
+colnames(match_matrix) = summary_songs$bird
+
+# Number of shared songs (losing info about which)
+shared_matrix = rowsum(match_matrix, row.names(match_matrix), reorder = FALSE)
+shared_matrix = sapply(unique(colnames(shared_matrix)), function(x) rowSums(shared_matrix[,grepl(x, colnames(shared_matrix))]))
+diag(shared_matrix) <- 0
+shared_matrix = as.matrix(tril(shared_matrix))
+```
+
+## Get coordinates
+```{r}
+# Get nestbox coordinates
+nestbox_coords = read_csv(coords_dir) %>% filter(nestbox %in% summary_songs$bird) # only keep relevant birds
+new_order <-
+  sapply(summary_songs$bird, function(x, nestbox_coords) {
+    which(nestbox_coords$nestbox == x)
+  }, nestbox_coords)
+coords <- nestbox_coords[new_order,] %>% distinct(nestbox, .keep_all = TRUE)
+
+coords$nestbox <- parameters$note
+space_dist_matrix = as.matrix(dist(coords[0:2], upper = T))
+rownames(space_dist_matrix) = parameters$note
+colnames(space_dist_matrix) = parameters$note
+spatial_dist_data <- as.dist(space_dist_matrix)
+
+# Convert to dataframe
+xy <- t(combn(colnames(space_dist_matrix), 2))
+spatial_dist = data.frame(xy, spatial_dist = space_dist_matrix[xy])
+df = full_join(spatial_dist, acoustic_dist) %>% distinct(X1, X2, .keep_all =
+                                                            TRUE) %>% rename(key1 = X1, key2 = X2)
+```
+
+## Build graph and layout
+```{r}
+grph = melt(shared_matrix, varnames = c("from", "to")) %>% rename(weight = value) %>% filter(weight != 0) 
+graph = as_tbl_graph(grph) %>% mutate(x = coords$x, y =  coords$y)
+
+```
+
+# Plot graph
+```{r}
+# Plot as such
+ggraph(graph,  x = x, y = y) + 
+  geom_edge_link(alpha = .25, colour='white', aes(width = weight)) +
+  geom_node_point() +
+  theme_graph(background = 'grey20')
+
+
+```
+
+
+
 
 # Prepare acoustic measures
 ```{r}
@@ -439,5 +549,30 @@ kk = track_harm(
 spectro(sm_sng, grid = F, scale = F, f = f, ovlp = ovlp, palette = reverse.topo.colors, 
         collevels = cl, wl = wl, osc = F, flim = flm, 
         main = "warbleR's 'track_harm'")
+```
+
+# loop over df, progress bar example
+
+```{r}
+pb <-
+  progress::progress_bar$new(total = length(cluster_membership$bird))
+
+c_list <- list()
+
+# Get cluster numbers per bird into a named list - or whatever it's called in R
+for (indv in unique(cluster_membership$bird)) {
+  c_list[[indv]] = cluster_membership %>% filter(bird == indv) %>% select(cluster) %>% unique () %>% deframe()
+}
+# Now count how many shared clusters per pair of birds
+for (indv1 in unique(cluster_membership$bird)) {
+  c_list[[indv1]]
+}
+  
+  for (indv2 in unique(cluster_membership$bird)) {
+    cluster_membership %>% filter(bird == indv)
+
+  }
+  pb$tick()
+}
 ```
 
