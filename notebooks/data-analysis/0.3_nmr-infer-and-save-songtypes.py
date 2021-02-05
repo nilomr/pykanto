@@ -1,25 +1,24 @@
 # %%
-import shutil
 import ast
-import glob
-from src.greti.read.paths import safe_makedir
 import collections
 import json
+import os
 import random
-
+import librosa
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from pathlib2 import Path
 import seaborn as sns
-from joblib import Parallel, delayed
+from pathlib2 import Path
 from src.avgn.utils.paths import ensure_dir
-from src.greti.read.paths import DATA_DIR
+from src.greti.read.paths import DATA_DIR, safe_makedir
 from src.greti.sequencing.seqfinder import find_syllable_sequences
-from src.greti.write.save_syllables import find_sublist, get_song_dir, is_a_in_x, save_syllable_audio, trim_or_extend_songtype, save_note_audio
+from src.greti.write.save_syllables import (find_sublist, get_song_dir,
+                                            is_a_in_x, join_and_save_notes,
+                                            save_note_audio,
+                                            save_syllable_audio,
+                                            trim_or_extend_songtype)
 from tqdm.autonotebook import tqdm
-import librosa
-import os
 
 %load_ext autoreload
 %autoreload 2
@@ -101,7 +100,6 @@ for indv, repertoire in tqdm(syllable_type_dict.items(),
                         max_seqlength=3,
                         max_n_sylls=10)
 # %%
-
 # Save individual notes
 for indv, repertoire in tqdm(syllable_type_dict.items(),
                              desc="Saving note audio and metadata",
@@ -114,54 +112,19 @@ for indv, repertoire in tqdm(syllable_type_dict.items(),
                     cluster_labels,
                     out_dir,
                     shuffle_songs=True,  # Useful to avoud using very similar examples
-                    max_seqlength=3,  # There is no warrantee that this will work with greater lenghts as is
-                    max_n_sylls=10,
-                    frontpad=0.004,
-                    endpad=0.03  # the segmentation algo shaves very closely - add some padding to each note
+                    max_seqlength=3,  # There is no warrantee that this will work if > 3, haven't tested
+                    max_n_sylls=10  # Max per song / bird
                     )
 
 
 # %%
-# Save 'stiched' notes
+# Save joined notes.
+# NOTE: the two functions above take a random subset of data,
+# whereas this just takes the output of 'save_note_audio()' and joins notes into syllables.
+# This means that you need to run 'save_note_audio()' AND this if you want to get
+# a different random subset per song type and bird.
 
-
-test = '_test'  # * change to test = '' if not testing!
-
-# Prepare in paths
-in_dir_notes_wav = Path(str(out_dir) + f'_notes{test}') / 'WAV'
-in_dir_notes_json = Path(str(out_dir) + f'_notes{test}') / 'JSON'
-
-# Prepare out paths
-out_dir_notes_wav = Path(str(out_dir) + f'_joined_notes{test}') / 'WAV'
-out_dir_notes_json = Path(str(out_dir) + f'_joined_notes{test}') / 'JSON'
-safe_makedir(out_dir_notes_wav)
-safe_makedir(out_dir_notes_json)
-
-# Build dictionary of paths
-syll_dict = {}
-for filename in tqdm(glob.glob(os.path.join(in_dir_notes_wav, '*.wav'))):
-    syll = Path(filename).stem[:-2]
-    if syll in syll_dict:
-        syll_dict[syll].append(filename)
-    else:
-        syll_dict[syll] = [filename]
-
-# Now join notes into syllables, saving also corresponding JSON dicts
-for k, v in tqdm(syll_dict.items()):
-    v.sort()
-    syll_data = []
-    for filename in v:
-        data, sr = librosa.load(filename)
-        syll_data.append(data)
-
-    out_filedir = out_dir_notes_wav / f"{k}.wav"
-    librosa.output.write_wav(
-        out_filedir, np.concatenate(syll_data, axis=0), sr, norm=False)
-
-    in_json = in_dir_notes_json / \
-        f'{Path(filename).stem}.json'  # just use last note
-    out_json = out_dir_notes_json / f'{k}.json'
-    shutil.copy(in_json, out_json)
+join_and_save_notes(out_dir, test_run=False, n_jobs=-1)
 
 
 # %% Save metadata as csv to read with R (for individual notes)
@@ -192,102 +155,3 @@ ensure_dir(out_dir)
 syllables_df.to_csv(out_dir, index=False)
 
 # %%
-
-# %%
-
-
-DATASET_ID,
-indv_dfs,
-indv,  # dict keys
-# dict values (lists of lists, where sublists are song types)
-repertoire,
-cluster_labels,
-out_dir,
-shuffle_songs = True,  # Useful to avoud using very similar examples
-max_seqlength = 3  # There is no warrantee that this will work with greater lenghts as is
-max_n_sylls = 10
-frontpad = 0.006
-endpad = 0.03  # the segmentation algo shaves very closely - add some padding to each note
-
-# Prepare paths
-out_dir_notes_wav = Path(str(out_dir) + '_notes') / 'WAV'
-out_dir_notes_json = Path(str(out_dir) + '_notes') / 'JSON'
-safe_makedir(out_dir_notes_wav)
-safe_makedir(out_dir_notes_json)
-
-# Get list of unique files (one per song)
-songs = np.unique(indv_dfs[indv].key.values.tolist())
-if shuffle_songs:
-    random.shuffle(songs)
-songtype_counter = {}
-for song in songs:
-    # Get song sequence
-    sequence = indv_dfs[indv][indv_dfs[indv]
-                              ['key'] == song][cluster_labels].tolist()
-    for songtype in repertoire:
-        # Trim or extend syllable
-        songtype = trim_or_extend_songtype(max_seqlength, songtype)
-        typestring = ''.join(str(e) for e in songtype)
-
-        # Check which song type is present in the sequence
-        if is_a_in_x(songtype, sequence):
-            # Extract a sequence (of max_seqlength length)
-            indexes = find_sublist(songtype, sequence)
-            for index in indexes:
-                # Get syllable times
-                starts = indv_dfs[indv][indv_dfs[indv]
-                                        ['key'] == song].start_time.values.tolist()
-                ends = indv_dfs[indv][indv_dfs[indv]
-                                      ['key'] == song].end_time.values.tolist()
-
-                # Get IOIs, silences, etc, build dictionary
-                substarts = [starts[i]
-                             for i in [index[0], index[0]+1, index[1]]]
-                subends = [ends[i]
-                           for i in [index[0], index[0]+1, index[1]]]
-                subdurs = [y - x for x, y in zip(substarts, subends)]
-                subIOIs = [y - x for x, y in zip(substarts, substarts[1:])]
-                subsilences = [y - x for x,
-                               y in zip(subends, substarts[1:])]
-
-                # Add to songtype counter dictionary
-                if typestring in songtype_counter:
-                    songtype_counter[typestring] += 1
-                    # Stop if max number reached
-                    if songtype_counter[typestring] > max_n_sylls:
-                        break
-                else:
-                    songtype_counter[typestring] = 0
-
-                wav_loc = get_song_dir(DATASET_ID, song)
-
-                # Fetch, trim, and save audio
-                y, sr = librosa.load(wav_loc, sr=32000)
-
-                for syll in range(max_seqlength):
-
-                    out_filedir = out_dir_notes_wav / \
-                        f"{indv}-{typestring}-{songtype_counter[typestring]}-{syll}.wav"
-
-                    # Get note audio
-                    ynote = y[int((substarts[syll] - frontpad) * sr)
-                                  : int((subends[syll] + endpad) * sr)]
-                    librosa.output.write_wav(out_filedir, ynote, sr, norm=True)
-
-                    # Save dictionary
-                    syllable_dict = {'bird': indv,
-                                     'start_time': substarts[0], 'end_time': subends[-1],
-                                     'starts': substarts, 'ends': subends,
-                                     'total_duration': subends[-1] - substarts[0],
-                                     'note_index': syll,
-                                     'durations': subdurs, 'IOIs': subIOIs, 'silences': subsilences,
-                                     'rate': sr,
-                                     'position': index, 'sequence': songtype,
-                                     'song_wav_loc': str(wav_loc),
-                                     'syll_wav_loc': str(out_filedir)}
-
-                    out_filejson = out_dir_notes_json / \
-                        f"{indv}-{typestring}-{songtype_counter[typestring]}-{syll}.json"
-
-                    json.dump(syllable_dict, open(out_filejson,
-                                                  'w', encoding="utf8"), sort_keys=True)
