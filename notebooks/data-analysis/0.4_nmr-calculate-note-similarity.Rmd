@@ -20,7 +20,10 @@ options(scipen = 999)
 ```
 
 ```{r}
-# Code to calculate acoustic distances, after Keen et al 2021
+# Code to calculate acoustic distances
+#NOTE: this code will not make new measurements, calculate distances, etc, 
+# if the corresponding output files already exist; 
+# if you want to recalculate, delete the files before running
 
 # Settings and paths --------------------------------------
 # # clear the R workspace
@@ -48,8 +51,12 @@ x <- c(
     'dtwclust',
     'fastcluster',
     'dynamicTreeCut',
-    'dbscan'
-    
+    'dbscan',
+    'ggraph',
+    'tidygraph',
+    'progressr',
+    'reshape2',
+    'Matrix'
   )
 
 # load packages 
@@ -62,8 +69,8 @@ aa <- lapply(x, function(y) {
 
 # Paths
 root.dir = rprojroot::find_rstudio_root_file()
-dataset_name <-  "GRETI_HQ_2020_joined_notes_test" #! remove _test after done #!
-# dataset_name <-  "GRETI_HQ_2020_joined_notes" #! change to this if not test
+# dataset_name <-  "GRETI_HQ_2020_joined_notes_test" #! remove _test after done #!
+dataset_name <-  "GRETI_HQ_2020_joined_notes" #! change to this if not test
 
 data_dir <-  file.path(root.dir, "data", "processed", dataset_name, 'WAV')
 out_dir = file.path(root.dir, "data", 'note_dfs', dataset_name)
@@ -80,26 +87,17 @@ if (!dir.exists(specs_dir)) {
 
 ncores = parallel::detectCores() - 1
 
+
 # WarbleR options
 warbleR_options(
   wav.path = data_dir,
-  f = 32000,
+  f = 22050,
   wl = 512,
-  flim = c(1.2, 8),
+  flim = c(2, 8.5),
   ovlp = 95,
-  bp = c(1.2, 8.5),
+  bp = c(2, 8.5),
   parallel = ncores
 )
-
-# Integrate with above at some point
-# devtools::install_github('thomasp85/ggraph')
-library(ggraph)
-library(tidygraph)
-library(progressr)
-library(reshape2)
-library(Matrix)
-# handlers(global = TRUE)
-# with_progress()
 
 # Functions
 stdize = function(x, ...) {(x - min(x, ...)) / (max(x, ...) - min(x, ...))}
@@ -130,7 +128,7 @@ if (file.exists(est.file.name)) {
 
 if (file.exists(dom_freqs_name)) {
   load(dom_freqs_name)
-  
+
 } else {
   dom_freqs <- dfts(est,
       pb = TRUE,
@@ -138,7 +136,7 @@ if (file.exists(dom_freqs_name)) {
       img = T,
       threshold.time = 3,
       threshold.freq = 3,
-      fsmooth = 0.1,
+      fsmooth = 0.2,
       clip.edges = TRUE,
       track_harm = TRUE, 
       length.out = 20)
@@ -171,19 +169,18 @@ dtw_dist_matrix[!is.finite(dtw_dist_matrix)] # check that there are no infinites
 ```{r}
 # Hierarchical clustering
 DTWdist = as.dist(dtw_dist_matrix)
-dendrogram = hclust(DTWdist, method = "average", xdist = TRUE)
+dendrogram = hclust(DTWdist, method = "average")
 clusters <-
   cutreeDynamic(
     dendrogram,
     distM = as.matrix(DTWdist),
-    deepSplit = 2,
-    # This works well (i.e. cluster membership makes sense; 
-    # 3 leads to 1 cluster per song type/bird, 
-    # 1 to obviously different songs in same cluster)
+    deepSplit = 3,
+    # This works well (i.e. cluster membership makes sense)
     minClusterSize = 4, # Set to smallest sample size for any song type
     method = 'hybrid',
     verbose = 4
   )
+
 print(str_glue('Number of clusters: {length(unique(clusters))}'))
 cluster_membership = tibble(file = dom_freqs$sound.files, cluster = clusters) %>% 
   mutate(name = lapply(file, function(x)
@@ -192,15 +189,14 @@ cluster_membership = tibble(file = dom_freqs$sound.files, cluster = clusters) %>
 
 # HDBSCAN clustering
 # detects song types by bird very well, but this is not what we want - need a more relaxed solution, like above
-hdbscan_clusters = hdbscan(DTWdist, minPts = 4)
-plot(hdbscan_clusters, show_flat = TRUE)
-plot(DTWdist, col=hdbscan_clusters$cluster+1L, cex = .5)
-plot(hdbscan_clusters$hc, main="HDBSCAN* Hierarchy")
-cluster_membership = cluster_membership %>% mutate(hdbscan_cluster = hdbscan_clusters$cluster)
+# hdbscan_clusters = hdbscan(DTWdist, minPts = 4)
+# plot(hdbscan_clusters, show_flat = TRUE)
+# plot(DTWdist, col=hdbscan_clusters$cluster+1L, cex = .5)
+# plot(hdbscan_clusters$hc, main="HDBSCAN* Hierarchy")
+# cluster_membership = cluster_membership %>% mutate(hdbscan_cluster = hdbscan_clusters$cluster)
 ```
 
-# Graph
-## Prepare data
+# Prepare song sharing data
 ```{r}
 # Build song-sharing matrix
 summary_songs = cluster_membership %>% distinct(note, cluster, .keep_all = TRUE)
@@ -214,267 +210,341 @@ colnames(match_matrix) = summary_songs$bird
 
 # Number of shared songs (losing info about which)
 shared_matrix = rowsum(match_matrix, row.names(match_matrix), reorder = FALSE)
-shared_matrix = sapply(unique(colnames(shared_matrix)), function(x) rowSums(shared_matrix[,grepl(x, colnames(shared_matrix))]))
+shared_table = as_tibble(shared_matrix, .name_repair="minimal")
+shared_matrix = as.matrix(do.call(cbind, by(t(shared_table),INDICES=names(shared_table),FUN=colSums)))
+rownames(shared_matrix) = colnames(shared_matrix)
+
 diag(shared_matrix) <- 0
 shared_matrix = as.matrix(tril(shared_matrix))
 ```
 
-## Get coordinates
+# Acoustic distance vs spatial distance
 ```{r}
-# Get nestbox coordinates
-nestbox_coords = read_csv(coords_dir) %>% filter(nestbox %in% summary_songs$bird) # only keep relevant birds
+library(usedist)
+
+dists = as.dist(dtw_dist_matrix)
+labs = cluster_membership$note
+
+# Pairwise average DTW distances (by song)
+song_mean_a_dist = dist_groups(dists, labs) %>% 
+  janitor::clean_names() %>% 
+  group_by(label) %>% 
+  mutate(mean_a_dist = mean(distance)) %>% 
+  ungroup() %>% 
+  select(-distance,-item1, -item2) %>% 
+  distinct(group1, group2, mean_a_dist, .keep_all = TRUE) %>% 
+  separate(group1, into = c("bird1", "note1"), sep = "-", remove = FALSE) %>% 
+  separate(group2, into = c("bird2", "note2"), sep = "-", remove = FALSE)
+
+rm(dists, labs); gc()
+
+# Pairwise average DTW distances (by bird)
+bird_mean_a_dist = song_mean_a_dist %>% 
+  group_by(bird1, bird2) %>% 
+  mutate(mean_a_dist = mean(mean_a_dist)) %>% 
+  ungroup() %>% 
+  select(bird1, bird2, mean_a_dist) %>% 
+  distinct(.keep_all = TRUE)
+
+birds = cluster_membership$bird %>% unique()
+
+# Get nestbox coordinates, prepare data
+nest_coords = read_csv(coords_dir) %>% filter(nestbox %in% birds) # only keep relevant birds
 new_order <-
-  sapply(summary_songs$bird, function(x, nestbox_coords) {
-    which(nestbox_coords$nestbox == x)
-  }, nestbox_coords)
-coords <- nestbox_coords[new_order,] %>% distinct(nestbox, .keep_all = TRUE)
-
-coords$nestbox <- parameters$note
+  sapply(birds, function(x, nest_coords) {
+    which(nest_coords$nestbox == x)
+  }, nest_coords)
+coords <- nest_coords[new_order,] %>% distinct(nestbox, .keep_all = TRUE)
 space_dist_matrix = as.matrix(dist(coords[0:2], upper = T))
-rownames(space_dist_matrix) = parameters$note
-colnames(space_dist_matrix) = parameters$note
-spatial_dist_data <- as.dist(space_dist_matrix)
+rownames(space_dist_matrix) = birds
+colnames(space_dist_matrix) = birds
+spatial_dist_data = as.dist(space_dist_matrix)
+spatial_dist_data = dist_groups(spatial_dist_data, birds) %>% 
+  janitor::clean_names() %>% 
+  rename(bird1 = item1, bird2 = item2, s_dist = distance) %>% 
+  select(-group1, -group2, -label) %>% 
+  as.tibble()
 
-# Convert to dataframe
-xy <- t(combn(colnames(space_dist_matrix), 2))
-spatial_dist = data.frame(xy, spatial_dist = space_dist_matrix[xy])
-df = full_join(spatial_dist, acoustic_dist) %>% distinct(X1, X2, .keep_all =
-                                                            TRUE) %>% rename(key1 = X1, key2 = X2)
+# Build dataframes by song, bird, and sharing
+distances_by_shared_song = inner_join(distances_by_song, cluster_membership, by = c("group1" = "note")) %>% 
+  inner_join(., cluster_membership, by = c("group2" = "note")) %>% 
+  select(-bird.x, -bird.y, -name.x, -name.y) %>% 
+  rename(cluster1 = cluster.x, cluster2 = cluster.y)
+
+distances_by_song = inner_join(song_mean_a_dist, spatial_dist_data, by=c('bird1', 'bird2')) # removing within bird comparison
+distances_by_bird = inner_join(bird_mean_a_dist, spatial_dist_data, by=c('bird1', 'bird2')) # removing within bird comparison
+
+# Sharing/not sharing vs distance
+n_songs_per_bird = song_mean_a_dist %>% distinct(bird1, note1) %>% group_by(bird1) %>% tally()
+
+sharing_df = melt(shared_matrix, varnames = c("bird1", "bird2")) %>% 
+  rename(n_shared = value, bird1= bird2, bird2=bird1) %>% 
+  left_join(., spatial_dist_data) %>% 
+  separate(bird1, 
+           into = c("area1", "num"), 
+           sep = "(?<=[A-Za-z])(?=[0-9])", remove = FALSE) %>% 
+  separate(bird2, 
+           into = c("area2", "num"), 
+           sep = "(?<=[A-Za-z])(?=[0-9])", remove = FALSE) %>% 
+  mutate(area = case_when(area1 == area2 ~ area1)) %>% 
+  select(-num, -area1, -area2) %>% 
+  as_tibble() %>% # Add number of song types per bird, calculate sharing index
+  full_join(., n_songs_per_bird) %>% 
+  full_join(., n_songs_per_bird, by = c('bird2' = 'bird1'), suffix = c("1", "2")) %>% 
+  # filter(s_dist < 400) %>% # Keep only close neighbours 
+  mutate(jaccard = n_shared/(n1+n2)) %>% 
+  as_tibble() %>% 
+  drop_na(s_dist)
+
+# Average jaccard index by bird
+mean_jaccard = sharing_df %>% group_by(bird1) %>% 
+  mutate(mean = mean(jaccard, na.rm=TRUE)) %>% 
+  inner_join(., coords, by= c('bird1' = 'nestbox')) %>% 
+  select(-`box type`)
+
+
+
+#TODO================================================================================================= add areas in woods
+
+
 ```
+
+## Plots (distances)
+```{r}
+# Plot spatial distance vs acoustic distance (by bird)
+distances_by_bird %>% 
+  # filter_at(vars(starts_with("bird")), all_vars(str_detect(., pattern = "MP"))) %>%
+  ggplot(aes(x= s_dist, y= mean_a_dist)) + 
+  geom_point(size=0.6, alpha=0.6) + 
+  geom_smooth(method = 'gam', colour='white') +
+  theme(aspect.ratio = 1)
+
+# Plot spatial distance vs acoustic distance (by song type)
+distances_by_shared_song %>%
+  filter(cluster1 == cluster2) %>% 
+  distinct(label, mean_a_dist, .keep_all = TRUE) %>% 
+  group_by(cluster1) %>%
+  filter(n() > 100) %>% 
+  ungroup() %>% 
+  ggplot(aes(x= s_dist, y= mean_a_dist, colour = as.factor(cluster1))) + 
+  geom_point(size=0.6, alpha=0.6) + 
+  geom_smooth(method = 'lm', se = FALSE) +
+  theme(aspect.ratio = 1)
+
+
+# Plot sharing/not sharing vs spatial distance
+library(car)
+
+sharing_df %>%
+  group_by(area) %>%
+  mutate(area = recode(area,'B' = 'Marley', 'EX' = 'Extra', 'MP' = 'Marley Plantation', 'O' = 'Broad Oak', 'SW' = 'Singing Way', 'W' = 'Great Wood')) %>% 
+  filter(n() > 100) %>%
+  mutate(n_shared = replace(n_shared, n_shared > 1, 1)) %>%
+  filter(s_dist < 1500) %>%
+  drop_na(area) %>%
+  # filter(area =='MP') %>%
+  ggplot(aes(x = s_dist, y = n_shared)) +
+  geom_jitter(alpha = 0.2,
+              height = 0.02,
+              size = 2) +
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = "binomial"),
+    colour = 'black'
+  ) +
+  theme(
+    panel.background = element_rect(fill = '#f2f1f0', colour = NA),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    text = element_text(size = 15),
+    legend.position = "none",
+    aspect.ratio = 1.8,
+    strip.background = element_rect(fill="white"),
+    strip.text = element_text(colour = 'black', size = 15, vjust = 1.2),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(y = 'Probability of sharing a song\n',
+       x = "\nDistance (m)",
+       title = "Song sharing vs distance, by area of the Woods\n") +
+  facet_grid(cols = vars(area), shrink = TRUE)
+
+
+
+sharing_df %>% 
+  # mutate(n_shared = replace(n_shared, n_shared >1, 1)) %>% 
+  filter(s_dist < 1000) %>%
+  # filter_at(vars(starts_with("bird")), all_vars(str_detect(., pattern = "MP"))) %>%
+  ggplot(aes(x= s_dist, y= jaccard)) + 
+  geom_point(alpha = 0.01) +
+  geom_smooth(method = "gam") +
+  # geom_point(size=0.6, alpha=0.6) + 
+  theme(aspect.ratio = 1)
+
+
+sharing_df %>% 
+  # mutate(n_shared = replace(n_shared, n_shared >1, 1)) %>% 
+  filter(s_dist < 1000) %>%
+  filter(area == 'W') %>% 
+  ggplot(aes(x= s_dist, y= jaccard)) + 
+  geom_point(alpha = 0.01) +
+  geom_smooth(method = "lm") +
+  geom_point(size=0.6, alpha=0.6) + 
+  theme(aspect.ratio = 1)
+
+
+# Plot spatial distribution of average song sharing
+cc <-
+  scales::div_gradient_pal("#005ba1", "#8f8563", "#c94000", "Lab")(seq(0, 1, length.out = nrow(unique(mean_jaccard[c("mean")]))))
+
+library(colorspace)
+
+mean_jaccard %>% 
+  ggplot(aes(x = x, y = y, colour = mean)) + 
+  geom_point(size = 4) + 
+  scale_colour_continuous_sequential(palette = 'Red-Blue') +
+  theme(aspect.ratio = 1) +
+  theme(
+  panel.background = element_rect(fill = '#808080', colour = NA),
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  axis.ticks.y = element_blank(),
+  axis.ticks.x = element_blank()
+)
+
+
+
+```
+
+# Prob of sharing vs distance, plot
+```{r}
+sharing_df %>%
+  mutate(n_shared = replace(n_shared, n_shared > 1, 1)) %>%
+  filter(s_dist < 1000) %>%
+  # filter(area =='MP') %>%
+  ggplot(aes(x = s_dist, y = n_shared)) +
+  geom_jitter(alpha = 0.1,
+              height = 0.02,
+              size = 0.5) +
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = "binomial"),
+    colour = 'black'
+  ) +
+  theme(
+    panel.background = element_rect(fill = '#f2f1f0', colour = NA),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    text = element_text(size = 15),
+    legend.position = "none",
+    aspect.ratio = 1.5,
+    strip.background = element_rect(fill="white"),
+    strip.text = element_text(colour = 'black', size = 15, vjust = 1.2),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(y = 'Probability of sharing a song\n',
+       x = "\nDistance (m)",
+       title = "Song sharing vs distance\n")
+```
+
+# Graph
 
 ## Build graph and layout
 ```{r}
-grph = melt(shared_matrix, varnames = c("from", "to")) %>% rename(weight = value) %>% filter(weight != 0) 
-graph = as_tbl_graph(grph) %>% mutate(x = coords$x, y =  coords$y)
+
+grph = melt(shared_matrix, varnames = c("bird1", "bird2")) %>% 
+  as_tibble() %>% 
+  rename(bird1 = bird2, bird2 = bird1) %>% 
+  left_join(., spatial_dist_data) %>% 
+  drop_na() %>% 
+  rename(weight = value, from = bird1, to = bird2) %>% 
+  filter(weight != 0) %>% filter(s_dist < 1000) # %>% mutate(weight = 1) # 'remove' weigths
+
+
+# Remove symmetric pairs
+cols = c(1,2)
+n_grph = grph[,cols]
+for (i in 1:nrow(grph)){
+    n_grph[i, ] = sort(grph[i,cols])
+}
+grph = grph[!duplicated(n_grph),]
+
+graph = as_tbl_graph(grph)
+nodes = graph %>% activate(nodes) %>% as_tibble() %>% pull()
+
+# Get nestbox coordinates
+nestbox_coords = read_csv(coords_dir) %>% filter(nestbox %in% nodes) # only keep relevant birds
+new_order <-
+  sapply(nodes, function(x, nestbox_coords) {
+    which(nestbox_coords$nestbox == x)
+  }, nestbox_coords)
+coordinates <- nestbox_coords[new_order,] %>% distinct(nestbox, .keep_all = TRUE)
+
+graph = graph %>% mutate(x = coordinates$x, y =  coordinates$y)
 
 ```
 
-# Plot graph
+## Plot graph
 ```{r}
 # Plot as such
+
 ggraph(graph,  x = x, y = y) + 
-  geom_edge_link(alpha = .25, colour='white', aes(width = weight)) +
+  geom_edge_link(alpha = .4, colour='white', edge_width=.04) +
+  geom_node_point() +
+  theme_graph(background = 'grey20') +
+  coord_fixed()
+
+ggraph(graph,  layout='stress') + 
+  geom_edge_link(alpha = .7, colour='white', edge_width=.1) +
   geom_node_point() +
   theme_graph(background = 'grey20')
 
+ggraph(dendrogram, 'dendrogram') + 
+  geom_edge_diagonal()
+
+  geom_edge_link(alpha = .7, colour='white', edge_width=.1) +
+  geom_node_point() +
+  theme_graph(background = 'grey20')
+
+ggraph(graph,  x = x, y = y) +
+  geom_edge_link(alpha = .07, colour='white', aes(width = weight)) +
+  geom_node_point() +
+  theme_graph(background = 'grey20') +
+  coord_fixed()
 
 ```
 
 
-
-
-# Prepare acoustic measures
-```{r}
-# Prepare acoustic features for analysis
-
-# Measure spectral parameters
-sp <- specan(est,parallel=ncores, threshold = 10)
-# Spectrogram cross-correlation
-xc <- xcorr(est,bp=c(1,5), parallel = ncores)
-# MDS for cross-correlation 
-xc.mds <- cmdscale(1 - xc, k = 5)
-# Translate MDS output into 5-D coordinates that we'll use as features
-colnames(xc.mds) <- paste0("xc.dim.", 1:5)
-# Dynamic time warping of frequency contours
-dtw.dist <- dfDTW(est, pb=TRUE, parallel = ncores)
-# MDS on DTW distance 
-dtw.mds <- cmdscale(dtw.dist, k = 5)
-# Translate DTW MDS into 5-D coordinates we'll use as features
-colnames(dtw.mds) <- paste0("dtw.dim.", 1:5)
-# Get cepstral coefficients and descriptive statistics
-cps.cf <- mfcc_stats(est, parallel = ncores)
-# put data and features together 
-prms <- data.frame(est[, c("sound.files", "Call.Type")], sp[, -c(1:4)], xc.mds, dtw.mds, cps.cf[, -c(1:2)])
-
-## save acoustic parms so we can just load these later
-saveRDS(prms, file.path(data_dir,"acoustic parameters.RDS"))
-write.csv(prms,file.path(data_dir,"acoustic parameters.csv"),row.names = FALSE)
-prms <- read.csv(file.path(data_dir,"acoustic parameters.csv"), stringsAsFactors = FALSE)
-
-# Create dataframe that has all feature measurements
-acous.meas <- prms
-
-# Remove colinear, boxcox transform and scale/center
-# Remove any columns that have filenames, etc when doing this (here this is just column 1)
-preprms <- preProcess(acous.meas[, -c(1)], method=c("center", "scale", "BoxCox", "corr"))
-prms <- predict(preprms, acous.meas)
-nums <- unlist(lapply(prms, is.numeric))  
-prms <- prms[ , nums]
-
-# Remove highly correlated vars
-cm <- cor(prms, use="pairwise.complete.obs")
-high.corr <- findCorrelation(cm, cutoff = .95)
-print("Removed colinear parameters (r > 0.95)")
-names(prms)[high.corr]
-prms <- prms[, !names(prms) %in% names(prms)[high.corr]]
-
-# Save this file so we can skip these steps later
-new.file.name <- file.path(data_dir,"Transformed non-colinear acous meas.csv")
-write.csv(prms, new.file.name, row.names = FALSE)
-
-```
-
-# Load measurements
-```{r}
-# Load data if previous step already done
-new.file.name <- file.path(data_dir,"Transformed non-colinear acous meas.csv")
-prms <- read.csv(file.path(data_dir,"acoustic parameters.csv"), stringsAsFactors = FALSE)
-acous.meas <- prms
-prms <- read.csv( new.file.name, stringsAsFactors = FALSE)
-
-```
-
-# Random Forest
-```{r}
-ap.trans.urf = randomForest(prms, proximity=T, ntree = 10000)
-# Save random forest so we can easily load it later
-new.file.name <- file.path(data_dir,"ap.trans.urf.rda")
-save(ap.trans.urf, file = new.file.name)
-
-```
-
-# RF distance matrix
-```{r}
-new.file.name <- file.path(data_dir,"ap.trans.urf.rda")
-load(new.file.name)
-
-# Make distance matrix from URF output
-ap.trans.urf.dist = 1 - ap.trans.urf$proximity
-
-# Take a look at the fist few rows 
-ap.trans.urf.dist[1:5, 1:5]
-range(ap.trans.urf.dist)
-
-# See which variables are most useful for finding structure in the data
-measurement_ranks <- order(ap.trans.urf$importance, decreasing = TRUE)
-# Look at top ten most useful variables
-names(prms[measurement_ranks[1:10]])
-
-# OOB error rate - gives an idea of how well data separates into discrete classes
-sum(ap.trans.urf$votes[,1] < ap.trans.urf$votes[,2]) / length(ap.trans.urf$votes[,1])
-
-# Get distance matrix between sound files
-RFdist = 1 - ap.trans.urf$proximity
-#RFdist = ap.trans.urf$proximity # proximity
-
-# Get and set row and col names
-birds = unname(lapply(prms[1], function(x) str_extract(x, "[^-]+"))) # only nestbox
-birds_keys = unname(prms[1])[[1]]
-rownames(RFdist) = birds_keys
-colnames(RFdist) = birds_keys
-dist_data <- as.dist(RFdist)
-
-# Convert to dataframe
-xy <- t(combn(colnames(RFdist), 2))
-acoustic_dist = data.frame(xy, acoustic_dist=RFdist[xy])
-
-```
-
-# Clustering
-```{r}
-
-# Cluster the distance matrix to group similar sounds together
-# Many ways to do this, here we use PAM
-sil_width <- c(NA)
-# TODO: Change this to the max number of cluster you want to allow (e.g. maximum expected repertoire size)
-sil_max <- 200 
-
-for(i in 2:sil_max){
-  print(i)
-  pam_fit <- pam(RFdist,diss = TRUE,k = i)
-  sil_width[i] <- pam_fit$silinfo$avg.width
-}
-# Find the optimal number of clusters
-num_clusts<- which.max(sil_width) # this is nonsense so select manually for now
-num_clusts<- 20
-clusters_pam <- pam(1-ap.trans.urf$proximity, k=num_clusts, diss = TRUE)
-acous.meas$cluster <- clusters_pam$clustering
-pam_fit <- pam(dist_data,diss = TRUE,k = num_clusts)
-
-# Take a look at how well the data clusters
-plot(1:sil_max, sil_width, pch=19,
-     xlab = "Number of clusters",
-     ylab = "Silhouette Width",
-     xaxp  = c(1, sil_max, 10),
-     main=sprintf("optimal number clusters = %i",num_clusts))
-lines(1:sil_max, sil_width)
-
-# Visualize clustered  sound files using t-SNE
-# We use 2-D t-SNE here
-tsne_obj <- Rtsne(dist_data, is_distance = TRUE, perplexity = 10)
-tsne_data <- tsne_obj$Y %>%
-  data.frame() %>%
-  setNames(c("X", "Y")) %>%
-  mutate(cluster = factor(acous.meas$cluster),
-         name = acous.meas$sound.files)
-
-# Note that tsne distorts distances!
-ggplot(aes(x = X, y = Y), data = tsne_data) +
-  geom_point(size = 2, pch=19, aes(color = as.factor(tsne_data$cluster))) +
-  theme_bw() +
-  ggtitle(sprintf("assigned num clusts = %i",num_clusts)) +
-  xlab("acoustic space") + 
-  ylab(" ")
-  
-# Visualize non-distored distribution in 2-D 
-# This looks messier but remember we are reducing dimensionality
-mds.2d <- cmdscale(RFdist, k = 2)
-tsne_data$mds1 <- mds.2d[,1]
-tsne_data$mds2 <- mds.2d[,2]
-
-ggplot(aes(x = mds1, y = mds2), data = tsne_data) +
-  geom_point(size = 2, pch=19,aes(color = as.factor(tsne_data$cluster))) +
-  theme_bw() +
-  ggtitle(sprintf("assigned num clusts = %i",num_clusts)) +
-  xlab("acoustic space") + 
-  ylab(" ") +
-  theme(legend.position="none")
-
-
-# Calculate acoustic space occupancy
-# We use 2-D MDS here
-mds <- isoMDS(RFdist, y = cmdscale(RFdist, k = 2), k = 2, maxit = 5, trace = FALSE, tol = 1e-3, p = 2)
-
-# Standardize to 0-1 range
-mds$points[, 1] <- mds$points[, 1] / max(mds$points[, 1])
-mds$points[, 2] <- mds$points[, 2] / max(mds$points[, 2])
-
-# Put truth labels and MDS vectors together
-labels <- prms$elm.type
-Y <- data.frame(id = 1:nrow(mds$points), labels, X1 = mds$points[, 1], X2 = mds$points[, 2])
-coords <- SpatialPoints(Y[, c("X1", "X2")])
-
-# This produces the acoustic area estimate
-area <- mcp(coords)
-
-```
 
 # Acoustic vs spatial distance
 ```{r}
 
-nestbox_coords = read_csv(coords_dir) %>% filter(nestbox %in% birds[[1]]) # only keep relevant birds
-new_order <-
-  sapply(birds[[1]], function(x, nestbox_coords) {
-    which(nestbox_coords$nestbox == x)
-  }, nestbox_coords)
-coords <- nestbox_coords[new_order,]
-
 space_dist_matrix = as.matrix(dist(coords[0:2], upper = T))
-rownames(space_dist_matrix) = birds_keys
-colnames(space_dist_matrix) = birds_keys
+rownames(space_dist_matrix) = birds
+colnames(space_dist_matrix) = birds
 spatial_dist_data <- as.dist(space_dist_matrix)
 
 # Convert to dataframe
-xy <- t(combn(colnames(space_dist_matrix), 2))
-spatial_dist = data.frame(xy, spatial_dist = space_dist_matrix[xy])
-df = full_join(spatial_dist, acoustic_dist) %>%  distinct(X1, X2, .keep_all =
-                                                            TRUE) %>% rename(key1 = X1, key2 = X2)
+spatial_dist = as_tibble(melt(space_dist_matrix, varnames = c("X1", "X2"))) %>% rename(s_dist = value)
+rm(space_dist_matrix, spatial_dist_data)
+
+# Join distances
+df = inner_join(spatial_dist, acoustic_dist) %>% 
+  rename(key1 = X1, key2 = X2)
+
+
 # Add cluster membership
-cluster_m = acous.meas[, c(1, ncol(acous.meas))]
-colnames(cluster_m)[1] <- "key1"
-df_complete = dplyr::inner_join(df, cluster_m, by = 'key1')
-cluster_m = cluster_m %>% mutate(key2 = key1, cluster2 = cluster)
-df_complete = dplyr::inner_join(df_complete, cluster_m, by = 'key2') %>% 
+dplyr::inner_join(df, cluster_m, by = 'key2')
+
+k1 = cluster_membership %>% select(bird, cluster, file) %>% rename(key1 = bird, cluster1 = cluster, file1 = file)
+k2 = k1 %>% rename(key2 = key1, cluster2 = cluster1)
+
+df_complete = left_join(df, k1, by = 'key1')
+
+df_complete = left_join(df_complete, k2, by = 'key2') %>% 
   mutate(cluster1 = cluster.x, key1 = key1.x) %>% 
   select(-c(cluster.y, key1.y, key1.x, cluster.x))  %>% 
   mutate(cluster = case_when(cluster1 == cluster2 ~ cluster1))
@@ -483,6 +553,8 @@ df_complete = dplyr::inner_join(df_complete, cluster_m, by = 'key2') %>%
 cc <-
   scales::div_gradient_pal("#000000", "#6e6e6e", "#b5b5b5", "Lab")(seq(0, 1, length.out =
                                                                          nrow(unique(df_complete[c("cluster")]))))
+
+scale_color_manual(values = cc) +
 
 df_complete %>% filter(spatial_dist != 0) %>% drop_na() %>% #filter(cluster==1) %>% 
   #sample_n(50000, replace = FALSE) %>%

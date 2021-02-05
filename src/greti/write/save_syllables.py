@@ -1,7 +1,12 @@
+import glob
 import json
+import os
 import random
+import shutil
+from joblib import Parallel, delayed
 import numpy as np
 from pathlib2 import Path
+from tqdm import tqdm
 from src.avgn.utils.paths import most_recent_subdirectory
 from src.greti.read.paths import DATA_DIR, safe_makedir
 import librosa
@@ -141,8 +146,8 @@ def save_note_audio(DATASET_ID,
                     shuffle_songs=True,  # Useful to avoud using very similar examples
                     max_seqlength=3,  # There is no warrantee that this will work with greater lenghts as is
                     max_n_sylls=10,
-                    frontpad=0.006,
-                    endpad=0.03  # the segmentation algo shaves very closely - add some padding to each note
+                    frontpad=0.006,  # NOTE: not used
+                    endpad=0.03  # the segmentation algo shaves very closely - add some padding to each note #NOTE: not used
                     ):
     # Prepare paths
     out_dir_notes_wav = Path(str(out_dir) + '_notes') / 'WAV'
@@ -226,3 +231,76 @@ def save_note_audio(DATASET_ID,
 
                         json.dump(syllable_dict, open(out_filejson,
                                                       'w', encoding="utf8"), sort_keys=True)
+
+
+def join_and_save_notes(out_dir, test_run=False, n_jobs=-1):
+    """Joins individual notes into corresponding syllables; saves resulting .wav + .json with metadata 
+
+    Args:
+        out_dir (PosixPath): Directory where to save output, including dataset folder. '_notes' will be added
+        test_run (bool, optional): Is this a test, e.g. with a subset?. Defaults to False. If True, adds '_test' to out folder
+    """
+
+    if test_run:
+        test = '_test'
+    else:
+        test = ''
+
+    # Prepare in paths
+    in_dir_notes_wav = Path(str(out_dir) + f'_notes{test}') / 'WAV'
+    in_dir_notes_json = Path(str(out_dir) + f'_notes{test}') / 'JSON'
+
+    # Prepare out paths
+    out_dir_notes_wav = Path(str(out_dir) + f'_joined_notes{test}') / 'WAV'
+    out_dir_notes_json = Path(str(out_dir) + f'_joined_notes{test}') / 'JSON'
+    safe_makedir(out_dir_notes_wav)
+    safe_makedir(out_dir_notes_json)
+
+    # Build dictionary of paths
+    syll_dict = {}
+    for filename in tqdm(glob.glob(os.path.join(in_dir_notes_wav, '*.wav'))):
+        syll = Path(filename).stem[:-2]
+        if syll in syll_dict:
+            syll_dict[syll].append(filename)
+        else:
+            syll_dict[syll] = [filename]
+
+    # Now join notes into syllables, saving also corresponding JSON dicts
+
+    def loop_save_notes(k, v, out_dir_notes_wav, in_dir_notes_json, out_dir_notes_json):
+        v.sort()
+        syll_data = []
+        for filename in v:
+            data, sr = librosa.load(filename)
+            syll_data.append(data)
+        out_filedir = out_dir_notes_wav / f"{k}.wav"
+        librosa.output.write_wav(
+            out_filedir, np.concatenate(syll_data, axis=0), sr, norm=False)
+        in_json = in_dir_notes_json / \
+            f'{Path(filename).stem}.json'
+        # just use last note
+        out_json = out_dir_notes_json / f'{k}.json'
+        shutil.copy(in_json, out_json)
+
+    with Parallel(n_jobs=n_jobs, verbose=2) as parallel:
+        parallel(
+            delayed(loop_save_notes)(k, v, out_dir_notes_wav,
+                                     in_dir_notes_json, out_dir_notes_json)
+            for k, v in tqdm(syll_dict.items())
+
+        )
+
+    # for k, v in tqdm(syll_dict.items()):
+    #     v.sort()
+    #     syll_data = []
+    #     for filename in v:
+    #         data, sr = librosa.load(filename)
+    #         syll_data.append(data)
+    #     out_filedir = out_dir_notes_wav / f"{k}.wav"
+    #     librosa.output.write_wav(
+    #         out_filedir, np.concatenate(syll_data, axis=0), sr, norm=False)
+    #     in_json = in_dir_notes_json / \
+    #         f'{Path(filename).stem}.json'
+    #     # just use last note
+    #     out_json = out_dir_notes_json / f'{k}.json'
+    #     shutil.copy(in_json, out_json)
