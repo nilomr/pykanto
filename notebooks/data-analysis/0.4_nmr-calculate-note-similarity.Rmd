@@ -9,9 +9,11 @@ output:
 editor_options:
   chunk_output_type: console
 ---
+
 <br>
 
 # Settings and paths
+
 ```{r setup}
 # Knitr settings: 
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
@@ -59,6 +61,9 @@ x <- c(
     'Matrix'
   )
 
+library(colorspace)
+
+
 # load packages 
 aa <- lapply(x, function(y) {
   if (!y %in% installed.packages()[, "Package"])  {
@@ -68,6 +73,7 @@ aa <- lapply(x, function(y) {
 })
 
 # Paths
+year = '2020'
 root.dir = rprojroot::find_rstudio_root_file()
 # dataset_name <-  "GRETI_HQ_2020_joined_notes_test" #! remove _test after done #!
 dataset_name <-  "GRETI_HQ_2020_joined_notes" #! change to this if not test
@@ -77,6 +83,7 @@ out_dir = file.path(root.dir, "data", 'note_dfs', dataset_name)
 coords_dir = file.path(getwd(), "resources", "nestboxes", "nestbox_coords.csv")
 dom_freqs_name <- file.path(out_dir, 'dominant_frequencies.RDS')
 dtw_dist_name <- file.path(out_dir, 'dtw_dist.RDS')
+figures_dir <-  file.path(root.dir, "reports", "figures", year, 'population')
 
 est.file.name <- file.path(out_dir, 'selection_table.RDS')
 specs_dir <-  file.path(out_dir, 'spectrograms')
@@ -85,8 +92,11 @@ if (!dir.exists(specs_dir)) {
   dir.create(specs_dir, recursive = TRUE)
 }
 
-ncores = parallel::detectCores() - 1
+if (!dir.exists(figures_dir)) {
+  dir.create(figures_dir, recursive = TRUE)
+}
 
+ncores = parallel::detectCores() - 1
 
 # WarbleR options
 warbleR_options(
@@ -100,10 +110,13 @@ warbleR_options(
 )
 
 # Functions
-stdize = function(x, ...) {(x - min(x, ...)) / (max(x, ...) - min(x, ...))}
+stdize = function(x, ...) {
+  (x - min(x, ...)) / (max(x, ...) - min(x, ...))
+}
 ```
 
 # Make or load selection table
+
 ```{r}
 
 if (file.exists(est.file.name)) {
@@ -111,13 +124,19 @@ if (file.exists(est.file.name)) {
 } else {
   wi <- wav_info()
   summary(wi)
-  est <- selection_table(whole.recs = T, extended = T, confirm.extended = F)
-  save(est,file=est.file.name)
+  est <-
+    selection_table(
+      whole.recs = T,
+      extended = T,
+      confirm.extended = F
+    )
+  save(est, file = est.file.name)
 }
 
 ```
 
 # Extract dominant frequencies
+
 ```{r}
 #DTW
 # dom_freqs$sound.files <-
@@ -146,6 +165,7 @@ if (file.exists(dom_freqs_name)) {
 ```
 
 # Calculate DTW distances
+
 ```{r}
 # dom_freqs %>% slice(36) %>% gather() %>% slice(3:nrow(.)) %>% select(value) %>%  plot() # check one trace
 
@@ -166,6 +186,7 @@ dtw_dist_matrix[!is.finite(dtw_dist_matrix)] # check that there are no infinites
 ```
 
 # Clustering
+
 ```{r}
 # Hierarchical clustering
 DTWdist = as.dist(dtw_dist_matrix)
@@ -176,7 +197,7 @@ clusters <-
     distM = as.matrix(DTWdist),
     deepSplit = 3,
     # This works well (i.e. cluster membership makes sense)
-    minClusterSize = 4, # Set to smallest sample size for any song type
+    minClusterSize = 1, # Set to smallest sample size for any song type
     method = 'hybrid',
     verbose = 4
   )
@@ -196,10 +217,11 @@ cluster_membership = tibble(file = dom_freqs$sound.files, cluster = clusters) %>
 # cluster_membership = cluster_membership %>% mutate(hdbscan_cluster = hdbscan_clusters$cluster)
 ```
 
-# Prepare song sharing data
+# Prepare song-sharing data
+
 ```{r}
 # Build song-sharing matrix
-summary_songs = cluster_membership %>% distinct(note, cluster, .keep_all = TRUE)
+summary_songs = cluster_membership %>% distinct(bird, cluster, .keep_all = TRUE)
 match_matrix = as.matrix(dist(summary_songs$cluster, upper=TRUE, diag=FALSE))
 match_matrix[match_matrix > 0] <- NA
 match_matrix[match_matrix == 0] <- 1
@@ -209,16 +231,19 @@ rownames(match_matrix) = summary_songs$bird
 colnames(match_matrix) = summary_songs$bird
 
 # Number of shared songs (losing info about which)
-shared_matrix = rowsum(match_matrix, row.names(match_matrix), reorder = FALSE)
-shared_table = as_tibble(shared_matrix, .name_repair="minimal")
-shared_matrix = as.matrix(do.call(cbind, by(t(shared_table),INDICES=names(shared_table),FUN=colSums)))
-rownames(shared_matrix) = colnames(shared_matrix)
+n_shared_songs = 
+  melt(match_matrix, varnames = c("bird1", "bird2")) %>% 
+  as_tibble() %>% 
+  group_by(bird1, bird2) %>% 
+  summarise(value = sum(value)) %>% 
+  ungroup()
 
-diag(shared_matrix) <- 0
-shared_matrix = as.matrix(tril(shared_matrix))
 ```
 
 # Acoustic distance vs spatial distance
+
+## Prepare data
+
 ```{r}
 library(usedist)
 
@@ -263,7 +288,10 @@ spatial_dist_data = dist_groups(spatial_dist_data, birds) %>%
   janitor::clean_names() %>% 
   rename(bird1 = item1, bird2 = item2, s_dist = distance) %>% 
   select(-group1, -group2, -label) %>% 
-  as.tibble()
+  as_tibble()
+
+distances_by_song = inner_join(song_mean_a_dist, spatial_dist_data, by=c('bird1', 'bird2')) # removing within bird comparison
+distances_by_bird = inner_join(bird_mean_a_dist, spatial_dist_data, by=c('bird1', 'bird2')) # removing within bird comparison
 
 # Build dataframes by song, bird, and sharing
 distances_by_shared_song = inner_join(distances_by_song, cluster_membership, by = c("group1" = "note")) %>% 
@@ -271,14 +299,22 @@ distances_by_shared_song = inner_join(distances_by_song, cluster_membership, by 
   select(-bird.x, -bird.y, -name.x, -name.y) %>% 
   rename(cluster1 = cluster.x, cluster2 = cluster.y)
 
-distances_by_song = inner_join(song_mean_a_dist, spatial_dist_data, by=c('bird1', 'bird2')) # removing within bird comparison
-distances_by_bird = inner_join(bird_mean_a_dist, spatial_dist_data, by=c('bird1', 'bird2')) # removing within bird comparison
+# Sharing/not sharing vs distance.
+# NOTE: this can be done in two ways: by using number of clusters a bird is present in (as below), 
+# or by the number of song types defined previously. The former is more consistent with the way 
+# in which the acoustic space is defined, and so is preferred.
 
-# Sharing/not sharing vs distance
-n_songs_per_bird = song_mean_a_dist %>% distinct(bird1, note1) %>% group_by(bird1) %>% tally()
+n_songs_per_bird = cluster_membership %>% 
+  group_by(bird) %>% 
+  mutate(n = n_distinct(cluster)) %>% 
+  rename(bird1 = bird) %>% 
+  distinct(bird1, n)
 
-sharing_df = melt(shared_matrix, varnames = c("bird1", "bird2")) %>% 
-  rename(n_shared = value, bird1= bird2, bird2=bird1) %>% 
+# Alternative way, which in a few cases lead to more shared songs than total songs
+# n_songs_per_bird = song_mean_a_dist %>% distinct(bird1, note1) %>% group_by(bird1) %>% tally()
+
+sharing_df = n_shared_songs %>% 
+  rename(n_shared = value) %>% 
   left_join(., spatial_dist_data) %>% 
   separate(bird1, 
            into = c("area1", "num"), 
@@ -289,9 +325,8 @@ sharing_df = melt(shared_matrix, varnames = c("bird1", "bird2")) %>%
   mutate(area = case_when(area1 == area2 ~ area1)) %>% 
   select(-num, -area1, -area2) %>% 
   as_tibble() %>% # Add number of song types per bird, calculate sharing index
-  full_join(., n_songs_per_bird) %>% 
-  full_join(., n_songs_per_bird, by = c('bird2' = 'bird1'), suffix = c("1", "2")) %>% 
-  # filter(s_dist < 400) %>% # Keep only close neighbours 
+  full_join(., n_songs_per_bird, by = c('bird2' = 'bird1')) %>% 
+  full_join(., n_songs_per_bird, by = c('bird1' = 'bird1'), suffix = c("2", "1")) %>% 
   mutate(jaccard = n_shared/(n1+n2)) %>% 
   as_tibble() %>% 
   drop_na(s_dist)
@@ -300,24 +335,114 @@ sharing_df = melt(shared_matrix, varnames = c("bird1", "bird2")) %>%
 mean_jaccard = sharing_df %>% group_by(bird1) %>% 
   mutate(mean = mean(jaccard, na.rm=TRUE)) %>% 
   inner_join(., coords, by= c('bird1' = 'nestbox')) %>% 
-  select(-`box type`)
+  select(-`box type`) %>% 
+  distinct(bird1, mean, .keep_all = TRUE)
+
+# Average acoustic distance by bird
+mean_a_dist = bird_mean_a_dist %>% 
+  group_by(bird1) %>% 
+  dplyr::summarize(mean = mean(mean_a_dist, na.rm=TRUE)) %>% 
+  inner_join(., coords, by= c('bird1' = 'nestbox')) %>% 
+  select(-`box type`, -section)
+
+```
+
+#### Convert coordinates
+
+```{r}
+library(rgdal)
+
+wgs84 = "+init=epsg:4326"
+bng = '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000
++ellps=airy +datum=OSGB36 +units=m +no_defs'
+
+ConvertCoordinates <- function(easting, northing) {
+  out = cbind(easting, northing)
+  mask = !is.na(easting)
+  sp <-
+    sp::spTransform(sp::SpatialPoints(list(easting[mask], northing[mask]), proj4string =
+                                        sp::CRS(bng)),
+                    sp::CRS(wgs84))
+  out[mask, ] = sp@coords
+  out
+}
+```
 
 
+## Mantel test
+```{r}
+library(ade4)
+library(vegan)
 
-#TODO================================================================================================= add areas in woods
+# DTW distances
+birds = cluster_membership$bird
+note_dtw_dist = dtw_dist_matrix
+rownames(note_dtw_dist) = birds
+colnames(note_dtw_dist) = birds
+mean_dtw_dist_matrix = meandist(as.dist(note_dtw_dist), birds)
+
+# Spatial distances
+birds = cluster_membership$bird %>% unique()
+new_order <-
+  sapply(birds, function(x, nest_coords) {
+    which(nest_coords$nestbox == x)
+  }, nest_coords)
+coords <- nest_coords[new_order,]
+space_dist_matrix = as.matrix(dist(coords[0:2], upper = T))
+rownames(space_dist_matrix) = birds
+colnames(space_dist_matrix) = birds
+
+# Mantel
+mantel.rtest(as.dist(space_dist_matrix), as.dist(mean_dtw_dist_matrix), nrepet = 9999)
 
 
 ```
 
 ## Plots (distances)
+
+### Spatial distance vs acoustic distance
+
 ```{r}
-# Plot spatial distance vs acoustic distance (by bird)
-distances_by_bird %>% 
+
+a_vs_s_distance = distances_by_bird %>%
   # filter_at(vars(starts_with("bird")), all_vars(str_detect(., pattern = "MP"))) %>%
-  ggplot(aes(x= s_dist, y= mean_a_dist)) + 
-  geom_point(size=0.6, alpha=0.6) + 
-  geom_smooth(method = 'gam', colour='white') +
-  theme(aspect.ratio = 1)
+  ggplot(aes(x = s_dist, y = mean_a_dist)) +
+  geom_point(size = 0.8, alpha = 0.3) +
+  geom_smooth(method = 'gam', colour = '#b55100', se = TRUE, size = 2, alpha=0.6) +
+  theme(
+    panel.background = element_rect(fill = '#f2f1f0', colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    aspect.ratio = 1,
+    plot.title=element_text(hjust=0, vjust=2, face='bold', size = 18),
+    plot.subtitle=element_text(hjust=0, vjust=3, size = 15),
+    text = element_text(size = 15)) +
+  labs(y = 'Acoustic distance\n',
+       x = "\nDistance (m)",
+       title = "Song sharing versus spatial distance",
+       subtitle = "(each point is a pair of birds")
+
+a_vs_s_distance
+
+ggsave(
+  a_vs_s_distance,
+  path = figures_dir,
+  filename = "a_vs_s_distance.png",
+  width = 15,
+  height = 15,
+  units = "cm",
+  dpi = 350
+)
+
+```
+
+### Spatial distance vs acoustic distance, by song type
+
+```{r}
+
+
 
 # Plot spatial distance vs acoustic distance (by song type)
 distances_by_shared_song %>%
@@ -331,26 +456,299 @@ distances_by_shared_song %>%
   geom_smooth(method = 'lm', se = FALSE) +
   theme(aspect.ratio = 1)
 
+```
 
+### Maps
+
+#### Get background map
+
+```{r}
+
+library(ggmap)
+wytham <- c(-1.350288,51.752327,-1.294670,51.785683)
+ggmap::register_google(key = "AIzaSyDfAbhsGQ32byJTmQnpOFjQ_5yr3ViVYeI", write = TRUE)
+
+wytham_map <- 
+  get_map(
+    location = wytham,
+    source = "stamen",
+    maptype = "toner",
+    crop = FALSE,
+    zoom = 15
+  ) 
+
+```
+
+#### Map: average acoustic similarity
+
+```{r}
+
+mean_a_dist %>% 
+  ggplot(aes(x = x, y = y, colour = mean)) + 
+  geom_point(size = 4) + 
+  scale_colour_continuous_sequential(palette = 'Sunset') +
+  theme(aspect.ratio = 1) +
+  theme(
+  panel.background = element_rect(fill = '#808080', colour = NA),
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  axis.ticks.y = element_blank(),
+  axis.ticks.x = element_blank()
+)
+
+latlong = ConvertCoordinates(mean_a_dist$x, mean_a_dist$y) %>% as_tibble()
+mean_a_dist$x = latlong$easting
+mean_a_dist$y = latlong$northing
+mean_a_dist = mean_a_dist %>% filter(mean < 0.24)
+
+min = round(min(mean_a_dist$mean), 2)
+avg = round(mean(mean_a_dist$mean), 2)
+max = round(max(mean_a_dist$mean - 0.02), 2)
+
+ breaks= c(min, avg, max)
+
+a_dist_map = wytham_map %>%
+  ggmap(base_layer = ggplot(aes(x = x, y = y, colour = mean), data = mean_a_dist), darken = c(0.4, "white")) %>% +
+  coord_cartesian(xlim=c(-1.350288,-1.294670), ylim=c(51.752327,51.785683)) +
+  geom_point(size = 5, alpha = 1) + 
+  scale_colour_continuous_sequential(palette = 'Inferno', rev=T, breaks= c(0.10, 0.15, 0.20)) +
+  guides(colour = guide_colourbar(barwidth = 1, barheight = 7, ticks = FALSE, title.vjust = 2)) +
+  labs(x = NULL, y = NULL) + 
+  guides(x = "none", y = "none") +
+theme(
+    panel.background = element_rect(fill = '#f2f1f0', colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    aspect.ratio = 1,
+    plot.title=element_text(hjust=0, vjust=2, face='bold', size = 18),
+    plot.subtitle=element_text(hjust=0, vjust=3, size = 15),
+    text = element_text(size = 15)) +
+  labs(title = "Mean acoustic similarity",
+       subtitle = "Lighter points = more acoustically similar,\non average, to other birds in the woods",
+       color = "Mean\nacoustic\ndistance")
+
+a_dist_map
+
+ggsave(
+  a_dist_map,
+  path = figures_dir,
+  filename = "a_dist_map.png",
+  width = 15,
+  height = 15,
+  units = "cm",
+  dpi = 350
+)
+
+```
+
+
+
+```{r}
+
+sharing_df %>% 
+  # mutate(n_shared = replace(n_shared, n_shared >1, 1)) %>% 
+  filter(s_dist < 700) %>%
+  # filter_at(vars(starts_with("bird")), all_vars(str_detect(., pattern = "W"))) %>%
+  ggplot(aes(x= s_dist, y= jaccard)) + 
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "gam") +
+  # geom_point(size=0.6, alpha=0.6) + 
+  theme(aspect.ratio = 1)
+
+sharing_df %>% 
+  # mutate(n_shared = replace(n_shared, n_shared >1, 1)) %>% 
+  filter(s_dist < 4000) %>%
+  # filter(area == 'W') %>% 
+  ggplot(aes(x= s_dist, y= jaccard)) + 
+  geom_point(alpha = 0.01) +
+  geom_smooth(method = "lm") +
+  geom_point(size=0.6, alpha=0.6) + 
+  theme(aspect.ratio = 1)
+
+
+```
+
+#### Map: spatial distribution of average sharing (by bird)
+
+```{r}
+# Plot spatial distribution of average song sharing
+
+min = round(min(mean_jaccard$mean), 2)
+avg = round(mean(mean_jaccard$mean), 2)
+max = round(max(mean_jaccard$mean - 0.02), 2)
+
+jaccard_map = wytham_map %>%
+  ggmap(base_layer = ggplot(aes(x = x, y = y, colour = mean), data = mean_jaccard), darken = c(0.4, "white")) %>% +
+  coord_cartesian(xlim=c(-1.350288,-1.294670), ylim=c(51.752327,51.785683)) +
+  geom_point(size = 5, alpha = 1) + 
+  scale_colour_continuous_sequential(palette = 'Inferno', rev=F, breaks= c(0, avg, 0.10)) +
+  guides(colour = guide_colourbar(barwidth = 1, barheight = 7, ticks = FALSE, title.vjust = 2)) +
+  labs(x = NULL, y = NULL) + 
+  guides(x = "none", y = "none") +
+theme(
+    panel.background = element_rect(fill = '#f2f1f0', colour = NA),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    aspect.ratio = 1,
+    plot.title=element_text(hjust=0, vjust=2, face='bold', size = 18),
+    plot.subtitle=element_text(hjust=0, vjust=3, size = 15),
+    text = element_text(size = 15)) +
+  labs(title = "Mean song-sharing",
+       subtitle = "Lighter points = more songs shared,\non average, with other birds in the woods",
+       color = "Mean\nJaccard\nIndex")
+
+jaccard_map
+
+ggsave(
+  jaccard_map,
+  path = figures_dir,
+  filename = "jaccard_map.png",
+  width = 15,
+  height = 15,
+  units = "cm",
+  dpi = 350
+)
+
+```
+
+### Probability of sharing: whole woods
+
+```{r}
+sharing_vs_dist = sharing_df %>%
+  mutate(n_shared = replace(n_shared, n_shared > 1, 1)) %>%
+  filter(s_dist < 4000) %>%
+  # filter(area =='MP') %>%
+  ggplot(aes(x = s_dist, y = n_shared)) +
+  geom_jitter(alpha = 0.1,
+              height = 0.02,
+              size = 0.5) +
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = "binomial"),
+    colour = '#b55100',
+    se = TRUE, 
+    size = 2, 
+    alpha=0.1,
+    fill='#b55100'
+  ) +
+  theme(
+      panel.background = element_rect(fill = '#f2f1f0', colour = NA),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.ticks.x = element_blank(),
+      aspect.ratio = 1.2,
+      plot.title=element_text(hjust=0, vjust=2, face='bold', size = 18),
+      plot.subtitle=element_text(hjust=0, vjust=3, size = 15),
+      text = element_text(size = 15)) +
+    labs(y = 'Probability of sharing a song\n',
+         x = "\nDistance (m)",
+         title = "Probability of sharing vs distance",
+         subtitle = "1 = share \u2265 1 song,\n0 = no songs shared"
+         ) 
+
+sharing_vs_dist
+
+ggsave(
+  sharing_vs_dist,
+  path = figures_dir,
+  filename = "sharing_vs_dist_4k.png",
+  width = 15,
+  height = 15,
+  units = "cm",
+  dpi = 350
+)
+
+
+
+```
+
+### Probability of sharing by area of woods
+
+```{r}
 # Plot sharing/not sharing vs spatial distance
-library(car)
+
+sharing_vs_dist_by_area = sharing_df %>%
+  group_by(area) %>%
+  mutate(area = recode(area,'B' = 'Marley', 'EX' = 'Extra', 'MP' = 'Marley Plantation', 'O' = 'Broad Oak', 'SW' = 'Singing Way', 'W' = 'Great Wood')) %>% 
+  filter(n() > 100) %>% # filter areas with insufficient data
+  mutate(n_shared = replace(n_shared, n_shared > 1, 1)) %>%
+  filter(s_dist < 1000) %>%
+  drop_na(area) %>%
+  # filter(area =='MP') %>%
+  ggplot(aes(x = s_dist, y = n_shared)) +
+  geom_jitter(alpha = 0.3,
+              height = 0.02,
+              size = 0.5) +
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = "binomial"),
+    colour = '#b55100',
+    se = TRUE, 
+    size = 2, 
+    alpha=0.1,
+    fill='#b55100'
+  ) +
+  scale_x_continuous(breaks = c(0, 250,500,750, 1000), labels = c('0','250', '500', '750', '1k')) +
+  theme(
+      panel.background = element_rect(fill = '#f2f1f0', colour = NA),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.ticks.x = element_blank(),
+      aspect.ratio = 2,
+      plot.title=element_text(hjust=0, vjust=2, face='bold', size = 18),
+      plot.subtitle=element_text(hjust=0, vjust=3, size = 15),
+      text = element_text(size = 15)) +
+    labs(y = 'Probability of sharing a song\n',
+         x = "\nDistance (m)",
+         title = "Probability of sharing vs distance",
+         subtitle = "1 = share \u2265 1 song,\n0 = no songs shared"
+         ) +
+  facet_grid(cols = vars(area), shrink = FALSE) +
+  coord_fixed()
+
+
+sharing_vs_dist_by_area
+
+ggsave(
+  sharing_vs_dist_by_area,
+  path = figures_dir,
+  filename = "sharing_vs_dist_by_area.png",
+  width = 35,
+  height = 15,
+  units = "cm",
+  dpi = 350
+)
+
+
+```
+
+### Jaccard by area of the woods
+
+```{r}
+
+# Plot jaccard vs spatial distance
 
 sharing_df %>%
   group_by(area) %>%
   mutate(area = recode(area,'B' = 'Marley', 'EX' = 'Extra', 'MP' = 'Marley Plantation', 'O' = 'Broad Oak', 'SW' = 'Singing Way', 'W' = 'Great Wood')) %>% 
-  filter(n() > 100) %>%
-  mutate(n_shared = replace(n_shared, n_shared > 1, 1)) %>%
-  filter(s_dist < 1500) %>%
+  filter(n() > 100) %>% # filter areas with insufficient data
+  filter(s_dist < 3000) %>%
   drop_na(area) %>%
   # filter(area =='MP') %>%
-  ggplot(aes(x = s_dist, y = n_shared)) +
-  geom_jitter(alpha = 0.2,
-              height = 0.02,
-              size = 2) +
+  ggplot(aes(x = s_dist, y = jaccard)) +
+  geom_jitter(alpha = 0.4,
+              height = 0.006,
+              size = 1) +
   geom_smooth(
-    method = "glm",
-    method.args = list(family = "binomial"),
-    colour = 'black'
+    method = "gam",
+    colour = 'black',
+    size=2
   ) +
   theme(
     panel.background = element_rect(fill = '#f2f1f0', colour = NA),
@@ -370,89 +768,13 @@ sharing_df %>%
        title = "Song sharing vs distance, by area of the Woods\n") +
   facet_grid(cols = vars(area), shrink = TRUE)
 
-
-
-sharing_df %>% 
-  # mutate(n_shared = replace(n_shared, n_shared >1, 1)) %>% 
-  filter(s_dist < 1000) %>%
-  # filter_at(vars(starts_with("bird")), all_vars(str_detect(., pattern = "MP"))) %>%
-  ggplot(aes(x= s_dist, y= jaccard)) + 
-  geom_point(alpha = 0.01) +
-  geom_smooth(method = "gam") +
-  # geom_point(size=0.6, alpha=0.6) + 
-  theme(aspect.ratio = 1)
-
-
-sharing_df %>% 
-  # mutate(n_shared = replace(n_shared, n_shared >1, 1)) %>% 
-  filter(s_dist < 1000) %>%
-  filter(area == 'W') %>% 
-  ggplot(aes(x= s_dist, y= jaccard)) + 
-  geom_point(alpha = 0.01) +
-  geom_smooth(method = "lm") +
-  geom_point(size=0.6, alpha=0.6) + 
-  theme(aspect.ratio = 1)
-
-
-# Plot spatial distribution of average song sharing
-cc <-
-  scales::div_gradient_pal("#005ba1", "#8f8563", "#c94000", "Lab")(seq(0, 1, length.out = nrow(unique(mean_jaccard[c("mean")]))))
-
-library(colorspace)
-
-mean_jaccard %>% 
-  ggplot(aes(x = x, y = y, colour = mean)) + 
-  geom_point(size = 4) + 
-  scale_colour_continuous_sequential(palette = 'Red-Blue') +
-  theme(aspect.ratio = 1) +
-  theme(
-  panel.background = element_rect(fill = '#808080', colour = NA),
-  panel.grid.major = element_blank(),
-  panel.grid.minor = element_blank(),
-  axis.ticks.y = element_blank(),
-  axis.ticks.x = element_blank()
-)
-
-
-
 ```
 
-# Prob of sharing vs distance, plot
-```{r}
-sharing_df %>%
-  mutate(n_shared = replace(n_shared, n_shared > 1, 1)) %>%
-  filter(s_dist < 1000) %>%
-  # filter(area =='MP') %>%
-  ggplot(aes(x = s_dist, y = n_shared)) +
-  geom_jitter(alpha = 0.1,
-              height = 0.02,
-              size = 0.5) +
-  geom_smooth(
-    method = "glm",
-    method.args = list(family = "binomial"),
-    colour = 'black'
-  ) +
-  theme(
-    panel.background = element_rect(fill = '#f2f1f0', colour = NA),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_blank(),
-    axis.ticks.y = element_blank(),
-    axis.ticks.x = element_blank(),
-    text = element_text(size = 15),
-    legend.position = "none",
-    aspect.ratio = 1.5,
-    strip.background = element_rect(fill="white"),
-    strip.text = element_text(colour = 'black', size = 15, vjust = 1.2),
-    plot.title = element_text(hjust = 0.5)
-  ) +
-  labs(y = 'Probability of sharing a song\n',
-       x = "\nDistance (m)",
-       title = "Song sharing vs distance\n")
-```
 
 # Graph
 
 ## Build graph and layout
+
 ```{r}
 
 grph = melt(shared_matrix, varnames = c("bird1", "bird2")) %>% 
@@ -488,6 +810,7 @@ graph = graph %>% mutate(x = coordinates$x, y =  coordinates$y)
 ```
 
 ## Plot graph
+
 ```{r}
 # Plot as such
 
@@ -519,7 +842,86 @@ ggraph(graph,  x = x, y = y) +
 
 
 
-# Acoustic vs spatial distance
+# Spatial distribution of song characteristics
+
+## Mean frequency per bird
+
+### Prepare data
+```{r}
+library(matrixStats)
+
+freqs_by_bird = dom_freqs %>% 
+  mutate(name = lapply(sound.files, function(x)
+  gsub("\\..*", "", x))) %>%
+  mutate(note = gsub('-[^-]*$', '', name),
+         bird = gsub('-[^-]*', '', name)) %>%
+  select(-sound.files, -selec) %>%
+  mutate(mean = rowMeans(as.matrix(select(., starts_with("dfreq"))))) %>%
+  mutate(min = rowMins(as.matrix(select(., starts_with("dfreq"))))) %>% 
+  mutate(max = rowMaxs(as.matrix(select(., starts_with("dfreq"))))) %>% 
+  as_tibble() %>%
+  select(bird, name, note, mean, min, max) %>%
+  group_by(bird) %>%
+  summarize(mean_freq = mean(mean, na.rm = TRUE), min_freq = mean(min, na.rm = TRUE), max_freq = mean(max, na.rm = TRUE), lowest = min(min, na.rm = TRUE), highest = max(max, na.rm = TRUE)) %>%
+  inner_join(., coords, by = c('bird' = 'nestbox'))
+
+
+
+```
+
+### Plot
+```{r}
+
+
+library(colorspace)
+library(ggdist)
+
+freqs_by_bird %>%
+  ggplot(aes(x = x, y = y, colour = mean_freq)) + 
+  geom_point(size = 4) + 
+  scale_colour_continuous_sequential(palette = 'Red-Blue') +
+  theme(aspect.ratio = 1) +
+  theme(
+  panel.background = element_rect(fill = '#808080', colour = NA),
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  axis.ticks.y = element_blank(),
+  axis.ticks.x = element_blank()
+)
+
+
+freqs_by_bird %>%
+  ggplot(aes(x = x, y = y, colour = min_freq)) + 
+  geom_point(size = 4) + 
+  scale_colour_continuous_sequential(palette = 'Red-Blue') +
+  theme(aspect.ratio = 1) +
+  theme(
+  panel.background = element_rect(fill = '#808080', colour = NA),
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  axis.ticks.y = element_blank(),
+  axis.ticks.x = element_blank()
+)
+
+freqs_by_bird %>%
+  ggplot(aes(x = x, y = y, colour = lowest)) + 
+  geom_point(size = 4) + 
+  scale_colour_continuous_sequential(palette = 'Red-Blue') +
+  theme(aspect.ratio = 1) +
+  theme(
+  panel.background = element_rect(fill = '#808080', colour = NA),
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  axis.ticks.y = element_blank(),
+  axis.ticks.x = element_blank()
+)
+
+freqs_by_bird %>% ggplot(aes(x= section, y = min_freq, )) + stat_gradientinterval(slab_type = 'histogram') + geom_jitter()
+
+
+```
+
+
 ```{r}
 
 space_dist_matrix = as.matrix(dist(coords[0:2], upper = T))
@@ -589,7 +991,6 @@ df_complete %>% filter(spatial_dist != 0) %>% drop_na() %>% #filter(cluster==1) 
 
 ```
 
-
 ```{r}
 # track harmonic frequencu contour
 
@@ -647,4 +1048,3 @@ for (indv1 in unique(cluster_membership$bird)) {
   pb$tick()
 }
 ```
-
