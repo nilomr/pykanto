@@ -27,11 +27,12 @@ Modules
    :toctree: _autosummary
    :recursive:
 
-   pykanto.dataset
    pykanto.parameters
-   pykanto.plot
+   pykanto.dataset
    pykanto.intlabel
+   pykanto.plot
    pykanto.signal
+   pykanto.utils
 
 
 

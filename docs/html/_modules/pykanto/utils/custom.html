@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pykanto.utils.custom &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/paths.html">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/segmentation.html">Vocalisation segmentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../../../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pykanto.utils.custom</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pykanto.utils.custom</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+
+
+<div class="viewcode-block" id="get_boxes_data"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.get_boxes_data">[docs]</a><span class="k">def</span> <span class="nf">get_boxes_data</span><span class="p">(</span><span class="n">YEAR</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ORIGIN_DIR</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+                   <span class="n">RESOURCES_DIR</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+                   <span class="n">days_before_laydate</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a dataframe with brood information for each nestbox that was</span>
+<span class="sd">    recorded within a specified time window. Prints some basic information about</span>
+<span class="sd">    sample sizes.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        YEAR (str): Year of data to extract</span>
+<span class="sd">        ORIGIN_DIR (PosixPath): Location of sound files to use</span>
+<span class="sd">        RESOURCES_DIR (PosixPath): Path to &#39;resources&#39; folder in the project; </span>
+<span class="sd">            assumes `RESOURCES_DIR / &quot;brood_data&quot; / YEAR / *.csv` exists.</span>
+<span class="sd">        days_before_laydate (int, optional): Maximum difference allowed between</span>
+<span class="sd">        first day of recording and first egg allowed. In days, defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        final_df (pd.DataFrame): Those that laid eggs and were recorded a</span>
+<span class="sd">        maximum of 10 days before the first egg was laid</span>
+<span class="sd">        full_df (pd.DataFrame): Every box that was recorded</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">filelist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ORIGIN_DIR</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;**/*.WAV&quot;</span><span class="p">)))</span>
+    <span class="n">recorded_nestboxes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">file</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">])</span>
+    <span class="n">ebmp_df</span><span class="p">,</span> <span class="n">breeding_attempts</span> <span class="o">=</span> <span class="n">get_ebmp_data</span><span class="p">(</span><span class="n">YEAR</span><span class="p">,</span> <span class="n">RESOURCES_DIR</span><span class="p">)</span>
+
+    <span class="c1"># Get only those boxes that were recorded</span>
+    <span class="n">ebmp_df</span> <span class="o">=</span> <span class="n">ebmp_df</span><span class="p">[</span><span class="n">ebmp_df</span><span class="p">[</span><span class="s1">&#39;Nestbox&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">recorded_nestboxes</span><span class="p">)]</span>
+    <span class="n">dates_df</span> <span class="o">=</span> <span class="n">get_recorded_dates_df</span><span class="p">(</span><span class="n">filelist</span><span class="p">)</span>
+
+    <span class="c1"># Join both dataframes</span>
+    <span class="n">full_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">ebmp_df</span><span class="p">,</span> <span class="n">dates_df</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;Nestbox&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+
+    <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># Variables to keep in dataframe</span>
+        <span class="s1">&#39;Nestbox&#39;</span><span class="p">,</span> <span class="s1">&#39;first_date&#39;</span><span class="p">,</span> <span class="s1">&#39;Lay date&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;last_date&#39;</span><span class="p">,</span> <span class="s1">&#39;Clear date&#39;</span><span class="p">,</span> <span class="s1">&#39;Species&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;April lay date&#39;</span><span class="p">,</span> <span class="s1">&#39;Incubation started&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Hatch date&#39;</span><span class="p">,</span> <span class="s1">&#39;Clutch size&#39;</span><span class="p">,</span> <span class="s1">&#39;Num chicks&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Num fledglings&#39;</span><span class="p">,</span> <span class="s1">&#39;Mean chick weight&#39;</span><span class="p">,</span> <span class="s1">&#39;Father&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Mother&#39;</span>
+    <span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">days_before_laydate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># NOTE: This is not a particularly good way of doing this. So,</span>
+        <span class="c1"># TODO: Make get_recorded_dates_df() get all dates and decide based on this;</span>
+        <span class="c1"># the first/last recording dates are not representative when a nestbox</span>
+        <span class="c1"># was recorded more than once</span>
+
+        <span class="c1"># Make a boolean mask</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">full_df</span><span class="p">[</span><span class="s1">&#39;Lay date&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days_before_laydate</span><span class="p">)</span> <span class="o">&gt;</span>
+            <span class="n">full_df</span><span class="p">[</span><span class="s1">&#39;first_date&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span>
+            <span class="n">full_df</span><span class="p">[</span><span class="s1">&#39;last_date&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">full_df</span><span class="p">[</span><span class="s1">&#39;Clear date&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Select the sub-DataFrame:</span>
+        <span class="n">final_df</span> <span class="o">=</span> <span class="n">full_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">][</span><span class="n">variables</span><span class="p">]</span>
+        <span class="n">recorded_within_window</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_df</span><span class="p">)</span>
+
+    <span class="c1"># Print info</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">You recorded a total of </span><span class="si">{</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">filelist</span><span class="p">))</span><span class="si">}</span><span class="s2"> hours of audio.</span><span class="se">\n</span><span class="s2">&quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;You recorded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ebmp_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> out of a total of </span><span class="si">{</span><span class="n">breeding_attempts</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="s2">&quot;breeding attempts this year&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">days_before_laydate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Of those, </span><span class="si">{</span><span class="n">recorded_within_window</span><span class="si">}</span><span class="s2"> laid eggs and were recorded &quot;</span>
+              <span class="s2">&quot;a maximum of 10 days before the first egg was laid&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">final_df</span>  <span class="c1"># Those that laid eggs and were recorded a maximum of n days before the first egg was laid</span>
+
+    <span class="k">return</span> <span class="n">full_df</span><span class="p">[</span><span class="n">variables</span><span class="p">]</span>  <span class="c1"># Every box that was recorded</span></div>
+
+
+<div class="viewcode-block" id="get_recorded_dates_df"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.get_recorded_dates_df">[docs]</a><span class="k">def</span> <span class="nf">get_recorded_dates_df</span><span class="p">(</span><span class="n">filelist</span><span class="p">):</span>
+    <span class="c1"># Get first and last recorded files per nestbox</span>
+    <span class="n">recorded_nestboxes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">file</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">])</span>
+    <span class="n">times_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">recorded_nestboxes</span><span class="p">,</span>
+                    <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Getting recording dates&quot;</span><span class="p">,</span>
+                    <span class="n">leave</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+        <span class="n">dt_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">filelist</span>
+            <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">box</span><span class="p">]</span>
+        <span class="n">times_dict</span><span class="p">[</span><span class="n">box</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">dt_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dt_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="n">dates_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">times_dict</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;first_date&quot;</span><span class="p">,</span> <span class="s2">&quot;last_date&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dates_df</span></div>
+
+
+<div class="viewcode-block" id="get_ebmp_data"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.get_ebmp_data">[docs]</a><span class="k">def</span> <span class="nf">get_ebmp_data</span><span class="p">(</span><span class="n">YEAR</span><span class="p">,</span> <span class="n">RESOURCES_DIR</span><span class="p">):</span>
+    <span class="c1"># Import the latest brood data downloaded from https://ebmp.zoo.ox.ac.uk/broods</span>
+    <span class="n">brood_data_path</span> <span class="o">=</span> <span class="n">RESOURCES_DIR</span> <span class="o">/</span> <span class="s2">&quot;brood_data&quot;</span> <span class="o">/</span> <span class="n">YEAR</span>
+    <span class="n">list_of_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">brood_data_path</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/*.csv&quot;</span><span class="p">)</span>
+    <span class="n">latest_file</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">list_of_files</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getctime</span><span class="p">)</span>
+
+    <span class="c1"># Read csv</span>
+    <span class="n">ebmp_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">latest_file</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;Species == &quot;g&quot;&#39;</span><span class="p">)</span>
+    <span class="n">breeding_attempts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ebmp_df</span><span class="p">)</span>
+    <span class="n">ebmp_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Nestbox&quot;</span><span class="p">,</span> <span class="n">ebmp_df</span><span class="p">[</span><span class="s2">&quot;Pnum&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="mi">5</span><span class="p">:])</span>
+    <span class="n">ebmp_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ebmp_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;Legacy&#39;</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Ensure dates are dtype datetime64[ns]:</span>
+    <span class="n">ebmp_df</span><span class="p">[[</span><span class="s2">&quot;Clear date&quot;</span><span class="p">,</span> <span class="s2">&quot;Lay date&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ebmp_df</span><span class="p">[[</span>
+        <span class="s2">&quot;Clear date&quot;</span><span class="p">,</span> <span class="s2">&quot;Lay date&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ebmp_df</span><span class="p">,</span> <span class="n">breeding_attempts</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

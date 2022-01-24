@@ -211,7 +211,6 @@ def purge(num: int, out_directory: str | os.PathLike = 'dataset',
           verbose: bool = True) -> None:
     """
     Removes audio folders containing num or less than num files.
-    #TODO: Option to do this before download might make more sense.
 
     Args:
         num (int): Minimum number of files.
@@ -224,6 +223,7 @@ def purge(num: int, out_directory: str | os.PathLike = 'dataset',
             Defauls to 'dataset' to maintain compatibility.
         verbose (bool): Whether to print success message.
     """
+    # TODO: Option to do this before download might make more sense.
     path = Path(out_directory) / 'audio'
     dirs = _listdir_nohidden(path)
     for fold in dirs:
