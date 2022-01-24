@@ -113,8 +113,6 @@ embedding_remove
 .mypy_cache/
 
 # Unwanted file extensions
-*.html
-!index.html
 .Rproj.user
 
 # History files
