@@ -54,6 +54,7 @@ a:hover {
 
 .wy-side-nav-search {
     background-color: #698d9b;
+    padding: 0.6em;
 }
 
 .wy-side-nav-search .wy-dropdown>a:hover, .wy-side-nav-search>a:hover {
@@ -93,7 +94,7 @@ s
 .wy-side-nav-search .wy-dropdown>a img.logo, .wy-side-nav-search>a img.logo {
     display: block;
     margin-top: 6em;
-    margin-bottom: 0.5em;
+    margin-bottom: 0em;
     width: 89%;
     height: 100%;
     padding-right: 30px;
