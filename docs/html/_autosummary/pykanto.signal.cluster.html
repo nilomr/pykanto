@@ -100,10 +100,10 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.cluster.hdbscan_cluster" title="pykanto.signal.cluster.hdbscan_cluster"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hdbscan_cluster</span></code></a>(embedding[, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.cluster.hdbscan_cluster" title="pykanto.signal.cluster.hdbscan_cluster"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hdbscan_cluster</span></code></a>(embedding[, ...])</p></td>
 <td><p>Perform HDBSCAN clustering from vector array or distance matrix.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.cluster.reduce_and_cluster" title="pykanto.signal.cluster.reduce_and_cluster"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce_and_cluster</span></code></a>(dataset, ID[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.cluster.reduce_and_cluster" title="pykanto.signal.cluster.reduce_and_cluster"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce_and_cluster</span></code></a>(dataset, ID[, ...])</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">param dataset</dt>
 <dd class="field-odd"><p>[description]</p>
@@ -111,10 +111,10 @@
 </dl>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.cluster.reduce_and_cluster_parallel" title="pykanto.signal.cluster.reduce_and_cluster_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce_and_cluster_parallel</span></code></a>(dataset[, ...])</p></td>
-<td><p>Parallel implementation of <a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.save_melspectrogram" title="pykanto.signal.spectrogram.save_melspectrogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_melspectrogram()</span></code></a>.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.cluster.reduce_and_cluster_parallel" title="pykanto.signal.cluster.reduce_and_cluster_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce_and_cluster_parallel</span></code></a>(dataset[, ...])</p></td>
+<td><p>Parallel implementation of <a class="reference internal" href="pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.save_melspectrogram" title="pykanto.signal.spectrogram.save_melspectrogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_melspectrogram()</span></code></a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.cluster.umap_reduce" title="pykanto.signal.cluster.umap_reduce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">umap_reduce</span></code></a>(data[, n_neighbors, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.cluster.umap_reduce" title="pykanto.signal.cluster.umap_reduce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">umap_reduce</span></code></a>(data[, n_neighbors, ...])</p></td>
 <td><p>Uniform Manifold Approximation and Projection.</p></td>
 </tr>
 </tbody>
@@ -179,7 +179,7 @@ Defaults to None.</p></li>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> (<a class="reference internal" href="../source/pykanto.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><em>SongDataset</em></a>) – [description]</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><em>SongDataset</em></a>) – [description]</p></li>
 <li><p><strong>ID</strong> (<em>str</em>) – [description]</p></li>
 <li><p><strong>song_level</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use the average of all units in
 each vocalisation instead of all units. Defaults to False.</p></li>
@@ -200,7 +200,7 @@ each vocalisation instead of all units. Defaults to False.</p></li>
 <dt class="sig sig-object py" id="pykanto.signal.cluster.reduce_and_cluster_parallel">
 <span class="sig-prename descclassname"><span class="pre">pykanto.signal.cluster.</span></span><span class="sig-name descname"><span class="pre">reduce_and_cluster_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">SongDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_sample</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pd.DataFrame</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/cluster.html#reduce_and_cluster_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.cluster.reduce_and_cluster_parallel" title="Permalink to this definition"></a></dt>
 <dd><p>Parallel implementation of
-<a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.save_melspectrogram" title="pykanto.signal.spectrogram.save_melspectrogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_melspectrogram()</span></code></a>.</p>
+<a class="reference internal" href="pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.save_melspectrogram" title="pykanto.signal.spectrogram.save_melspectrogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_melspectrogram()</span></code></a>.</p>
 </dd></dl>
 
 </section>
