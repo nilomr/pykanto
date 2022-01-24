@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Working with paths and directories &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pykanto and High Performance Computing" href="hpc.html" />
+    <link rel="prev" title="Creating a SongDataset object" href="dataset.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="segmentation.html">Vocalisation segmentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Working with paths and directories</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/contents/paths.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="working-with-paths-and-directories">
+<h1>Working with paths and directories<a class="headerlink" href="#working-with-paths-and-directories" title="Permalink to this headline"></a></h1>
+<p>pykanto provies a convenient way to store all paths under a single roof
+so that you can keep track of stuff</p>
+<p>ProjDirs()
+then you can .add(NEWPATH, Path(…))
+Peek it with , or if in dataset object <code class="docutils literal notranslate"><span class="pre">print(dataset.DIRS)</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="nb">print</span><span class="p">(</span><span class="n">DIRS</span><span class="p">)</span> <span class="c1"># Print the directories currently held in DIRS</span>
+<span class="linenos">4</span><span class="nb">print</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you need to upload your raw or segmented data and you have lots of small files
+you may want to consider creating a <code class="docutils literal notranslate"><span class="pre">tar</span></code> file to reduce overhead.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">make_tarfile</span>
+<span class="linenos">2</span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s1">&#39;JSON.tar.gz&#39;</span>
+<span class="linenos">3</span><span class="n">in_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s1">&#39;JSON&#39;</span>
+<span class="linenos">4</span><span class="n">make_tarfile</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">in_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you need to change the location of your raw data before you create a dataset,
+you can use the following method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">DIRS</span><span class="o">.</span><span class="n">update_json_locs</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can safely try this even if you have not moved your data; you will just get
+a message <code class="docutils literal notranslate"><span class="pre">Files</span> <span class="pre">exist:</span> <span class="pre">no</span> <span class="pre">need</span> <span class="pre">to</span> <span class="pre">update</span> <span class="pre">paths.</span> <span class="pre">You</span> <span class="pre">can</span> <span class="pre">force</span> <span class="pre">update</span> <span class="pre">by</span> <span class="pre">setting</span> <span class="pre">`overwrite_dataset</span> <span class="pre">=</span> <span class="pre">True`.</span></code>.</p>
+<p>If you need to change the location of your dataset,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer
+        navigation">
+        
+        <a href="hpc.html" class="btn btn-neutral float-right"
+            title="Pykanto and High Performance Computing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="dataset.html" class="btn btn-neutral float-left" title="Creating a SongDataset object" accesskey="p" rel="prev"><span class="fa
+                fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pykanto.signal.spectrogram &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="pykanto.signal.segment" href="pykanto.signal.segment.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contents/dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/paths.html">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/segmentation.html">Vocalisation segmentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pykanto.signal.html">pykanto.signal</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pykanto.signal.cluster.html">pykanto.signal.cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.signal.filter.html">pykanto.signal.filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.signal.segment.html">pykanto.signal.segment</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pykanto.signal.spectrogram</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="pykanto.signal.html">pykanto.signal</a> &raquo;</li>
+      <li>pykanto.signal.spectrogram</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pykanto.signal.spectrogram.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pykanto.signal.spectrogram">
+<span id="pykanto-signal-spectrogram"></span><h1>pykanto.signal.spectrogram<a class="headerlink" href="#module-pykanto.signal.spectrogram" title="Permalink to this headline"></a></h1>
+<p class="rubric">Functions</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.crop_spectrogram" title="pykanto.signal.spectrogram.crop_spectrogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">crop_spectrogram</span></code></a>(spectrogram[, crop_x, crop_y])</p></td>
+<td><p>Centre crops an spectrogram to given dimensions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.cut_or_pad_spectrogram" title="pykanto.signal.spectrogram.cut_or_pad_spectrogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut_or_pad_spectrogram</span></code></a>(spectrogram, length)</p></td>
+<td><p>Cut or pad a spectrogram to be a given length.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.extract_windows" title="pykanto.signal.spectrogram.extract_windows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_windows</span></code></a>(spectrograms, wlength)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.flatten_spectrograms" title="pykanto.signal.spectrogram.flatten_spectrograms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_spectrograms</span></code></a>(windows)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.get_indv_units" title="pykanto.signal.spectrogram.get_indv_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_indv_units</span></code></a>(dataset, keys, individual[, ...])</p></td>
+<td><p>Returns a spectrogram representations of the units or the average of the units present in the vocalisations of an individual in the dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.get_indv_units_parallel" title="pykanto.signal.spectrogram.get_indv_units_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_indv_units_parallel</span></code></a>(dataset[, pad, ...])</p></td>
+<td><p>Parallel implementation of <a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.get_indv_units" title="pykanto.signal.spectrogram.get_indv_units"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_indv_units()</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.get_unit_spectrograms" title="pykanto.signal.spectrogram.get_unit_spectrograms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_unit_spectrograms</span></code></a>(spectrogram, onsets, ...)</p></td>
+<td><p>Get an array containing spectrograms for every unit in a given song.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.get_vocalisation_units" title="pykanto.signal.spectrogram.get_vocalisation_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vocalisation_units</span></code></a>(dataset, key[, ...])</p></td>
+<td><p>Returns spectrogram representations of the units present in a vocalisation (e.g.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.pad_spectrogram" title="pykanto.signal.spectrogram.pad_spectrogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pad_spectrogram</span></code></a>(spectrogram, pad_length)</p></td>
+<td><p>Centre pads a spectrogram to a given length.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.retrieve_spectrogram" title="pykanto.signal.spectrogram.retrieve_spectrogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">retrieve_spectrogram</span></code></a>(nparray_dir)</p></td>
+<td><p>Loads an spectrogram that was saved as a numpy array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.save_melspectrogram" title="pykanto.signal.spectrogram.save_melspectrogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_melspectrogram</span></code></a>(dataset, key[, ...])</p></td>
+<td><p>Computes and saves a melspectrogram as a numpy array using dataset parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.window" title="pykanto.signal.spectrogram.window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">window</span></code></a>(spectrogram, wlength)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.save_melspectrogram">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">save_melspectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">SongDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dereverb</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandpass</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#save_melspectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.save_melspectrogram" title="Permalink to this definition"></a></dt>
+<dd><p>Computes and saves a melspectrogram as a numpy array
+using dataset parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../source/pykanto.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><em>SongDataset</em></a>) – A SongDataset object.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – Reference of wav file to open.</p></li>
+<li><p><strong>dereverb</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to apply dereverberation to
+the spectrogram. Defaults to True.</p></li>
+<li><p><strong>bandpass</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to bandpass the spectrogram using
+the minimum and maximum frequencies of the audio segment’s
+bounding box. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Key and location of each spectrogram.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[str, Path]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram._save_melspectrogram_parallel">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">_save_melspectrogram_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">SongDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#_save_melspectrogram_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram._save_melspectrogram_parallel" title="Permalink to this definition"></a></dt>
+<dd><p>Parallel implementation of
+<a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.save_melspectrogram" title="pykanto.signal.spectrogram.save_melspectrogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_melspectrogram()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.retrieve_spectrogram">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">retrieve_spectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nparray_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#retrieve_spectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.retrieve_spectrogram" title="Permalink to this definition"></a></dt>
+<dd><p>Loads an spectrogram that was saved as a numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>nparray_dir</strong> (<em>Path</em>) – Path to the numpy array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Spectrogram.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram._mask_melspec">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">_mask_melspec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">SongDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mel_spectrogram</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">np.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#_mask_melspec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram._mask_melspec" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.pad_spectrogram">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">pad_spectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrogram</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#pad_spectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.pad_spectrogram" title="Permalink to this definition"></a></dt>
+<dd><p>Centre pads a spectrogram to a given length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spectrogram</strong> (<em>np.ndarray</em>) – Spectrogram to pad.</p></li>
+<li><p><strong>pad_length</strong> (<em>int</em>) – Full length of padded spectrogram</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Padded spectrogram</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.crop_spectrogram">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">crop_spectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrogram</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crop_x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crop_y</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#crop_spectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.crop_spectrogram" title="Permalink to this definition"></a></dt>
+<dd><p>Centre crops an spectrogram to given dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spectrogram</strong> (<em>np.ndarray</em>) – Spectrogram to crop.</p></li>
+<li><p><strong>crop_x</strong> (<em>int</em><em>, </em><em>optional</em>) – Final x length, &gt; 0. Defaults to 0 (no crop).</p></li>
+<li><p><strong>crop_y</strong> (<em>int</em><em>, </em><em>optional</em>) – Final y length, &gt; 0. Defaults to 0 (no crop).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Cropped spectrogram</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.cut_or_pad_spectrogram">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">cut_or_pad_spectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrogram</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#cut_or_pad_spectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.cut_or_pad_spectrogram" title="Permalink to this definition"></a></dt>
+<dd><p>Cut or pad a spectrogram to be a given length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spectrogram</strong> (<em>np.ndarray</em>) – Spectrogram to cut or pad.</p></li>
+<li><p><strong>length</strong> (<em>int</em>) – Final desired lenght, in frames</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Cut or padded spectrogram.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.get_unit_spectrograms">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">get_unit_spectrograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrogram</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onsets</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">22050</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hop_length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">512</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#get_unit_spectrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.get_unit_spectrograms" title="Permalink to this definition"></a></dt>
+<dd><p>Get an array containing spectrograms for every unit in a given song.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spectrogram</strong> (<em>np.ndarray</em>) – Spectrogram for a single song.</p></li>
+<li><p><strong>onsets</strong> (<em>np.ndarray</em>) – Unit onsets, in seconds.</p></li>
+<li><p><strong>offsets</strong> (<em>np.ndarray</em>) – Unit offsets, in seconds.</p></li>
+<li><p><strong>sr</strong> (<em>int</em>) – Sampling rate, in Hz</p></li>
+<li><p><strong>hop_length</strong> (<em>int</em>) – Hop length, in frames.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array of arrays, one per unit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.get_vocalisation_units">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">get_vocalisation_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">SongDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">np.ndarray</span> <span class="p"><span class="pre">|</span></span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#get_vocalisation_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.get_vocalisation_units" title="Permalink to this definition"></a></dt>
+<dd><p>Returns spectrogram representations of the units present in a vocalisation
+(e.g. in a song) or their average.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../source/pykanto.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><em>SongDataset</em></a>) – A SongDataset object.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – Single vocalisation locator (key).</p></li>
+<li><p><strong>song_level</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return average of all units.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Dictionary with key and</dt><dd><p>average of all its units if <code class="xref py py-obj docutils literal notranslate"><span class="pre">song_level</span></code> = True, padded to
+maximum duration. If <code class="xref py py-obj docutils literal notranslate"><span class="pre">song_level</span></code> = False returns a Dict with
+key and a list of unit spectrograms, without padding.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict[str, np.ndarray | List[np.ndarray]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.get_indv_units">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">get_indv_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">SongDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#get_indv_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.get_indv_units" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a spectrogram representations of the units or the average of
+the units present in the vocalisations of an individual in the dataset.
+Saves the data as pickled dictionary, returns its location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../source/pykanto.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><em>SongDataset</em></a>) – Source dataset</p></li>
+<li><p><strong>keys</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of keys belonging to an individual</p></li>
+<li><p><strong>individual</strong> (<em>str</em>) – Individual ID</p></li>
+<li><p><strong>pad</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to pad spectrograms to the maximum lenght.
+Defaults to True.</p></li>
+<li><p><strong>song_level</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the average of all units.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Individual and location of its pickled dictionary.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict[str, Path]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.get_indv_units_parallel">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">get_indv_units_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">SongDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#get_indv_units_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.get_indv_units_parallel" title="Permalink to this definition"></a></dt>
+<dd><p>Parallel implementation of
+<a class="reference internal" href="../source/pykanto.signal.html#pykanto.signal.spectrogram.get_indv_units" title="pykanto.signal.spectrogram.get_indv_units"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_indv_units()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.flatten_spectrograms">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">flatten_spectrograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">windows</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numba.typed.List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numba.typed.List</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#flatten_spectrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.flatten_spectrograms" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.window">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrogram</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlength</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.window" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.spectrogram.extract_windows">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">extract_windows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectrograms</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numba.typed.List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlength</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">numba.typed.List</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#extract_windows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.extract_windows" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer
+        navigation">
+        
+        
+        <a href="pykanto.signal.segment.html" class="btn btn-neutral float-left" title="pykanto.signal.segment" accesskey="p" rel="prev"><span class="fa
+                fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
