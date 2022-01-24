@@ -2,12 +2,10 @@
 ![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![Open Source Love](https://img.shields.io/badge/open%20source%3F-yes!-lightgrey)
-![Python 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)
-![R](https://img.shields.io/badge/R-3.6.2-informational)
+![Python 3.8](https://img.shields.io/badge/python-3.8-brightgreen.svg)
 
 ***
 
-![Wytham Woods, Oxford](/resources/README_img/wytham_net.jpg)
 
 This repository contains code to segment, label and analyse the songs of great tits (*Parus major*) recorded in Wytham Woods, Oxford, 2020- .
 
@@ -44,16 +42,11 @@ If using the autoreload ipython magic, might get the following error:
 Fix: restart your kernel without the autoreload extension.
 
 1. Clone the repository:
-`git clone https://github.com/nilomr/wytham-maps.git`.
+`git clone https://github.com/nilomr/pykanto.git`.
 2. Install source code:
 `pip install .` (install) or `pip install -e .` (developer install).
-3. Follow the instructions in the [docs](/docs) in the correct order.
 
 
-# Download xeno-canto data
-```
-pip install xeno-canto
-```
 
 xml along these lines - one option
 ```
@@ -112,14 +105,10 @@ xml along these lines - one option
 
 ## Acknowledgements
 
+- Some of the methods in pykanto are directly inspired by those described in Sainburg T, Thielk M, Gentner TQ (2020) Finding, visualizing, and quantifying latent structure across diverse animal vocal repertoires. PLOS Computational Biology 16(10): e1008228. [DOI](https://doi.org/10.1371/journal.pcbi.1008228). I have indicated this in the relevant method's docstring.
 
-- `Many functions in pykanto/avgn` 
-Sainburg T, Thielk M, Gentner TQ (2020) Finding, visualizing, and quantifying latent structure across diverse animal vocal repertoires. PLOS Computational Biology 16(10): e1008228. [DOI](https://doi.org/10.1371/journal.pcbi.1008228)
-
-- `pykanto/vocalseg` Code modified from Tim Sainburg. [Original repository](https://github.com/timsainb/vocalization-segmentation).
-
-- The `dereverberate()` function, [here](https://github.com/nilomr/great-tit-song/blob/24d9527d0512e6d735e9849bc816511c9eb24f99/pykanto/greti/audio/filter.py#L66), is based on code by Robert Lachlan ([Luscinia](https://rflachlan.github.io/Luscinia/)).
+- The [`dereverberate`](https://github.com/nilomr/pykanto/blob/b11f3b59301f444f8098d76da96cc87bd9cb624b/pykanto/signal/filter.py#L14) function is based on code by Robert Lachlan that is part of [Luscinia](https://rflachlan.github.io/Luscinia/), a software for bioacoustic archiving, measurement and analysis.
 
 --------
 
-<p><small>A project by Nilo M. Recalde | based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>.</small></p>
+<p><small>A project by Nilo M. Recalde</small></p>
