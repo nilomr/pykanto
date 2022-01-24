@@ -1,4 +1,0 @@
-[
-"2nd-GT-high-Q",
-"2nd-GT-low-Q"
-]
