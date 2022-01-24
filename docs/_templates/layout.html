@@ -1,0 +1,10 @@
+{%- extends "!layout.html" %}
+
+{# MOBILE NAV, TRIGGLES SIDE NAV ON TOGGLE #}
+<nav class="wy-nav-top" aria-label="top navigation">
+    {% block mobile_nav %}
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="{{ pathto('_static/' + logo, 1) }}" class="mobile-logo" alt="{{
+        _('Logo') }}" />
+    {% endblock %}
+</nav>

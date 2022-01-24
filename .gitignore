@@ -50,9 +50,6 @@ coverage.xml
 # Django stuff:
 *.log
 
-# Sphinx documentation
-docs/_build/
-
 # PyBuilder
 target/
 
@@ -69,6 +66,7 @@ target/
 # VS Code
 .vscode/
 *.code-workspace
+.VSCodeCounter/
 
 # Spyder
 .spyproject/
@@ -80,21 +78,29 @@ target/
 # And data alias + other folders
 
 /data/
+sampledata
 data
-/private/
+datakk
+/private/*
+!/private/client_secret.json
 /resources/brood_data/temporal
+/resources/tit_images
 /resources/fieldwork/
+/references/
 /test/
+/reports/
 /dependencies/chipper_v1.0_linux
 /reports/figures/*
-!/reports/figures/transfer_report
 /reports/text/talks
+embedding_remove
 
+# general file extensions
 *.doc
 *.bib
 *.mp4
 *.pdf
-
+.~lock.*
+*.xml
 
 # Mac OS-specific storage files
 .DS_Store
@@ -108,6 +114,7 @@ data
 
 # Unwanted file extensions
 *.html
+!index.html
 .Rproj.user
 
 # History files
@@ -150,8 +157,16 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
+notebooks/data-analysis/bus_chatter.wav
+notebooks/data-analysis/TEST_REMOVE.py
 
+# Sphinx documentation
+docs/_build/
+docs/_autosummary
+!docs/_templates/footer.html
+!docs/_templates/layout.html
+!docs/custom/custom.css
 
-
-
+# manifest
+MANIFEST.in
 
