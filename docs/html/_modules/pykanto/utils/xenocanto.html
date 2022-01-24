@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pykanto.utils.xenocanto &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/paths.html">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/segmentation.html">Vocalisation segmentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../../../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pykanto.utils.xenocanto</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pykanto.utils.xenocanto</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python3</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">error</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">ssl</span>
+
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">tqdmm</span>
+
+<span class="c1"># TODO:</span>
+<span class="c1">#   [/] Log messages to console</span>
+<span class="c1">#   [X] Add ability to recognize the area where last download stopped</span>
+<span class="c1">#   [ ] Purge recordings that did not complete download</span>
+<span class="c1">#   [ ] Add sono image download capabilities</span>
+<span class="c1">#   [ ] Display tables of tags collected</span>
+<span class="c1">#</span>
+<span class="c1"># FIXME:</span>
+<span class="c1">#   [X] Fix naming of folders in audio and metadata to be more consistent</span>
+<span class="c1">#   [X] Fix SSL certificate errors</span>
+<span class="c1">#   [X] Fix stopping download when file present</span>
+<span class="c1">#   [X] Fix using matches operator with tags (e.g. cnt:&quot;United States&quot;)</span>
+<span class="c1">#   [ ] Allow the delete method to accept species names with spaces</span>
+
+<span class="c1"># Disable certificate verification</span>
+<span class="n">ssl</span><span class="o">.</span><span class="n">_create_default_https_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">_create_unverified_context</span>
+
+<span class="c1"># Retrieves metadata for requested recordings in the form of a JSON file</span>
+
+
+<div class="viewcode-block" id="read_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.read_json">[docs]</a><span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">json_loc</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_loc</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="metadata"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.metadata">[docs]</a><span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="n">filt</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">out_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download recording metadata for a given query.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filt (List[str]): List of query terms. </span>
+<span class="sd">            See `xeno-canto help &lt;https://www.xeno-canto.org/help/search&gt;`_.</span>
+<span class="sd">        out_directory (str | os.PathLike): Where to save the metadata.</span>
+<span class="sd">            If str: a folder with this name will be created in your current </span>
+<span class="sd">            directory (i.e. where your code lives).</span>
+<span class="sd">            If os.PathLike: a metadata folder will be created in the provided</span>
+<span class="sd">            directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: Path to downloaded metadata.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">filt_path</span><span class="p">,</span> <span class="n">filt_url</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Retrieving metadata...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Scrubbing input for file name and url</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filt</span><span class="p">:</span>
+        <span class="n">filt_url</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;%20&#39;</span><span class="p">))</span>
+        <span class="n">filt_path</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+            <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_directory</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;metadata&#39;</span> <span class="o">/</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filt_path</span><span class="p">)</span>
+
+    <span class="c1"># Overwrite metadata query folder</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># Save all pages of the JSON response</span>
+    <span class="n">page</span><span class="p">,</span> <span class="n">page_num</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="n">sepa</span> <span class="o">=</span> <span class="s1">&#39;%20&#39;</span>
+    <span class="k">while</span> <span class="n">page</span> <span class="o">&lt;</span> <span class="n">page_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;https://www.xeno-canto.org/api&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;/2/recordings?query=</span><span class="si">{</span><span class="n">sepa</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filt_url</span><span class="p">)</span><span class="si">}</span><span class="s2">&amp;page=</span><span class="si">{</span><span class="n">page</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;An error has occurred: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">exit</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading metadata page </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;page</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="si">}</span><span class="s1">.json&#39;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">saved</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">saved</span><span class="p">)</span>
+        <span class="n">page_num</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;numPages&#39;</span><span class="p">]</span>
+        <span class="n">page</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Return the path to the folder containing downloaded metadata</span>
+    <span class="k">return</span> <span class="n">path</span></div>
+
+
+<div class="viewcode-block" id="_download_files"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto._download_files">[docs]</a><span class="k">def</span> <span class="nf">_download_files</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+                    <span class="n">redown</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                                                      <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+
+    <span class="c1"># Gather already downloaded files and redownload files</span>
+    <span class="n">existing_files</span><span class="p">,</span> <span class="n">redownload_files</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Downloading files&#39;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">meta</span><span class="p">)):</span>
+
+        <span class="c1"># Keep track of the most recently downloaded file</span>
+        <span class="n">recent</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;in_progress.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">recent</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;track_id&#39;</span><span class="p">])),</span> <span class="n">recent</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">recent</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># Redownload anything on progress files (might be corrupt)</span>
+        <span class="c1"># FIXME: this is a slightly strange to deal with bad downloads.</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;track_id&#39;</span><span class="p">])</span> <span class="ow">in</span> <span class="n">redown</span><span class="p">:</span>
+            <span class="n">redownload_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;track_id&#39;</span><span class="p">])</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;filepath&#39;</span><span class="p">])</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;filepath&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;filepath&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+
+        <span class="c1"># If the file exists in the directory, we will skip it</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;filepath&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">existing_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;track_id&#39;</span><span class="p">])</span>
+            <span class="k">continue</span>
+
+        <span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;filepath&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">existing_files</span><span class="p">,</span> <span class="n">redownload_files</span></div>
+
+
+<div class="viewcode-block" id="download"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.download">[docs]</a><span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
+        <span class="n">filt</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">out_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;dataset&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download recording metadata and audio files for a given query.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filt (List[str]): List of query terms. </span>
+<span class="sd">            See `xeno-canto help &lt;https://www.xeno-canto.org/help/search&gt;`_.</span>
+<span class="sd">        out_directory (str | os.PathLike): Where to save the metadata and </span>
+<span class="sd">            sound files.</span>
+<span class="sd">            If str: a folder with this name will be created in your current </span>
+<span class="sd">            directory (i.e. where your code lives).</span>
+<span class="sd">            If os.PathLike: metadata and audio folders will be created </span>
+<span class="sd">            in the provided directory.</span>
+<span class="sd">            Defauls to &#39;dataset&#39; to maintain compatibility.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Retrieve metadata to parse for download links</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">out_directory</span><span class="p">)</span>
+    <span class="n">metadata_dir</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Enumerate list of metadata folders</span>
+    <span class="n">path_list</span><span class="p">,</span> <span class="n">redown</span> <span class="o">=</span> <span class="n">_listdir_nohidden</span><span class="p">(</span><span class="n">metadata_dir</span><span class="p">),</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="c1"># Check for any in_progress files in the metadata folders</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">path_list</span><span class="p">:</span>
+        <span class="n">check_path</span> <span class="o">=</span> <span class="n">metadata_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="n">progress_file</span> <span class="o">=</span> <span class="n">check_path</span> <span class="o">/</span> <span class="s2">&quot;in_progress.txt&quot;</span>
+        <span class="k">if</span> <span class="n">progress_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">progress_file</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">curr</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">line</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">redown</span><span class="p">:</span>
+                <span class="n">redown</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">curr</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">audio_dir</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="s1">&#39;audio&#39;</span>
+    <span class="n">json_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;page*.json&#39;</span><span class="p">))</span>
+    <span class="n">recordings</span> <span class="o">=</span> <span class="p">[</span><span class="n">read_json</span><span class="p">(</span><span class="n">json</span><span class="p">)[</span><span class="s1">&#39;recordings&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">json_files</span><span class="p">]</span>
+    <span class="n">recordings</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">recordings</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">recordings</span><span class="p">)</span><span class="si">}</span><span class="s1"> files matching your query, &#39;</span>
+          <span class="s1">&#39;download will start:&#39;</span><span class="p">)</span>
+
+    <span class="n">meta</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;http:&#39;</span> <span class="o">+</span> <span class="n">recording</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;track_id&#39;</span><span class="p">:</span> <span class="n">recording</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;filepath&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">audio_dir</span> <span class="o">/</span>
+                         <span class="n">recording</span><span class="p">[</span><span class="s1">&#39;en&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">/</span>
+                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">recording</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">.mp3&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">recording</span> <span class="ow">in</span> <span class="n">recordings</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Download files # TODO: parallelise this - v easy, ray or joblib?</span>
+    <span class="n">existing_files</span><span class="p">,</span> <span class="n">redownload_files</span> <span class="o">=</span> <span class="n">_download_files</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">redown</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># Delete progress file if we make it this far</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;in_progress.txt&quot;</span><span class="p">)</span>
+
+    <span class="c1"># give feedback to user</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">existing_files</span><span class="p">):</span>
+        <span class="n">num_form</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;was&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="n">existing_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;are&#39;</span><span class="p">,</span> <span class="s1">&#39;were&#39;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;File(s) </span><span class="si">{</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1">.mp3&#39;</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">existing_files</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">num_form</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> already present and </span><span class="si">{</span><span class="n">num_form</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> skipped.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">redownload_files</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;File(s) </span><span class="si">{</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1">.mp3&#39;</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">redownload_files</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="s2">&quot;had to be redownloaded (not completed during a previous query).&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_listdir_nohidden"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto._listdir_nohidden">[docs]</a><span class="k">def</span> <span class="nf">_listdir_nohidden</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve all files while ignoring those that are hidden.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (Path): Directory to search.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        str: Directory</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="purge"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.purge">[docs]</a><span class="k">def</span> <span class="nf">purge</span><span class="p">(</span><span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">out_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;dataset&#39;</span><span class="p">,</span>
+          <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes audio folders containing num or less than num files.</span>
+<span class="sd">    #TODO: Option to do this before download might make more sense.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        num (int): Minimum number of files.</span>
+<span class="sd">        out_directory (str | os.PathLike): Where to save the metadata and </span>
+<span class="sd">            sound files.</span>
+<span class="sd">            If str: a folder with this name will be created in your current </span>
+<span class="sd">            directory (i.e. where your code lives).</span>
+<span class="sd">            If os.PathLike: metadata and audio folders will be created </span>
+<span class="sd">            in the provided directory.</span>
+<span class="sd">            Defauls to &#39;dataset&#39; to maintain compatibility.</span>
+<span class="sd">        verbose (bool): Whether to print success message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_directory</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;audio&#39;</span>
+    <span class="n">dirs</span> <span class="o">=</span> <span class="n">_listdir_nohidden</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">fold</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
+        <span class="n">fold_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">fold</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">_listdir_nohidden</span><span class="p">(</span><span class="n">fold_path</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">num</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Folder at </span><span class="si">{</span><span class="n">fold_path</span><span class="si">}</span><span class="s2"> has fewer than </span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s2"> recordings. &quot;</span>
+                    <span class="s2">&quot;Deleting.&quot;</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">fold_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="delete"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.delete">[docs]</a><span class="k">def</span> <span class="nf">delete</span><span class="p">(</span>
+        <span class="n">filt</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">out_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;dataset&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete recordings matching a given query.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filt (List[str]): List of query terms. </span>
+<span class="sd">            See `xeno-canto help &lt;https://www.xeno-canto.org/help/search&gt;`_.</span>
+<span class="sd">        out_directory (str | os.PathLike): Where to save the metadata and </span>
+<span class="sd">            sound files.</span>
+<span class="sd">            If str: a folder with this name will be created in your current </span>
+<span class="sd">            directory (i.e. where your code lives).</span>
+<span class="sd">            If os.PathLike: metadata and audio folders will be created </span>
+<span class="sd">            in the provided directory.</span>
+<span class="sd">            Defauls to &#39;dataset&#39; to maintain compatibility.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Generating list of current tracks with metadata</span>
+    <span class="n">gen_meta</span><span class="p">(</span><span class="n">out_directory</span><span class="o">=</span><span class="n">out_directory</span><span class="p">)</span>
+    <span class="n">metadata_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_directory</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;metadata&#39;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_directory</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;audio&#39;</span>
+
+    <span class="c1"># Separating desired tags from values for parsing</span>
+    <span class="n">tags</span><span class="p">,</span> <span class="n">vals</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filt</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tag</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c1"># fails if item in list does not have search code,</span>
+            <span class="c1"># I&#39;ll assume it&#39;s the eng name (in the package documentation</span>
+            <span class="c1"># the english name is not prefixed with &#39;en:&#39;</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;en&#39;</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="k">if</span> <span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;en&#39;</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">metadata_dir</span> <span class="o">/</span> <span class="s1">&#39;library.json&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Creating a set of track id&#39;s to delete</span>
+    <span class="n">track_del</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;recordingNumber&#39;</span><span class="p">])):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tracks&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">tags</span><span class="p">[</span><span class="n">j</span><span class="p">])]</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                <span class="n">track_del</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tracks&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">track_del</span><span class="p">)</span><span class="si">}</span><span class="s1"> files scheduled for deletion.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Checking audio folders for tracks to delete</span>
+    <span class="n">dirs</span> <span class="o">=</span> <span class="n">_listdir_nohidden</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">removed</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">fold</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
+        <span class="n">fold_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">fold</span>
+        <span class="n">tracks</span> <span class="o">=</span> <span class="n">_listdir_nohidden</span><span class="p">(</span><span class="n">fold_path</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">tracks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">in</span> <span class="n">track_del</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fold_path</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">tr</span><span class="p">))</span>
+                <span class="n">removed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleted </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">removed</span><span class="p">)</span><span class="si">}</span><span class="s2"> files.&quot;</span><span class="p">)</span>
+    <span class="c1"># Removing any empty folders</span>
+    <span class="n">purge</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_directory</span><span class="o">=</span><span class="n">out_directory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gen_meta"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.gen_meta">[docs]</a><span class="k">def</span> <span class="nf">gen_meta</span><span class="p">(</span><span class="n">out_directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span> <span class="o">=</span> <span class="s1">&#39;dataset&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a metadata file for given library path.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str, optional): [description]. Defaults to &#39;dataset&#39;.</span>
+<span class="sd">        out_directory (str | os.PathLike): Where to save the metadata.</span>
+<span class="sd">            If str: a folder with this name will be created in your current </span>
+<span class="sd">            directory (i.e. where your code lives).</span>
+<span class="sd">            If os.PathLike: metadata and audio folders will be created </span>
+<span class="sd">            in the provided directory.</span>
+<span class="sd">            Defauls to &#39;dataset&#39; to maintain compatibility.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO Keeping this like it was, but strange - what&#39;s &#39;audio&#39; doing here?</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_directory</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;audio&#39;</span>
+    <span class="n">library_dir</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s1">&#39;library.json&#39;</span>
+    <span class="n">metadata_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_directory</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;metadata&#39;</span>
+
+    <span class="c1"># Removing old library file if exists #REVIEW I don&#39;t get this</span>
+    <span class="k">if</span> <span class="n">library_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">library_dir</span><span class="p">)</span>
+
+    <span class="c1"># Create a list of track IDs contained in the current library</span>
+    <span class="n">id_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">fold</span> <span class="ow">in</span> <span class="n">_listdir_nohidden</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">filenames</span> <span class="o">=</span> <span class="n">_listdir_nohidden</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="n">fold</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+            <span class="n">track_id</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
+            <span class="n">id_list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">track_id</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_list</span><span class="p">)</span>
+
+    <span class="n">write_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;recordingNumber&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">),</span> <span class="s1">&#39;tracks&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="c1"># Create a list of all metadata files</span>
+    <span class="n">meta_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">filename</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">_listdir_nohidden</span><span class="p">(</span>
+        <span class="n">metadata_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">filename</span> <span class="o">!=</span> <span class="s1">&#39;library.json&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Check each metadata track for presence in library</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">meta_files</span><span class="p">:</span>
+        <span class="n">page_num</span><span class="p">,</span> <span class="n">page</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">page</span> <span class="o">&lt;</span> <span class="n">page_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Open the json</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">metadata_dir</span> <span class="o">/</span> <span class="n">f</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;page</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="si">}</span><span class="s1">.json&#39;</span><span class="p">)</span>
+            <span class="n">page_num</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;numPages&#39;</span><span class="p">]</span>
+
+            <span class="c1"># Parse through each track</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;recordings&#39;</span><span class="p">])):</span>
+                <span class="n">track</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;recordings&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">track</span> <span class="ow">in</span> <span class="n">id_list</span><span class="p">:</span>
+                    <span class="n">track_info</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;recordings&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">write_data</span><span class="p">[</span><span class="s1">&#39;tracks&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">track_info</span><span class="p">)</span>
+            <span class="n">page</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Retrieves information from API for tracks that cannot be found in the</span>
+    <span class="c1"># currently saved metadata</span>
+    <span class="n">found_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">write_data</span><span class="p">[</span><span class="s1">&#39;tracks&#39;</span><span class="p">])):</span>
+        <span class="n">found_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">write_data</span><span class="p">[</span><span class="s1">&#39;tracks&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+
+    <span class="n">not_found</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">id_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">found_files</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">not_found</span><span class="p">:</span>
+        <span class="n">track_find</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;nr:</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">([</span><span class="n">track_find</span><span class="p">])</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s1">&#39;page1.json&#39;</span><span class="p">)</span>
+        <span class="n">write_data</span><span class="p">[</span><span class="s1">&#39;tracks&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;recordings&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;data.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">write_data</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;data.txt&#39;</span><span class="p">,</span> <span class="n">metadata_dir</span> <span class="o">/</span> <span class="s1">&#39;library.json&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You can find the library metadata file at &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metadata_dir</span> <span class="o">/</span> <span class="s1">&#39;library.json&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># ──── COMMAND LINE ENTRY POINT ─────────────────────────────────────────────────</span>
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">act</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="k">if</span> <span class="n">act</span> <span class="o">==</span> <span class="s2">&quot;-m&quot;</span><span class="p">:</span>
+        <span class="n">metadata</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">act</span> <span class="o">==</span> <span class="s2">&quot;-dl&quot;</span><span class="p">:</span>
+        <span class="n">download</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">act</span> <span class="o">==</span> <span class="s2">&quot;-p&quot;</span><span class="p">:</span>
+        <span class="n">purge</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="k">elif</span> <span class="n">act</span> <span class="o">==</span> <span class="s2">&quot;-g&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">gen_meta</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gen_meta</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="n">act</span> <span class="o">==</span> <span class="s1">&#39;-d&#39;</span><span class="p">:</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Are you sure you want to proceed with &quot;</span>
+                    <span class="s2">&quot;deleting? (Y or N)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dec</span> <span class="o">==</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span>
+            <span class="n">delete</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The command entered was not found, please consult the README &quot;</span>
+              <span class="s2">&quot;for instructions and available commands.&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># Handles command line execution</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

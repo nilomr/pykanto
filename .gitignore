@@ -113,8 +113,6 @@ embedding_remove
 .mypy_cache/
 
 # Unwanted file extensions
-*.html
-!index.html
 .Rproj.user
 
 # History files
@@ -162,7 +160,7 @@ notebooks/data-analysis/TEST_REMOVE.py
 
 # Sphinx documentation
 docs/_build/
-docs/_autosummary
+#docs/_autosummary
 !docs/_templates/footer.html
 !docs/_templates/layout.html
 !docs/custom/custom.css

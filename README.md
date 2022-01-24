@@ -19,7 +19,7 @@ This repository contains code to segment, label and analyse the songs of great t
 Avoid a [dependency hell](https://en.wikipedia.org/wiki/Dependency_hell)!
  > While it is possible to use pip without a virtual environment, it is not advised: virtual environments create a clean Python environment that does not interfere with any existing system installation, can be easily removed, and contain only the package versions your application needs. They help avoid a common challenge known as dependency hell.
 
-- Both pytorch and cuml should probably be installed by te user via conda - a nightmare otherwise:
+- Both pytorch and cuml should probably be installed by the user via conda - a nightmare otherwise:
 
 ```
 # pytorch and cuml installation via conda

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pykanto.parameters &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pykanto.plot" href="pykanto.plot.html" />
+    <link rel="prev" title="pykanto.dataset" href="pykanto.dataset.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contents/dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/paths.html">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/segmentation.html">Vocalisation segmentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.signal.html">pykanto.signal</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>pykanto.parameters</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pykanto.parameters.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pykanto.parameters">
+<span id="pykanto-parameters"></span><h1>pykanto.parameters<a class="headerlink" href="#module-pykanto.parameters" title="Permalink to this headline"></a></h1>
+<p class="rubric">Classes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.parameters.Parameters" title="pykanto.parameters.Parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameters</span></code></a>(**kwargs)</p></td>
+<td><p>General parameters class - stores parameters to be passed to a <a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SongDataset()</span></code></a> object.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pykanto.parameters.</span></span><span class="sig-name descname"><span class="pre">Parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/parameters.html#Parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.parameters.Parameters" title="Permalink to this definition"></a></dt>
+<dd><p>General parameters class - stores parameters to be passed to
+a <a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SongDataset()</span></code></a> object.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/parameters.html#Parameters.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.parameters.Parameters.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Sets default parameters, then updates with user-provided parameters.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.window_length">
+<span class="sig-name descname"><span class="pre">window_length</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.window_length" title="Permalink to this definition"></a></dt>
+<dd><p>Number of samples. Defaults to 1024.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.hop_length">
+<span class="sig-name descname"><span class="pre">hop_length</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.hop_length" title="Permalink to this definition"></a></dt>
+<dd><p>Number of samples between successive frames. Defaults to 128.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.fft_size">
+<span class="sig-name descname"><span class="pre">fft_size</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.fft_size" title="Permalink to this definition"></a></dt>
+<dd><p>Number of bins used to divide the window. Defaults to 1024.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.num_mel_bins">
+<span class="sig-name descname"><span class="pre">num_mel_bins</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.num_mel_bins" title="Permalink to this definition"></a></dt>
+<dd><p>Number of Mel frequency bins to use
+(n of ‘rows’ in mel-spectrogram). Defaults to 224.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.sr">
+<span class="sig-name descname"><span class="pre">sr</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.sr" title="Permalink to this definition"></a></dt>
+<dd><p>The sampling rate (samples taken per second).
+Defaults to 22050.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.hop_length_ms">
+<span class="sig-name descname"><span class="pre">hop_length_ms</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.hop_length_ms" title="Permalink to this definition"></a></dt>
+<dd><p>Calculated automatically.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.fft_rate">
+<span class="sig-name descname"><span class="pre">fft_rate</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.fft_rate" title="Permalink to this definition"></a></dt>
+<dd><p>Calculated automatically.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.top_dB">
+<span class="sig-name descname"><span class="pre">top_dB</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.top_dB" title="Permalink to this definition"></a></dt>
+<dd><p>Top dB to keep. Defaults to 65.
+Example: if <code class="docutils literal notranslate"><span class="pre">top_dB</span></code> = 65 anything below -65dB will be masked.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.lowcut">
+<span class="sig-name descname"><span class="pre">lowcut</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.lowcut" title="Permalink to this definition"></a></dt>
+<dd><p>Minimum frequency (in Hz) to include by default. Defaults to 100.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.highcut">
+<span class="sig-name descname"><span class="pre">highcut</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.highcut" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum frequency (in Hz) to include by default.
+Defaults to 1000.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.max_dB">
+<span class="sig-name descname"><span class="pre">max_dB</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.max_dB" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum threshold to reach during segmentation, in dB.
+Defaults to -30</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.dB_delta">
+<span class="sig-name descname"><span class="pre">dB_delta</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.dB_delta" title="Permalink to this definition"></a></dt>
+<dd><p>Size of thresholding steps, in dB. Defaults to 5.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.silence_threshold">
+<span class="sig-name descname"><span class="pre">silence_threshold</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.silence_threshold" title="Permalink to this definition"></a></dt>
+<dd><p>Threshold separating silence from voiced segments.
+Between 0.1 and 0.3 tends to work well. Defaults to 0.2.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.max_unit_length">
+<span class="sig-name descname"><span class="pre">max_unit_length</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.max_unit_length" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum unit length allowed. Defaults to 0.4.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.min_unit_length">
+<span class="sig-name descname"><span class="pre">min_unit_length</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.min_unit_length" title="Permalink to this definition"></a></dt>
+<dd><p>Minimum unit length allowed. Defaults to 0.03.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.min_silence_length">
+<span class="sig-name descname"><span class="pre">min_silence_length</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.min_silence_length" title="Permalink to this definition"></a></dt>
+<dd><p>Minimum silence length allowed. Defaults to 0.001.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.gauss_sigma">
+<span class="sig-name descname"><span class="pre">gauss_sigma</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.gauss_sigma" title="Permalink to this definition"></a></dt>
+<dd><p>Sigma for gaussian kernel. Defaults to 3.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.song_level">
+<span class="sig-name descname"><span class="pre">song_level</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.song_level" title="Permalink to this definition"></a></dt>
+<dd><p>Whether to return the average of all units.
+Defaults to False (return individual units in each vocalisation)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.subset">
+<span class="sig-name descname"><span class="pre">subset</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.subset" title="Permalink to this definition"></a></dt>
+<dd><p>Indices of the first and last items to include in the dataset.
+Defaults to (0,-1); full dataset</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.n_jobs">
+<span class="sig-name descname"><span class="pre">n_jobs</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.n_jobs" title="Permalink to this definition"></a></dt>
+<dd><p>How many jobs to create. Default is available number of cores -2.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.verbose">
+<span class="sig-name descname"><span class="pre">verbose</span></span><a class="headerlink" href="#pykanto.parameters.Parameters.verbose" title="Permalink to this definition"></a></dt>
+<dd><p>How much detail to provide. Defaults to True (verbose).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/parameters.html#Parameters.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.parameters.Parameters.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update one or more parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – Not a valid parameter name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.parameters.Parameters.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/parameters.html#Parameters.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.parameters.Parameters.add" title="Permalink to this definition"></a></dt>
+<dd><p>Add one or more new parameters.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer
+        navigation">
+        
+        <a href="pykanto.plot.html" class="btn btn-neutral float-right"
+            title="pykanto.plot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="pykanto.dataset.html" class="btn btn-neutral float-left" title="pykanto.dataset" accesskey="p" rel="prev"><span class="fa
+                fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

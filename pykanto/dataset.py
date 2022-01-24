@@ -90,7 +90,7 @@ class SongDataset():
 
         Raises:
             FileExistsError: DATASET_ID already exists. You can overwrite it
-            by setting `overwrite_dataset=True`
+                by setting `overwrite_dataset=True`
         """
 
         # Get or set parameters
@@ -533,7 +533,7 @@ class SongDataset():
             print('The entries were moved successfully.')
             tx = ('Do you want to save the dataset to disk now?'
                   ' (Enter y/n)')
-            while (res := input(tx).lower()) not in {"y", "n"}:
+            while (res: = input(tx).lower()) not in {"y", "n"}:
                 pass
             if res == 'y':
                 print('Done.')
@@ -869,7 +869,7 @@ class SongDataset():
                 'This app requires the output of '
                 '`self.prepare_interactive_data()`. Do you want to run it now?'
                 ' (Enter y/n)')
-            while (res := input(tx).lower()) not in {"y", "n"}:
+            while (res: = input(tx).lower()) not in {"y", "n"}:
                 pass
 
             if res == 'y':

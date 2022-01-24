@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pykanto.utils.xenocanto &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="pykanto.utils.write" href="pykanto.utils.write.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contents/dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/paths.html">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/segmentation.html">Vocalisation segmentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pykanto.utils.html">pykanto.utils</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.compute.html">pykanto.utils.compute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.custom.html">pykanto.utils.custom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.paths.html">pykanto.utils.paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.read.html">pykanto.utils.read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.write.html">pykanto.utils.write</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pykanto.utils.xenocanto</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="pykanto.utils.html">pykanto.utils</a> &raquo;</li>
+      <li>pykanto.utils.xenocanto</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pykanto.utils.xenocanto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pykanto.utils.xenocanto">
+<span id="pykanto-utils-xenocanto"></span><h1>pykanto.utils.xenocanto<a class="headerlink" href="#module-pykanto.utils.xenocanto" title="Permalink to this headline"></a></h1>
+<p class="rubric">Functions</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.xenocanto.delete" title="pykanto.utils.xenocanto.delete"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete</span></code></a>(filt[, out_directory])</p></td>
+<td><p>Delete recordings matching a given query.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.xenocanto.download" title="pykanto.utils.xenocanto.download"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download</span></code></a>(filt[, out_directory])</p></td>
+<td><p>Download recording metadata and audio files for a given query.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.xenocanto.gen_meta" title="pykanto.utils.xenocanto.gen_meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gen_meta</span></code></a>([out_directory])</p></td>
+<td><p>Generate a metadata file for given library path.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.xenocanto.main" title="pykanto.utils.xenocanto.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.xenocanto.metadata" title="pykanto.utils.xenocanto.metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metadata</span></code></a>(filt, out_directory)</p></td>
+<td><p>Download recording metadata for a given query.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.xenocanto.purge" title="pykanto.utils.xenocanto.purge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">purge</span></code></a>(num[, out_directory, verbose])</p></td>
+<td><p>Removes audio folders containing num or less than num files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.xenocanto.read_json" title="pykanto.utils.xenocanto.read_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_json</span></code></a>(json_loc)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.xenocanto.read_json">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_loc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto.read_json" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.xenocanto.metadata">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_directory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span> <span class="p"><span class="pre">|</span></span> <span class="pre">os.PathLike</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto.metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Download recording metadata for a given query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filt</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of query terms.
+See <a class="reference external" href="https://www.xeno-canto.org/help/search">xeno-canto help</a>.</p></li>
+<li><p><strong>out_directory</strong> (<em>str</em><em> | </em><em>os.PathLike</em>) – Where to save the metadata.
+If str: a folder with this name will be created in your current
+directory (i.e. where your code lives).
+If os.PathLike: a metadata folder will be created in the provided
+directory.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Path to downloaded metadata.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.xenocanto._download_files">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">_download_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redown</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#_download_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto._download_files" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.xenocanto.download">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_directory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span> <span class="p"><span class="pre">|</span></span> <span class="pre">os.PathLike</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dataset'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto.download" title="Permalink to this definition"></a></dt>
+<dd><p>Download recording metadata and audio files for a given query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filt</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – <p>List of query terms.
+See <a class="reference external" href="https://www.xeno-canto.org/help/search">xeno-canto help</a>.</p>
+</p></li>
+<li><p><strong>out_directory</strong> (<em>str</em><em> | </em><em>os.PathLike</em>) – Where to save the metadata and
+sound files.
+If str: a folder with this name will be created in your current
+directory (i.e. where your code lives).
+If os.PathLike: metadata and audio folders will be created
+in the provided directory.
+Defauls to ‘dataset’ to maintain compatibility.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.xenocanto._listdir_nohidden">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">_listdir_nohidden</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#_listdir_nohidden"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto._listdir_nohidden" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve all files while ignoring those that are hidden.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – Directory to search.</p>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><p><em>str</em> – Directory</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.xenocanto.purge">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">purge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_directory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span> <span class="p"><span class="pre">|</span></span> <span class="pre">os.PathLike</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dataset'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#purge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto.purge" title="Permalink to this definition"></a></dt>
+<dd><p>Removes audio folders containing num or less than num files.
+#TODO: Option to do this before download might make more sense.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num</strong> (<em>int</em>) – Minimum number of files.</p></li>
+<li><p><strong>out_directory</strong> (<em>str</em><em> | </em><em>os.PathLike</em>) – Where to save the metadata and
+sound files.
+If str: a folder with this name will be created in your current
+directory (i.e. where your code lives).
+If os.PathLike: metadata and audio folders will be created
+in the provided directory.
+Defauls to ‘dataset’ to maintain compatibility.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Whether to print success message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.xenocanto.delete">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_directory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span> <span class="p"><span class="pre">|</span></span> <span class="pre">os.PathLike</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dataset'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto.delete" title="Permalink to this definition"></a></dt>
+<dd><p>Delete recordings matching a given query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filt</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – <p>List of query terms.
+See <a class="reference external" href="https://www.xeno-canto.org/help/search">xeno-canto help</a>.</p>
+</p></li>
+<li><p><strong>out_directory</strong> (<em>str</em><em> | </em><em>os.PathLike</em>) – Where to save the metadata and
+sound files.
+If str: a folder with this name will be created in your current
+directory (i.e. where your code lives).
+If os.PathLike: metadata and audio folders will be created
+in the provided directory.
+Defauls to ‘dataset’ to maintain compatibility.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.xenocanto.gen_meta">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">gen_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_directory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span> <span class="p"><span class="pre">|</span></span> <span class="pre">os.PathLike</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'dataset'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#gen_meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto.gen_meta" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a metadata file for given library path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – [description]. Defaults to ‘dataset’.</p></li>
+<li><p><strong>out_directory</strong> (<em>str</em><em> | </em><em>os.PathLike</em>) – Where to save the metadata.
+If str: a folder with this name will be created in your current
+directory (i.e. where your code lives).
+If os.PathLike: metadata and audio folders will be created
+in the provided directory.
+Defauls to ‘dataset’ to maintain compatibility.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.xenocanto.main">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer
+        navigation">
+        
+        
+        <a href="pykanto.utils.write.html" class="btn btn-neutral float-left" title="pykanto.utils.write" accesskey="p" rel="prev"><span class="fa
+                fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

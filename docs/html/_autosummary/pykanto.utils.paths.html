@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pykanto.utils.paths &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pykanto.utils.read" href="pykanto.utils.read.html" />
+    <link rel="prev" title="pykanto.utils.custom" href="pykanto.utils.custom.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html">
+            <img src="../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contents/dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/paths.html">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contents/segmentation.html">Vocalisation segmentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pykanto.utils.html">pykanto.utils</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.compute.html">pykanto.utils.compute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.custom.html">pykanto.utils.custom</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pykanto.utils.paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.read.html">pykanto.utils.read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.write.html">pykanto.utils.write</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.xenocanto.html">pykanto.utils.xenocanto</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="pykanto.utils.html">pykanto.utils</a> &raquo;</li>
+      <li>pykanto.utils.paths</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_autosummary/pykanto.utils.paths.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pykanto.utils.paths">
+<span id="pykanto-utils-paths"></span><h1>pykanto.utils.paths<a class="headerlink" href="#module-pykanto.utils.paths" title="Permalink to this headline"></a></h1>
+<p>Create project directory trees, assign path variables, and get paths for
+different types of files</p>
+<p class="rubric">Functions</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.change_data_loc" title="pykanto.utils.paths.change_data_loc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_data_loc</span></code></a>(DIR, PROJECT_DIR, ...)</p></td>
+<td><p>Updates the location of the parent directories of a project, including the project name, for a given path.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.paths.get_wav_filepaths" title="pykanto.utils.paths.get_wav_filepaths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_wav_filepaths</span></code></a>(ORIGIN_DIR)</p></td>
+<td><p>Get a list of wav files in a directory, including subdirectories, if there is a corresponding .xml file with segmentation information.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.get_xml_filepaths" title="pykanto.utils.paths.get_xml_filepaths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_xml_filepaths</span></code></a>(ORIGIN_DIR)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.paths.link_project_data" title="pykanto.utils.paths.link_project_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">link_project_data</span></code></a>(origin, project_data_dir)</p></td>
+<td><p>Creates a symlink from a project's data folder (not under version control) to the directory where the data lives (e.g.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProjDirs</span></code></a>(PROJECT_DIR[, mkdir])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">ProjDirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initialises a ProjDirs class, which is used to store a
+project’s file structure. This is required when constructing
+a <a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">SongDataset</span></code></a> object and generally
+useful to keep paths tidy and in the same location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>PROJECT_DIR</strong> (<em>Path</em>) – Root directory of the project.</p></li>
+<li><p><strong>mkdir</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wether to create directories if they
+don’t already exist. Defaults to False.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PROJROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">/</span> <span class="s1">&#39;projects&#39;</span> <span class="o">/</span> <span class="s1">&#39;myproject&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJROOT</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DIRS</span><span class="p">)</span>
+<span class="go">Items held:</span>
+<span class="go">PROJECT (/user/projects/myproject)</span>
+<span class="go">DATA (/user/projects/myproject/data)</span>
+<span class="go">RESOURCES (/user/projects/myproject/resources)</span>
+<span class="go">REPORTS (/user/projects/myproject/reports)</span>
+<span class="go">FIGURES (/user/projects/myproject/reports/figures)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_attr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.append" title="Permalink to this definition"></a></dt>
+<dd><p>Appends a new attribute to the class instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_attr</strong> (<em>str</em>) – Name of the new attribute.</p></li>
+<li><p><strong>new_value</strong> (<em>Path</em>) – New directory.</p></li>
+<li><p><strong>mkdir</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to create this directory
+if it doesn’t already exist. Defaults to False.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs._deep_update_paths">
+<span class="sig-name descname"><span class="pre">_deep_update_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">OLD_PROJECT_DIR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NEW_PROJECT_DIR</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs._deep_update_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs._deep_update_paths" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.update_json_locs">
+<span class="sig-name descname"><span class="pre">update_json_locs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">NEW_PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_checks</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.update_json_locs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.update_json_locs" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the ‘wav_loc’ field in JSON metadata files. This is
+useful if you move your data to a location different to where
+it was first generated. It will fix broken links to the .wav files,
+provided that the <a class="reference internal" href="#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a> object
+has a ‘WAVFILES’ attribute pointing to a dir. containing WAV and
+JSON subdirs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>NEW_PROJECT_DIR</strong> (<em>Path</em>) – New location for your project.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to force change paths
+even if the current ones work. Defaults to False.</p></li>
+<li><p><strong>ignore_checks</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wether to check that wav and
+JSON files coincide. Useful if you just want to change JSONS
+in a different location to where the rest of the data are.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.paths.change_data_loc">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">change_data_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NEW_PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#change_data_loc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.change_data_loc" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the location of the parent directories of a project, including
+the project name, for a given path. Used when the location of a dataset changes
+(e.g if transferring a project to a new machine).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>DIR</strong> (<em>Path</em>) – Path to update</p></li>
+<li><p><strong>PROJECT_DIR</strong> (<em>[</em><em>type</em><em>]</em>) – Old -broken- project directory.</p></li>
+<li><p><strong>NEW_PROJECT_DIR</strong> (<em>Path</em>) – New working project directory.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updated path.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.paths.get_wav_filepaths">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">get_wav_filepaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ORIGIN_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#get_wav_filepaths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.get_wav_filepaths" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of wav files in a directory, including subdirectories, if
+there is a corresponding .xml file with segmentation information. Works for
+segmentation metadata from .xml files output by Sonic Visualiser.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ORIGIN_DIR</strong> (<em>PosixPath</em>) – Directory to search</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.paths.get_xml_filepaths">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">get_xml_filepaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ORIGIN_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#get_xml_filepaths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.get_xml_filepaths" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.paths.link_project_data">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">link_project_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">os.PathLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_data_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#link_project_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.link_project_data" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a symlink from a project’s data folder (not under version control)
+to the directory where the data lives (e.g. on an external HDD).</p>
+<dl class="simple">
+<dt>Args: origin (os.PathLike): Path to the directory where the data are.</dt><dd><p>project_data_dir (Path): A project’s data folder to link with ‘origin’.</p>
+</dd>
+<dt>Raises: ValueError: The ‘project_data_dir’ already contains data or is a</dt><dd><p>symlink.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer
+        navigation">
+        
+        <a href="pykanto.utils.read.html" class="btn btn-neutral float-right"
+            title="pykanto.utils.read" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="pykanto.utils.custom.html" class="btn btn-neutral float-left" title="pykanto.utils.custom" accesskey="p" rel="prev"><span class="fa
+                fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
