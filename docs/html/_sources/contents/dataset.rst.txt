@@ -80,3 +80,14 @@ at least some spectrogram files were saved succesfully.
     dataset = SongDataset(DATASET_ID, DIRS, parameters=params,
                         overwrite_dataset=True, overwrite_data=False)
 
+
+Note: 
+    You can use any matplotlib palette here using the 'cmap' argument.
+    See `colourmaps`_.
+
+.. _colourmaps: https://matplotlib.org/stable/tutorials/colors/colormaps.html/
+
+
+Get the latest news at `CNN`_.
+
+.. _CNN: http://cnn.com/
