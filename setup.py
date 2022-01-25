@@ -22,6 +22,7 @@ else:
         "scipy >= 1.5",
         "numba >= 0.49",
         "tqdm",
+        "gitpython >= 3.1.24"
         "audio-metadata >= 0.11",
         "ray[default]",
         "pysoundfile >= 0.9",
@@ -39,7 +40,8 @@ else:
         'dev': [
             'sphinx',
             'sphinx-copybutton',
-            'sphinx-rtd-theme'
+            'sphinx-rtd-theme',
+            'pytest'
         ]
     }
 
