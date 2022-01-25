@@ -125,7 +125,7 @@ class SongDataset():
         self._get_unique_ids()
         self._get_sound_info()
         self._compute_melspectrograms(
-            dereverb=True, overwrite_data=overwrite_data)
+            dereverb=self.parameters.dereverb, overwrite_data=overwrite_data)
 
         # Save current state of dataset
         self.save_to_disk(verbose=self.parameters.verbose)
@@ -157,6 +157,9 @@ class SongDataset():
             random_subset (int, optional): Get a random subset without
                 repetition. Defaults to None.
 
+        Warning:
+            Will drop any .wav for which there is no .json!
+
         """
         if not hasattr(self.DIRS, 'WAVFILES'):
             raise KeyError(
@@ -173,10 +176,21 @@ class SongDataset():
         if not len(self.DIRS.WAV_LIST):
             raise FileNotFoundError(
                 f'There are no .wav files in {self.DIRS.WAV_LIST}')
-        if len(self.DIRS.WAV_LIST) != len(self.DIRS.JSON_LIST):
-            raise KeyError(
-                "There is an unequal number of .wav and .json "
-                f"files in {self.DIRS.WAVFILES}")
+
+        wavnames = [wav.name for wav in self.DIRS.WAV_LIST]
+        matching_jsons = [json for json in self.DIRS.JSON_LIST
+                          if json.stem in wavnames]
+
+        if len(self.DIRS.JSON_LIST) != len(matching_jsons):
+            ndrop = len(self.DIRS.JSON_LIST) - len(matching_jsons)
+            warnings.warn(
+                "There is an unequal number of matching .wav and .json "
+                f"files in {self.DIRS.WAVFILES}."
+                f"Keeping only those that match: dropped {ndrop}")
+            keepnames = [json.stem for json in matching_jsons]
+            self.DIRS.WAV_LIST = [wav for wav in self.DIRS.WAV_LIST
+                                  if wav.name in keepnames]
+            self.DIRS.JSON_LIST = matching_jsons
 
         # Subset as per parameters if possible
         if self.parameters.subset[0] < len(
@@ -246,7 +260,8 @@ class SongDataset():
         attributes, respectively).
         Also adds information about mim/max bounding box
         frequencies and durations in the dataset 
-        ('minmax_values' attribute).
+        ('minmax_values' attribute), and unit onsets/offsets
+        if present.
         """
         vocalisations_dict = {}
         noise_dict = {}
@@ -259,6 +274,10 @@ class SongDataset():
                 "length_s": file['length_s'],
 
             }
+            if all(e in file for e in ['onsets', 'offsets']):
+                data['onsets'], data['offsets'] = (
+                    np.array(file['onsets']), np.array(file['offsets']))
+
             if file['label'] == 'VOCALISATION':
                 vocalisations_dict[key] = data
             elif file['label'] == 'NOISE':
@@ -295,7 +314,7 @@ class SongDataset():
                 :func:`~pykanto.signal.spectrogram.save_melspectrogram`.
         """
 
-        def spec_exists(key):  # TODO: refactor
+        def _spec_exists(key):  # TODO: refactor
             file = self.metadata[key]['wav_loc']
             ID = self.metadata[key]['ID']
             path = self.DIRS.SPECTROGRAMS / ID / (Path(file).stem + '.npy')
@@ -303,10 +322,10 @@ class SongDataset():
                 return {Path(file).name: path}
 
         # Check if spectrograms already exist for any keys:
-        existing_voc = [spec_exists(key) for key in self.vocalisations.index]
+        existing_voc = [_spec_exists(key) for key in self.vocalisations.index]
         existing_voc = dictlist_to_dict(
             [x for x in existing_voc if x is not None])
-        existing_noise = [spec_exists(key) for key in self.noise.index]
+        existing_noise = [_spec_exists(key) for key in self.noise.index]
         existing_noise = dictlist_to_dict(
             [x for x in existing_noise if x is not None])
 
@@ -533,7 +552,7 @@ class SongDataset():
             print('The entries were moved successfully.')
             tx = ('Do you want to save the dataset to disk now?'
                   ' (Enter y/n)')
-            while (res: = input(tx).lower()) not in {"y", "n"}:
+            while (res := input(tx).lower()) not in {"y", "n"}:
                 pass
             if res == 'y':
                 print('Done.')
@@ -566,10 +585,18 @@ class SongDataset():
                 'If you want to do it again, you can overwrite the existing '
                 'segmentation information by it by setting `overwrite=True`')
 
-        # Find song units
-        units = segment_song_into_units_parallel(self, self.vocalisations.index)
+        # Find song units iff onset/offset metadata not present
+        if not 'onsets' in self.vocalisations.columns:
+            units = segment_song_into_units_parallel(
+                self, self.vocalisations.index)
 
-        # Add to vocalisations dataset
+        # Otherwise just use that
+        else:
+            print('Using existing unit onset/offset information.')
+            onoff_df = self.vocalisations[["onsets", "offsets"]].dropna()
+            onoff_df['index'] = onoff_df.index
+
+        # Calculate durations and add to dataset
         onoff_df = pd.DataFrame(
             units, columns=['index', 'onsets', 'offsets']).dropna()
         onoff_df.set_index('index', inplace=True)
@@ -747,7 +774,8 @@ class SongDataset():
         """
         Prepare lightweigth representations of each vocalization
         or unit (if song_level=True in :attr:`~.SongDataset.parameters`) 
-        for each individual in the dataset.
+        for each individual in the dataset. These are linked from 
+        VOCALISATION_LABELS or UNIT_LABELS in :attr:`~.SongDataset.DIRS`.
 
         Args:
             spec_length (float, optional): In seconds, duration of 
@@ -849,6 +877,24 @@ class SongDataset():
         self.save_to_disk(verbose=self.parameters.verbose)
         self = self.reload()
 
+        if not hasattr(self.DIRS, dataset_labels):
+            tx = (
+                'This app requires the output of '
+                '`self.prepare_interactive_data()`. Do you want to run it now?'
+                ' (Enter y/n)')
+            while (res := input(tx).lower()) not in {"y", "n"}:
+                pass
+
+            if res == 'y':
+                self.prepare_interactive_data()
+            else:
+                print('Stopped.')
+                return None
+
+        if 'auto_cluster_label' not in getattr(self, dataset_type).columns:
+            raise ValueError('You need to run `self.cluster_individuals`'
+                             ' before you can check its results.')
+
         if set(
             getattr(self.DIRS, dataset_labels)['already_checked']) == set(
             getattr(self, dataset_type).dropna(
@@ -859,27 +905,9 @@ class SongDataset():
                 "`self.(vocalisations/unit)_labels['already_checked']`, "
                 "then run again.")
 
-        if 'auto_cluster_label' not in getattr(self, dataset_type).columns:
-            raise ValueError('You need to run `self.cluster_individuals`'
-                             ' before you can check its results.')
-
-        if not hasattr(self.DIRS, 'VOCALISATION_LABELS'
-                       if song_level else 'UNIT_LABELS'):
-            tx = (
-                'This app requires the output of '
-                '`self.prepare_interactive_data()`. Do you want to run it now?'
-                ' (Enter y/n)')
-            while (res: = input(tx).lower()) not in {"y", "n"}:
-                pass
-
-            if res == 'y':
-                self.prepare_interactive_data(song_level=song_level)
-            else:
-                print('Stopped.')
-                return None
-
         # Check that we are where we should
-        app_path = (self.DIRS.PROJECT / modname / 'intlabel')
+        # REVIEW: easy to break!
+        app_path = (Path(__file__).parent / 'intlabel')
         if not app_path.is_dir():
             raise FileNotFoundError(str(app_path))
 

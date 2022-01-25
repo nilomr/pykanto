@@ -1,3 +1,11 @@
+# ──── DESCRIPTION ──────────────────────────────────────────────────────────────
+
+"""
+A collection of functions used to create and manipulate spectrograms.
+"""
+
+# ──── IMPORTS ──────────────────────────────────────────────────────────────────
+
 from __future__ import annotations
 
 import pickle
@@ -17,6 +25,8 @@ from pykanto.utils.write import makedir
 
 if TYPE_CHECKING:
     from pykanto.dataset import SongDataset
+
+# ──── FUNCTIONS ────────────────────────────────────────────────────────────────
 
 
 def save_melspectrogram(
@@ -86,6 +96,9 @@ def save_melspectrogram(
 def _save_melspectrogram_r(
     dataset: SongDataset, keys: List[str], **kwargs
 ) -> List[Dict[str, Path]]:
+    """
+    Helper of :func:`~pykanto.signal.spectrogram._save_melspectrogram_parallel`.
+    """
     return [save_melspectrogram(dataset, key, **kwargs) for key in keys]
 
 
@@ -136,6 +149,18 @@ def retrieve_spectrogram(nparray_dir: Path) -> np.ndarray:
 def _mask_melspec(
         dataset: SongDataset, d_dict: Dict[str, Any],
         mel_spectrogram: np.ndarray) -> np.ndarray:
+    """
+    Private method. Frequency-mask 'bandpass' a melspectrogram using
+    frequency bounds contained in a vocalisation's metadata.
+
+    Args:
+        dataset (SongDataset): Dataset with parameters object.
+        d_dict (Dict[str, Any]): Vocalisation metadata as a dictionary.
+        mel_spectrogram (np.ndarray): Melspectrogram to mask.
+
+    Returns:
+        np.ndarray: Masked spectrogram.
+    """
 
     freq_lims_mel = [
         hz_to_mel_lib(
@@ -383,31 +408,46 @@ def get_indv_units_parallel(
 
 
 @njit
-def flatten_spectrograms(
-    windows: numba.typed.List
-) -> numba.typed.List[np.ndarray]:
-
-    return numba.typed.List([w.flatten() for w in windows])
-
-
-@njit
 def window(
     spectrogram: np.ndarray,
     wlength: int
 ) -> Iterator[np.ndarray]:
+    """
+    Extract windows of length 'wlength' from a spectrogram. Jitted.
+
+    Args:
+        spectrogram (np.ndarray): Spectrogram to window.
+        wlength (int): Desired window length.
+
+    Yields:
+        Iterator[np.ndarray]: A single window.
+    """
 
     y = spectrogram.shape[1]
     for j in range(y):
         ymin = j
-        ymax = j + wlength if j+wlength <= y else y
+        ymax = j + wlength if j + wlength <= y else y
         if ymax == y:
             break
         yield spectrogram[:, ymin:ymax]
 
 
 @njit
-def extract_windows(spectrograms: numba.typed.List,
-                    wlength: int) -> Tuple[numba.typed.List[np.ndarray], List[int]]:
+def extract_windows(
+    spectrograms: numba.typed.List[np.ndarray],
+    wlength: int
+) -> Tuple[numba.typed.List[np.ndarray], List[int]]:
+    """
+    Extract windows from multiple spectrograms. Jitted.
+
+    Args:
+        spectrograms (numba.typed.List[np.ndarray]): Spectrogram to window.
+        wlength (int): Desired window length.
+
+    Returns:
+        Tuple[numba.typed.List[np.ndarray], List[int]]: Contains a list with the
+        resulting windows and a list with the window counts per spectrogram.
+    """
     windows = numba.typed.List()
     n_windows = []
     for spec in spectrograms:
@@ -415,3 +455,22 @@ def extract_windows(spectrograms: numba.typed.List,
             windows.append(w)
         n_windows.append(i + 1)
     return windows, n_windows
+
+
+@njit
+def flatten_spectrograms(
+    windows: numba.typed.List[np.ndarray]
+) -> numba.typed.List[np.ndarray]:
+    """
+    Return a numba typed list containing the 2d array collapsed into one
+    dimension. Jitted.
+
+    Args:
+        windows (numba.typed.List[np.ndarray]): List of 2d spectrograms.
+
+    Returns:
+        numba.typed.List[np.ndarray]: The same list, now containing 1d
+        spectrograms.
+    """
+
+    return numba.typed.List([w.flatten() for w in windows])

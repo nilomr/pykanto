@@ -11,7 +11,7 @@ from pathlib import Path
 import warnings
 
 import ray
-from pykanto.utils.compute import get_chunks, print_dict, to_iterator, tqdmm
+from pykanto.utils.compute import calc_chunks, get_chunks, print_dict, print_parallel_info, to_iterator, tqdmm
 from pykanto.utils.read import read_json
 from pykanto.utils.write import makedir, save_json
 
@@ -116,23 +116,22 @@ class ProjDirs():
                     'Dictionary values must be of types Path | List | Dict')
 
     def update_json_locs(
-            self, NEW_PROJECT_DIR: Path, overwrite: bool = False,
+            self, overwrite: bool = False,
             ignore_checks: bool = False) -> None:
         """
-        Updates the 'wav_loc' field in JSON metadata files. This is 
-        useful if you move your data to a location different to where 
-        it was first generated. It will fix broken links to the .wav files, 
-        provided that the :class:`~pykanto.utils.paths.ProjDirs` object 
-        has a 'WAVFILES' attribute pointing to a dir. containing WAV and 
-        JSON subdirs.
+        Updates the 'wav_loc' field in JSON metadata files for a given project.
+        This is useful if you have moved your data to a location different to
+        where it was first generated. It will fix broken links to the .wav
+        files, provided that the :class:`~pykanto.utils.paths.ProjDirs` object
+        has a 'WAVFILES' attribute pointing to a valid directory containing
+        'WAV' and 'JSON' subdirectories.
 
         Args:
-            NEW_PROJECT_DIR (Path): New location for your project.
             overwrite (bool, optional): Whether to force change paths 
                 even if the current ones work. Defaults to False.
             ignore_checks (bool, optional): Wether to check that wav and 
-                JSON files coincide. Useful if you just want to change JSONS 
-                in a different location to where the rest of the data are.
+                JSON files coincide. Useful if you just want to change JSONS in
+                a different location to where the rest of the data are.
         """
 
         if not hasattr(self, 'WAVFILES'):
@@ -141,54 +140,73 @@ class ProjDirs():
                 "You can append it like so: "
                 "`DIRS.append('WAVFILES', Path(...))`")
 
+        if not self.WAVFILES.is_dir():
+            raise FileNotFoundError(f"{self.WAVFILES} does not exist.")
+
         WAV_LIST = sorted(list((self.WAVFILES / "WAV").glob("*.wav")))
         JSON_LIST = sorted(list((self.WAVFILES / "JSON").glob("*.JSON")))
 
         if not len(WAV_LIST) and not ignore_checks:
             raise FileNotFoundError(
-                f'There are no .wav files in {WAV_LIST}')
+                f'There are no .wav files in {self.WAVFILES / "WAV"}')
         if len(WAV_LIST) != len(JSON_LIST) and not ignore_checks:
             raise KeyError(
                 "There is an unequal number of .wav and .json "
                 f"files in {self.WAVFILES}")
 
-        wavloc = Path(read_json(JSON_LIST[0])['wav_loc'])
+        # Check that file can be read & wav_loc needs to be changed
+        try:
+            jf = read_json(JSON_LIST[0])
+        except:
+            raise FileNotFoundError(
+                f"{JSON_LIST[0]} does not exist or is empty.")
+
+        wavloc = Path(jf['wav_loc'])
         if wavloc.exists() and overwrite is False:
-            warnings.warn(f'{wavloc} exists: no need to update paths. ' 'You '
-                          'can force update by setting `overwrite = True`.')
+            warnings.warn(
+                f'{wavloc} exists: no need to update paths. '
+                'You can force update by setting `overwrite = True`.')
             return
 
-        OLD_PROJECT_DIR = Path(*wavloc.parts[: wavloc.parts.index('data')])
-
         def change_wav_loc(file):
-            jf = read_json(file)
-            newloc = str(change_data_loc(
-                Path(jf['wav_loc']),
-                OLD_PROJECT_DIR, NEW_PROJECT_DIR))
-            if jf['wav_loc'] == newloc:
+            try:
+                jf = read_json(file)
+            except:
+                raise FileNotFoundError(f"{file} does not exist or is empty.")
+
+            newloc = self.WAVFILES / "WAV" / Path(jf['wav_loc']).name
+            if Path(jf['wav_loc']) == newloc:
                 return
             else:
-                jf['wav_loc'] = newloc
-                save_json(jf, file)
+                try:
+                    jf['wav_loc'] = str(newloc)
+                    save_json(jf, file)
+                except:
+                    raise IndexError(f"Could not save {file}")
 
         def batch_change_wav_loc(files: List[Path]) -> None:
-            for file in files:
-                change_wav_loc(file)
+            if isinstance(files, list):
+                for file in files:
+                    change_wav_loc(file)
+            else:
+                change_wav_loc(files)
+        kk = JSON_LIST[0]
+        change_wav_loc(JSON_LIST[0])
 
         # Run in paralell
         b_change_wav_loc_r = ray.remote(batch_change_wav_loc)
-        chunk_len = 500
-        print(f'Found {len(JSON_LIST)} JSON files. '
-              f'Will update in chunks of length {chunk_len}.')
-        obj_ids = [
-            b_change_wav_loc_r.remote(file)
-            for file in tqdmm(get_chunks(JSON_LIST, chunk_len),
-                              desc="Initiate: modifying JSON files.",
-                              total=len(JSON_LIST)//chunk_len)]
-        for obj in tqdmm(
-                to_iterator(obj_ids),
-                desc="Modifying JSON files.",
-                total=len(JSON_LIST)//chunk_len):
+        chunk_info = calc_chunks(len(JSON_LIST), verbose=True)
+        chunk_length, n_chunks = chunk_info[3], chunk_info[2]
+        chunks = get_chunks(JSON_LIST, chunk_length)
+        print_parallel_info(
+            len(JSON_LIST),
+            'individual IDs', n_chunks, chunk_length)
+
+        # Distribute with ray
+        obj_ids = [b_change_wav_loc_r.remote(i) for i in chunks]
+        pbar = {'desc': "Projecting and clustering vocalisations",
+                'total': n_chunks}
+        for obj_id in tqdmm(to_iterator(obj_ids), **pbar):
             pass
 
         print('Done')

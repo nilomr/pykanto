@@ -6,16 +6,17 @@ import warnings
 from logging import warn
 from typing import TYPE_CHECKING, List, Tuple
 
+import numpy as np
 import numpy.typing as npt
 import pandas as pd
 import psutil
 import ray
 import umap
 from hdbscan import HDBSCAN
+from pykanto.utils.compute import (calc_chunks, flatten_list, get_chunks,
+                                   print_parallel_info, to_iterator, tqdmm)
 from umap import UMAP
-import numpy as np
 
-from pykanto.utils.compute import calc_chunks, flatten_list, get_chunks, print_parallel_info, to_iterator, tqdmm
 if TYPE_CHECKING:
     from pykanto.dataset import SongDataset
 try:
@@ -107,7 +108,7 @@ def reduce_and_cluster(
         ID: str,
         song_level: bool = False,
         min_sample: int = 10) -> pd.DataFrame:
-    # TODO: pass UMAP and HDBSCAN params
+    # TODO: pass UMAP and HDBSCAN params!
     """
     Args:
         dataset (SongDataset): [description]
@@ -171,7 +172,7 @@ def reduce_and_cluster(
     return cluster_df
 
 
-@ray.remote(num_gpus=1/psutil.cpu_count())
+@ray.remote(num_gpus=1/psutil.cpu_count() if _has_cuml else 0)
 def _reduce_and_cluster_r(
     dataset: SongDataset,
     IDS: List[str],
@@ -212,6 +213,8 @@ def reduce_and_cluster_parallel(
     pbar = {'desc': "Projecting and clustering vocalisations",
             'total': n_chunks}
     dfls = [obj_id for obj_id in tqdmm(to_iterator(obj_ids), **pbar)]
+
+    # Minimally check output
     try:
         df = pd.concat(flatten_list(dfls))
         return df

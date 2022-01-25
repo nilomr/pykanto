@@ -39,7 +39,7 @@ you can use the following method:
 
     DIRS.update_json_locs(PROJECT_DIR)
 
-You can safely try this even if you have not moved your data; you will just get 
+You can safely try this even if you haven't moved your data at all; you will just get 
 a message ``Files exist: no need to update paths. You can force update by setting `overwrite_dataset = True`.``.
 
 
