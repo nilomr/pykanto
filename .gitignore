@@ -77,10 +77,6 @@ target/
 # exclude data from source control by default
 # And data alias + other folders
 
-/data/
-sampledata
-data
-datakk
 /private/*
 !/private/client_secret.json
 /resources/brood_data/temporal
@@ -93,6 +89,7 @@ datakk
 /reports/figures/*
 /reports/text/talks
 embedding_remove
+pykanto/data/datasets
 
 # general file extensions
 *.doc
