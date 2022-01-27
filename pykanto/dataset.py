@@ -193,7 +193,11 @@ class SongDataset():
             self.DIRS.JSON_LIST = matching_jsons
 
         # Subset as per parameters if possible
-        if self.parameters.subset[0] < len(
+        if len(self.DIRS.WAV_LIST) == 1:
+            if self.parameters.subset != (0, -1):
+                warnings.warn("Cannot subset: there is only one file.")
+                pass
+        elif self.parameters.subset[0] < len(
                 self.DIRS.WAV_LIST) and self.parameters.subset[1] <= len(
                 self.DIRS.WAV_LIST):
             self.DIRS.WAV_LIST = self.DIRS.WAV_LIST[
@@ -310,7 +314,7 @@ class SongDataset():
         Args:
             overwrite_data (bool): Whether to overwrite any spectrogram files 
             that already exist for this dataset.
-            kwargs: Passed to 
+            **kwargs: Passed to 
                 :func:`~pykanto.signal.spectrogram.save_melspectrogram`.
         """
 
@@ -473,7 +477,8 @@ class SongDataset():
             n_songs: int = 1,
             query: str = 'maxfreq',
             order: str = 'descending',
-            return_keys: bool = False) -> None | List[str]:
+            return_keys: bool = False,
+            **kwargs) -> None | List[str]:
         """
         Show mel spectrograms for songs at the ends of the time or
         frequency distribution.
@@ -495,6 +500,10 @@ class SongDataset():
 
                 - 'ascending'
                 - 'descending'
+            return_keys (bool, optional): Defaults to 'False'. Whether to return
+                the keys of the displayed spectrograms.
+            **kwargs: Keyword arguments to be passed to
+                :func:`~pykanto.plot.melspectrogram`
         """
         if query == 'duration':
             idx = 'length_s'
@@ -515,7 +524,7 @@ class SongDataset():
                 print(key)
             kplot.melspectrogram(
                 self.vocalisations.at[key, 'spectrogram_loc'],
-                parameters=self.parameters, title=Path(key).stem)
+                parameters=self.parameters, title=Path(key).stem, **kwargs)
 
         if return_keys:
             return list(testkeys)
@@ -705,7 +714,7 @@ class SongDataset():
 
         Args:
             key (str): Vocalisation identificator.
-            kwargs: Keyword arguments to be passed to
+            **kwargs: Keyword arguments to be passed to
                 :func:`~pykanto.plot.melspectrogram`
         """
         if 'onsets' not in self.vocalisations.columns:
@@ -770,23 +779,31 @@ class SongDataset():
         self.save_to_disk(verbose=self.parameters.verbose)
 
     @timing
-    def prepare_interactive_data(self, spec_length: float = 3.5) -> None:
+    def prepare_interactive_data(
+            self, spec_length: float | None = None) -> None:
         """
         Prepare lightweigth representations of each vocalization
-        or unit (if song_level=True in :attr:`~.SongDataset.parameters`) 
+        or unit (if song_level=False in :attr:`~.SongDataset.parameters`) 
         for each individual in the dataset. These are linked from 
         VOCALISATION_LABELS or UNIT_LABELS in :attr:`~.SongDataset.DIRS`.
 
         Args:
             spec_length (float, optional): In seconds, duration of 
             spectrogram that will be produced. Shorter segments 
-            will be padded, longer segments trimmed. Defaults to 3.5.
+            will be padded, longer segments trimmed. Defaults to maximum note 
+            duration in the dataset.
 
         """
         song_level = self.parameters.song_level
 
         # Check that we have the relevant data to proceed
-        if not set(
+        if not hasattr(self, 'units') and not song_level:
+            raise KeyError(
+                "This function requires the output of "
+                "`self.cluster_individuals()`. "
+                "Make sure you that have run it, then try again")
+
+        elif not set(
                 ['auto_cluster_label', 'umap_x', 'umap_y']).issubset(
                 self.vocalisations.columns if song_level
                 else self.units.columns):
@@ -800,9 +817,19 @@ class SongDataset():
         indvs = np.unique(
             self.vocalisations['ID'] if song_level else self.units['ID'])
 
+        # Set or get spectrogram length (affects width of unit/voc preview)
+        # NOTE: this is set to maxlen=50%len if using units, 4*maxlen if using
+        # entire vocalisations. This might not be adequate in all cases.
+        if not spec_length:
+            max_l = max(
+                [i
+                 for array in self.vocalisations.unit_durations.values
+                 for i in array])
+            spec_length = (max_l + 0.5*max_l) if not song_level else 4*max_l
         spec_length_frames = int(np.floor(
             spec_length * self.parameters.sr / self.parameters.hop_length_ms))
 
+        # Distribute with Ray
         obj_ids = [
             prepare_datasource_r.remote(
                 self, individual, spec_length=spec_length_frames,
