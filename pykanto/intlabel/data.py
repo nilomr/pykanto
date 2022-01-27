@@ -1,21 +1,37 @@
+# ─── DESCRIPTION ─────────────────────────────────────────────────────────────
+
+"""
+Code to generate embeddable data to be used in the interactive song labelling
+web application.
+"""
+
+# ──── IMPORTS ──────────────────────────────────────────────────────────────────
 from __future__ import annotations
-import itertools
-from pathlib import Path
-from bokeh.models.sources import ColumnDataSource
-import numpy as np
-from PIL import Image, ImageEnhance, ImageOps
-from io import BytesIO
+
 import base64
-from pykanto.signal.spectrogram import cut_or_pad_spectrogram, retrieve_spectrogram
+import itertools
 import pickle
+from io import BytesIO
+from pathlib import Path
 from typing import TYPE_CHECKING, Tuple
+
+import numpy as np
+from bokeh.models.sources import ColumnDataSource
+from PIL import Image, ImageEnhance, ImageOps
+from pykanto.signal.spectrogram import (cut_or_pad_spectrogram,
+                                        retrieve_spectrogram)
 from pykanto.utils.write import makedir
 
 if TYPE_CHECKING:
     from pykanto.dataset import SongDataset
 
+# ──── FUNCTIONS ────────────────────────────────────────────────────────────────
 
-def embeddable_image(data: np.ndarray, invert: bool = True) -> str:
+
+def embeddable_image(
+        data: np.ndarray,
+        invert: bool = False,
+        background: int = 41) -> str:
     """
     Save a base 64 png from a np.ndarray.
     Source: `Leland McInnes, 2018 
@@ -24,14 +40,21 @@ def embeddable_image(data: np.ndarray, invert: bool = True) -> str:
     Args:
         data (np.ndarray): Image to embed
         invert (bool, optional): Whether to invert image. Defaults to True.
+        background (int, optional): RGB grey value. Defaults to 41 (same as app)
 
     Returns:
         str: a decoded png image
     """
-    img_data = 255 - 15 * data.astype(np.uint8)
+    img_data = np.interp(
+        data, (data.min(),
+               data.max()),
+        (0, 255)).astype(
+        np.uint8)
     image = Image.fromarray(img_data, mode='L').resize((64, 64), Image.BICUBIC)
     enhancer = ImageEnhance.Contrast(image)
-    image = enhancer.enhance(3)
+    image = enhancer.enhance(2)
+    image = Image.fromarray(
+        np.where(np.array(image) < background, background, np.array(image)))
     if invert:
         image = ImageOps.invert(image)
     buffer = BytesIO()
