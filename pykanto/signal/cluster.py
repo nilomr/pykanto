@@ -122,42 +122,42 @@ def reduce_and_cluster(
         'umap_x', 'umap_y', 'auto_cluster_label']
     """
 
-    # Retrieve averaged units for one individual
-    avg_units = pickle.load(
+    # Retrieve units or averaged units for one individual
+    units = pickle.load(
         open(
             dataset.DIRS.AVG_UNITS[ID]
             if song_level else dataset.DIRS.UNITS[ID], "rb"))
 
+    units_keys = [key for key in units] if song_level else [
+        key + f'_{i}' for key, vals in units.items()
+        for i in range(len(vals))]
+
     # Check if sample size is sufficient
-    if len(avg_units) < min_sample:
+    if len(units_keys) < min_sample:
         warnings.warn(f'Insufficient sample size for {ID}. '
                       'Returning None.')
         return
 
     # Flatten units
     if song_level:
-        avg_units_keys = [key for key in avg_units]
-        flat_avg_units = [unit.flatten() for unit in avg_units.values()]
+        flat_units = [unit.flatten() for unit in units.values()]
     else:
-        avg_units_keys = [
-            key + f'_{i}' for key, vals in avg_units.items()
-            for i in range(len(vals))]
         voc_keys = list(itertools.chain.from_iterable(
-            [[key]*len(value) for key, value in avg_units.items()]))
-        flat_avg_units = np.array([unit.flatten()
-                                   for ls in avg_units.values() for unit in ls])
+            [[key]*len(value) for key, value in units.items()]))
+        flat_units = np.array([unit.flatten()
+                               for ls in units.values() for unit in ls])
 
     # Run UMAP
     embedding, _ = umap_reduce(
-        flat_avg_units, n_neighbors=20, min_dist=0.2, n_components=2)
+        flat_units, n_neighbors=25, min_dist=0.2, n_components=2)
 
     # Cluster using HDBSCAN
     # smallest cluster size allowed
     clusterer = hdbscan_cluster(embedding, min_cluster_size=int(
-        len(flat_avg_units) * 0.02), min_samples=10)
+        len(flat_units) * 0.02), min_samples=10)
 
     # Put together in a dataframe
-    cluster_df = pd.DataFrame(avg_units_keys, columns=['index'])
+    cluster_df = pd.DataFrame(units_keys, columns=['index'])
     cluster_df.set_index('index', inplace=True)
     if song_level is False:
         cluster_df['vocalisation_key'] = voc_keys
