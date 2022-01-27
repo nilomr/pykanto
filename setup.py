@@ -7,8 +7,8 @@ Installation script
 import os
 from setuptools import find_packages, setup
 
-
-LONG_DESCRIPTION = """ #TODO
+# TODO
+LONG_DESCRIPTION = """
 Package description
 """
 
@@ -22,8 +22,7 @@ else:
         "scipy >= 1.5",
         "numba >= 0.49",
         "tqdm",
-        "gitpython >= 3.1.24"
-        "audio-metadata >= 0.11",
+        "audio-metadata >= 0.9",
         "ray[default]",
         "pysoundfile >= 0.9",
         "umap-learn >= 0.5",
@@ -40,23 +39,31 @@ else:
         'dev': [
             'sphinx',
             'sphinx-copybutton',
-            'sphinx-rtd-theme',
-            'pytest'
+            'sphinx-rtd-theme'
         ]
     }
 
-
 setup(
     name="pykanto",
-    version="0.1.0",
-    description="Analysis of animal vocalisations",
+    version="0.1.3",
+    description="Management and analysis of animal vocalisation data",
     license="MIT",
     author='Nilo M. Recalde',
-    url=".",
+    author_email="nilomerinorecalde@gmail.com",
+    url="https://github.com/nilomr/pykanto",
     long_description=LONG_DESCRIPTION,
-    packages=["pykanto"],
+    packages=["pykanto",
+              "pykanto.signal",
+              "pykanto.utils",
+              "pykanto.intlabel",
+              "pykanto.utils"
+              ],
+    package_data={
+        'pykanto':
+        ["data/segmented/*/*/*.wav", "data/segmented/*/*/*.JSON"]
+    },
     python_requires=">=3.8",
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRES,
-    include_package_data=True
+    include_package_data=True,
 )
