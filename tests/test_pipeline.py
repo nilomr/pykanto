@@ -18,7 +18,7 @@ import pytest
 # ──── SETTINGS ─────────────────────────────────────────────────────────────────
 
 song_level = True
-DATASET_ID = "GREAT_TIT_EXAMPLE"
+DATASET_ID = "GREAT_TIT"
 
 # ──── TESTS ────────────────────────────────────────────────────────────────────
 
@@ -33,7 +33,7 @@ def DIRS():
     PROJECT_DIR = Path(
         git.Repo('.', search_parent_directories=True).working_tree_dir)
     DIRS = ProjDirs(PROJECT_DIR / 'pykanto', mkdir=True)
-    DIRS.append('WAVFILES', DIRS.PROJECT / 'data' / 'great_tit')
+    DIRS.append('WAVFILES', DIRS.PROJECT / 'data' / 'segmented' / 'great_tit')
     return DIRS
 
 
