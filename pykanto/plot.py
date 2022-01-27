@@ -16,7 +16,7 @@ from matplotlib.patches import Rectangle
 from matplotlib.ticker import FormatStrFormatter
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from numba.core.decorators import njit
-from pykanto.signal.spectrogram import retrieve_spectrogram
+from pykanto.signal.spectrogram import cut_or_pad_spectrogram, retrieve_spectrogram
 from pykanto.parameters import Parameters
 
 if TYPE_CHECKING:
@@ -39,7 +39,10 @@ def sns_histoplot(data, nbins=100) -> None:
 def melspectrogram(
         nparray_or_dir: os.PathLike | np.ndarray,
         parameters: Parameters = None,
-        title: str = None, cmap: str = 'bone', colour_bar=False) -> None:
+        title: str = None,
+        cmap: str = 'bone',
+        max_lenght: float = None,
+        colour_bar=False) -> None:
 
     if type(nparray_or_dir) == np.ndarray:
         mel_spectrogram = nparray_or_dir
@@ -49,13 +52,27 @@ def melspectrogram(
         raise TypeError('nparray_or_dir must be of type Path or np.ndarray')
     if parameters is None:
         warnings.warn('You need to provide a Parameters object; '
-                      'setting defaults which might be incorrect')
+                      'setting defaults which will likely be inadequate.')
         parameters = Parameters()
 
+    # Shorten spectrogram if needed
+    if max_lenght:
+        max_len_frames = math.floor(
+            max_lenght * parameters.sr / parameters.hop_length)
+        if max_len_frames > mel_spectrogram.shape[1]:
+            max_len_frames = mel_spectrogram.shape[1]
+            warnings.warn(f"{max_lenght=} is longer than the spectrogram, "
+                          "setting max_lenght to the length of the spectrogram")
+        mel_spectrogram = cut_or_pad_spectrogram(
+            mel_spectrogram, max_len_frames)
+
+    # Fig settings
     back_colour = '#2F2F2F'
     text_colour = '#c2c2c2'
     shape = mel_spectrogram.shape[::-1]
     figsize = tuple([x/50 for x in shape])
+
+    # Plot spectrogram proper
     fig, ax = plt.subplots(figsize=figsize, facecolor=back_colour)
     spec_im = librosa.display.specshow(
         mel_spectrogram, x_axis="time", y_axis="mel",
