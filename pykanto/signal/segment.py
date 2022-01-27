@@ -368,7 +368,7 @@ def segment_into_songs(
 
         # Check that sample rates coincide
         if not sr == xml_sr:
-            raise Exception(
+            warnings.warn(
                 f"Sample rates do not coincide for {WAV_FILEDIR.name}. "
                 f"(XML: {xml_sr}, WAV: {sr}.)")
 
@@ -477,7 +477,7 @@ def save_segment(
                  "wav_loc": wav_out.as_posix()}
 
     # Dump json
-    json_out = (OUT_DIR / "JSON" / (wav_out.name + ".JSON")).as_posix()
+    json_out = (OUT_DIR / "JSON" / (wav_out.name + ".JSON"))
     makedir(json_out)
     f = open(json_out.as_posix(), "w")
     print(json.dumps(json_dict, indent=2), file=f)
