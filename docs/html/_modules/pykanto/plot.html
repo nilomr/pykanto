@@ -49,11 +49,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
 </ul>
 
         </div>
@@ -100,7 +101,7 @@
 <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">FormatStrFormatter</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.inset_locator</span> <span class="kn">import</span> <span class="n">inset_axes</span>
 <span class="kn">from</span> <span class="nn">numba.core.decorators</span> <span class="kn">import</span> <span class="n">njit</span>
-<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="n">retrieve_spectrogram</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="n">cut_or_pad_spectrogram</span><span class="p">,</span> <span class="n">retrieve_spectrogram</span>
 <span class="kn">from</span> <span class="nn">pykanto.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -123,7 +124,10 @@
 <div class="viewcode-block" id="melspectrogram"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.plot.melspectrogram">[docs]</a><span class="k">def</span> <span class="nf">melspectrogram</span><span class="p">(</span>
         <span class="n">nparray_or_dir</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;bone&#39;</span><span class="p">,</span> <span class="n">colour_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;bone&#39;</span><span class="p">,</span>
+        <span class="n">max_lenght</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">colour_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">nparray_or_dir</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">nparray_or_dir</span>
@@ -133,13 +137,27 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;nparray_or_dir must be of type Path or np.ndarray&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;You need to provide a Parameters object; &#39;</span>
-                      <span class="s1">&#39;setting defaults which might be incorrect&#39;</span><span class="p">)</span>
+                      <span class="s1">&#39;setting defaults which will likely be inadequate.&#39;</span><span class="p">)</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">Parameters</span><span class="p">()</span>
 
+    <span class="c1"># Shorten spectrogram if needed</span>
+    <span class="k">if</span> <span class="n">max_lenght</span><span class="p">:</span>
+        <span class="n">max_len_frames</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span>
+            <span class="n">max_lenght</span> <span class="o">*</span> <span class="n">parameters</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">max_len_frames</span> <span class="o">&gt;</span> <span class="n">mel_spectrogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">max_len_frames</span> <span class="o">=</span> <span class="n">mel_spectrogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_lenght</span><span class="si">=}</span><span class="s2"> is longer than the spectrogram, &quot;</span>
+                          <span class="s2">&quot;setting max_lenght to the length of the spectrogram&quot;</span><span class="p">)</span>
+        <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">cut_or_pad_spectrogram</span><span class="p">(</span>
+            <span class="n">mel_spectrogram</span><span class="p">,</span> <span class="n">max_len_frames</span><span class="p">)</span>
+
+    <span class="c1"># Fig settings</span>
     <span class="n">back_colour</span> <span class="o">=</span> <span class="s1">&#39;#2F2F2F&#39;</span>
     <span class="n">text_colour</span> <span class="o">=</span> <span class="s1">&#39;#c2c2c2&#39;</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="n">mel_spectrogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">figsize</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">x</span><span class="o">/</span><span class="mi">50</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">])</span>
+
+    <span class="c1"># Plot spectrogram proper</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">back_colour</span><span class="p">)</span>
     <span class="n">spec_im</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">specshow</span><span class="p">(</span>
         <span class="n">mel_spectrogram</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s2">&quot;mel&quot;</span><span class="p">,</span>

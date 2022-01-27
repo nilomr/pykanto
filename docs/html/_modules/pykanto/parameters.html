@@ -83,22 +83,25 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pykanto.parameters</h1><div class="highlight"><pre>
-<span></span><span class="c1"># ─── DESCRIPTION ────────────────────────────────────────────────────────────────</span>
-<span class="c1"># Parameter class - to keep all settings in one place</span>
+<span></span><span class="c1"># ─── DESCRIPTION ─────────────────────────────────────────────────────────────</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># ──── IMPORTS ────────────────────────────────────────────────────────────────</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
-
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">print_dict</span>
 
+<span class="c1"># ──── CLASSES AND METHODS ────────────────────────────────────────────────────</span>
 
-<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">():</span>
+
+<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.parameters.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    General parameters class - stores parameters to be passed to </span>
 <span class="sd">    a :meth:`~pykanto.dataset.SongDataset` object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Parameters.__init__"><a class="viewcode-back" href="../../_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+<div class="viewcode-block" id="Parameters.__init__"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.parameters.Parameters.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets default parameters, then updates with user-provided parameters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -106,65 +109,67 @@
         <span class="c1"># Set defaults first</span>
 
         <span class="c1"># Spectrogramming</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window_length</span> <span class="o">=</span> <span class="mi">1024</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span>
         <span class="sd">&quot;&quot;&quot;Number of samples. Defaults to 1024.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span> <span class="o">=</span> <span class="mi">128</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span>
         <span class="sd">&quot;&quot;&quot;Number of samples between successive frames. Defaults to 128.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fft_size</span> <span class="o">=</span> <span class="mi">1024</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fft_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span>
         <span class="sd">&quot;&quot;&quot;Number of bins used to divide the window. Defaults to 1024.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_mel_bins</span> <span class="o">=</span> <span class="mi">224</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_mel_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">224</span>
         <span class="sd">&quot;&quot;&quot;Number of Mel frequency bins to use </span>
 <span class="sd">        (n of &#39;rows&#39; in mel-spectrogram). Defaults to 224.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sr</span> <span class="o">=</span> <span class="mi">22050</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span>
         <span class="sd">&quot;&quot;&quot;The sampling rate (samples taken per second). </span>
 <span class="sd">        Defaults to 22050.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hop_length_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hop_length_ms</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span>
         <span class="sd">&quot;&quot;&quot;Calculated automatically.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fft_rate</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hop_length_ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fft_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">hop_length_ms</span>
         <span class="sd">&quot;&quot;&quot;Calculated automatically.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">top_dB</span> <span class="o">=</span> <span class="mi">65</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_dB</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">65</span>
         <span class="sd">&quot;&quot;&quot;Top dB to keep. Defaults to 65.</span>
 <span class="sd">        Example: if ``top_dB`` = 65 anything below -65dB will be masked.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lowcut</span> <span class="o">=</span> <span class="mi">100</span>
-        <span class="sd">&quot;&quot;&quot;Minimum frequency (in Hz) to include by default. Defaults to 100.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">highcut</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lowcut</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="sd">&quot;&quot;&quot;Minimum frequency (in Hz) to include by default. Defaults to 1000.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">highcut</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span>
         <span class="sd">&quot;&quot;&quot;Maximum frequency (in Hz) to include by default. </span>
-<span class="sd">        Defaults to 1000.&quot;&quot;&quot;</span>
+<span class="sd">        Defaults to 10000.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dereverb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="sd">&quot;&quot;&quot;Wether to reduce reverberation in the spectrograms. </span>
+<span class="sd">        Defaults to False&quot;&quot;&quot;</span>
 
         <span class="c1"># Segmentation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_dB</span> <span class="o">=</span> <span class="o">-</span><span class="mi">30</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_dB</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">30</span>
         <span class="sd">&quot;&quot;&quot;Maximum threshold to reach during segmentation, in dB. </span>
 <span class="sd">        Defaults to -30&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dB_delta</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dB_delta</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
         <span class="sd">&quot;&quot;&quot;Size of thresholding steps, in dB. Defaults to 5.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">silence_threshold</span> <span class="o">=</span> <span class="mf">0.2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">silence_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span>
         <span class="sd">&quot;&quot;&quot;Threshold separating silence from voiced segments. </span>
 <span class="sd">        Between 0.1 and 0.3 tends to work well. Defaults to 0.2.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_unit_length</span> <span class="o">=</span> <span class="mf">0.4</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_unit_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span>
         <span class="sd">&quot;&quot;&quot;Maximum unit length allowed. Defaults to 0.4. &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">min_unit_length</span> <span class="o">=</span> <span class="mf">0.03</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_unit_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.03</span>
         <span class="sd">&quot;&quot;&quot;Minimum unit length allowed. Defaults to 0.03.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">min_silence_length</span> <span class="o">=</span> <span class="mf">0.001</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_silence_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span>
         <span class="sd">&quot;&quot;&quot;Minimum silence length allowed. Defaults to 0.001.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gauss_sigma</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gauss_sigma</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
         <span class="sd">&quot;&quot;&quot;Sigma for gaussian kernel. Defaults to 3.&quot;&quot;&quot;</span>
 
         <span class="c1"># general settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">song_level</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="sd">&quot;&quot;&quot;Whether to return the average of all units.</span>
 <span class="sd">        Defaults to False (return individual units in each vocalisation)&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">subset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;Indices of the first and last items to include in the dataset. </span>
 <span class="sd">        Defaults to (0,-1); full dataset&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
         <span class="sd">&quot;&quot;&quot;How many jobs to create. Default is available number of cores -2.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="sd">&quot;&quot;&quot;How much detail to provide. Defaults to True (verbose).&quot;&quot;&quot;</span>
         <span class="c1"># Update with user-provided parameters.</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Parameters.update"><a class="viewcode-back" href="../../_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Parameters.update"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.parameters.Parameters.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update one or more parameters.</span>
 
@@ -178,7 +183,7 @@
                     <span class="sa">f</span><span class="s2">&quot;Use `.add(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">)` instead f you want to add a new parameter.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Parameters.add"><a class="viewcode-back" href="../../_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Parameters.add"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.parameters.Parameters.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add one or more new parameters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

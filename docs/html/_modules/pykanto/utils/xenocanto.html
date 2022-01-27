@@ -83,7 +83,13 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pykanto.utils.xenocanto</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/python3</span>
+<span></span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Download recordings and metadata from xeno-canto programmatically.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Code modified from https://github.com/ntivirikin/xeno-canto-py</span>
+
+<span class="c1">#!/usr/bin/python3</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -97,24 +103,9 @@
 
 <span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">tqdmm</span>
 
-<span class="c1"># TODO:</span>
-<span class="c1">#   [/] Log messages to console</span>
-<span class="c1">#   [X] Add ability to recognize the area where last download stopped</span>
-<span class="c1">#   [ ] Purge recordings that did not complete download</span>
-<span class="c1">#   [ ] Add sono image download capabilities</span>
-<span class="c1">#   [ ] Display tables of tags collected</span>
-<span class="c1">#</span>
-<span class="c1"># FIXME:</span>
-<span class="c1">#   [X] Fix naming of folders in audio and metadata to be more consistent</span>
-<span class="c1">#   [X] Fix SSL certificate errors</span>
-<span class="c1">#   [X] Fix stopping download when file present</span>
-<span class="c1">#   [X] Fix using matches operator with tags (e.g. cnt:&quot;United States&quot;)</span>
-<span class="c1">#   [ ] Allow the delete method to accept species names with spaces</span>
 
 <span class="c1"># Disable certificate verification</span>
 <span class="n">ssl</span><span class="o">.</span><span class="n">_create_default_https_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">_create_unverified_context</span>
-
-<span class="c1"># Retrieves metadata for requested recordings in the form of a JSON file</span>
 
 
 <div class="viewcode-block" id="read_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.read_json">[docs]</a><span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">json_loc</span><span class="p">):</span>
@@ -305,7 +296,6 @@
           <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Removes audio folders containing num or less than num files.</span>
-<span class="sd">    #TODO: Option to do this before download might make more sense.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        num (int): Minimum number of files.</span>
@@ -318,6 +308,7 @@
 <span class="sd">            Defauls to &#39;dataset&#39; to maintain compatibility.</span>
 <span class="sd">        verbose (bool): Whether to print success message.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Option to do this before download might make more sense.</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_directory</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;audio&#39;</span>
     <span class="n">dirs</span> <span class="o">=</span> <span class="n">_listdir_nohidden</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">fold</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>

@@ -49,11 +49,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
 </ul>
 
         </div>
@@ -128,7 +129,7 @@
 <span class="c1"># ────────────────────────────────────────────────────────────────────────────────</span>
 
 
-<div class="viewcode-block" id="segment_songs"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.segment_songs">[docs]</a><span class="k">def</span> <span class="nf">segment_songs</span><span class="p">(</span>
+<div class="viewcode-block" id="segment_songs"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_songs">[docs]</a><span class="k">def</span> <span class="nf">segment_songs</span><span class="p">(</span>
         <span class="n">wavfile</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">DATA_DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
         <span class="n">DT_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">RAW_DATA_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">subset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GRETI_HQ&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -258,7 +259,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="batch_segment_songs_single"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.batch_segment_songs_single">[docs]</a><span class="k">def</span> <span class="nf">batch_segment_songs_single</span><span class="p">(</span>
+<div class="viewcode-block" id="batch_segment_songs_single"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.batch_segment_songs_single">[docs]</a><span class="k">def</span> <span class="nf">batch_segment_songs_single</span><span class="p">(</span>
         <span class="n">origin</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">DATA_DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
         <span class="n">DT_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">RAW_DATA_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">subset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GRETI_HQ&quot;</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -291,7 +292,7 @@
                 <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="batch_segment_songs"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.batch_segment_songs">[docs]</a><span class="k">def</span> <span class="nf">batch_segment_songs</span><span class="p">(</span>
+<div class="viewcode-block" id="batch_segment_songs"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.batch_segment_songs">[docs]</a><span class="k">def</span> <span class="nf">batch_segment_songs</span><span class="p">(</span>
         <span class="n">origin</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">DATA_DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">DT_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">RAW_DATA_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GRETI_HQ&quot;</span><span class="p">,</span>
         <span class="n">threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -335,7 +336,7 @@
 <span class="c1">#   + save .jason files for each song</span>
 <span class="c1"># ────────────────────────────────────────────────────────────────────────────────</span>
 
-<div class="viewcode-block" id="get_segment_info"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.get_segment_info">[docs]</a><span class="k">def</span> <span class="nf">get_segment_info</span><span class="p">(</span>
+<div class="viewcode-block" id="get_segment_info"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.get_segment_info">[docs]</a><span class="k">def</span> <span class="nf">get_segment_info</span><span class="p">(</span>
     <span class="n">ORIGIN_DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">min_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">min_freqrange</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -398,7 +399,7 @@
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;signal_lengths&#39;</span><span class="p">:</span> <span class="n">signal_lengths</span><span class="p">,</span> <span class="s1">&#39;noise_lengths&#39;</span><span class="p">:</span> <span class="n">noise_lengths</span><span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="segment_into_songs"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.segment_into_songs">[docs]</a><span class="k">def</span> <span class="nf">segment_into_songs</span><span class="p">(</span>
+<div class="viewcode-block" id="segment_into_songs"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_into_songs">[docs]</a><span class="k">def</span> <span class="nf">segment_into_songs</span><span class="p">(</span>
     <span class="n">DATA_DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">WAV_FILEDIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">RAW_DATA_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -452,7 +453,7 @@
 
         <span class="c1"># Check that sample rates coincide</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sr</span> <span class="o">==</span> <span class="n">xml_sr</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Sample rates do not coincide for </span><span class="si">{</span><span class="n">WAV_FILEDIR</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;(XML: </span><span class="si">{</span><span class="n">xml_sr</span><span class="si">}</span><span class="s2">, WAV: </span><span class="si">{</span><span class="n">sr</span><span class="si">}</span><span class="s2">.)&quot;</span><span class="p">)</span>
 
@@ -487,7 +488,7 @@
                              <span class="n">sr</span><span class="p">,</span> <span class="n">wavfile</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">cnt</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">resample</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="save_segment"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.save_segment">[docs]</a><span class="k">def</span> <span class="nf">save_segment</span><span class="p">(</span>
+<div class="viewcode-block" id="save_segment"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.save_segment">[docs]</a><span class="k">def</span> <span class="nf">save_segment</span><span class="p">(</span>
     <span class="n">segment</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">],</span>
     <span class="n">WAV_FILEDIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">OUT_DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
@@ -561,14 +562,14 @@
                  <span class="s2">&quot;wav_loc&quot;</span><span class="p">:</span> <span class="n">wav_out</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()}</span>
 
     <span class="c1"># Dump json</span>
-    <span class="n">json_out</span> <span class="o">=</span> <span class="p">(</span><span class="n">OUT_DIR</span> <span class="o">/</span> <span class="s2">&quot;JSON&quot;</span> <span class="o">/</span> <span class="p">(</span><span class="n">wav_out</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.JSON&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+    <span class="n">json_out</span> <span class="o">=</span> <span class="p">(</span><span class="n">OUT_DIR</span> <span class="o">/</span> <span class="s2">&quot;JSON&quot;</span> <span class="o">/</span> <span class="p">(</span><span class="n">wav_out</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.JSON&quot;</span><span class="p">))</span>
     <span class="n">makedir</span><span class="p">(</span><span class="n">json_out</span><span class="p">)</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_out</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_dict</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="find_units"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.find_units">[docs]</a><span class="k">def</span> <span class="nf">find_units</span><span class="p">(</span>
+<div class="viewcode-block" id="find_units"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.find_units">[docs]</a><span class="k">def</span> <span class="nf">find_units</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span>
     <span class="n">spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
@@ -629,7 +630,7 @@
     <span class="k">return</span> <span class="n">onsets</span><span class="p">[</span><span class="n">length_mask</span><span class="p">],</span> <span class="n">offsets</span><span class="p">[</span><span class="n">length_mask</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="onsets_offsets"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.onsets_offsets">[docs]</a><span class="k">def</span> <span class="nf">onsets_offsets</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
+<div class="viewcode-block" id="onsets_offsets"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.onsets_offsets">[docs]</a><span class="k">def</span> <span class="nf">onsets_offsets</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    [summary]</span>
 
@@ -653,7 +654,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">onsets</span><span class="p">,</span> <span class="n">offsets</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="segment_song_into_units"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.segment_song_into_units">[docs]</a><span class="k">def</span> <span class="nf">segment_song_into_units</span><span class="p">(</span>
+<div class="viewcode-block" id="segment_song_into_units"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_song_into_units">[docs]</a><span class="k">def</span> <span class="nf">segment_song_into_units</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span>
     <span class="n">key</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
@@ -703,7 +704,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">segment_song_into_units</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="segment_song_into_units_parallel"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.segment.segment_song_into_units_parallel">[docs]</a><span class="k">def</span> <span class="nf">segment_song_into_units_parallel</span><span class="p">(</span>
+<div class="viewcode-block" id="segment_song_into_units_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_song_into_units_parallel">[docs]</a><span class="k">def</span> <span class="nf">segment_song_into_units_parallel</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span>
     <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="o">**</span><span class="n">kwargs</span>

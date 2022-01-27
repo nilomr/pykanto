@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pykanto.intlabel" href="pykanto.intlabel.html" />
-    <link rel="prev" title="pykanto.parameters" href="pykanto.parameters.html" /> 
+    <link rel="next" title="pykanto.signal" href="pykanto.signal.html" />
+    <link rel="prev" title="pykanto.intlabel.data" href="pykanto.intlabel.data.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,11 +52,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="pykanto.dataset.html">pykanto.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.parameters.html">pykanto.parameters</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.dataset.html">pykanto.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.utils.html">pykanto.utils</a></li>
 </ul>
 
         </div>
@@ -93,19 +94,19 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.plot.melspectrogram" title="pykanto.plot.melspectrogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">melspectrogram</span></code></a>(nparray_or_dir[, parameters, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.html#pykanto.plot.melspectrogram" title="pykanto.plot.melspectrogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">melspectrogram</span></code></a>(nparray_or_dir[, parameters, ...])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.plot.mspaced_mask" title="pykanto.plot.mspaced_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mspaced_mask</span></code></a>(N, M)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.html#pykanto.plot.mspaced_mask" title="pykanto.plot.mspaced_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mspaced_mask</span></code></a>(N, M)</p></td>
 <td><p>Returns a mask of length N to select M indices as regularly spaced as possible.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.plot.rand_jitter" title="pykanto.plot.rand_jitter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rand_jitter</span></code></a>(arr[, jitter])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.html#pykanto.plot.rand_jitter" title="pykanto.plot.rand_jitter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rand_jitter</span></code></a>(arr[, jitter])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.plot.segmentation" title="pykanto.plot.segmentation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segmentation</span></code></a>(dataset[, key, spectrogram, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../source/pykanto.html#pykanto.plot.segmentation" title="pykanto.plot.segmentation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segmentation</span></code></a>(dataset[, key, spectrogram, ...])</p></td>
 <td><p>Plots a vocalisation and overlays the results of the segmentation process.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.plot.sns_histoplot" title="pykanto.plot.sns_histoplot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sns_histoplot</span></code></a>(data[, nbins])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../source/pykanto.html#pykanto.plot.sns_histoplot" title="pykanto.plot.sns_histoplot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sns_histoplot</span></code></a>(data[, nbins])</p></td>
 <td><p>Plots a histogram using seaborn</p></td>
 </tr>
 </tbody>
@@ -118,7 +119,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.plot.melspectrogram">
-<span class="sig-prename descclassname"><span class="pre">pykanto.plot.</span></span><span class="sig-name descname"><span class="pre">melspectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nparray_or_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">os.PathLike</span> <span class="p"><span class="pre">|</span></span> <span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Parameters</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'bone'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colour_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/plot.html#melspectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.plot.melspectrogram" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.plot.</span></span><span class="sig-name descname"><span class="pre">melspectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nparray_or_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">os.PathLike</span> <span class="p"><span class="pre">|</span></span> <span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Parameters</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'bone'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lenght</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colour_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/plot.html#melspectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.plot.melspectrogram" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -129,13 +130,13 @@ of the segmentation process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> (<a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><em>SongDataset</em></a>) – A SongDataset object.</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../source/pykanto.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><em>SongDataset</em></a>) – A SongDataset object.</p></li>
 <li><p><strong>key</strong> (<em>str</em><em>, </em><em>optional</em>) – Vocalisation key. Defaults to None.</p></li>
 <li><p><strong>spectrogram</strong> (<em>bool</em><em> | </em><em>np.ndarray</em><em>, </em><em>optional</em>) – [description].
 Defaults to False.</p></li>
 <li><p><strong>onsets_offsets</strong> (<em>bool</em><em> | </em><em>Tuple</em><em>[</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em><em>, </em><em>optional</em>) – Tuple containing arrays with unit onsets and offsets. Defaults to False.</p></li>
 <li><p><strong>kwargs</strong> – Keyword arguments to be passed to
-<a class="reference internal" href="#pykanto.plot.melspectrogram" title="pykanto.plot.melspectrogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">melspectrogram()</span></code></a></p></li>
+<a class="reference internal" href="../source/pykanto.html#pykanto.plot.melspectrogram" title="pykanto.plot.melspectrogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">melspectrogram()</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -177,11 +178,11 @@ indices as regularly spaced as possible.</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer
         navigation">
         
-        <a href="pykanto.intlabel.html" class="btn btn-neutral float-right"
-            title="pykanto.intlabel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="pykanto.signal.html" class="btn btn-neutral float-right"
+            title="pykanto.signal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
-        <a href="pykanto.parameters.html" class="btn btn-neutral float-left" title="pykanto.parameters" accesskey="p" rel="prev"><span class="fa
+        <a href="pykanto.intlabel.data.html" class="btn btn-neutral float-left" title="pykanto.intlabel.data" accesskey="p" rel="prev"><span class="fa
                 fa-arrow-circle-left"></span> Previous</a>
         
     </div>

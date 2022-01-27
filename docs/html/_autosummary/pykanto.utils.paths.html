@@ -139,7 +139,7 @@ different types of files</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initialises a ProjDirs class, which is used to store a
 project’s file structure. This is required when constructing
-a <a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">SongDataset</span></code></a> object and generally
+a <a class="reference internal" href="../source/pykanto.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">SongDataset</span></code></a> object and generally
 useful to keep paths tidy and in the same location.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -187,22 +187,21 @@ if it doesn’t already exist. Defaults to False.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.update_json_locs">
-<span class="sig-name descname"><span class="pre">update_json_locs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">NEW_PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_checks</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.update_json_locs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.update_json_locs" title="Permalink to this definition"></a></dt>
-<dd><p>Updates the ‘wav_loc’ field in JSON metadata files. This is
-useful if you move your data to a location different to where
-it was first generated. It will fix broken links to the .wav files,
-provided that the <a class="reference internal" href="#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a> object
-has a ‘WAVFILES’ attribute pointing to a dir. containing WAV and
-JSON subdirs.</p>
+<span class="sig-name descname"><span class="pre">update_json_locs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_checks</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.update_json_locs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.update_json_locs" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the ‘wav_loc’ field in JSON metadata files for a given project.
+This is useful if you have moved your data to a location different to
+where it was first generated. It will fix broken links to the .wav
+files, provided that the <a class="reference internal" href="#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a> object
+has a ‘WAVFILES’ attribute pointing to a valid directory containing
+‘WAV’ and ‘JSON’ subdirectories.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>NEW_PROJECT_DIR</strong> (<em>Path</em>) – New location for your project.</p></li>
 <li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to force change paths
 even if the current ones work. Defaults to False.</p></li>
 <li><p><strong>ignore_checks</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wether to check that wav and
-JSON files coincide. Useful if you just want to change JSONS
-in a different location to where the rest of the data are.</p></li>
+JSON files coincide. Useful if you just want to change JSONS in
+a different location to where the rest of the data are.</p></li>
 </ul>
 </dd>
 </dl>
