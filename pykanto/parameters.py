@@ -28,7 +28,7 @@ class Parameters():
         """Number of samples. Defaults to 1024."""
         self.hop_length: int = 128
         """Number of samples between successive frames. Defaults to 128."""
-        self.fft_size: int = 1024
+        self.fft_size: int = 2048
         """Number of bins used to divide the window. Defaults to 1024."""
         self.num_mel_bins: int = 224
         """Number of Mel frequency bins to use 
