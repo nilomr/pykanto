@@ -6,13 +6,17 @@
 
 ***
 
-
 This repository contains code to segment, label and analyse the songs of great tits (*Parus major*) recorded in Wytham Woods, Oxford, 2020- .
 
 #### Table of contents
   - [Installation](#installation)
   - [Project Organisation](#project-organisation)
   - [Acknowledgements](#acknowledgements)
+
+
+## ToDo
+- [ ] create data for interactive app using custom grouping factor (default: ID),
+      or at least explain how to use something other than individual ID as grouping factor.
 
 ## Installation
 
@@ -108,6 +112,10 @@ xml along these lines - one option
 - Some of the methods in pykanto are directly inspired by those described in Sainburg T, Thielk M, Gentner TQ (2020) Finding, visualizing, and quantifying latent structure across diverse animal vocal repertoires. PLOS Computational Biology 16(10): e1008228. [DOI](https://doi.org/10.1371/journal.pcbi.1008228). I have indicated this in the relevant method's docstring.
 
 - The [`dereverberate`](https://github.com/nilomr/pykanto/blob/b11f3b59301f444f8098d76da96cc87bd9cb624b/pykanto/signal/filter.py#L14) function is based on code by Robert Lachlan that is part of [Luscinia](https://rflachlan.github.io/Luscinia/), a software for bioacoustic archiving, measurement and analysis.
+
+Sample data 
+BF: https://osf.io/r6paq/
+
 
 --------
 
