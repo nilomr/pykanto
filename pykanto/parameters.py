@@ -1,13 +1,17 @@
-# ─── DESCRIPTION ─────────────────────────────────────────────────────────────
-"""
+# ─── DESCRIPTION ──────────────────────────────────────────────────────────────
 
 """
-# ──── IMPORTS ────────────────────────────────────────────────────────────────
+Classes and methods to store and modify pykanto parameters.
+"""
+
+# ──── IMPORTS ─────────────────────────────────────────────────────────────────
+
 import json
 from typing import Any, Tuple
+
 from pykanto.utils.compute import print_dict
 
-# ──── CLASSES AND METHODS ────────────────────────────────────────────────────
+# ──── CLASSES AND METHODS ─────────────────────────────────────────────────────
 
 
 class Parameters():

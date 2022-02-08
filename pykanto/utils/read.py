@@ -1,12 +1,20 @@
 
+# ─── DESCRIPTION ──────────────────────────────────────────────────────────────
+
+"""
+Functions to read external files -e.g. JSON- efficiently.
+"""
+
+# ──── IMPORTS ─────────────────────────────────────────────────────────────────
 
 from pathlib import Path
 from typing import Any, Dict, List
-
-import ujson as json
 import ray
+import ujson as json
+from pykanto.utils.compute import (calc_chunks, flatten_list, get_chunks,
+                                   print_parallel_info, to_iterator, tqdmm)
 
-from pykanto.utils.compute import calc_chunks, flatten_list, get_chunks, print_parallel_info, to_iterator, tqdmm
+# ─── FUNCTIONS ────────────────────────────────────────────────────────────────
 
 
 def read_json(json_loc: Path) -> Dict:
