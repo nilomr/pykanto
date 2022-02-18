@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import sys
 from typing import Dict, List
+import numpy as np
 from tqdm import tqdm
 import shutil
 import ujson
@@ -65,64 +66,6 @@ def copy_xml_files(file_list: List[Path], dest_dir: Path) -> None:
     print(f"Done copying {len(file_list)} files to {dest_dir}")
 
 
-class NoIndent(object):
-    """ Value wrapper. """
-
-    def __init__(self, value):
-        self.value = value
-
-
-class NoIndentEncoder(json.JSONEncoder):
-    """ Encoder for json that allows for a NoIndent wrapper on lists
-
-    Based upon the StackOverflow answer: https://stackoverflow.com/a/13252112/200663
-    From Tim Sainburg's avgn repository.
-
-    Extends:
-        json.JSONEncoder
-
-    Variables:
-        regex {[type]} -- [description]
-    """
-
-    FORMAT_SPEC = "@@{}@@"
-    regex = re.compile(FORMAT_SPEC.format(r"(\d+)"))
-
-    def __init__(self, **kwargs):
-        # Save copy of any keyword argument values needed for use here.
-        self.__sort_keys = kwargs.get("sort_keys", None)
-        super(NoIndentEncoder, self).__init__(**kwargs)
-
-    def default(self, obj):
-        return (
-            self.FORMAT_SPEC.format(id(obj))
-            if isinstance(obj, NoIndent)
-            else super(NoIndentEncoder, self).default(obj)
-        )
-
-    def encode(self, obj):
-        format_spec = self.FORMAT_SPEC  # Local var to expedite access.
-        json_repr = super(NoIndentEncoder, self).encode(obj)  # Default JSON.
-
-        # Replace any marked-up object ids in the JSON repr with the
-        # value returned from the json.dumps() of the corresponding
-        # wrapped Python object.
-        for match in self.regex.finditer(json_repr):
-            # see https://stackoverflow.com/a/15012814/355230
-            id = int(match.group(1))
-            no_indent = PyObj_FromPtr(id)
-            json_obj_repr = json.dumps(
-                no_indent.value, sort_keys=self.__sort_keys)
-
-            # Replace the matched id string with json formatted representation
-            # of the corresponding Python object.
-            json_repr = json_repr.replace(
-                '"{}"'.format(format_spec.format(id)), json_obj_repr
-            )
-
-        return json_repr
-
-
 def save_json(json_object: Dict, json_loc: Path) -> Dict:
     """
     Saves a .json file using ujson.
@@ -137,10 +80,25 @@ def save_json(json_object: Dict, json_loc: Path) -> Dict:
         ujson.dump(json_object, f, ensure_ascii=False, indent=4)
 
 
+class NumpyEncoder(json.JSONEncoder):
+    """
+    Stores a numpy.ndarray or any nested-list composition as JSON.
+    Source: karlB on `Stack Overflow <https://stackoverflow.com/a/47626762>`_.
+
+    Extends the json.JSONEncoder class.
+    """
+
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
+
 def make_tarfile(source_dir: Path, output_filename: Path) -> None:
     """
-    Makes a tarfile from a given directory. From George V. Reilly in  
-    `stackoverflow <https://stackoverflow.com/a/17081026>`_.
+    Makes a tarfile from a given directory. 
+    Source: George V. Reilly on  
+    `Stack Overflow <https://stackoverflow.com/a/17081026>`_.
 
     Args:
         source_dir (Path): Directory to tar 
