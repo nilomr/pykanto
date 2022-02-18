@@ -6,20 +6,40 @@ different types of files"""
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
 import os
-from typing import List, Union
-from pathlib import Path
 import warnings
-
+from pathlib import Path
+from typing import List, Union
+import attr
+from attr import validators
 import ray
-from pykanto.utils.compute import calc_chunks, get_chunks, print_dict, print_parallel_info, to_iterator, tqdmm
+from pykanto.utils.compute import (calc_chunks, get_chunks, print_dict,
+                                   print_parallel_info, to_iterator, tqdmm)
 from pykanto.utils.read import read_json
 from pykanto.utils.write import makedir, save_json
 
 # ──── CLASSES ─────────────────────────────────────────────────────────────────
 
 
+def _f_exists(instance, attribute, f: Path):
+    """
+    File exists validator for attr.s decorator.
+    """
+    if not f.exists():
+        raise FileNotFoundError(f)
+
+
+@attr.s
+class _GetDirs:
+    """
+    Type check user input before instantiating main ProjDirs class.
+    """
+    PROJECT: Path = attr.ib(validator=[validators.instance_of(Path), _f_exists])
+    RAW_DATA: Path = attr.ib(
+        validator=[validators.instance_of(Path), _f_exists])
+
+
 class ProjDirs():
-    def __init__(self, PROJECT_DIR: Path, mkdir: bool = False):
+    def __init__(self, PROJECT: Path, RAW_DATA: Path, mkdir: bool = False):
         """
         Initialises a ProjDirs class, which is used to store a 
         project's file structure. This is required when constructing 
@@ -27,31 +47,41 @@ class ProjDirs():
         useful to keep paths tidy and in the same location.
 
         Args:
-            PROJECT_DIR (Path): Root directory of the project. 
+            PROJECT (Path): Root directory of the project.
+            RAW_DATA (Path): (Immutable) location of the raw data to be used in 
+                this project.
             mkdir (bool, optional): Wether to create directories if they 
                 don't already exist. Defaults to False.
 
         Examples:
-            >>> PROJROOT = Path('user' / 'projects' / 'myproject')
+            >>> PROJROOT = Path('home' / 'user' / 'projects' / 'myproject')
+            >>> RAW_DATA= Path('bigexternaldrive' / 'fieldrecordings')
             >>> DIRS = ProjDirs(PROJROOT, mkdir=False)
             >>> print(DIRS)
             Items held:
             PROJECT (/user/projects/myproject)
-            DATA (/user/projects/myproject/data)
-            RESOURCES (/user/projects/myproject/resources)
-            REPORTS (/user/projects/myproject/reports)
-            FIGURES (/user/projects/myproject/reports/figures)
+            RAW_DATA (/bigexternaldrive/fieldrecordings)
+            DATA (./myproject/data)
+            SEGMENTED (.segmented/fieldrecordings)
+            RESOURCES (./resources)
+            REPORTS (./reports)
+            FIGURES (./reports/figures)
         """
-        if not isinstance(PROJECT_DIR, Path):
-            raise TypeError(
-                f"{PROJECT_DIR} must be an instance of (pathlib) Path")
 
-        self.PROJECT = PROJECT_DIR
-        self.DATA = PROJECT_DIR / "data"
-        self.RESOURCES = PROJECT_DIR / "resources"
-        self.REPORTS = PROJECT_DIR / "reports"
+        # Type check input paths
+        d = _GetDirs(PROJECT, RAW_DATA)
+
+        # Define project directories
+        self.PROJECT = d.PROJECT
+        self.DATA = d.PROJECT / "data"
+        self.RAW_DATA = d.RAW_DATA
+        self.SEGMENTED = self.DATA / "segmented" / d.RAW_DATA.name
+
+        self.RESOURCES = d.PROJECT / "resources"
+        self.REPORTS = d.PROJECT / "reports"
         self.FIGURES = self.REPORTS / "figures"
 
+        # Create them if needed
         if mkdir:
             for path in self.__dict__.values():
                 makedir(path)
@@ -64,7 +94,12 @@ class ProjDirs():
         """
         return print_dict(self.__dict__)
 
-    def append(self, new_attr: str, new_value: Path, mkdir: bool = False) -> None:
+    def append(
+        self,
+        new_attr: str,
+        new_value: Path,
+        mkdir: bool = False
+    ) -> None:
         """
         Appends a new attribute to the class instance.
 
@@ -84,24 +119,24 @@ class ProjDirs():
             if mkdir:
                 makedir(new_value)
 
-    def _deep_update_paths(self, OLD_PROJECT_DIR, NEW_PROJECT_DIR) -> None:
+    def _deep_update_paths(self, OLD_PROJECT, NEW_PROJECT) -> None:
         for k, v in self.__dict__.items():
             if isinstance(v, Path):
                 self.__dict__[k] = change_data_loc(
-                    v, OLD_PROJECT_DIR,  NEW_PROJECT_DIR)
+                    v, OLD_PROJECT,  NEW_PROJECT)
             elif isinstance(v, list):
                 self.__dict__[k] = [
-                    change_data_loc(path, OLD_PROJECT_DIR, NEW_PROJECT_DIR)
+                    change_data_loc(path, OLD_PROJECT, NEW_PROJECT)
                     for path in v]
             elif isinstance(v, dict):
                 for k1, v1 in v.items():  # Level 1
                     if isinstance(v1, Path):
                         self.__dict__[k][k1] = change_data_loc(
-                            v1, OLD_PROJECT_DIR, NEW_PROJECT_DIR)
+                            v1, OLD_PROJECT, NEW_PROJECT)
                     elif isinstance(v1, dict):
                         for k2, v2 in v1.items():
                             self.__dict__[k][k1][k2] = change_data_loc(
-                                v2, OLD_PROJECT_DIR, NEW_PROJECT_DIR)
+                                v2, OLD_PROJECT, NEW_PROJECT)
                     elif k1 == 'already_checked':
                         continue
                     else:
@@ -123,7 +158,7 @@ class ProjDirs():
         This is useful if you have moved your data to a location different to
         where it was first generated. It will fix broken links to the .wav
         files, provided that the :class:`~pykanto.utils.paths.ProjDirs` object
-        has a 'WAVFILES' attribute pointing to a valid directory containing
+        has a 'SEGMENTED' attribute pointing to a valid directory containing
         'WAV' and 'JSON' subdirectories.
 
         Args:
@@ -134,25 +169,25 @@ class ProjDirs():
                 a different location to where the rest of the data are.
         """
 
-        if not hasattr(self, 'WAVFILES'):
+        if not hasattr(self, 'SEGMENTED'):
             raise KeyError(
-                "This ProjDirs object does not have a WAVFILES attribute. "
+                "This ProjDirs object does not have a SEGMENTED attribute. "
                 "You can append it like so: "
-                "`DIRS.append('WAVFILES', Path(...))`")
+                "`DIRS.append('SEGMENTED', Path(...))`")
 
-        if not self.WAVFILES.is_dir():
-            raise FileNotFoundError(f"{self.WAVFILES} does not exist.")
+        if not self.SEGMENTED.is_dir():
+            raise FileNotFoundError(f"{self.SEGMENTED} does not exist.")
 
-        WAV_LIST = sorted(list((self.WAVFILES / "WAV").glob("*.wav")))
-        JSON_LIST = sorted(list((self.WAVFILES / "JSON").glob("*.JSON")))
+        WAV_LIST = sorted(list((self.SEGMENTED / "WAV").glob("*.wav")))
+        JSON_LIST = sorted(list((self.SEGMENTED / "JSON").glob("*.JSON")))
 
         if not len(WAV_LIST) and not ignore_checks:
             raise FileNotFoundError(
-                f'There are no .wav files in {self.WAVFILES / "WAV"}')
+                f'There are no .wav files in {self.SEGMENTED / "WAV"}')
         if len(WAV_LIST) != len(JSON_LIST) and not ignore_checks:
             raise KeyError(
                 "There is an unequal number of .wav and .json "
-                f"files in {self.WAVFILES}")
+                f"files in {self.SEGMENTED}")
 
         # Check that file can be read & wav_loc needs to be changed
         try:
@@ -174,7 +209,7 @@ class ProjDirs():
             except:
                 raise FileNotFoundError(f"{file} does not exist or is empty.")
 
-            newloc = self.WAVFILES / "WAV" / Path(jf['wav_loc']).name
+            newloc = self.SEGMENTED / "WAV" / Path(jf['wav_loc']).name
             if Path(jf['wav_loc']) == newloc:
                 return
             else:
@@ -216,7 +251,7 @@ class ProjDirs():
 
 
 def change_data_loc(
-        DIR: Path, PROJECT_DIR: Path, NEW_PROJECT_DIR: Path) -> Path:
+        DIR: Path, PROJECT: Path, NEW_PROJECT: Path) -> Path:
     """
     Updates the location of the parent directories of a project, including 
     the project name, for a given path. Used when the location of a dataset changes 
@@ -224,18 +259,18 @@ def change_data_loc(
 
     Args:
         DIR (Path): Path to update
-        PROJECT_DIR ([type]): Old -broken- project directory.
-        NEW_PROJECT_DIR (Path): New working project directory.
+        PROJECT ([type]): Old -broken- project directory.
+        NEW_PROJECT (Path): New working project directory.
 
     Returns:
         Path: Updated path.
     """
-    index = DIR.parts.index(PROJECT_DIR.name)
-    new_path = NEW_PROJECT_DIR.joinpath(*DIR.parts[index+1:])
+    index = DIR.parts.index(PROJECT.name)
+    new_path = NEW_PROJECT.joinpath(*DIR.parts[index+1:])
     return new_path
 
 
-def get_wav_filepaths(ORIGIN_DIR:
+def get_wav_filepaths(RAW_DATA_DIR:
                       Union[str, Path]) -> List[Path]:
     """
     Get a list of wav files in a directory, including subdirectories, if
@@ -243,10 +278,10 @@ def get_wav_filepaths(ORIGIN_DIR:
     segmentation metadata from .xml files output by Sonic Visualiser.
 
     Args:
-        ORIGIN_DIR (PosixPath): Directory to search
+        RAW_DATA_DIR (PosixPath): Directory to search
     """
     file_list: List[Path] = []
-    for root, _, files in os.walk(str(ORIGIN_DIR)):
+    for root, _, files in os.walk(str(RAW_DATA_DIR)):
         for file in files:
             if ((file.endswith(".wav") or file.endswith(".WAV"))
                     and str(file.rsplit('.', 1)[0] + ".xml") in files):
@@ -260,10 +295,10 @@ def get_wav_filepaths(ORIGIN_DIR:
 
 
 # NOTE: move this to custom
-def get_xml_filepaths(ORIGIN_DIR:
+def get_xml_filepaths(RAW_DATA_DIR:
                       Union[str, Path]) -> List[Path]:
     file_list: List[Path] = []
-    for root, _, files in os.walk(str(ORIGIN_DIR)):
+    for root, _, files in os.walk(str(RAW_DATA_DIR)):
         xml_files = [file for file in files if file.endswith('.xml')]
         for file in xml_files:
             file_list.append(Path(root) / file)
@@ -278,16 +313,55 @@ def get_xml_filepaths(ORIGIN_DIR:
         return file_list
 
 
+def get_file_paths(root_dir: Path, extensions: List[str]) -> List[Path]:
+    """
+    Returns paths to files with given extension found recursively within a
+    directory.
+
+    Args:
+        root_dir (Path): Root directory to search recursively.
+        extensions (List[str]): File extensions to look for (e.g., .wav)
+
+    Raises:
+        FileNotFoundError: No files found.
+
+    Returns:
+        List[Path]: List with path to files.
+    """
+    file_list: List[Path] = []
+    ext = "".join([f"{x} and/or "
+                   if i != len(extensions)-1 and len(extensions) > 1 else f"{x}"
+                   for i, x in enumerate(extensions)])
+
+    for root, _, files in os.walk(str(root_dir)):
+        for file in files:
+            if file.endswith(tuple(extensions)):
+                file_list.append(Path(root) / file)
+    if len(file_list) == 0:
+        raise FileNotFoundError(
+            f"There are no {ext} files in this directory")
+    else:
+        print(f"Found {len(file_list)} {ext} files in {root_dir}")
+    return file_list
+
+
 def link_project_data(origin: os.PathLike, project_data_dir: Path) -> None:
     """
     Creates a symlink from a project's data folder (not under version control)
     to the directory where the data lives (e.g. on an external HDD).
 
-    Args: origin (os.PathLike): Path to the directory where the data are.
+    Args: origin (os.PathLike): Path to the directory containing your 'raw' data folder.
         project_data_dir (Path): A project's data folder to link with 'origin'.
 
-    Raises: ValueError: The 'project_data_dir' already contains data or is a
+    Note:
+        This will work in unix-like systems but might cause problems in Windows.
+        See `how to enable symlinks in 
+        Windows <https://csatlas.com/python-create-symlink/#windows>`_
+
+    Raises: 
+        ValueError: The 'project_data_dir' already contains data or is a
         symlink.
+        FileExistsError: File exists; your target folder already exists.
     """
 
     if not os.path.isdir(project_data_dir):
@@ -298,4 +372,5 @@ def link_project_data(origin: os.PathLike, project_data_dir: Path) -> None:
         os.symlink(origin, project_data_dir, target_is_directory=True)
         print("Symbolic link created successfully.")
     else:
-        raise ValueError('The destination directory is not empty.')
+        warnings.warn('link_project_data() failed: '
+                      'the destination directory is not empty.')
