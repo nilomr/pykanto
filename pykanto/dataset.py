@@ -27,7 +27,7 @@ from bokeh.palettes import Set3_12
 
 import pykanto.plot as kplot
 from pykanto import __name__ as modname
-from pykanto.intlabel.data import prepare_datasource
+from pykanto.labelapp.data import prepare_datasource
 from pykanto.parameters import Parameters
 from pykanto.signal.cluster import reduce_and_cluster_parallel
 from pykanto.signal.segment import segment_song_into_units_parallel
@@ -76,7 +76,7 @@ class SongDataset():
         Args:
             DATASET_ID (str): Name of new dataset.
             DIRS (ProjDirs): Project directory structure. Must contain 
-                a 'WAVFILES' attribute pointing to a directory that contains 
+                a 'SEGMENTED' attribute pointing to a directory that contains 
                 the segmented data organised in two folders: 'WAV' and 
                 'JSON' for audio and metadata, respectively.
             parameters (Parameters, optional): Parameters for dataset.
@@ -161,18 +161,18 @@ class SongDataset():
             Will drop any .wav for which there is no .json!
 
         """
-        if not hasattr(self.DIRS, 'WAVFILES'):
+        if not hasattr(self.DIRS, 'SEGMENTED'):
             raise KeyError(
                 'The ProjDirs object you used to initialise '
-                'this SongDataset object does not have a WAVFILES attribute. '
+                'this SongDataset object does not have a SEGMENTED attribute. '
                 'See the docs for SongDataset for mroe information.')
 
         # TODO: read both lower and uppercase wav and json extensions.
         # Load and check file paths:
         self.DIRS.WAV_LIST = sorted(
-            list((self.DIRS.WAVFILES / "WAV").glob("*.wav")))
+            list((self.DIRS.SEGMENTED / "WAV").glob("*.wav")))
         self.DIRS.JSON_LIST = sorted(
-            list((self.DIRS.WAVFILES / "JSON").glob("*.JSON")))
+            list((self.DIRS.SEGMENTED / "JSON").glob("*.JSON")))
         if not len(self.DIRS.WAV_LIST):
             raise FileNotFoundError(
                 f'There are no .wav files in {self.DIRS.WAV_LIST}')
@@ -185,7 +185,7 @@ class SongDataset():
             ndrop = len(self.DIRS.JSON_LIST) - len(matching_jsons)
             warnings.warn(
                 "There is an unequal number of matching .wav and .json "
-                f"files in {self.DIRS.WAVFILES}."
+                f"files in {self.DIRS.SEGMENTED}."
                 f"Keeping only those that match: dropped {ndrop}")
             keepnames = [json.stem for json in matching_jsons]
             self.DIRS.WAV_LIST = [wav for wav in self.DIRS.WAV_LIST
@@ -249,7 +249,7 @@ class SongDataset():
 
     def _get_unique_ids(self) -> None:
         """
-        Adds a 'unique_ID' attribute holding and array 
+        Adds a 'unique_ID' attribute holding an array 
         with unique IDs in the dataset.
         """
         self.ID = np.array(
@@ -598,6 +598,9 @@ class SongDataset():
         if not 'onsets' in self.vocalisations.columns:
             units = segment_song_into_units_parallel(
                 self, self.vocalisations.index)
+            onoff_df = pd.DataFrame(
+                units, columns=['index', 'onsets', 'offsets']).dropna()
+            onoff_df.set_index('index', inplace=True)
 
         # Otherwise just use that
         else:
@@ -606,9 +609,6 @@ class SongDataset():
             onoff_df['index'] = onoff_df.index
 
         # Calculate durations and add to dataset
-        onoff_df = pd.DataFrame(
-            units, columns=['index', 'onsets', 'offsets']).dropna()
-        onoff_df.set_index('index', inplace=True)
         onoff_df['unit_durations'] = onoff_df['offsets'] - onoff_df['onsets']
         onoff_df['silence_durations'] = onoff_df.apply(
             lambda row: [a - b for a, b in zip(row['onsets'][1:],
@@ -934,7 +934,7 @@ class SongDataset():
 
         # Check that we are where we should
         # REVIEW: easy to break!
-        app_path = (Path(__file__).parent / 'intlabel')
+        app_path = (Path(__file__).parent / 'labelapp')
         if not app_path.is_dir():
             raise FileNotFoundError(str(app_path))
 
