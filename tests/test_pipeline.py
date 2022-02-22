@@ -30,19 +30,19 @@ DATASET_ID = "GREAT_TIT"
 
 @pytest.fixture()
 def DIRS():
-    PROJECT_DIR = Path(
+    PROJECT = Path(
         git.Repo('.', search_parent_directories=True).working_tree_dir)
-    DIRS = ProjDirs(PROJECT_DIR / 'pykanto', mkdir=True)
-    DIRS.append('WAVFILES', DIRS.PROJECT / 'data' / 'segmented' / 'great_tit')
+    RAW_DATA = PROJECT / 'pykanto' / 'data' / 'segmented' / 'great_tit'
+    DIRS = ProjDirs(PROJECT / 'pykanto', RAW_DATA, mkdir=True)
     return DIRS
 
 
 @pytest.fixture()
 def new_dataset(DIRS):
     params = Parameters(dereverb=True)
-    dataset = SongDataset(DATASET_ID, DIRS, parameters=params,
-                          overwrite_dataset=True, overwrite_data=True)
-    return dataset
+    new_dataset = SongDataset(DATASET_ID, DIRS, parameters=params,
+                              overwrite_dataset=True, overwrite_data=True)
+    return new_dataset
 
 
 @pytest.fixture()
