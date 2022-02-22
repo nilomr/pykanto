@@ -15,6 +15,8 @@ import psutil
 import ray
 from tqdm.auto import tqdm
 
+from pykanto.utils.types import Chunkinfo
+
 
 def to_iterator(obj_ids):
     """
@@ -93,7 +95,8 @@ def timing(f):
     return wrap
 
 
-def calc_chunks(len_iterable: int, factor: int = 2, verbose: bool = False) -> int:
+def calc_chunks(
+        len_iterable: int, factor: int = 2, verbose: bool = False) -> Chunkinfo:
     """
     Calculate chunk size to optimise parallel computing.
     Adapted from https://stackoverflow.com/a/54032744.
@@ -102,7 +105,6 @@ def calc_chunks(len_iterable: int, factor: int = 2, verbose: bool = False) -> in
                       'chunksize', 'last_chunk']
 
     """
-
     n_workers = len(psutil.Process().cpu_affinity())
 
     chunksize, extra = divmod(len_iterable, n_workers * factor)
@@ -113,17 +115,11 @@ def calc_chunks(len_iterable: int, factor: int = 2, verbose: bool = False) -> in
     # exploit `0 == False`
     last_chunk = len_iterable % chunksize or chunksize
 
-    Chunkinfo = namedtuple(
-        'Chunkinfo', ['n_workers', 'len_iterable', 'n_chunks',
-                      'chunksize', 'last_chunk']
-    )
     chunks = Chunkinfo(
         n_workers, len_iterable, n_chunks, chunksize, last_chunk
     )
-
     if verbose:
         print(chunks)
-
     return chunks
 
 
