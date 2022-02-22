@@ -22,7 +22,7 @@ else:
         "scipy >= 1.5",
         "numba >= 0.49",
         "tqdm",
-        "audio-metadata >= 0.9",
+        "audio-metadata >= 0.11.1",
         "ray[default]",
         "pysoundfile >= 0.9",
         "umap-learn >= 0.5",
@@ -32,38 +32,34 @@ else:
         "librosa >= 0.8",
         "bokeh >= 2.3.3",
         "ujson",
-        "psutil"
+        "psutil",
+        "attrs",
+        "gitpython"
     ]
 
     EXTRAS_REQUIRES = {
         'dev': [
             'sphinx',
             'sphinx-copybutton',
-            'sphinx-rtd-theme'
+            'sphinx-rtd-theme',
+            'pytest',
+            'autopep8'
         ]
     }
 
 setup(
-    name="pykanto",
-    version="0.1.3",
+    name="pykanto", version="0.1.3",
     description="Management and analysis of animal vocalisation data",
-    license="MIT",
-    author='Nilo M. Recalde',
+    license="MIT", author='Nilo M. Recalde',
     author_email="nilomerinorecalde@gmail.com",
-    url="https://github.com/nilomr/pykanto",
-    long_description=LONG_DESCRIPTION,
-    packages=["pykanto",
-              "pykanto.signal",
-              "pykanto.utils",
-              "pykanto.intlabel",
-              "pykanto.utils"
-              ],
+    url="https://github.com/nilomr/pykanto", long_description=LONG_DESCRIPTION,
+    packages=["pykanto", "pykanto.signal", "pykanto.utils", "pykanto.labelapp",
+              "pykanto.utils"],
     package_data={
         'pykanto':
-        ["data/segmented/*/*/*.wav", "data/segmented/*/*/*.JSON"]
-    },
-    python_requires=">=3.8",
-    install_requires=INSTALL_REQUIRES,
-    extras_require=EXTRAS_REQUIRES,
-    include_package_data=True,
-)
+        ["data/segmented/*/*/*.wav",
+         "data/segmented/*/*/*.JSON",
+         "data/raw/*.wav",
+         "data/raw/*.xml"]},
+    python_requires=">=3.8", install_requires=INSTALL_REQUIRES,
+    extras_require=EXTRAS_REQUIRES, include_package_data=True,)
