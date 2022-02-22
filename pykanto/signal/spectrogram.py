@@ -54,14 +54,14 @@ def save_melspectrogram(
 
     # Locate song metadata
     d_dict = dataset.metadata[key]
-    file = d_dict['wav_loc']
+    file = d_dict['wav_file']
 
     # load audio file with librosa
     dat, _ = librosa.load(file, sr=dataset.parameters.sr)
 
     # Compute mel spec
     mel_spectrogram = librosa.feature.melspectrogram(
-        dat, sr=dataset.parameters.sr, n_fft=dataset.parameters.fft_size,
+        y=dat, sr=dataset.parameters.sr, n_fft=dataset.parameters.fft_size,
         win_length=dataset.parameters.window_length,
         hop_length=dataset.parameters.hop_length,
         n_mels=dataset.parameters.num_mel_bins,
@@ -70,7 +70,7 @@ def save_melspectrogram(
 
     # To dB
     mel_spectrogram = librosa.amplitude_to_db(
-        mel_spectrogram, top_db=dataset.parameters.top_dB, ref=np.max)
+        S=mel_spectrogram, top_db=dataset.parameters.top_dB, ref=np.max)
 
     if bandpass:
         # Mask anything outside frequency bounding box
@@ -89,7 +89,7 @@ def save_melspectrogram(
     makedir(spec_out_dir)
     np.save(spec_out_dir, mel_spectrogram)
 
-    return {Path(file).name: spec_out_dir}
+    return {Path(file).stem: spec_out_dir}
 
 
 @ray.remote
