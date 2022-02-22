@@ -169,15 +169,15 @@ class SongDataset():
 
         # TODO: read both lower and uppercase wav and json extensions.
         # Load and check file paths:
-        self.DIRS.WAV_LIST = sorted(
+        self.DIRS.WAV_LIST: List[Path] = sorted(
             list((self.DIRS.SEGMENTED / "WAV").glob("*.wav")))
-        self.DIRS.JSON_LIST = sorted(
+        self.DIRS.JSON_LIST: List[Path] = sorted(
             list((self.DIRS.SEGMENTED / "JSON").glob("*.JSON")))
         if not len(self.DIRS.WAV_LIST):
             raise FileNotFoundError(
                 f'There are no .wav files in {self.DIRS.WAV_LIST}')
 
-        wavnames = [wav.name for wav in self.DIRS.WAV_LIST]
+        wavnames = [wav.stem for wav in self.DIRS.WAV_LIST]
         matching_jsons = [json for json in self.DIRS.JSON_LIST
                           if json.stem in wavnames]
 
@@ -189,7 +189,7 @@ class SongDataset():
                 f"Keeping only those that match: dropped {ndrop}")
             keepnames = [json.stem for json in matching_jsons]
             self.DIRS.WAV_LIST = [wav for wav in self.DIRS.WAV_LIST
-                                  if wav.name in keepnames]
+                                  if wav.stem in keepnames]
             self.DIRS.JSON_LIST = matching_jsons
 
         # Subset as per parameters if possible
@@ -244,7 +244,7 @@ class SongDataset():
             jsons = _get_json_parallel(self.DIRS.JSON_LIST)
 
         self.metadata = {
-            Path(json["wav_loc"]).name: json for json in jsons
+            Path(json["wav_file"]).stem: json for json in jsons
         }
 
     def _get_unique_ids(self) -> None:
@@ -270,14 +270,15 @@ class SongDataset():
         vocalisations_dict = {}
         noise_dict = {}
         for key, file in self.metadata.items():
-            data = {
-                "wav_loc": file['wav_loc'],
-                "ID": file["ID"],
-                "lower_freq": file["lower_freq"],
-                "upper_freq": file["upper_freq"],
-                "length_s": file['length_s'],
+            data = file
+            # data = {
+            #     "wav_file": file['wav_file'],
+            #     "ID": file["ID"],
+            #     "lower_freq": file["lower_freq"],
+            #     "upper_freq": file["upper_freq"],
+            #     "length_s": file['length_s'],
 
-            }
+            # }
             if all(e in file for e in ['onsets', 'offsets']):
                 data['onsets'], data['offsets'] = (
                     np.array(file['onsets']), np.array(file['offsets']))
@@ -319,11 +320,11 @@ class SongDataset():
         """
 
         def _spec_exists(key):  # TODO: refactor
-            file = self.metadata[key]['wav_loc']
+            file = self.metadata[key]['wav_file']
             ID = self.metadata[key]['ID']
             path = self.DIRS.SPECTROGRAMS / ID / (Path(file).stem + '.npy')
             if path.exists():
-                return {Path(file).name: path}
+                return {Path(file).stem: path}
 
         # Check if spectrograms already exist for any keys:
         existing_voc = [_spec_exists(key) for key in self.vocalisations.index]
