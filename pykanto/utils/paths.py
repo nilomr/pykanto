@@ -8,34 +8,17 @@ different types of files"""
 import os
 import warnings
 from pathlib import Path
-from typing import List, Union
+from typing import List, Tuple, Union
 import attr
 from attr import validators
 import ray
 from pykanto.utils.compute import (calc_chunks, get_chunks, print_dict,
                                    print_parallel_info, to_iterator, tqdmm)
 from pykanto.utils.read import read_json
+from pykanto.utils.types import ValidDirs
 from pykanto.utils.write import makedir, save_json
 
 # ──── CLASSES ─────────────────────────────────────────────────────────────────
-
-
-def _f_exists(instance, attribute, f: Path):
-    """
-    File exists validator for attr.s decorator.
-    """
-    if not f.exists():
-        raise FileNotFoundError(f)
-
-
-@attr.s
-class _GetDirs:
-    """
-    Type check user input before instantiating main ProjDirs class.
-    """
-    PROJECT: Path = attr.ib(validator=[validators.instance_of(Path), _f_exists])
-    RAW_DATA: Path = attr.ib(
-        validator=[validators.instance_of(Path), _f_exists])
 
 
 class ProjDirs():
@@ -69,7 +52,7 @@ class ProjDirs():
         """
 
         # Type check input paths
-        d = _GetDirs(PROJECT, RAW_DATA)
+        d = ValidDirs(PROJECT, RAW_DATA)
 
         # Define project directories
         self.PROJECT = d.PROJECT
@@ -154,7 +137,7 @@ class ProjDirs():
             self, overwrite: bool = False,
             ignore_checks: bool = False) -> None:
         """
-        Updates the 'wav_loc' field in JSON metadata files for a given project.
+        Updates the 'wav_file' field in JSON metadata files for a given project.
         This is useful if you have moved your data to a location different to
         where it was first generated. It will fix broken links to the .wav
         files, provided that the :class:`~pykanto.utils.paths.ProjDirs` object
@@ -189,47 +172,47 @@ class ProjDirs():
                 "There is an unequal number of .wav and .json "
                 f"files in {self.SEGMENTED}")
 
-        # Check that file can be read & wav_loc needs to be changed
+        # Check that file can be read & wav_file needs to be changed
         try:
             jf = read_json(JSON_LIST[0])
         except:
             raise FileNotFoundError(
                 f"{JSON_LIST[0]} does not exist or is empty.")
 
-        wavloc = Path(jf['wav_loc'])
+        wavloc = Path(jf['wav_file'])
         if wavloc.exists() and overwrite is False:
             warnings.warn(
                 f'{wavloc} exists: no need to update paths. '
                 'You can force update by setting `overwrite = True`.')
             return
 
-        def change_wav_loc(file):
+        def change_wav_file(file):
             try:
                 jf = read_json(file)
             except:
                 raise FileNotFoundError(f"{file} does not exist or is empty.")
 
-            newloc = self.SEGMENTED / "WAV" / Path(jf['wav_loc']).name
-            if Path(jf['wav_loc']) == newloc:
+            newloc = self.SEGMENTED / "WAV" / Path(jf['wav_file']).name
+            if Path(jf['wav_file']) == newloc:
                 return
             else:
                 try:
-                    jf['wav_loc'] = str(newloc)
+                    jf['wav_file'] = str(newloc)
                     save_json(jf, file)
                 except:
                     raise IndexError(f"Could not save {file}")
 
-        def batch_change_wav_loc(files: List[Path]) -> None:
+        def batch_change_wav_file(files: List[Path]) -> None:
             if isinstance(files, list):
                 for file in files:
-                    change_wav_loc(file)
+                    change_wav_file(file)
             else:
-                change_wav_loc(files)
+                change_wav_file(files)
         kk = JSON_LIST[0]
-        change_wav_loc(JSON_LIST[0])
+        change_wav_file(JSON_LIST[0])
 
         # Run in paralell
-        b_change_wav_loc_r = ray.remote(batch_change_wav_loc)
+        b_change_wav_file_r = ray.remote(batch_change_wav_file)
         chunk_info = calc_chunks(len(JSON_LIST), verbose=True)
         chunk_length, n_chunks = chunk_info[3], chunk_info[2]
         chunks = get_chunks(JSON_LIST, chunk_length)
@@ -238,7 +221,7 @@ class ProjDirs():
             'individual IDs', n_chunks, chunk_length)
 
         # Distribute with ray
-        obj_ids = [b_change_wav_loc_r.remote(i) for i in chunks]
+        obj_ids = [b_change_wav_file_r.remote(i) for i in chunks]
         pbar = {'desc': "Projecting and clustering vocalisations",
                 'total': n_chunks}
         for obj_id in tqdmm(to_iterator(obj_ids), **pbar):
@@ -248,6 +231,30 @@ class ProjDirs():
 
 
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
+
+
+def get_wavs_w_annotation(
+        wav_filepaths: List[Path],
+        annotation_paths: List[Path]) -> List[Tuple[Path, Path]]:
+    """
+    Returns a list of tuples containing paths to wavfiles for which there is an 
+    annotation file and paths to its annotation file. Assumes that wav and paths 
+    to the annotation files share the same file name and only their file 
+    extension changes, and that the wavfiles are '*.wav' and not '*.WAV'.
+
+    Args:
+        wav_filepaths (List[Path]): List of paths to wav files. 
+        annotation_paths (List[Path]): List of paths to annotation files.
+
+    Returns:
+        List[Tuple[Path, Path]]: Filtered list.
+    """
+
+    filtered_wavpaths = [
+        (file.parent / f'{file.stem}.wav', file) for file in annotation_paths
+        if file.parent / f'{file.stem}.wav' in wav_filepaths]
+
+    return filtered_wavpaths
 
 
 def change_data_loc(
