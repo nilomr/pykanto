@@ -98,6 +98,7 @@ pykanto/data/datasets
 *.pdf
 .~lock.*
 *.xml
+!pykanto/data/raw/*.xml
 
 # Mac OS-specific storage files
 .DS_Store
