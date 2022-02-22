@@ -1,0 +1,22 @@
+{
+    "species": "Great tit",
+    "ID": "SW83",
+    "label": "",
+    "recorder": "24E144045FDEF498",
+    "recordist": "Nilo Merino Recalde",
+    "source_datetime": "2021-04-18 04:00:00",
+    "datetime": "2021-04-18 04:44:08.453333",
+    "date": "2021-04-18",
+    "time": "04:44:08.453333",
+    "timezone": "UTC",
+    "sample_rate": 48000,
+    "length_s": 1.911,
+    "lower_freq": 3190,
+    "upper_freq": 5097,
+    "max_amplitude": 0.235554254,
+    "min_amplitude": -0.232461735,
+    "bit_depth": 16,
+    "tech_comment": "Recorded at 04:00:00 18\/04\/2021 (UTC) by AudioMoth 24E144045FDEF498 at gain setting 2 while battery state was 4.0V.",
+    "source_wav": "\/home\/nilomr\/projects\/great-tit-song\/data\/raw\/2021\/SW83\/20210418_040000.WAV",
+    "wav_file": "\/home\/nilomr\/projects\/pykanto\/pykanto\/data\/segmented\/great_tit\/WAV\/2021-SW83-0418_04-78.wav"
+}

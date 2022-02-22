@@ -1,0 +1,22 @@
+{
+    "species": "Great tit",
+    "ID": "B32",
+    "label": "",
+    "recorder": "24F319055FDF2205",
+    "recordist": "Nilo Merino Recalde",
+    "source_datetime": "2021-04-16 04:00:00",
+    "datetime": "2021-04-16 04:57:31.552000",
+    "date": "2021-04-16",
+    "time": "04:57:31.552000",
+    "timezone": "UTC",
+    "sample_rate": 48000,
+    "length_s": 1.3303541667,
+    "lower_freq": 2005,
+    "upper_freq": 6628,
+    "max_amplitude": 0.6900614707,
+    "min_amplitude": -0.6987678507,
+    "bit_depth": 16,
+    "tech_comment": "Recorded at 04:00:00 16\/04\/2021 (UTC) by AudioMoth 24F319055FDF2205 at gain setting 2 while battery state was 4.0V.",
+    "source_wav": "\/home\/nilomr\/projects\/great-tit-song\/data\/raw\/2021\/B32\/20210416_040000.WAV",
+    "wav_file": "\/home\/nilomr\/projects\/pykanto\/pykanto\/data\/segmented\/great_tit\/WAV\/2021-B32-0416_04-24.wav"
+}
