@@ -12,32 +12,34 @@ from pathlib import Path
 from typing import (TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Tuple,
                     TypedDict)
 from xml.etree import ElementTree
+import attr
 
 import audio_metadata as audiometa
 import librosa
 import librosa.display
 import numpy as np
+from pkg_resources import ResourceManager
 import ray
 import soundfile as sf
 from pykanto.signal.filter import (dereverberate, dereverberate_jit,
                                    gaussian_blur, kernels, norm, normalise)
 from pykanto.signal.spectrogram import retrieve_spectrogram
-from pykanto.utils.compute import (calc_chunks, flatten_list, get_chunks,
-                                   print_parallel_info, to_iterator, tqdmm)
+from pykanto.utils.compute import (
+    calc_chunks, flatten_list, get_chunks, print_parallel_info, timing,
+    to_iterator, tqdmm)
 from pykanto.utils.custom import parse_sonic_visualiser_xml
+from pykanto.utils.types import (Annotation, AudioAnnotation, Metadata,
+                                 SegmentAnnotation)
 from scipy import ndimage
 from skimage.exposure import equalize_hist
 from skimage.filters.rank import median
 from skimage.morphology import dilation, disk, erosion
 from skimage.util import img_as_ubyte
 
-from pykanto.utils.types import AnnotationDict, AudioMetadataDict, MetadataDict
-
 if TYPE_CHECKING:
     from pykanto.dataset import SongDataset
 
 from pykanto.utils.paths import get_xml_filepaths
-
 
 # ──── DIVIDING RAW FILES INTO SEGMENTS ─────────────────────────────────────────
 
@@ -54,15 +56,7 @@ class ReadWav:
         information.
 
     Examples:
-
-        >>> class CustomReadWav(ReadWav):
-        ... def get_metadata(self) -> Dict[str, Any]:
-        ...     add_to_dict = {
-        ...         'recorder': str(self.all_metadata['recorder'])
-        ...     }
-        ...     return {**self.metadata, **add_to_dict}
-
-        >>> ReadWav = CustomReadWav
+        TODO
     """
 
     def __init__(self, wav_dir: Path) -> None:
@@ -76,31 +70,30 @@ class ReadWav:
         Opens a wav sound file.
 
         Raises:
-            ValueError: The file is not  'seekable'.
+            ValueError: The file is not 'seekable'.
         """
-        # Warning: keeps file open!!
-        wavfile = sf.SoundFile(self.wav_dir)
+        wavfile = sf.SoundFile(str(self.wav_dir))
 
         if not wavfile.seekable():
             raise ValueError("Cannot seek through this file", self.wav_dir)
 
         self.wavfile = wavfile
+        self.nframes = self.wavfile.seek(0, sf.SEEK_END)
 
     def _load_metadata(self) -> None:
         """
-        Loads available metadata from wavfile; builds a dictionary w/
-        keys: ['sample_rate', 'bit_depth', ''bitrate', 'source_file'].
+        Loads available metadata from wavfile; builds a AudioAnnotation object.
         """
 
-        all_metadata = audiometa.load(self.wav_dir)
-        self.all_metadata = all_metadata
+        self.all_metadata = audiometa.load(self.wav_dir)
         """All available metadata for this audio clip."""
 
-        self.metadata: AudioMetadataDict = {
-            'sample_rate': self.wavfile.samplerate,
-            'bit_rate': self.all_metadata["streaminfo"].bitrate,
-            'source_file': self.wav_dir,
-        }
+        self.metadata = AudioAnnotation(
+            sample_rate=self.wavfile.samplerate,
+            bit_rate=self.all_metadata["streaminfo"].bitrate,
+            length_s=self.nframes / self.wavfile.samplerate,
+            source_wav=self.wav_dir,
+        )
         """Selected metadata to be used later"""
 
     def get_wav(self) -> sf.SoundFile:
@@ -112,19 +105,28 @@ class ReadWav:
         """
         return self.wavfile
 
-    def get_metadata(self) -> AudioMetadataDict:
+    def get_metadata(self) -> AudioAnnotation:
+        """
+        Returns metadata attached to wavfile as an AudioAnnotation object.
+
+        Returns:
+            AudioAnnotation: Wavfile metadata.
+        """
+        return self.metadata
+
+    def as_dict(self) -> Dict[str, Any]:
         """
         Returns metadata attached to wavfile as a dictionary.
 
         Returns:
             Dict[str, Any]: Wavfile metadata.
         """
-        return self.metadata
+        return self.metadata.__dict__
 
 
 class SegmentMetadata:
     """
-    Consolidates segment metadata in a single dictionary,
+    Consolidates segment metadata in a single Metadata object,
     which can then be saved as a standard .JSON file.
 
     You can extend this class to incorporate other metadata fields
@@ -132,27 +134,25 @@ class SegmentMetadata:
 
     Examples:
 
-        >>> class CustomSegmentMetadata(SegmentMetadata):
-        ...     def get(self) -> Dict[str, Any]:
-        ...         new_dict = {
-        ...             'tags': self.all_metadata['tags']
-        ...         }
-        ...         return {**self.metadata, **new_dict}
-
-        >>> SegmentMetadata = CustomSegmentMetadata
+        TODO
 
     """
 
     def __init__(
-            self, name: str, metadata: AnnotationDict,
-            audio_section: np.ndarray, i: int, sr: int, wav_out: Path) -> None:
+            self,
+            metadata: Annotation,
+            audio_section: np.ndarray,
+            i: int,
+            sr: int,
+            wav_out: Path
+    ) -> None:
         """
-        Consolidates segment metadata in a single dictionary,
+        Consolidates segment metadata in a single Metadata object,
         which can then be saved as a standard .JSON file.
 
         Args:
             name (str): Segment identifier.
-            metadata (AnnotationDict): A dictionary containing pertinent metadata.
+            metadata (Annotation): An object containing relevant metadata.
             audio_section (np.ndarray): Array containing segment audio data
                 (to extract min/max amplitude).
             i (int): Segment index.
@@ -161,28 +161,29 @@ class SegmentMetadata:
 
         Returns: None
 
-        Note:
-            Call SegmentMetadata(args).get() to return dictionary.
         """
 
-        self.all_metadata: AnnotationDict = metadata
+        self.all_metadata = metadata
         """Attribute containing all available metadata"""
 
         self.index: int = i
         """Index of 'focal' segment"""
 
-        self._make_metadata_dict(name, metadata,
-                                 audio_section, i, sr, wav_out)
+        self._build_metadata(metadata, audio_section, i, sr, wav_out)
 
-    def _make_metadata_dict(
-            self, name: str, metadata: AnnotationDict,
-            audio_section: np.ndarray, i: int, sr: int, wav_out: Path) -> None:
+    def _build_metadata(
+            self,
+            metadata: Annotation,
+            audio_section: np.ndarray,
+            i: int,
+            sr: int,
+            wav_out: Path
+    ) -> None:
         """
         Consolidates segment metadata in a single dictionary,
         which can then be saved as a standard .JSON file.
 
         Args:
-            name (str): Segment identifier.
             metadata (Dict[str, Any]): A dictionary containing pertinent metadata.
             audio_section (np.ndarray): Array containing segment audio data
                 (to extract min/max amplitude).
@@ -196,28 +197,38 @@ class SegmentMetadata:
             Call SegmentMetadata(args).get() to return dictionary.
         """
 
-        self.metadata: MetadataDict = {
-            "ID": name,
-            "label": metadata['label'][i],
-            "sample_rate": sr,
-            "length_s": len(audio_section) / sr,
-            "lower_freq": metadata['lower_freq'][i],
-            "upper_freq": metadata['upper_freq'][i],
-            "max_amplitude": float(max(audio_section)),
-            "min_amplitude": float(min(audio_section)),
-            "bit_rate": metadata['bit_rate'],
-            "source_file": metadata['source_file'].as_posix(),
-            "wav_file": wav_out.as_posix()}
+        self.metadata = Metadata(
+            ID=metadata.ID,
+            label=metadata.label[i],
+            sample_rate=sr,
+            length_s=len(audio_section)/sr,
+            lower_freq=metadata.lower_freq[i],
+            upper_freq=metadata.upper_freq[i],
+            max_amplitude=float(max(audio_section)),
+            min_amplitude=float(min(audio_section)),
+            bit_rate=metadata.bit_rate,
+            source_wav=metadata.source_wav.as_posix(),
+            annotation_file=metadata.annotation_file.as_posix(),
+            wav_file=wav_out.as_posix()
+        )
 
-    def get(self) -> MetadataDict:
+    def get_metadata(self) -> Metadata:
         """
-        Consolidates segment metadata in a single dictionary,
-        which can then be saved as a standard .JSON file.
+        Get Metadata object.
 
         Returns:
-            Dict[str, Any]: Metadata dictionary (self.metadata)
+            Metadata: Single-segment metadata.
         """
         return self.metadata
+
+    def as_dict(self) -> Dict[str, Any]:
+        """
+        Returns Metadata object as a dictionary.
+
+        Returns:
+            Dict[str, Any]: Wavfile metadata.
+        """
+        return self.metadata.__dict__
 
 
 # ──── FUNCTIONS ────
@@ -229,17 +240,17 @@ def segment_file(
         wav_outdir: Path,
         json_outdir: Path,
         resample: int | None = 22050,
-        parser_func: Callable[[Path], AnnotationDict] = parse_sonic_visualiser_xml,
+        parser_func: Callable[[Path], SegmentAnnotation] = parse_sonic_visualiser_xml,
         **kwargs):
     """
     Segments and saves audio segmets and their metadata from a single audio 
     file, based on annotations provided in a separate 'metadata' file.
 
     Args:
-        wav_dir (Path): Where are the wav files to be segmented?
-        metadata_dir (Path): Where are the files containing segmentation 
+        wav_dir (Path): Where is the wav file to be segmented?
+        metadata_dir (Path): Where is the file containing its segmentation 
             metadata?
-        wav_outdir (Path): Where to save the resulting segmented wav files.
+        wav_outdir (Path): Where to save the resulting wav segments.
         json_outdir (Path): Where to save the resulting json metadata files.
         resample (int | None, optional): Whether to resample audio, and to what 
             sample ratio. Defaults to 22050.
@@ -251,15 +262,17 @@ def segment_file(
 
     # Read audio and metadata
     wav_object = ReadWav(wav_dir)
-    wavfile, audio_metadata = wav_object.get_wav(), wav_object.get_metadata()
-    metadata: AnnotationDict = {**parser_func(metadata_dir), **audio_metadata}
+    wavfile, audio_metadata = wav_object.get_wav(), wav_object.as_dict()
+    metadata = Annotation(
+        **{**attr.asdict(parser_func(metadata_dir)),
+           **audio_metadata})
     # Then save segments
     save_segments(metadata, wavfile, wav_outdir,
                   json_outdir, resample=resample, **kwargs)
 
 
 def save_segments(
-        metadata: AnnotationDict,
+        metadata: Annotation,
         wavfile: sf.SoundFile,
         wav_outdir: Path,
         json_outdir: Path,
@@ -269,7 +282,7 @@ def save_segments(
     their metadata.
 
     Args:
-        metadata (AnnotationDict): Annotation and file metadata for this wav file.
+        metadata (Annotation): Annotation and file metadata for this wav file.
         wavfile (SoundFile): Seekable wav file.
         wav_outdir (Path): Where to save the resulting segmented wav files.
         json_outdir (Path): Where to save the resulting json metadata files.
@@ -279,14 +292,16 @@ def save_segments(
             :func:`~pykanto.signal.segment.segment_is_valid`.
     """
 
-    n_segments = len(metadata['start_times'])
+    n_segments = len(metadata.start_times)
+
     for i in range(n_segments):
+        # Filter segments not matching inclusion criteria
         if not segment_is_valid(metadata, i, **kwargs):
-            return
+            continue
 
         # Get segment frames
-        wavfile.seek(metadata['start_times'][i])
-        audio_section: np.ndarray = wavfile.read(metadata['durations'][i])
+        wavfile.seek(metadata.start_times[i])
+        audio_section: np.ndarray = wavfile.read(metadata.durations[i])
 
         # Collapse to mono if not already the case
         if len(audio_section.shape) == 2:
@@ -294,30 +309,31 @@ def save_segments(
                 np.swapaxes(audio_section, 0, 1))
 
         # Resample if necessary
-        sr = metadata['sample_rate']
+        sr = metadata.sample_rate
 
         if resample:
             audio_section: np.ndarray = librosa.resample(
-                audio_section, sr, resample)
+                y=audio_section, orig_sr=sr, target_sr=resample,
+                res_type='kaiser_fast')
             sr = resample
 
         # Both to disk under name:
-        name: str = metadata['source_file'].stem
+        name: str = f"{metadata.ID}_{metadata.source_wav.stem}_{i}"
 
         # Save .wav
-        wav_out = (wav_outdir / f'{name}_{str(i)}.wav')
+        wav_out = (wav_outdir / f'{name}.wav')
         sf.write(wav_out.as_posix(), audio_section, sr)
 
-        # Save metadata .json
+        # Save metadata .JSON
         segment_metadata = SegmentMetadata(
-            name, metadata, audio_section, i, sr, wav_out).get()
-        json_out = (json_outdir / f'{name}_{str(i)}.JSON')
+            metadata, audio_section, i, sr, wav_out).as_dict()
+        json_out = (json_outdir / f'{name}.JSON')
         with open(json_out.as_posix(), "w") as f:
             print(json.dumps(segment_metadata, indent=2), file=f)
 
 
 def segment_is_valid(
-        segment_metadata: Dict[str, Any],
+        metadata: Annotation,
         i: int,
         min_duration: float = .5,
         min_freqrange: int = 200,
@@ -326,7 +342,7 @@ def segment_is_valid(
     Checks whether a segment of index i within a dictionary is a valid segment.
 
     Args:
-        segment_metadata (Dict[str, Any]): Dictionary with segment inf
+        metadata (Annotation): Dictionary with segment inf
         i (int): _description_
         min_duration (float, optional): _description_. Defaults to .5.
         min_freqrange (int, optional): _description_. Defaults to 200.
@@ -336,11 +352,11 @@ def segment_is_valid(
         bool: _description_
     """
 
-    min_frames = min_duration * segment_metadata['sample_rate']
+    min_frames = min_duration * metadata.sample_rate
 
-    if ((segment_metadata['durations'][i] < min_frames) or
-            (segment_metadata['freq_extent'][i] < min_freqrange) or
-            (segment_metadata['label'][i] in labels_to_ignore)):
+    if ((metadata.durations[i] < min_frames) or
+            (metadata.upper_freq[i] - metadata.lower_freq[i] < min_freqrange) or
+            (metadata.label[i] in labels_to_ignore)):
         return False
     else:
         return True
@@ -351,7 +367,7 @@ def segment_files(
         wav_outdir: Path,
         json_outdir: Path,
         resample: int | None = 22050,
-        parser_func: Callable[[Path], AnnotationDict] = parse_sonic_visualiser_xml,
+        parser_func: Callable[[Path], SegmentAnnotation] = parse_sonic_visualiser_xml,
         pbar: bool = True,
         **kwargs) -> None:
     """
@@ -393,12 +409,13 @@ segment_files_r = ray.remote(segment_files)
 """Remote'd version of :func:`~pykanto.signal.segment.segment_files"""
 
 
+@timing
 def segment_files_parallel(
         datapaths: List[Tuple[Path, Path]],
         wav_outdir: Path,
         json_outdir: Path,
         resample: int | None = 22050,
-        parser_func: Callable[[Path], AnnotationDict] = parse_sonic_visualiser_xml,
+        parser_func: Callable[[Path], SegmentAnnotation] = parse_sonic_visualiser_xml,
         **kwargs):
     """
     Finds and saves audio segments and their metadata.
@@ -565,10 +582,10 @@ def find_units(
 
     if not envelope_is_good:
         return None, None  # REVIEW
-
-    # threshold out short syllables
-    length_mask = (offsets - onsets) >= params.min_unit_length
-    return onsets[length_mask], offsets[length_mask]
+    else:
+        # threshold out short syllables
+        length_mask = (offsets - onsets) >= params.min_unit_length
+        return onsets[length_mask], offsets[length_mask]
 
 
 def onsets_offsets(signal: np.ndarray) -> np.ndarray:
