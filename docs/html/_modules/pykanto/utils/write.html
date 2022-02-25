@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
@@ -83,27 +83,37 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pykanto.utils.write</h1><div class="highlight"><pre>
-<span></span>
+<span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A collection of functions and methods used to create directories and write data</span>
+<span class="sd">to disk.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ─── DEPENDENCIES ─────────────────────────────────────────────────────────────</span>
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span> <span class="nn">os.path</span>
-<span class="kn">import</span> <span class="nn">tarfile</span>
-<span class="kn">import</span> <span class="nn">re</span>
+
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">_ctypes</span> <span class="kn">import</span> <span class="n">PyObj_FromPtr</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">ujson</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="c1"># ──── FUNCTIONS ───────────────────────────────────────────────────────────────</span>
 
 
-<div class="viewcode-block" id="makedir"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.makedir">[docs]</a><span class="k">def</span> <span class="nf">makedir</span><span class="p">(</span><span class="n">DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">return_path</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<div class="viewcode-block" id="makedir"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.makedir">[docs]</a><span class="k">def</span> <span class="nf">makedir</span><span class="p">(</span><span class="n">DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">return_path</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make a safely nested directory. Returns the Path object by default. Modified</span>
-<span class="sd">    from `code`_ by Tim Sainburg.</span>
-<span class="sd">    .. _code: https://github.com/timsainb/src.avgn_paper/blob/vizmerge/src.avgn/utils/paths.py</span>
+<span class="sd">    from `code by Tim Sainburg &lt;https://github.com/timsainb/src.avgn_paper/blob/vizmerge/src.avgn/utils/paths.py&gt;`_.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        DIR (Path): Path to be created. return_path (bool, optional): Whether to</span>
@@ -150,65 +160,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Done copying </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> files to </span><span class="si">{</span><span class="n">dest_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="NoIndent"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndent">[docs]</a><span class="k">class</span> <span class="nc">NoIndent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Value wrapper. &quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="NoIndent.__init__"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndent.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span></div></div>
-
-
-<div class="viewcode-block" id="NoIndentEncoder"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder">[docs]</a><span class="k">class</span> <span class="nc">NoIndentEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Encoder for json that allows for a NoIndent wrapper on lists</span>
-
-<span class="sd">    Based upon the StackOverflow answer: https://stackoverflow.com/a/13252112/200663</span>
-<span class="sd">    From Tim Sainburg&#39;s avgn repository.</span>
-
-<span class="sd">    Extends:</span>
-<span class="sd">        json.JSONEncoder</span>
-
-<span class="sd">    Variables:</span>
-<span class="sd">        regex {[type]} -- [description]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">FORMAT_SPEC</span> <span class="o">=</span> <span class="s2">&quot;@@</span><span class="si">{}</span><span class="s2">@@&quot;</span>
-    <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">FORMAT_SPEC</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d+)&quot;</span><span class="p">))</span>
-
-<div class="viewcode-block" id="NoIndentEncoder.__init__"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># Save copy of any keyword argument values needed for use here.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__sort_keys</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort_keys&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">NoIndentEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="NoIndentEncoder.default"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder.default">[docs]</a>    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">FORMAT_SPEC</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">NoIndent</span><span class="p">)</span>
-            <span class="k">else</span> <span class="nb">super</span><span class="p">(</span><span class="n">NoIndentEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="NoIndentEncoder.encode"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="n">format_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FORMAT_SPEC</span>  <span class="c1"># Local var to expedite access.</span>
-        <span class="n">json_repr</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">NoIndentEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>  <span class="c1"># Default JSON.</span>
-
-        <span class="c1"># Replace any marked-up object ids in the JSON repr with the</span>
-        <span class="c1"># value returned from the json.dumps() of the corresponding</span>
-        <span class="c1"># wrapped Python object.</span>
-        <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">json_repr</span><span class="p">):</span>
-            <span class="c1"># see https://stackoverflow.com/a/15012814/355230</span>
-            <span class="nb">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-            <span class="n">no_indent</span> <span class="o">=</span> <span class="n">PyObj_FromPtr</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-            <span class="n">json_obj_repr</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
-                <span class="n">no_indent</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__sort_keys</span><span class="p">)</span>
-
-            <span class="c1"># Replace the matched id string with json formatted representation</span>
-            <span class="c1"># of the corresponding Python object.</span>
-            <span class="n">json_repr</span> <span class="o">=</span> <span class="n">json_repr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_spec</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">)),</span> <span class="n">json_obj_repr</span>
-            <span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">json_repr</span></div></div>
-
-
-<div class="viewcode-block" id="save_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.save_json">[docs]</a><span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="n">json_object</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">json_loc</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<div class="viewcode-block" id="save_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.save_json">[docs]</a><span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="n">json_object</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">json_loc</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Saves a .json file using ujson.</span>
 
@@ -222,10 +174,25 @@
         <span class="n">ujson</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_object</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="NumpyEncoder"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.NumpyEncoder">[docs]</a><span class="k">class</span> <span class="nc">NumpyEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stores a numpy.ndarray or any nested-list composition as JSON.</span>
+<span class="sd">    Source: karlB on `Stack Overflow &lt;https://stackoverflow.com/a/47626762&gt;`_.</span>
+
+<span class="sd">    Extends the json.JSONEncoder class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NumpyEncoder.default"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.NumpyEncoder.default">[docs]</a>    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></div></div>
+
+
 <div class="viewcode-block" id="make_tarfile"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.make_tarfile">[docs]</a><span class="k">def</span> <span class="nf">make_tarfile</span><span class="p">(</span><span class="n">source_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Makes a tarfile from a given directory. From George V. Reilly in  </span>
-<span class="sd">    `stackoverflow &lt;https://stackoverflow.com/a/17081026&gt;`_.</span>
+<span class="sd">    Makes a tarfile from a given directory. </span>
+<span class="sd">    Source: George V. Reilly on  </span>
+<span class="sd">    `Stack Overflow &lt;https://stackoverflow.com/a/17081026&gt;`_.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        source_dir (Path): Directory to tar </span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pykanto.intlabel package &mdash; pykanto 0.1 documentation</title>
+  <title>pykanto.labelapp package &mdash; pykanto 0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
@@ -52,7 +52,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
@@ -73,7 +73,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>pykanto.intlabel package</li>
+      <li>pykanto.labelapp package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/source/pykanto.intlabel.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -83,16 +83,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pykanto.intlabel">
-<span id="pykanto-intlabel-package"></span><h1>pykanto.intlabel package<a class="headerlink" href="#module-pykanto.intlabel" title="Permalink to this headline"></a></h1>
+  <section id="module-pykanto.labelapp">
+<span id="pykanto-labelapp-package"></span><h1>pykanto.labelapp package<a class="headerlink" href="#module-pykanto.labelapp" title="Permalink to this headline"></a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
 </section>
-<section id="module-pykanto.intlabel.data">
-<span id="pykanto-intlabel-data-module"></span><h2>pykanto.intlabel.data module<a class="headerlink" href="#module-pykanto.intlabel.data" title="Permalink to this headline"></a></h2>
+<section id="module-pykanto.labelapp.data">
+<span id="pykanto-labelapp-data-module"></span><h2>pykanto.labelapp.data module<a class="headerlink" href="#module-pykanto.labelapp.data" title="Permalink to this headline"></a></h2>
+<p>Code to generate embeddable data to be used in the interactive song labelling
+web application.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="pykanto.intlabel.data.embeddable_image">
-<span class="sig-prename descclassname"><span class="pre">pykanto.intlabel.data.</span></span><span class="sig-name descname"><span class="pre">embeddable_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pykanto/intlabel/data.html#embeddable_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.intlabel.data.embeddable_image" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="pykanto.labelapp.data.embeddable_image">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.data.</span></span><span class="sig-name descname"><span class="pre">embeddable_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">41</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pykanto/labelapp/data.html#embeddable_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.data.embeddable_image" title="Permalink to this definition"></a></dt>
 <dd><p>Save a base 64 png from a np.ndarray.
 Source: <a class="reference external" href="https://umap-learn.readthedocs.io/en/latest/basic_usage.html">Leland McInnes, 2018</a>.</p>
 <dl class="field-list simple">
@@ -100,6 +102,7 @@ Source: <a class="reference external" href="https://umap-learn.readthedocs.io/en
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>np.ndarray</em>) – Image to embed</p></li>
 <li><p><strong>invert</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to invert image. Defaults to True.</p></li>
+<li><p><strong>background</strong> (<em>int</em><em>, </em><em>optional</em>) – RGB grey value. Defaults to 41 (same as app)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -112,8 +115,8 @@ Source: <a class="reference external" href="https://umap-learn.readthedocs.io/en
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykanto.intlabel.data.prepare_datasource">
-<span class="sig-prename descclassname"><span class="pre">pykanto.intlabel.data.</span></span><span class="sig-name descname"><span class="pre">prepare_datasource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">SongDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec_length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/intlabel/data.html#prepare_datasource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.intlabel.data.prepare_datasource" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="pykanto.labelapp.data.prepare_datasource">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.data.</span></span><span class="sig-name descname"><span class="pre">prepare_datasource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><span class="pre">SongDataset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/labelapp/data.html#prepare_datasource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.data.prepare_datasource" title="Permalink to this definition"></a></dt>
 <dd><p>Prepare and save data source for the interactibe labelling application.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -136,8 +139,8 @@ vocalisation or their average. Defaults to False.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykanto.intlabel.data.load_bk_data">
-<span class="sig-prename descclassname"><span class="pre">pykanto.intlabel.data.</span></span><span class="sig-name descname"><span class="pre">load_bk_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">SongDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ColumnDataSource</span></span></span><a class="reference internal" href="../_modules/pykanto/intlabel/data.html#load_bk_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.intlabel.data.load_bk_data" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="pykanto.labelapp.data.load_bk_data">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.data.</span></span><span class="sig-name descname"><span class="pre">load_bk_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><span class="pre">SongDataset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataloc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ColumnDataSource</span></span></span><a class="reference internal" href="../_modules/pykanto/labelapp/data.html#load_bk_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.data.load_bk_data" title="Permalink to this definition"></a></dt>
 <dd><p>Load saved data source to use in interctive labelling app.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -158,8 +161,69 @@ vocalisation or their average. Defaults to False.</p></li>
 </dd></dl>
 
 </section>
-<section id="pykanto-intlabel-main-module">
-<h2>pykanto.intlabel.main module<a class="headerlink" href="#pykanto-intlabel-main-module" title="Permalink to this headline"></a></h2>
+<section id="module-pykanto.labelapp.main">
+<span id="pykanto-labelapp-main-module"></span><h2>pykanto.labelapp.main module<a class="headerlink" href="#module-pykanto.labelapp.main" title="Permalink to this headline"></a></h2>
+<p>Source code for interactive labelling app.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.get_markers">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">get_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marker_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#get_markers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.get_markers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.prepare_legend">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">prepare_legend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bokeh.models.sources.ColumnDataSource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto_cluster_label'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#prepare_legend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.prepare_legend" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.build_legend">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">build_legend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html_markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">span_mk_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mk_colours</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#build_legend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.build_legend" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.update_feedback_text">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">update_feedback_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indv_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remaining_indvs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#update_feedback_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.update_feedback_text" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.parse_boolean">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">parse_boolean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#parse_boolean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.parse_boolean" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.set_range">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">set_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#set_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.set_range" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.get_legend_items">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">get_legend_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#get_legend_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.get_legend_items" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.update_class_examples_div">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">update_class_examples_div</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#update_class_examples_div"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.update_class_examples_div" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.next_plot">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">next_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#next_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.next_plot" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.get_selections">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">get_selections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#get_selections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.get_selections" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.update_labels">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">update_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#update_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.update_labels" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.labelapp.main.close_app">
+<span class="sig-prename descclassname"><span class="pre">pykanto.labelapp.main.</span></span><span class="sig-name descname"><span class="pre">close_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/labelapp/main.html#close_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.labelapp.main.close_app" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 </section>
 

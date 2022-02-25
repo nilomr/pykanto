@@ -13,20 +13,28 @@ pykanto.signal.segment
 
    .. autosummary::
    
-      batch_segment_songs
-      batch_segment_songs_single
+      drop_zero_len_units
       find_units
       get_segment_info
       onsets_offsets
-      save_segment
-      segment_into_songs
+      save_segments
+      segment_file
+      segment_files
+      segment_files_parallel
+      segment_is_valid
       segment_song_into_units
       segment_song_into_units_parallel
-      segment_songs
    
    
 
    
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ReadWav
+      SegmentMetadata
    
    
 

@@ -1,7 +1,7 @@
-﻿pykanto.intlabel
+﻿pykanto.labelapp
 ================
 
-.. automodule:: pykanto.intlabel
+.. automodule:: pykanto.labelapp
 
    
    
@@ -27,6 +27,6 @@
    :toctree:
    :recursive:
 
-   pykanto.intlabel.data
-   pykanto.intlabel.main
+   pykanto.labelapp.data
+   pykanto.labelapp.main
 

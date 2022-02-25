@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pykanto.labelapp.main &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/paths.html">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/segmentation.html">Vocalisation segmentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../../../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pykanto.labelapp.main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pykanto.labelapp.main</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Source code for interactive labelling app.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># To run from terminal:</span>
+<span class="c1"># bokeh serve --show /home/nilomr/projects/pykanto/pykanto/labelapp</span>
+
+<span class="c1"># ─── DEPENDENCIES ─────────────────────────────────────────────────────────────</span>
+
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">bokeh.layouts</span> <span class="kn">import</span> <span class="n">row</span>
+<span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="kn">import</span> <span class="p">(</span><span class="n">BoxSelectTool</span><span class="p">,</span> <span class="n">CustomJSHover</span><span class="p">,</span> <span class="n">Div</span><span class="p">,</span> <span class="n">HoverTool</span><span class="p">,</span>
+                          <span class="n">LassoSelectTool</span><span class="p">,</span> <span class="n">Legend</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">bokeh.models.annotations</span> <span class="kn">import</span> <span class="n">LegendItem</span>
+<span class="kn">from</span> <span class="nn">bokeh.models.sources</span> <span class="kn">import</span> <span class="n">ColumnDataSource</span>
+<span class="kn">from</span> <span class="nn">bokeh.models.tools</span> <span class="kn">import</span> <span class="n">CrosshairTool</span>
+<span class="kn">from</span> <span class="nn">bokeh.models.widgets</span> <span class="kn">import</span> <span class="n">Button</span><span class="p">,</span> <span class="n">Dropdown</span>
+<span class="kn">from</span> <span class="nn">bokeh.palettes</span> <span class="kn">import</span> <span class="n">Set3_12</span>
+<span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="kn">import</span> <span class="n">curdoc</span><span class="p">,</span> <span class="n">figure</span>
+<span class="kn">from</span> <span class="nn">bokeh.themes</span> <span class="kn">import</span> <span class="n">Theme</span>
+<span class="kn">from</span> <span class="nn">bokeh.transform</span> <span class="kn">import</span> <span class="n">factor_cmap</span>
+<span class="kn">from</span> <span class="nn">pykanto.labelapp.data</span> <span class="kn">import</span> <span class="n">load_bk_data</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span>
+
+<span class="c1"># ──── FUNCTIONS ───────────────────────────────────────────────────────────────</span>
+
+
+<div class="viewcode-block" id="get_markers"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.get_markers">[docs]</a><span class="k">def</span> <span class="nf">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="n">marker_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">lab</span><span class="p">:</span> <span class="n">marker</span> <span class="k">for</span> <span class="n">marker</span><span class="p">,</span>
+                   <span class="n">lab</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cycle</span><span class="p">(</span><span class="n">marker_types</span><span class="p">),</span> <span class="n">labs</span><span class="p">)}</span>
+    <span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="n">marker_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">markers</span></div>
+
+
+<div class="viewcode-block" id="prepare_legend"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.prepare_legend">[docs]</a><span class="k">def</span> <span class="nf">prepare_legend</span><span class="p">(</span>
+        <span class="n">source</span><span class="p">:</span> <span class="n">ColumnDataSource</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">labs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">grouping_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">):</span>
+
+    <span class="c1"># Build marker shapes</span>
+    <span class="n">marker_types</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;asterisk&#39;</span><span class="p">,</span> <span class="s1">&#39;circle&#39;</span><span class="p">,</span> <span class="s1">&#39;triangle&#39;</span><span class="p">,</span> <span class="s1">&#39;plus&#39;</span><span class="p">,</span> <span class="s1">&#39;square&#39;</span><span class="p">,</span> <span class="s1">&#39;star&#39;</span><span class="p">,</span> <span class="s1">&#39;diamond&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;hex&#39;</span><span class="p">,</span> <span class="s1">&#39;inverted_triangle&#39;</span><span class="p">,</span> <span class="s1">&#39;plus&#39;</span><span class="p">,</span> <span class="s1">&#39;square&#39;</span><span class="p">,</span> <span class="s1">&#39;star&#39;</span><span class="p">,</span> <span class="s1">&#39;circle&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;triangle&#39;</span><span class="p">,</span> <span class="s1">&#39;hex&#39;</span><span class="p">]</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_markers</span><span class="p">(</span>
+        <span class="n">marker_types</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">grouping_labels</span><span class="p">])</span>
+
+    <span class="c1"># Build colour palette for the scatterplot</span>
+    <span class="n">palette</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#d92400&#39;</span><span class="p">)</span>  <span class="c1"># Add red for -1</span>
+    <span class="n">palette</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span>
+    <span class="n">colours</span> <span class="o">=</span> <span class="n">factor_cmap</span><span class="p">(</span>
+        <span class="n">field_name</span><span class="o">=</span><span class="n">grouping_labels</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">,</span>
+        <span class="n">factors</span><span class="o">=</span><span class="n">labs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">palette</span><span class="p">,</span> <span class="n">marker_types</span><span class="p">,</span> <span class="n">colours</span></div>
+
+
+<div class="viewcode-block" id="build_legend"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.build_legend">[docs]</a><span class="k">def</span> <span class="nf">build_legend</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">html_markers</span><span class="p">,</span> <span class="n">span_mk_sizes</span><span class="p">,</span> <span class="n">mk_colours</span><span class="p">):</span>
+    <span class="c1"># Build html code</span>
+    <span class="n">pre</span> <span class="o">=</span> <span class="s1">&#39;&lt;div class=&quot;legend_wrapper&quot;&gt;&#39;</span>
+    <span class="n">img_htmls</span> <span class="o">=</span> <span class="p">[</span><span class="n">pre</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]),</span> <span class="n">key</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;spectrogram&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">marker</span> <span class="o">=</span> <span class="n">html_markers</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;markers&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]]</span>
+        <span class="n">span</span> <span class="o">=</span> <span class="n">span_mk_sizes</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;markers&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]]</span>
+        <span class="n">colour</span> <span class="o">=</span> <span class="n">mk_colours</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+        <span class="n">space</span> <span class="o">=</span> <span class="s1">&#39;&amp;nbsp;&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">img_html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;  </span>
+<span class="s2">        &lt;div class=&quot;legend_container&quot;&gt;</span>
+<span class="s2">            &lt;img class=&#39;legend_image&#39; src=</span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2"> style=&quot;width:100%&quot;/&gt;</span>
+<span class="s2">            &lt;div class=&quot;legend_img_label_container&quot;&gt;</span>
+<span class="s2">                &lt;div class=&quot;legend_img_label&quot;&gt;</span>
+<span class="s2">                    &lt;span style=&quot;color:</span><span class="si">{</span><span class="n">colour</span><span class="si">}</span><span class="s2">&quot; &gt;&lt;</span><span class="si">{</span><span class="n">span</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">space</span><span class="si">}{</span><span class="n">marker</span><span class="si">}</span><span class="s2">&lt;/</span><span class="si">{</span><span class="n">span</span><span class="si">}</span><span class="s2">&gt; </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">                &lt;/div&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+        <span class="n">img_htmls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img_html</span><span class="p">)</span>
+
+    <span class="n">img_htmls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">)</span>
+    <span class="n">legend_html</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">img_htmls</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">legend_html</span></div>
+
+
+<div class="viewcode-block" id="update_feedback_text"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.update_feedback_text">[docs]</a><span class="k">def</span> <span class="nf">update_feedback_text</span><span class="p">(</span><span class="n">indv_list</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;// &lt;b&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_indvs</span><span class="p">)</span><span class="si">}</span><span class="s2"> out of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> done&lt;/b&gt; // &quot;</span>
+        <span class="s2">&quot;Use the &#39;Label&#39; button to change the label of the selected points.&lt;br&gt;&quot;</span>
+        <span class="s2">&quot;Label data are automatically saved when you click &#39;Next&#39;.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">text</span></div>
+
+
+<div class="viewcode-block" id="parse_boolean"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.parse_boolean">[docs]</a><span class="k">def</span> <span class="nf">parse_boolean</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">b</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span></div>
+
+
+<div class="viewcode-block" id="set_range"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.set_range">[docs]</a><span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span> <span class="n">ax_percentage</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_x&quot;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_x&quot;</span><span class="p">])</span>
+    <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_y&quot;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_y&quot;</span><span class="p">])</span>
+    <span class="n">xlen</span><span class="p">,</span> <span class="n">ylen</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">xmin</span> <span class="o">-</span> <span class="n">xmax</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ymin</span> <span class="o">-</span> <span class="n">ymax</span><span class="p">)</span>
+    <span class="n">xextra</span><span class="p">,</span> <span class="n">yextra</span> <span class="o">=</span> <span class="p">(</span><span class="n">ax_percentage</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="n">xlen</span><span class="p">,</span> <span class="p">(</span><span class="n">ax_percentage</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="n">ylen</span>
+    <span class="n">xstart</span><span class="p">,</span> <span class="n">xend</span> <span class="o">=</span> <span class="n">xmin</span> <span class="o">-</span> <span class="n">xextra</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">+</span> <span class="n">xextra</span>
+    <span class="n">ystart</span><span class="p">,</span> <span class="n">yend</span> <span class="o">=</span> <span class="n">ymin</span> <span class="o">-</span> <span class="n">yextra</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">+</span> <span class="n">yextra</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">xstart</span><span class="p">,</span> <span class="n">xend</span><span class="p">),</span> <span class="p">(</span><span class="n">ystart</span><span class="p">,</span> <span class="n">yend</span><span class="p">)</span></div>
+
+
+<span class="c1"># ──── SETTINGS ────────────────────────────────────────────────────────────────</span>
+
+<span class="n">debug</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+    <span class="c1"># YEAR = &quot;2021&quot;</span>
+    <span class="c1"># DATASET_ID = f&quot;WYTHAM_GRETIS_2021_TEST&quot;</span>
+    <span class="c1"># PROJECT = Path(</span>
+    <span class="c1">#     git.Repo(&#39;.&#39;, search_parent_directories=True).working_tree_dir)</span>
+    <span class="c1"># # Build the project structure if it isn&#39;t already:</span>
+    <span class="c1"># DIRS = ProjDirs(PROJECT, mkdir=True)</span>
+    <span class="c1"># dataset_loc = DIRS.DATA / &quot;datasets&quot; / DATASET_ID / f&quot;{DATASET_ID}.db&quot;</span>
+    <span class="c1"># max_n_labs = 12</span>
+    <span class="c1"># palette = list(Set3_12)</span>
+    <span class="c1"># song_level = True</span>
+    <span class="n">max_n_labs</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">palette</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Set3_12</span><span class="p">)</span>
+    <span class="n">song_level</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;/home/nilomr/projects/storm-petrel-song&#39;</span><span class="p">)</span>
+    <span class="n">DATASET</span> <span class="o">=</span> <span class="s1">&#39;STORM_PETREL_2021&#39;</span>
+    <span class="n">RAW_DATA</span> <span class="o">=</span> <span class="n">PROJECT_ROOT</span> <span class="o">/</span> <span class="s1">&#39;data&#39;</span> <span class="o">/</span> <span class="s1">&#39;raw&#39;</span> <span class="o">/</span> <span class="n">DATASET</span>
+    <span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJECT_ROOT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">)</span>
+    <span class="n">DATASET_ID</span> <span class="o">=</span> <span class="s2">&quot;STORM_PETREL_SONGS&quot;</span>
+    <span class="n">dataset_loc</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
+
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># Get dataset location from command line args</span>
+    <span class="n">dataset_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># Maximum possible n of vocalisation types</span>
+    <span class="n">max_n_labs</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="c1"># Whether to use single units or their average per vocalisation</span>
+    <span class="n">song_level</span> <span class="o">=</span> <span class="n">parse_boolean</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="c1"># Colour palette to use</span>
+    <span class="n">pal</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+    <span class="n">palette</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&#39;(.*?)&#39;&quot;</span><span class="p">,</span> <span class="n">colour</span><span class="p">,</span>
+                          <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">colour</span> <span class="ow">in</span> <span class="n">pal</span><span class="p">]</span>
+
+<span class="c1"># ──── MAIN ────────────────────────────────────────────────────────────────────</span>
+
+<span class="k">if</span> <span class="n">song_level</span><span class="p">:</span>
+    <span class="n">dataset_type</span> <span class="o">=</span> <span class="s1">&#39;vocalisations&#39;</span>
+    <span class="n">dataset_labels</span> <span class="o">=</span> <span class="s1">&#39;VOCALISATION_LABELS&#39;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">dataset_type</span> <span class="o">=</span> <span class="s1">&#39;units&#39;</span>
+    <span class="n">dataset_labels</span> <span class="o">=</span> <span class="s1">&#39;UNIT_LABELS&#39;</span>
+
+<span class="c1"># Load dataset</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">dataset_loc</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;App loaded </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s1"> successfully&#39;</span><span class="p">)</span>
+<span class="c1"># Exclude individuals without labels (those dropped by</span>
+<span class="c1"># :func:`~pykanto.signal.cluster.dim_reduction_and_cluster`</span>
+<span class="c1"># because len() &lt; min_sample)</span>
+<span class="n">indv_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span>
+    <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">])[</span><span class="s1">&#39;ID&#39;</span><span class="p">])</span>
+
+<span class="c1"># Where to store labelling information?</span>
+<span class="k">if</span> <span class="s1">&#39;already_checked&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">):</span>
+    <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s1">&#39;already_checked&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Get individuals to do</span>
+<span class="n">remaining_indvs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">indv</span> <span class="k">for</span> <span class="n">indv</span> <span class="ow">in</span> <span class="n">indv_list</span>
+    <span class="k">if</span> <span class="n">indv</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s1">&#39;already_checked&#39;</span><span class="p">]]</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_indvs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All IDs in </span><span class="si">{</span><span class="n">indv_list</span><span class="si">}</span><span class="s2"> have already been checked. &quot;</span>
+                   <span class="s2">&quot;Close the app.&quot;</span><span class="p">)</span>
+
+
+<span class="n">source</span> <span class="o">=</span> <span class="n">load_bk_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># Generate labels, markers and colours</span>
+
+<span class="c1"># Build labels</span>
+<span class="n">labs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span> <span class="k">for</span> <span class="n">lab</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_n_labs</span><span class="p">)]</span>
+<span class="n">palette</span><span class="p">,</span> <span class="n">marker_types</span><span class="p">,</span> <span class="n">colours</span> <span class="o">=</span> <span class="n">prepare_legend</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="n">labs</span><span class="p">)</span>
+
+<span class="n">lightgrey</span> <span class="o">=</span> <span class="s1">&#39;#9e9e9e&#39;</span>
+<span class="n">background_grey</span> <span class="o">=</span> <span class="s2">&quot;#2F2F2F&quot;</span>
+
+<span class="c1"># Tools in app</span>
+<span class="n">TOOLS</span> <span class="o">=</span> <span class="s2">&quot;pan, wheel_zoom, box_select, lasso_select, crosshair, tap, undo, redo, reset&quot;</span>
+
+<span class="c1"># Build the scatterplot</span>
+<span class="n">splot</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span>
+    <span class="n">tools</span><span class="o">=</span><span class="n">TOOLS</span><span class="p">,</span>
+    <span class="n">active_scroll</span><span class="o">=</span><span class="s1">&#39;wheel_zoom&#39;</span><span class="p">,</span>
+    <span class="n">height_policy</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span>
+    <span class="n">width_policy</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span>
+    <span class="n">max_height</span><span class="o">=</span><span class="mi">650</span><span class="p">,</span>
+    <span class="n">min_height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="n">toolbar_location</span><span class="o">=</span><span class="s2">&quot;above&quot;</span><span class="p">,</span>
+    <span class="n">x_axis_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">y_axis_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">output_backend</span><span class="o">=</span><span class="s2">&quot;webgl&quot;</span>
+<span class="p">)</span>
+<span class="n">splot</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;s song repertoire&quot;</span>
+<span class="n">splot</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">BoxSelectTool</span><span class="p">)</span><span class="o">.</span><span class="n">select_every_mousemove</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">splot</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">LassoSelectTool</span><span class="p">)</span><span class="o">.</span><span class="n">select_every_mousemove</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">splot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;umap_x&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;umap_y&#39;</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span>
+    <span class="n">fill_color</span><span class="o">=</span><span class="n">colours</span><span class="p">,</span>
+    <span class="n">line_color</span><span class="o">=</span><span class="n">colours</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">hover_color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Hover tool</span>
+
+<span class="n">custom_hov</span> <span class="o">=</span> <span class="n">CustomJSHover</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">     special_vars.indices = special_vars.indices.slice(0,5)</span>
+<span class="s2">     if (special_vars.indices.indexOf(special_vars.index) &gt;= 0)</span>
+<span class="s2">     {</span>
+<span class="s2">         return &quot; &quot;</span>
+<span class="s2">     }</span>
+<span class="s2">     else</span>
+<span class="s2">     {</span>
+<span class="s2">         return &quot; hidden &quot;</span>
+<span class="s2">     }</span>
+<span class="s2"> &quot;&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="n">splot</span><span class="o">.</span><span class="n">add_tools</span><span class="p">(</span><span class="n">HoverTool</span><span class="p">(</span><span class="n">tooltips</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;div @spectrogram</span><span class="si">{custom}</span><span class="s2">&gt;</span>
+<span class="s2">    &lt;div class=&quot;hover_container&quot;&gt;</span>
+<span class="s2">        &lt;img class=&#39;hover_img&#39; src=&#39;@spectrogram&#39; style=&#39;float: top; width:120px;height:120px;&#39;/&gt;</span>
+<span class="s2">        &lt;div class=&quot;image_label&quot;&gt;</span>
+<span class="s2">            &lt;span style=&#39;font-size: 16px; &#39;&gt;@auto_cluster_label&lt;/span&gt;</span>
+<span class="s2">        &lt;/div&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">),</span> <span class="n">formatters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;@spectrogram&#39;</span><span class="p">:</span> <span class="n">custom_hov</span><span class="p">}))</span>
+
+
+<span class="c1"># Legend</span>
+<span class="c1"># Create a dummy legend that can be updated easily</span>
+
+<span class="n">dummy_data</span> <span class="o">=</span> <span class="n">ColumnDataSource</span><span class="p">(</span>
+    <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">labs</span><span class="p">),</span>
+     <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">labs</span><span class="p">),</span>
+     <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">labs</span><span class="p">,</span>
+     <span class="s1">&#39;markers&#39;</span><span class="p">:</span> <span class="n">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">,</span> <span class="n">labs</span><span class="p">)</span>
+     <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">dummy_colours</span> <span class="o">=</span> <span class="n">factor_cmap</span><span class="p">(</span>
+    <span class="n">field_name</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">,</span>
+    <span class="n">factors</span><span class="o">=</span><span class="n">labs</span><span class="p">)</span>
+
+<span class="n">dummy_scatter</span> <span class="o">=</span> <span class="n">splot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">source</span><span class="o">=</span><span class="n">dummy_data</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">fill_color</span><span class="o">=</span><span class="n">dummy_colours</span><span class="p">,</span>
+    <span class="n">line_color</span><span class="o">=</span><span class="n">dummy_colours</span><span class="p">,</span>
+    <span class="n">fill_alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;markers&#39;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;dummy_scatter&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_legend_items"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.get_legend_items">[docs]</a><span class="k">def</span> <span class="nf">get_legend_items</span><span class="p">():</span>
+    <span class="n">dummy_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]))</span>
+    <span class="n">legend_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">LegendItem</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">renderers</span><span class="o">=</span><span class="p">[</span><span class="n">dummy_scatter</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labs</span><span class="p">)</span> <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">dummy_labels</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">legend_items</span></div>
+
+
+<span class="n">legend_items</span> <span class="o">=</span> <span class="n">get_legend_items</span><span class="p">()</span>
+
+<span class="n">plot_legend</span> <span class="o">=</span> <span class="n">Legend</span><span class="p">(</span>
+    <span class="n">items</span><span class="o">=</span><span class="n">legend_items</span><span class="p">,</span>
+    <span class="n">location</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">border_line_alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">background_fill_alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">label_text_font_size</span><span class="o">=</span><span class="s1">&#39;15px&#39;</span><span class="p">,</span>
+    <span class="n">label_text_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
+    <span class="n">spacing</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">splot</span><span class="o">.</span><span class="n">add_layout</span><span class="p">(</span><span class="n">plot_legend</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+
+<span class="c1"># Style tools and toolbar</span>
+<span class="n">hover</span> <span class="o">=</span> <span class="n">splot</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="n">HoverTool</span><span class="p">)</span>
+<span class="n">hover</span><span class="o">.</span><span class="n">point_policy</span> <span class="o">=</span> <span class="s2">&quot;follow_mouse&quot;</span>
+<span class="n">hover</span><span class="o">.</span><span class="n">show_arrow</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">crosshair</span> <span class="o">=</span> <span class="n">splot</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="n">CrosshairTool</span><span class="p">)</span>
+<span class="n">crosshair</span><span class="o">.</span><span class="n">line_color</span> <span class="o">=</span> <span class="n">lightgrey</span>
+<span class="n">crosshair</span><span class="o">.</span><span class="n">line_alpha</span> <span class="o">=</span> <span class="mf">.5</span>
+
+<span class="n">lasso_overlay</span> <span class="o">=</span> <span class="n">splot</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="n">LassoSelectTool</span><span class="p">)</span><span class="o">.</span><span class="n">overlay</span>
+<span class="n">lasso_overlay</span><span class="o">.</span><span class="n">line_color</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">lasso_overlay</span><span class="o">.</span><span class="n">fill_color</span> <span class="o">=</span> <span class="n">lightgrey</span>
+<span class="n">lasso_overlay</span><span class="o">.</span><span class="n">fill_alpha</span> <span class="o">=</span> <span class="mf">.2</span>
+
+<span class="n">box_overlay</span> <span class="o">=</span> <span class="n">splot</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="n">BoxSelectTool</span><span class="p">)</span><span class="o">.</span><span class="n">overlay</span>
+<span class="n">box_overlay</span><span class="o">.</span><span class="n">line_color</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">box_overlay</span><span class="o">.</span><span class="n">fill_color</span> <span class="o">=</span> <span class="n">lightgrey</span>
+<span class="n">box_overlay</span><span class="o">.</span><span class="n">fill_alpha</span> <span class="o">=</span> <span class="mf">.2</span>
+
+<span class="n">splot</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">logo</span> <span class="o">=</span> <span class="s1">&#39;grey&#39;</span>
+
+
+<span class="c1"># ──── MAIN INTERFACE ───────────────────────────────────────────────────────────</span>
+
+
+<span class="c1"># Add label button</span>
+<span class="n">label_button</span> <span class="o">=</span> <span class="n">Dropdown</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Label&#39;</span><span class="p">,</span> <span class="n">menu</span><span class="o">=</span><span class="n">labs</span><span class="p">,</span> <span class="n">css_classes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;label_button&#39;</span><span class="p">])</span>
+
+<span class="c1"># Next button</span>
+<span class="n">next_button</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Next&#39;</span><span class="p">,</span> <span class="n">css_classes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;next_button&#39;</span><span class="p">])</span>
+
+<span class="c1"># Close app button</span>
+<span class="n">close_button</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Stop App&#39;</span><span class="p">,</span> <span class="n">css_classes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;close_button&#39;</span><span class="p">])</span>
+
+<span class="c1"># Instructions/feedback text</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">update_feedback_text</span><span class="p">(</span><span class="n">indv_list</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">)</span>
+<span class="n">feedback_text</span> <span class="o">=</span> <span class="n">Div</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">css_classes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;help_text&quot;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="update_class_examples_div"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.update_class_examples_div">[docs]</a><span class="k">def</span> <span class="nf">update_class_examples_div</span><span class="p">():</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span>
+                       <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;spectrogram&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<span class="c1"># Panel with class examples</span>
+<span class="c1"># Prepare marker dictionary for legend</span>
+
+<span class="n">html_markers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;asterisk&#39;</span><span class="p">:</span> <span class="s1">&#39;&amp;#8270&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;circle&#39;</span><span class="p">:</span> <span class="s1">&#39;&amp;#9679&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;diamond&#39;</span><span class="p">:</span> <span class="s1">&#39;&amp;#9830&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;hex&#39;</span><span class="p">:</span> <span class="s1">&#39;&amp;#11042&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;inverted_triangle&#39;</span><span class="p">:</span> <span class="s1">&#39;&amp;#9660&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;plus&#39;</span><span class="p">:</span> <span class="s1">&#39;&amp;#10010&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;square&#39;</span><span class="p">:</span> <span class="s1">&#39;&amp;#9632&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;star&#39;</span><span class="p">:</span> <span class="s1">&#39;&amp;#9733&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;triangle&#39;</span><span class="p">:</span> <span class="s1">&#39;&amp;#9650&#39;</span><span class="p">}</span>
+
+<span class="n">span_mk_sizes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;asterisk&#39;</span><span class="p">:</span> <span class="s1">&#39;mark-asterisk&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;circle&#39;</span><span class="p">:</span> <span class="s1">&#39;mark-circle&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;diamond&#39;</span><span class="p">:</span> <span class="s1">&#39;mark-diamond&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;hex&#39;</span><span class="p">:</span> <span class="s1">&#39;mark-hex&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;inverted_triangle&#39;</span><span class="p">:</span> <span class="s1">&#39;mark-inverted_triangle&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;plus&#39;</span><span class="p">:</span> <span class="s1">&#39;mark-plus&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;square&#39;</span><span class="p">:</span> <span class="s1">&#39;mark-square&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;star&#39;</span><span class="p">:</span> <span class="s1">&#39;mark-star&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;triangle&#39;</span><span class="p">:</span> <span class="s1">&#39;mark-triangle&#39;</span><span class="p">}</span>
+
+<span class="n">mk_colours</span> <span class="o">=</span> <span class="p">{</span><span class="n">lab</span><span class="p">:</span> <span class="n">col</span> <span class="k">for</span> <span class="n">lab</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labs</span><span class="p">,</span> <span class="n">palette</span><span class="p">)}</span>
+
+
+<span class="n">legend_html</span> <span class="o">=</span> <span class="n">build_legend</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">html_markers</span><span class="p">,</span> <span class="n">span_mk_sizes</span><span class="p">,</span> <span class="n">mk_colours</span><span class="p">)</span>
+
+<span class="c1"># Add right legend panel</span>
+<span class="n">class_examples_div</span> <span class="o">=</span> <span class="n">Div</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">legend_html</span><span class="p">)</span>
+
+
+<span class="c1"># Interactive labelling and updating</span>
+
+<div class="viewcode-block" id="next_plot"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.next_plot">[docs]</a><span class="k">def</span> <span class="nf">next_plot</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+
+    <span class="c1"># Add previous individual to list of already checked</span>
+    <span class="n">indv</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s1">&#39;already_checked&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indv</span><span class="p">)</span>
+
+    <span class="c1"># Save labels from last individual to dataset</span>
+    <span class="n">label_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">label</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">])}</span>
+
+    <span class="k">if</span> <span class="s1">&#39;label&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_dict</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_dict</span><span class="p">))</span>
+
+    <span class="n">dataset</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Get next individual and update plot</span>
+
+    <span class="n">remaining_indvs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">indv</span> <span class="k">for</span> <span class="n">indv</span> <span class="ow">in</span> <span class="n">indv_list</span>
+        <span class="k">if</span> <span class="n">indv</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s1">&#39;already_checked&#39;</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_indvs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">done_t</span> <span class="o">=</span> <span class="s1">&#39;Done. You can now stop the app.&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">done_t</span><span class="p">)</span>
+        <span class="n">feedback_text</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">done_t</span>
+        <span class="k">return</span>
+
+    <span class="n">indv</span> <span class="o">=</span> <span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">load_bk_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">indv</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+    <span class="c1"># Update legend</span>
+    <span class="n">splot</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="n">get_legend_items</span><span class="p">()</span>
+    <span class="n">splot</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indv</span><span class="si">}</span><span class="s2">&#39;s song repertoire&quot;</span>
+    <span class="n">class_examples_div</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">build_legend</span><span class="p">(</span>
+        <span class="n">source</span><span class="p">,</span> <span class="n">html_markers</span><span class="p">,</span> <span class="n">span_mk_sizes</span><span class="p">,</span> <span class="n">mk_colours</span><span class="p">)</span>
+
+    <span class="n">xrange</span><span class="p">,</span> <span class="n">yrange</span> <span class="o">=</span> <span class="n">set_range</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">ax_percentage</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">splot</span><span class="o">.</span><span class="n">x_range</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">xrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">splot</span><span class="o">.</span><span class="n">x_range</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">xrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">splot</span><span class="o">.</span><span class="n">y_range</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">yrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">splot</span><span class="o">.</span><span class="n">y_range</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">yrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Update help text</span>
+    <span class="n">feedback_text</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">update_feedback_text</span><span class="p">(</span><span class="n">indv_list</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_selections"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.get_selections">[docs]</a><span class="k">def</span> <span class="nf">get_selections</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">indices</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">new</span></div>
+
+
+<div class="viewcode-block" id="update_labels"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.update_labels">[docs]</a><span class="k">def</span> <span class="nf">update_labels</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s1">&#39;indices&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+        <span class="k">return</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span>
+    <span class="n">labels</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">item</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+    <span class="c1"># Update legend</span>
+    <span class="n">splot</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="n">get_legend_items</span><span class="p">()</span>
+    <span class="n">class_examples_div</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">build_legend</span><span class="p">(</span>
+        <span class="n">source</span><span class="p">,</span> <span class="n">html_markers</span><span class="p">,</span> <span class="n">span_mk_sizes</span><span class="p">,</span> <span class="n">mk_colours</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="close_app"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.main.close_app">[docs]</a><span class="k">def</span> <span class="nf">close_app</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="n">feedback_text</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;You may now close this browser tab.&quot;</span>
+    <span class="n">curdoc</span><span class="p">()</span><span class="o">.</span><span class="n">add_next_tick_callback</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">)</span></div>
+
+
+<span class="c1"># Actions</span>
+<span class="n">r</span><span class="o">.</span><span class="n">data_source</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">on_change</span><span class="p">(</span><span class="s1">&#39;indices&#39;</span><span class="p">,</span> <span class="n">get_selections</span><span class="p">)</span>
+<span class="n">next_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">next_plot</span><span class="p">)</span>
+<span class="c1"># next_button.js_on_click(CustomJS(args=dict(p=splot), code=&quot;&quot;&quot;</span>
+<span class="c1">#     p.reset.emit()</span>
+<span class="c1"># &quot;&quot;&quot;))</span>
+
+<span class="n">label_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">update_labels</span><span class="p">)</span>
+<span class="n">close_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">close_app</span><span class="p">)</span>
+
+
+<span class="c1"># Build app</span>
+<span class="n">curdoc</span><span class="p">()</span><span class="o">.</span><span class="n">add_root</span><span class="p">(</span><span class="n">row</span><span class="p">(</span><span class="n">close_button</span><span class="p">,</span> <span class="n">next_button</span><span class="p">,</span>
+                      <span class="n">label_button</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">css_classes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;button_div&#39;</span><span class="p">]))</span>
+<span class="n">curdoc</span><span class="p">()</span><span class="o">.</span><span class="n">add_root</span><span class="p">(</span><span class="n">row</span><span class="p">(</span><span class="n">splot</span><span class="p">,</span> <span class="n">class_examples_div</span><span class="p">))</span>
+<span class="n">curdoc</span><span class="p">()</span><span class="o">.</span><span class="n">add_root</span><span class="p">(</span><span class="n">feedback_text</span><span class="p">)</span>
+<span class="n">curdoc</span><span class="p">()</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Pykanto: interactive song labelling&quot;</span>
+
+
+<span class="n">json_theme</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;attrs&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;Figure&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;background_fill_color&#39;</span><span class="p">:</span> <span class="n">background_grey</span><span class="p">,</span>
+            <span class="s1">&#39;border_fill_color&#39;</span><span class="p">:</span> <span class="n">background_grey</span><span class="p">,</span>
+            <span class="s1">&#39;outline_line_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#444444&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;Axis&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;axis_line_color&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;Grid&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;grid_line_dash&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+            <span class="s1">&#39;grid_line_alpha&#39;</span><span class="p">:</span> <span class="mf">.1</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s1">&#39;Title&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;text_color&#39;</span><span class="p">:</span> <span class="n">lightgrey</span><span class="p">,</span>
+            <span class="s1">&#39;text_font_size&#39;</span><span class="p">:</span> <span class="s1">&#39;20px&#39;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">curdoc</span><span class="p">()</span><span class="o">.</span><span class="n">theme</span> <span class="o">=</span> <span class="n">Theme</span><span class="p">(</span><span class="n">json</span><span class="o">=</span><span class="n">json_theme</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

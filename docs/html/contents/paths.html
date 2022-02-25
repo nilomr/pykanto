@@ -54,7 +54,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
@@ -89,9 +89,23 @@
 <h1>Working with paths and directories<a class="headerlink" href="#working-with-paths-and-directories" title="Permalink to this headline"></a></h1>
 <p>pykanto provies a convenient way to store all paths under a single roof
 so that you can keep track of stuff</p>
-<p>ProjDirs()
-then you can .add(NEWPATH, Path(…))
-Peek it with , or if in dataset object <code class="docutils literal notranslate"><span class="pre">print(dataset.DIRS)</span></code></p>
+<p>Find your project’s root directory. You can do this in any number of ways.
+For example, the below assumes that you are working with git. Which you should!</p>
+<p>It is common to have raw data on a large external drive (for example I
+use a RAID system). If this is the case for you, you probably want to link
+the actual location of your raw data to a <code class="xref py py-obj docutils literal notranslate"><span class="pre">/data</span></code> folder in your project
+for ease of access and clarity. Pykanto has a function to do just that:
+(Skip this if your data direcrory IS inside your project.)</p>
+<dl class="simple">
+<dt>Note:</dt><dd><p>You wil likely create different derived datasets from the same raw data, and
+that is why pykanto lets your data live wherever you want.
+I stronfgly recommend that you make its directory read-only and
+never ever touch it.</p>
+</dd>
+</dl>
+<p>Build the project’s directory tree, then you can print the object and take a
+a look. This will create new directories within your project.</p>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a><a href="#id3"><span class="problematic" id="id4">*</span></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span>
 <span class="linenos">2</span>
 <span class="linenos">3</span><span class="nb">print</span><span class="p">(</span><span class="n">DIRS</span><span class="p">)</span> <span class="c1"># Print the directories currently held in DIRS</span>
@@ -101,14 +115,14 @@ Peek it with , or if in dataset object <code class="docutils literal notranslate
 <p>If you need to upload your raw or segmented data and you have lots of small files
 you may want to consider creating a <code class="docutils literal notranslate"><span class="pre">tar</span></code> file to reduce overhead.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">make_tarfile</span>
-<span class="linenos">2</span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s1">&#39;JSON.tar.gz&#39;</span>
-<span class="linenos">3</span><span class="n">in_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s1">&#39;JSON&#39;</span>
+<span class="linenos">2</span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s1">&#39;JSON.tar.gz&#39;</span>
+<span class="linenos">3</span><span class="n">in_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s1">&#39;JSON&#39;</span>
 <span class="linenos">4</span><span class="n">make_tarfile</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">in_dir</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you need to change the location of your raw data before you create a dataset,
 you can use the following method:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">DIRS</span><span class="o">.</span><span class="n">update_json_locs</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">DIRS</span><span class="o">.</span><span class="n">update_json_locs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can safely try this even if you haven’t moved your data at all; you will just get

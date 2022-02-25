@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pykanto.intlabel.data &mdash; pykanto 0.1 documentation</title>
+  <title>pykanto.labelapp.data &mdash; pykanto 0.1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
@@ -49,11 +49,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
 </ul>
 
         </div>
@@ -72,7 +73,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>pykanto.intlabel.data</li>
+      <li>pykanto.labelapp.data</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -81,25 +82,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for pykanto.intlabel.data</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">bokeh.models.sources</span> <span class="kn">import</span> <span class="n">ColumnDataSource</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageEnhance</span><span class="p">,</span> <span class="n">ImageOps</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+  <h1>Source code for pykanto.labelapp.data</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ─── DESCRIPTION ─────────────────────────────────────────────────────────────</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Code to generate embeddable data to be used in the interactive song labelling</span>
+<span class="sd">web application.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ──── IMPORTS ──────────────────────────────────────────────────────────────────</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">base64</span>
-<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="n">cut_or_pad_spectrogram</span><span class="p">,</span> <span class="n">retrieve_spectrogram</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">bokeh.models.sources</span> <span class="kn">import</span> <span class="n">ColumnDataSource</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageEnhance</span><span class="p">,</span> <span class="n">ImageOps</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span><span class="n">cut_or_pad_spectrogram</span><span class="p">,</span>
+                                        <span class="n">retrieve_spectrogram</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pykanto.dataset</span> <span class="kn">import</span> <span class="n">SongDataset</span>
 
+<span class="c1"># ──── FUNCTIONS ────────────────────────────────────────────────────────────────</span>
 
-<div class="viewcode-block" id="embeddable_image"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.intlabel.data.embeddable_image">[docs]</a><span class="k">def</span> <span class="nf">embeddable_image</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">invert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<div class="viewcode-block" id="embeddable_image"><a class="viewcode-back" href="../../../source/pykanto.labelapp.html#pykanto.labelapp.data.embeddable_image">[docs]</a><span class="k">def</span> <span class="nf">embeddable_image</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">invert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">background</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">41</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save a base 64 png from a np.ndarray.</span>
 <span class="sd">    Source: `Leland McInnes, 2018 </span>
@@ -108,14 +125,21 @@
 <span class="sd">    Args:</span>
 <span class="sd">        data (np.ndarray): Image to embed</span>
 <span class="sd">        invert (bool, optional): Whether to invert image. Defaults to True.</span>
+<span class="sd">        background (int, optional): RGB grey value. Defaults to 41 (same as app)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: a decoded png image</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">img_data</span> <span class="o">=</span> <span class="mi">255</span> <span class="o">-</span> <span class="mi">15</span> <span class="o">*</span> <span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="n">img_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+               <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
     <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">BICUBIC</span><span class="p">)</span>
     <span class="n">enhancer</span> <span class="o">=</span> <span class="n">ImageEnhance</span><span class="o">.</span><span class="n">Contrast</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-    <span class="n">image</span> <span class="o">=</span> <span class="n">enhancer</span><span class="o">.</span><span class="n">enhance</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">enhancer</span><span class="o">.</span><span class="n">enhance</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">background</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)))</span>
     <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
         <span class="n">image</span> <span class="o">=</span> <span class="n">ImageOps</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
     <span class="n">buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
@@ -124,7 +148,7 @@
     <span class="k">return</span> <span class="s1">&#39;data:image/png;base64,&#39;</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">for_encoding</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="prepare_datasource"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.intlabel.data.prepare_datasource">[docs]</a><span class="k">def</span> <span class="nf">prepare_datasource</span><span class="p">(</span>
+<div class="viewcode-block" id="prepare_datasource"><a class="viewcode-back" href="../../../source/pykanto.labelapp.html#pykanto.labelapp.data.prepare_datasource">[docs]</a><span class="k">def</span> <span class="nf">prepare_datasource</span><span class="p">(</span>
         <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span> <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
         <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -167,7 +191,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">individual</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="load_bk_data"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.intlabel.data.load_bk_data">[docs]</a><span class="k">def</span> <span class="nf">load_bk_data</span><span class="p">(</span>
+<div class="viewcode-block" id="load_bk_data"><a class="viewcode-back" href="../../../source/pykanto.labelapp.html#pykanto.labelapp.data.load_bk_data">[docs]</a><span class="k">def</span> <span class="nf">load_bk_data</span><span class="p">(</span>
         <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span> <span class="n">dataloc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColumnDataSource</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load saved data source to use in interctive labelling app.</span>

@@ -26,8 +26,7 @@ pykanto.utils.write
 
    .. autosummary::
    
-      NoIndent
-      NoIndentEncoder
+      NumpyEncoder
    
    
 

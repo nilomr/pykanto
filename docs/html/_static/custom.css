@@ -163,7 +163,7 @@ s
 @media screen and (min-width: 769px) {
     .wy-nav-content {
         position: relative;
-        left: 6em;
+        left: 8em;
     }
 }
 
@@ -181,7 +181,7 @@ s
 @media screen and (min-width: 769px) {
     .wy-nav-side {
         position: fixed;
-        left: 6em;
+        left: 9em;
     }
 }
 

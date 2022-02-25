@@ -23,7 +23,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pykanto.utils.compute" href="pykanto.utils.compute.html" />
-    <link rel="prev" title="pykanto.signal.spectrogram" href="pykanto.signal.spectrogram.html" /> 
+    <link rel="prev" title="pykanto.labelapp.main" href="pykanto.labelapp.main.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,20 +52,21 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pykanto.intlabel.html">pykanto.intlabel</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pykanto.plot.html">pykanto.plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pykanto.utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.compute.html">pykanto.utils.compute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.custom.html">pykanto.utils.custom</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.paths.html">pykanto.utils.paths</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.read.html">pykanto.utils.read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.types.html">pykanto.utils.types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.write.html">pykanto.utils.write</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.xenocanto.html">pykanto.utils.xenocanto</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.plot.html">pykanto.plot</a></li>
 </ul>
 
         </div>
@@ -95,6 +96,7 @@
              
   <section id="module-pykanto.utils">
 <span id="pykanto-utils"></span><h1>pykanto.utils<a class="headerlink" href="#module-pykanto.utils" title="Permalink to this headline"></a></h1>
+<p>Parsers,  I/O tools, typing and general computing.</p>
 <p class="rubric">Modules</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -103,7 +105,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="pykanto.utils.compute.html#module-pykanto.utils.compute" title="pykanto.utils.compute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.utils.compute</span></code></a></p></td>
-<td><p></p></td>
+<td><p>A collection of functions and decorators used to manage common operations (e.g., parallelisation, timing).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pykanto.utils.custom.html#module-pykanto.utils.custom" title="pykanto.utils.custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.utils.custom</span></code></a></p></td>
 <td><p></p></td>
@@ -112,12 +114,15 @@
 <td><p>Create project directory trees, assign path variables, and get paths for different types of files</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pykanto.utils.read.html#module-pykanto.utils.read" title="pykanto.utils.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.utils.read</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Functions to read external files -e.g.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pykanto.utils.write.html#module-pykanto.utils.write" title="pykanto.utils.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.utils.write</span></code></a></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pykanto.utils.types.html#module-pykanto.utils.types" title="pykanto.utils.types"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.utils.types</span></code></a></p></td>
+<td><p>Pykanto typing module: provides a) custom type hints not already covered in other modules and b) classes whose main purpose is data storage and/or type checking.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pykanto.utils.xenocanto.html#module-pykanto.utils.xenocanto" title="pykanto.utils.xenocanto"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.utils.xenocanto</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pykanto.utils.write.html#module-pykanto.utils.write" title="pykanto.utils.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.utils.write</span></code></a></p></td>
+<td><p>A collection of functions and methods used to create directories and write data to disk.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pykanto.utils.xenocanto.html#module-pykanto.utils.xenocanto" title="pykanto.utils.xenocanto"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.utils.xenocanto</span></code></a></p></td>
 <td><p>Download recordings and metadata from xeno-canto programmatically.</p></td>
 </tr>
 </tbody>
@@ -136,7 +141,7 @@
             title="pykanto.utils.compute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
-        <a href="pykanto.signal.spectrogram.html" class="btn btn-neutral float-left" title="pykanto.signal.spectrogram" accesskey="p" rel="prev"><span class="fa
+        <a href="pykanto.labelapp.main.html" class="btn btn-neutral float-left" title="pykanto.labelapp.main" accesskey="p" rel="prev"><span class="fa
                 fa-arrow-circle-left"></span> Previous</a>
         
     </div>

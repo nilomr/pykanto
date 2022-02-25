@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pykanto.labelapp.data &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/paths.html">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/segmentation.html">Vocalisation segmentation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../../../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pykanto.labelapp.data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pykanto.labelapp.data</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ─── DESCRIPTION ─────────────────────────────────────────────────────────────</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Code to generate embeddable data to be used in the interactive song labelling</span>
+<span class="sd">web application.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ──── IMPORTS ──────────────────────────────────────────────────────────────────</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">bokeh.models.sources</span> <span class="kn">import</span> <span class="n">ColumnDataSource</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageEnhance</span><span class="p">,</span> <span class="n">ImageOps</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span><span class="n">cut_or_pad_spectrogram</span><span class="p">,</span>
+                                        <span class="n">retrieve_spectrogram</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pykanto.dataset</span> <span class="kn">import</span> <span class="n">SongDataset</span>
+
+<span class="c1"># ──── FUNCTIONS ────────────────────────────────────────────────────────────────</span>
+
+
+<div class="viewcode-block" id="embeddable_image"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.data.embeddable_image">[docs]</a><span class="k">def</span> <span class="nf">embeddable_image</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">invert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">background</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">41</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save a base 64 png from a np.ndarray.</span>
+<span class="sd">    Source: `Leland McInnes, 2018 </span>
+<span class="sd">    &lt;https://umap-learn.readthedocs.io/en/latest/basic_usage.html&gt;`_.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (np.ndarray): Image to embed</span>
+<span class="sd">        invert (bool, optional): Whether to invert image. Defaults to True.</span>
+<span class="sd">        background (int, optional): RGB grey value. Defaults to 41 (same as app)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a decoded png image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">img_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+               <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
+        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">BICUBIC</span><span class="p">)</span>
+    <span class="n">enhancer</span> <span class="o">=</span> <span class="n">ImageEnhance</span><span class="o">.</span><span class="n">Contrast</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">enhancer</span><span class="o">.</span><span class="n">enhance</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">background</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">ImageOps</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">)</span>
+    <span class="n">for_encoding</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+    <span class="k">return</span> <span class="s1">&#39;data:image/png;base64,&#39;</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">for_encoding</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="prepare_datasource"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.data.prepare_datasource">[docs]</a><span class="k">def</span> <span class="nf">prepare_datasource</span><span class="p">(</span>
+        <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span> <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+        <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare and save data source for the interactibe labelling application.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset (SongDataset): Source dataset.</span>
+<span class="sd">        individual (str): ID to process.</span>
+<span class="sd">        spec_length (int, optional): Desired spectrogram lenght, in frames. </span>
+<span class="sd">            Defaults to 500.</span>
+<span class="sd">        song_level (bool, optional): Whether to use all units per </span>
+<span class="sd">            vocalisation or their average. Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[str, Path]: A tuple with ID and path to saved data source.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get a subset of the main dataset for this individual</span>
+    <span class="k">if</span> <span class="n">song_level</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">vocalisations</span><span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocalisations</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">individual</span><span class="p">][[</span>
+            <span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">,</span> <span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">spectrograms</span> <span class="o">=</span> <span class="p">[</span><span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">spec_loc</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">spec_loc</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">individual</span><span class="p">][[</span>
+            <span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">UNITS</span><span class="p">[</span><span class="n">individual</span><span class="p">],</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+        <span class="n">spectrograms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+    <span class="c1"># Preprocess spectrograms</span>
+    <span class="n">spectrograms</span> <span class="o">=</span> <span class="p">[</span><span class="n">cut_or_pad_spectrogram</span><span class="p">(</span>
+        <span class="n">spec</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">)</span> <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">spectrograms</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;spectrogram&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">embeddable_image</span><span class="p">,</span> <span class="n">spectrograms</span><span class="p">))</span>
+
+    <span class="n">out_dir</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">/</span> <span class="s1">&#39;bk_data&#39;</span> <span class="o">/</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">individual</span><span class="si">}</span><span class="s1">_bk_data.p&#39;</span>
+        <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">individual</span><span class="si">}</span><span class="s1">_bk_unit_data.p&#39;</span><span class="p">)</span>
+    <span class="n">makedir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">individual</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_bk_data"><a class="viewcode-back" href="../../../source/pykanto.intlabel.html#pykanto.labelapp.data.load_bk_data">[docs]</a><span class="k">def</span> <span class="nf">load_bk_data</span><span class="p">(</span>
+        <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span> <span class="n">dataloc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColumnDataSource</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load saved data source to use in interctive labelling app.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset (SongDataset): Source dataset.</span>
+<span class="sd">        dataloc (str): Type of data to use (one of &#39;vocalisation_labels&#39;, </span>
+<span class="sd">            &#39;unit_labels&#39;)</span>
+<span class="sd">        individual (str): ID to process.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ColumnDataSource: Data ready to plot.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df_loc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataloc</span><span class="o">.</span><span class="n">upper</span><span class="p">())[</span><span class="s1">&#39;predatasource&#39;</span><span class="p">][</span><span class="n">individual</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">df_loc</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">ColumnDataSource</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">,</span> <span class="s1">&#39;spectrogram&#39;</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">source</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

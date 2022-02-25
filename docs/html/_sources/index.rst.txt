@@ -21,19 +21,17 @@ Documentation
 Modules
 ========
 
-.. automodule:: pykanto
 .. autosummary::
    :caption: API reference
    :toctree: _autosummary
    :recursive:
 
+   pykanto.signal
    pykanto.parameters
    pykanto.dataset
-   pykanto.intlabel
-   pykanto.plot
-   pykanto.signal
+   pykanto.labelapp
    pykanto.utils
-
+   pykanto.plot
 
 
 Indices and tables

@@ -1,7 +1,7 @@
-pykanto.intlabel.data
+pykanto.labelapp.data
 =====================
 
-.. automodule:: pykanto.intlabel.data
+.. automodule:: pykanto.labelapp.data
 
    
    

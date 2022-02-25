@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
@@ -112,10 +112,10 @@
 
 <span class="kn">import</span> <span class="nn">pykanto.plot</span> <span class="k">as</span> <span class="nn">kplot</span>
 <span class="kn">from</span> <span class="nn">pykanto</span> <span class="kn">import</span> <span class="vm">__name__</span> <span class="k">as</span> <span class="n">modname</span>
-<span class="kn">from</span> <span class="nn">pykanto.intlabel.data</span> <span class="kn">import</span> <span class="n">prepare_datasource</span>
+<span class="kn">from</span> <span class="nn">pykanto.labelapp.data</span> <span class="kn">import</span> <span class="n">prepare_datasource</span>
 <span class="kn">from</span> <span class="nn">pykanto.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
 <span class="kn">from</span> <span class="nn">pykanto.signal.cluster</span> <span class="kn">import</span> <span class="n">reduce_and_cluster_parallel</span>
-<span class="kn">from</span> <span class="nn">pykanto.signal.segment</span> <span class="kn">import</span> <span class="n">segment_song_into_units_parallel</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.segment</span> <span class="kn">import</span> <span class="n">drop_zero_len_units</span><span class="p">,</span> <span class="n">segment_song_into_units_parallel</span>
 <span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_save_melspectrogram_parallel</span><span class="p">,</span>
                                         <span class="n">get_indv_units_parallel</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="p">(</span><span class="n">dictlist_to_dict</span><span class="p">,</span> <span class="n">print_dict</span><span class="p">,</span> <span class="n">timing</span><span class="p">,</span>
@@ -161,7 +161,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            DATASET_ID (str): Name of new dataset.</span>
 <span class="sd">            DIRS (ProjDirs): Project directory structure. Must contain </span>
-<span class="sd">                a &#39;WAVFILES&#39; attribute pointing to a directory that contains </span>
+<span class="sd">                a &#39;SEGMENTED&#39; attribute pointing to a directory that contains </span>
 <span class="sd">                the segmented data organised in two folders: &#39;WAV&#39; and </span>
 <span class="sd">                &#39;JSON&#39; for audio and metadata, respectively.</span>
 <span class="sd">            parameters (Parameters, optional): Parameters for dataset.</span>
@@ -246,23 +246,23 @@
 <span class="sd">            Will drop any .wav for which there is no .json!</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="s1">&#39;WAVFILES&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="s1">&#39;SEGMENTED&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s1">&#39;The ProjDirs object you used to initialise &#39;</span>
-                <span class="s1">&#39;this SongDataset object does not have a WAVFILES attribute. &#39;</span>
+                <span class="s1">&#39;this SongDataset object does not have a SEGMENTED attribute. &#39;</span>
                 <span class="s1">&#39;See the docs for SongDataset for mroe information.&#39;</span><span class="p">)</span>
 
         <span class="c1"># TODO: read both lower and uppercase wav and json extensions.</span>
         <span class="c1"># Load and check file paths:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wav&quot;</span><span class="p">)))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s2">&quot;JSON&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.JSON&quot;</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wav&quot;</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;JSON&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.JSON&quot;</span><span class="p">)))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;There are no .wav files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="n">wavnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">wav</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">wav</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">]</span>
+        <span class="n">wavnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">wav</span><span class="o">.</span><span class="n">stem</span> <span class="k">for</span> <span class="n">wav</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">]</span>
         <span class="n">matching_jsons</span> <span class="o">=</span> <span class="p">[</span><span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span>
                           <span class="k">if</span> <span class="n">json</span><span class="o">.</span><span class="n">stem</span> <span class="ow">in</span> <span class="n">wavnames</span><span class="p">]</span>
 
@@ -270,11 +270,11 @@
             <span class="n">ndrop</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">matching_jsons</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;There is an unequal number of matching .wav and .json &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAVFILES</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Keeping only those that match: dropped </span><span class="si">{</span><span class="n">ndrop</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">keepnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">json</span><span class="o">.</span><span class="n">stem</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">matching_jsons</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">wav</span> <span class="k">for</span> <span class="n">wav</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span>
-                                  <span class="k">if</span> <span class="n">wav</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">keepnames</span><span class="p">]</span>
+                                  <span class="k">if</span> <span class="n">wav</span><span class="o">.</span><span class="n">stem</span> <span class="ow">in</span> <span class="n">keepnames</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="n">matching_jsons</span>
 
         <span class="c1"># Subset as per parameters if possible</span>
@@ -312,8 +312,8 @@
 <div class="viewcode-block" id="SongDataset._load_metadata"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.dataset.SongDataset._load_metadata">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">_load_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Loads json metadata in sequence if there are &lt; 100 items, </span>
-<span class="sd">        in parallel chunks of length chunk_len if there are &gt; 1000 items.</span>
+<span class="sd">        Loads json metadata in sequence if there are &lt; 100 items, in parallel</span>
+<span class="sd">        chunks of length chunk_len if there are &gt; 1000 items.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">n_jsonfiles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span>
@@ -329,13 +329,13 @@
             <span class="n">jsons</span> <span class="o">=</span> <span class="n">_get_json_parallel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">Path</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;wav_loc&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">jsons</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;wav_file&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">jsons</span>
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="SongDataset._get_unique_ids"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.dataset.SongDataset._get_unique_ids">[docs]</a>    <span class="k">def</span> <span class="nf">_get_unique_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds a &#39;unique_ID&#39; attribute holding and array </span>
-<span class="sd">        with unique IDs in the dataset.</span>
+<span class="sd">        Adds a &#39;unique_ID&#39; attribute holding an array with unique IDs in the</span>
+<span class="sd">        dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
@@ -344,30 +344,26 @@
 
 <div class="viewcode-block" id="SongDataset._get_sound_info"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.dataset.SongDataset._get_sound_info">[docs]</a>    <span class="k">def</span> <span class="nf">_get_sound_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds pandas DataFrames with vocalisation and noise </span>
-<span class="sd">        information to dataset (&#39;vocalisations&#39; and &#39;noise&#39; </span>
-<span class="sd">        attributes, respectively).</span>
-<span class="sd">        Also adds information about mim/max bounding box</span>
-<span class="sd">        frequencies and durations in the dataset </span>
-<span class="sd">        (&#39;minmax_values&#39; attribute), and unit onsets/offsets</span>
-<span class="sd">        if present.</span>
+<span class="sd">        Adds pandas DataFrames with vocalisation and noise information to</span>
+<span class="sd">        dataset (&#39;vocalisations&#39; and &#39;noise&#39; attributes, respectively). Also</span>
+<span class="sd">        adds information about mim/max bounding box frequencies and durations in</span>
+<span class="sd">        the dataset (&#39;minmax_values&#39; attribute), and unit onsets/offsets if</span>
+<span class="sd">        present.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            Removes onset/offset pairs which (under current spectrogram</span>
+<span class="sd">            parameter combinations) would result in a unit of length zero.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">vocalisations_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">noise_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;wav_loc&quot;</span><span class="p">:</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;wav_loc&#39;</span><span class="p">],</span>
-                <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">],</span>
-                <span class="s2">&quot;lower_freq&quot;</span><span class="p">:</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;lower_freq&quot;</span><span class="p">],</span>
-                <span class="s2">&quot;upper_freq&quot;</span><span class="p">:</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;upper_freq&quot;</span><span class="p">],</span>
-                <span class="s2">&quot;length_s&quot;</span><span class="p">:</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;length_s&#39;</span><span class="p">],</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">file</span>
 
-            <span class="p">}</span>
             <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">e</span> <span class="ow">in</span> <span class="n">file</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">,</span> <span class="s1">&#39;offsets&#39;</span><span class="p">]):</span>
-                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]))</span>
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">drop_zero_len_units</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]))</span>
 
-            <span class="k">if</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;VOCALISATION&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;VOCALISATION&#39;</span><span class="p">:</span>  <span class="c1"># FIXME: remove this label and give option to use any</span>
                 <span class="n">vocalisations_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
             <span class="k">elif</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;NOISE&#39;</span><span class="p">:</span>
                 <span class="n">noise_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
@@ -404,11 +400,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">_spec_exists</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>  <span class="c1"># TODO: refactor</span>
-            <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;wav_loc&#39;</span><span class="p">]</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;wav_file&#39;</span><span class="p">]</span>
             <span class="n">ID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span>
             <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">/</span> <span class="n">ID</span> <span class="o">/</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;.npy&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="k">return</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">path</span><span class="p">}</span>
+                <span class="k">return</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">path</span><span class="p">}</span>
 
         <span class="c1"># Check if spectrograms already exist for any keys:</span>
         <span class="n">existing_voc</span> <span class="o">=</span> <span class="p">[</span><span class="n">_spec_exists</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
@@ -443,7 +439,7 @@
         <span class="n">n_specs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="o">**</span><span class="n">n_specs</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">existing_noise</span> <span class="k">if</span> <span class="p">(</span><span class="n">existing_noise</span> <span class="ow">and</span>
                                              <span class="ow">not</span> <span class="n">overwrite_data</span><span class="p">)</span> <span class="k">else</span> <span class="p">{})}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">n_specs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">n_specs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
     <span class="c1"># ──────────────────────────────────────────────────────────────────────────</span>
     <span class="c1"># SongDataset: Public methods</span>
@@ -683,6 +679,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;onsets&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="n">units</span> <span class="o">=</span> <span class="n">segment_song_into_units_parallel</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">onoff_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">units</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;onsets&#39;</span><span class="p">,</span> <span class="s1">&#39;offsets&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+            <span class="n">onoff_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Otherwise just use that</span>
         <span class="k">else</span><span class="p">:</span>
@@ -691,35 +690,24 @@
             <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">index</span>
 
         <span class="c1"># Calculate durations and add to dataset</span>
-        <span class="n">onoff_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-            <span class="n">units</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;onsets&#39;</span><span class="p">,</span> <span class="s1">&#39;offsets&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-        <span class="n">onoff_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;unit_durations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">]</span>
         <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;silence_durations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="p">[</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span>
                                                <span class="n">row</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">])],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
             <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;onsets&#39;</span><span class="p">,</span> <span class="s1">&#39;offsets&#39;</span><span class="p">],</span>
-            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
             <span class="n">onoff_df</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Save</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">n_units</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;unit_durations&#39;</span><span class="p">])</span>
                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found and segmented </span><span class="si">{</span><span class="n">n_units</span><span class="si">}</span><span class="s1"> units.&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="SongDataset.save_to_disk"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.dataset.SongDataset.save_to_disk">[docs]</a>    <span class="k">def</span> <span class="nf">save_to_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save dataset to disk.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Save dataset</span>
-        <span class="n">out_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span>
-        <span class="n">makedir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
-        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved dataset to </span><span class="si">{</span><span class="n">out_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SongDataset.subset"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.dataset.SongDataset.subset">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">new_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SongDataset</span><span class="p">:</span>
@@ -775,6 +763,17 @@
         <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">subself</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">subself</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved subset to </span><span class="si">{</span><span class="n">subself</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">subself</span></div>
+
+<div class="viewcode-block" id="SongDataset.save_to_disk"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.dataset.SongDataset.save_to_disk">[docs]</a>    <span class="k">def</span> <span class="nf">save_to_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save dataset to disk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Save dataset</span>
+        <span class="n">out_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span>
+        <span class="n">makedir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved dataset to </span><span class="si">{</span><span class="n">out_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SongDataset.reload"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.dataset.SongDataset.reload">[docs]</a>    <span class="k">def</span> <span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SongDataset</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -864,23 +863,31 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SongDataset.prepare_interactive_data"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.dataset.SongDataset.prepare_interactive_data">[docs]</a>    <span class="nd">@timing</span>
-    <span class="k">def</span> <span class="nf">prepare_interactive_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">prepare_interactive_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare lightweigth representations of each vocalization</span>
-<span class="sd">        or unit (if song_level=True in :attr:`~.SongDataset.parameters`) </span>
+<span class="sd">        or unit (if song_level=False in :attr:`~.SongDataset.parameters`) </span>
 <span class="sd">        for each individual in the dataset. These are linked from </span>
 <span class="sd">        VOCALISATION_LABELS or UNIT_LABELS in :attr:`~.SongDataset.DIRS`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            spec_length (float, optional): In seconds, duration of </span>
 <span class="sd">            spectrogram that will be produced. Shorter segments </span>
-<span class="sd">            will be padded, longer segments trimmed. Defaults to 3.5.</span>
+<span class="sd">            will be padded, longer segments trimmed. Defaults to maximum note </span>
+<span class="sd">            duration in the dataset.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">song_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span>
 
         <span class="c1"># Check that we have the relevant data to proceed</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">song_level</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="s2">&quot;This function requires the output of &quot;</span>
+                <span class="s2">&quot;`self.cluster_individuals()`. &quot;</span>
+                <span class="s2">&quot;Make sure you that have run it, then try again&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span>
                 <span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">song_level</span>
                 <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
@@ -894,9 +901,19 @@
         <span class="n">indvs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">])</span>
 
+        <span class="c1"># Set or get spectrogram length (affects width of unit/voc preview)</span>
+        <span class="c1"># NOTE: this is set to maxlen=50%len if using units, 4*maxlen if using</span>
+        <span class="c1"># entire vocalisations. This might not be adequate in all cases.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">spec_length</span><span class="p">:</span>
+            <span class="n">max_l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">i</span>
+                 <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocalisations</span><span class="o">.</span><span class="n">unit_durations</span><span class="o">.</span><span class="n">values</span>
+                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">array</span><span class="p">])</span>
+            <span class="n">spec_length</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_l</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">max_l</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">song_level</span> <span class="k">else</span> <span class="mi">4</span><span class="o">*</span><span class="n">max_l</span>
         <span class="n">spec_length_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span>
             <span class="n">spec_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length_ms</span><span class="p">))</span>
 
+        <span class="c1"># Distribute with Ray</span>
         <span class="n">obj_ids</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">prepare_datasource_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="n">individual</span><span class="p">,</span> <span class="n">spec_length</span><span class="o">=</span><span class="n">spec_length_frames</span><span class="p">,</span>
@@ -1001,7 +1018,7 @@
 
         <span class="c1"># Check that we are where we should</span>
         <span class="c1"># REVIEW: easy to break!</span>
-        <span class="n">app_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;intlabel&#39;</span><span class="p">)</span>
+        <span class="n">app_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;labelapp&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">app_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">app_path</span><span class="p">))</span>
 

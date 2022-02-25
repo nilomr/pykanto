@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
@@ -114,7 +114,7 @@
     <span class="n">_has_cuml</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="umap_reduce"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.umap_reduce">[docs]</a><span class="k">def</span> <span class="nf">umap_reduce</span><span class="p">(</span>
+<div class="viewcode-block" id="umap_reduce"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.cluster.umap_reduce">[docs]</a><span class="k">def</span> <span class="nf">umap_reduce</span><span class="p">(</span>
         <span class="n">data</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
         <span class="n">n_neighbors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
         <span class="n">n_components</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
@@ -153,7 +153,7 @@
     <span class="k">return</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">reducer</span></div>
 
 
-<div class="viewcode-block" id="hdbscan_cluster"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.hdbscan_cluster">[docs]</a><span class="k">def</span> <span class="nf">hdbscan_cluster</span><span class="p">(</span>
+<div class="viewcode-block" id="hdbscan_cluster"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.cluster.hdbscan_cluster">[docs]</a><span class="k">def</span> <span class="nf">hdbscan_cluster</span><span class="p">(</span>
         <span class="n">embedding</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">min_cluster_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">min_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HDBSCAN</span><span class="p">:</span>
@@ -188,7 +188,7 @@
     <span class="k">return</span> <span class="n">clusterer</span></div>
 
 
-<div class="viewcode-block" id="reduce_and_cluster"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.reduce_and_cluster">[docs]</a><span class="k">def</span> <span class="nf">reduce_and_cluster</span><span class="p">(</span>
+<div class="viewcode-block" id="reduce_and_cluster"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.cluster.reduce_and_cluster">[docs]</a><span class="k">def</span> <span class="nf">reduce_and_cluster</span><span class="p">(</span>
         <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span>
         <span class="n">ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -207,42 +207,42 @@
 <span class="sd">        &#39;umap_x&#39;, &#39;umap_y&#39;, &#39;auto_cluster_label&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Retrieve averaged units for one individual</span>
-    <span class="n">avg_units</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+    <span class="c1"># Retrieve units or averaged units for one individual</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
         <span class="nb">open</span><span class="p">(</span>
             <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">AVG_UNITS</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">UNITS</span><span class="p">[</span><span class="n">ID</span><span class="p">],</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
 
+    <span class="n">units_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="p">[</span>
+        <span class="n">key</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">))]</span>
+
     <span class="c1"># Check if sample size is sufficient</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">avg_units</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_sample</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units_keys</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_sample</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Insufficient sample size for </span><span class="si">{</span><span class="n">ID</span><span class="si">}</span><span class="s1">. &#39;</span>
                       <span class="s1">&#39;Returning None.&#39;</span><span class="p">)</span>
         <span class="k">return</span>
 
     <span class="c1"># Flatten units</span>
     <span class="k">if</span> <span class="n">song_level</span><span class="p">:</span>
-        <span class="n">avg_units_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">avg_units</span><span class="p">]</span>
-        <span class="n">flat_avg_units</span> <span class="o">=</span> <span class="p">[</span><span class="n">unit</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">avg_units</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="n">flat_units</span> <span class="o">=</span> <span class="p">[</span><span class="n">unit</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">units</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">avg_units_keys</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">key</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">avg_units</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">))]</span>
         <span class="n">voc_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
-            <span class="p">[[</span><span class="n">key</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">avg_units</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span>
-        <span class="n">flat_avg_units</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">unit</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-                                   <span class="k">for</span> <span class="n">ls</span> <span class="ow">in</span> <span class="n">avg_units</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">ls</span><span class="p">])</span>
+            <span class="p">[[</span><span class="n">key</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span>
+        <span class="n">flat_units</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">unit</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                               <span class="k">for</span> <span class="n">ls</span> <span class="ow">in</span> <span class="n">units</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">ls</span><span class="p">])</span>
 
     <span class="c1"># Run UMAP</span>
     <span class="n">embedding</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">umap_reduce</span><span class="p">(</span>
-        <span class="n">flat_avg_units</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">flat_units</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="c1"># Cluster using HDBSCAN</span>
     <span class="c1"># smallest cluster size allowed</span>
     <span class="n">clusterer</span> <span class="o">=</span> <span class="n">hdbscan_cluster</span><span class="p">(</span><span class="n">embedding</span><span class="p">,</span> <span class="n">min_cluster_size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span>
-        <span class="nb">len</span><span class="p">(</span><span class="n">flat_avg_units</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.02</span><span class="p">),</span> <span class="n">min_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">flat_units</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.02</span><span class="p">),</span> <span class="n">min_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
     <span class="c1"># Put together in a dataframe</span>
-    <span class="n">cluster_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">avg_units_keys</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">])</span>
+    <span class="n">cluster_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">units_keys</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">])</span>
     <span class="n">cluster_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">song_level</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;vocalisation_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">voc_keys</span>
@@ -268,7 +268,7 @@
             <span class="n">min_sample</span><span class="o">=</span><span class="n">min_sample</span><span class="p">)</span> <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span> <span class="n">IDS</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="reduce_and_cluster_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.reduce_and_cluster_parallel">[docs]</a><span class="k">def</span> <span class="nf">reduce_and_cluster_parallel</span><span class="p">(</span>
+<div class="viewcode-block" id="reduce_and_cluster_parallel"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.cluster.reduce_and_cluster_parallel">[docs]</a><span class="k">def</span> <span class="nf">reduce_and_cluster_parallel</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span> <span class="n">min_sample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>

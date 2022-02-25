@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
@@ -83,16 +83,20 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pykanto.parameters</h1><div class="highlight"><pre>
-<span></span><span class="c1"># ─── DESCRIPTION ─────────────────────────────────────────────────────────────</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="c1"># ──── IMPORTS ────────────────────────────────────────────────────────────────</span>
+<span class="sd">Classes and methods to store and modify pykanto parameters.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ──── IMPORTS ─────────────────────────────────────────────────────────────────</span>
+
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">attr</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">print_dict</span>
 
-<span class="c1"># ──── CLASSES AND METHODS ────────────────────────────────────────────────────</span>
+<span class="c1"># ──── CLASSES AND METHODS ─────────────────────────────────────────────────────</span>
 
 
 <div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../source/pykanto.html#pykanto.parameters.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">():</span>

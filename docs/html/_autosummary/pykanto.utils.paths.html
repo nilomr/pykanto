@@ -54,7 +54,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="pykanto.utils.html">pykanto.utils</a><ul class="current">
@@ -62,6 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.custom.html">pykanto.utils.custom</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">pykanto.utils.paths</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.read.html">pykanto.utils.read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.types.html">pykanto.utils.types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.write.html">pykanto.utils.write</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.xenocanto.html">pykanto.utils.xenocanto</a></li>
 </ul>
@@ -105,13 +106,19 @@ different types of files</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.change_data_loc" title="pykanto.utils.paths.change_data_loc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_data_loc</span></code></a>(DIR, PROJECT_DIR, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.change_data_loc" title="pykanto.utils.paths.change_data_loc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_data_loc</span></code></a>(DIR, PROJECT, NEW_PROJECT)</p></td>
 <td><p>Updates the location of the parent directories of a project, including the project name, for a given path.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.paths.get_wav_filepaths" title="pykanto.utils.paths.get_wav_filepaths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_wav_filepaths</span></code></a>(ORIGIN_DIR)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.paths.get_file_paths" title="pykanto.utils.paths.get_file_paths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_file_paths</span></code></a>(root_dir, extensions)</p></td>
+<td><p>Returns paths to files with given extension found recursively within a directory.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.get_wav_filepaths" title="pykanto.utils.paths.get_wav_filepaths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_wav_filepaths</span></code></a>(RAW_DATA_DIR)</p></td>
 <td><p>Get a list of wav files in a directory, including subdirectories, if there is a corresponding .xml file with segmentation information.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.get_xml_filepaths" title="pykanto.utils.paths.get_xml_filepaths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_xml_filepaths</span></code></a>(ORIGIN_DIR)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.paths.get_wavs_w_annotation" title="pykanto.utils.paths.get_wavs_w_annotation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_wavs_w_annotation</span></code></a>(wav_filepaths, ...)</p></td>
+<td><p>Returns a list of tuples containing paths to wavfiles for which there is an annotation file and paths to its annotation file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.get_xml_filepaths" title="pykanto.utils.paths.get_xml_filepaths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_xml_filepaths</span></code></a>(RAW_DATA_DIR)</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.paths.link_project_data" title="pykanto.utils.paths.link_project_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">link_project_data</span></code></a>(origin, project_data_dir)</p></td>
@@ -126,47 +133,52 @@ different types of files</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProjDirs</span></code></a>(PROJECT_DIR[, mkdir])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProjDirs</span></code></a>(PROJECT, RAW_DATA[, mkdir])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">ProjDirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">ProjDirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PROJECT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RAW_DATA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PROJECT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RAW_DATA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initialises a ProjDirs class, which is used to store a
 project’s file structure. This is required when constructing
-a <a class="reference internal" href="../source/pykanto.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">SongDataset</span></code></a> object and generally
+a <a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">SongDataset</span></code></a> object and generally
 useful to keep paths tidy and in the same location.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>PROJECT_DIR</strong> (<em>Path</em>) – Root directory of the project.</p></li>
+<li><p><strong>PROJECT</strong> (<em>Path</em>) – Root directory of the project.</p></li>
+<li><p><strong>RAW_DATA</strong> (<em>Path</em>) – (Immutable) location of the raw data to be used in
+this project.</p></li>
 <li><p><strong>mkdir</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wether to create directories if they
 don’t already exist. Defaults to False.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PROJROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;user&#39;</span> <span class="o">/</span> <span class="s1">&#39;projects&#39;</span> <span class="o">/</span> <span class="s1">&#39;myproject&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PROJROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;home&#39;</span> <span class="o">/</span> <span class="s1">&#39;user&#39;</span> <span class="o">/</span> <span class="s1">&#39;projects&#39;</span> <span class="o">/</span> <span class="s1">&#39;myproject&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RAW_DATA</span><span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;bigexternaldrive&#39;</span> <span class="o">/</span> <span class="s1">&#39;fieldrecordings&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJROOT</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DIRS</span><span class="p">)</span>
 <span class="go">Items held:</span>
 <span class="go">PROJECT (/user/projects/myproject)</span>
-<span class="go">DATA (/user/projects/myproject/data)</span>
-<span class="go">RESOURCES (/user/projects/myproject/resources)</span>
-<span class="go">REPORTS (/user/projects/myproject/reports)</span>
-<span class="go">FIGURES (/user/projects/myproject/reports/figures)</span>
+<span class="go">RAW_DATA (/bigexternaldrive/fieldrecordings)</span>
+<span class="go">DATA (./myproject/data)</span>
+<span class="go">SEGMENTED (.segmented/fieldrecordings)</span>
+<span class="go">RESOURCES (./resources)</span>
+<span class="go">REPORTS (./reports)</span>
+<span class="go">FIGURES (./reports/figures)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.append">
-<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_attr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.append" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_attr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mkdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.append" title="Permalink to this definition"></a></dt>
 <dd><p>Appends a new attribute to the class instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -182,17 +194,17 @@ if it doesn’t already exist. Defaults to False.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs._deep_update_paths">
-<span class="sig-name descname"><span class="pre">_deep_update_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">OLD_PROJECT_DIR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NEW_PROJECT_DIR</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs._deep_update_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs._deep_update_paths" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_deep_update_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">OLD_PROJECT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NEW_PROJECT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs._deep_update_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs._deep_update_paths" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.update_json_locs">
-<span class="sig-name descname"><span class="pre">update_json_locs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_checks</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.update_json_locs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.update_json_locs" title="Permalink to this definition"></a></dt>
-<dd><p>Updates the ‘wav_loc’ field in JSON metadata files for a given project.
+<span class="sig-name descname"><span class="pre">update_json_locs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_checks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#ProjDirs.update_json_locs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.update_json_locs" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the ‘wav_file’ field in JSON metadata files for a given project.
 This is useful if you have moved your data to a location different to
 where it was first generated. It will fix broken links to the .wav
 files, provided that the <a class="reference internal" href="#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a> object
-has a ‘WAVFILES’ attribute pointing to a valid directory containing
+has a ‘SEGMENTED’ attribute pointing to a valid directory containing
 ‘WAV’ and ‘JSON’ subdirectories.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -210,8 +222,31 @@ a different location to where the rest of the data are.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.paths.get_wavs_w_annotation">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">get_wavs_w_annotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wav_filepaths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#get_wavs_w_annotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.get_wavs_w_annotation" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a list of tuples containing paths to wavfiles for which there is an
+annotation file and paths to its annotation file. Assumes that wav and paths
+to the annotation files share the same file name and only their file
+extension changes, and that the wavfiles are ‘<em>.wav’ and not ‘</em>.WAV’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wav_filepaths</strong> (<em>List</em><em>[</em><em>Path</em><em>]</em>) – List of paths to wav files.</p></li>
+<li><p><strong>annotation_paths</strong> (<em>List</em><em>[</em><em>Path</em><em>]</em>) – List of paths to annotation files.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Filtered list.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[Tuple[Path, Path]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pykanto.utils.paths.change_data_loc">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">change_data_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NEW_PROJECT_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#change_data_loc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.change_data_loc" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">change_data_loc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DIR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PROJECT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NEW_PROJECT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#change_data_loc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.change_data_loc" title="Permalink to this definition"></a></dt>
 <dd><p>Updates the location of the parent directories of a project, including
 the project name, for a given path. Used when the location of a dataset changes
 (e.g if transferring a project to a new machine).</p>
@@ -219,8 +254,8 @@ the project name, for a given path. Used when the location of a dataset changes
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>DIR</strong> (<em>Path</em>) – Path to update</p></li>
-<li><p><strong>PROJECT_DIR</strong> (<em>[</em><em>type</em><em>]</em>) – Old -broken- project directory.</p></li>
-<li><p><strong>NEW_PROJECT_DIR</strong> (<em>Path</em>) – New working project directory.</p></li>
+<li><p><strong>PROJECT</strong> (<em>[</em><em>type</em><em>]</em>) – Old -broken- project directory.</p></li>
+<li><p><strong>NEW_PROJECT</strong> (<em>Path</em>) – New working project directory.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -234,31 +269,68 @@ the project name, for a given path. Used when the location of a dataset changes
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.utils.paths.get_wav_filepaths">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">get_wav_filepaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ORIGIN_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#get_wav_filepaths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.get_wav_filepaths" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">get_wav_filepaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">RAW_DATA_DIR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#get_wav_filepaths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.get_wav_filepaths" title="Permalink to this definition"></a></dt>
 <dd><p>Get a list of wav files in a directory, including subdirectories, if
 there is a corresponding .xml file with segmentation information. Works for
 segmentation metadata from .xml files output by Sonic Visualiser.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ORIGIN_DIR</strong> (<em>PosixPath</em>) – Directory to search</p>
+<dd class="field-odd"><p><strong>RAW_DATA_DIR</strong> (<em>PosixPath</em>) – Directory to search</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.utils.paths.get_xml_filepaths">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">get_xml_filepaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ORIGIN_DIR</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#get_xml_filepaths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.get_xml_filepaths" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">get_xml_filepaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">RAW_DATA_DIR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#get_xml_filepaths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.get_xml_filepaths" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.paths.get_file_paths">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">get_file_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#get_file_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.get_file_paths" title="Permalink to this definition"></a></dt>
+<dd><p>Returns paths to files with given extension found recursively within a
+directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root_dir</strong> (<em>Path</em>) – Root directory to search recursively.</p></li>
+<li><p><strong>extensions</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – File extensions to look for (e.g., .wav)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – No files found.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List with path to files.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Path]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pykanto.utils.paths.link_project_data">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">link_project_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">os.PathLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_data_dir</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#link_project_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.link_project_data" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.paths.</span></span><span class="sig-name descname"><span class="pre">link_project_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">os.PathLike</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/paths.html#link_project_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.paths.link_project_data" title="Permalink to this definition"></a></dt>
 <dd><p>Creates a symlink from a project’s data folder (not under version control)
 to the directory where the data lives (e.g. on an external HDD).</p>
 <dl class="simple">
-<dt>Args: origin (os.PathLike): Path to the directory where the data are.</dt><dd><p>project_data_dir (Path): A project’s data folder to link with ‘origin’.</p>
+<dt>Args: origin (os.PathLike): Path to the directory containing your ‘raw’ data folder.</dt><dd><p>project_data_dir (Path): A project’s data folder to link with ‘origin’.</p>
 </dd>
-<dt>Raises: ValueError: The ‘project_data_dir’ already contains data or is a</dt><dd><p>symlink.</p>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This will work in unix-like systems but might cause problems in Windows.
+See <a class="reference external" href="https://csatlas.com/python-create-symlink/#windows">how to enable symlinks in
+Windows</a></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – The ‘project_data_dir’ already contains data or is a</p></li>
+<li><p><strong>symlink.</strong> – </p></li>
+<li><p><strong>FileExistsError</strong> – File exists; your target folder already exists.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
@@ -84,14 +84,22 @@
              
   <h1>Source code for pykanto.utils.read</h1><div class="highlight"><pre>
 <span></span>
+<span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions to read external files -e.g. JSON- efficiently.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ──── IMPORTS ─────────────────────────────────────────────────────────────────</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
-
-<span class="kn">import</span> <span class="nn">ujson</span> <span class="k">as</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">ray</span>
+<span class="kn">import</span> <span class="nn">ujson</span> <span class="k">as</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="p">(</span><span class="n">calc_chunks</span><span class="p">,</span> <span class="n">flatten_list</span><span class="p">,</span> <span class="n">get_chunks</span><span class="p">,</span>
+                                   <span class="n">print_parallel_info</span><span class="p">,</span> <span class="n">to_iterator</span><span class="p">,</span> <span class="n">tqdmm</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">calc_chunks</span><span class="p">,</span> <span class="n">flatten_list</span><span class="p">,</span> <span class="n">get_chunks</span><span class="p">,</span> <span class="n">print_parallel_info</span><span class="p">,</span> <span class="n">to_iterator</span><span class="p">,</span> <span class="n">tqdmm</span>
+<span class="c1"># ─── FUNCTIONS ────────────────────────────────────────────────────────────────</span>
 
 
 <div class="viewcode-block" id="read_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.read.html#pykanto.utils.read.read_json">[docs]</a><span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">json_loc</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>

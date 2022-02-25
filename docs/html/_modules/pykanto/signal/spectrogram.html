@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
@@ -114,7 +114,7 @@
 <span class="c1"># ──── FUNCTIONS ────────────────────────────────────────────────────────────────</span>
 
 
-<div class="viewcode-block" id="save_melspectrogram"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.save_melspectrogram">[docs]</a><span class="k">def</span> <span class="nf">save_melspectrogram</span><span class="p">(</span>
+<div class="viewcode-block" id="save_melspectrogram"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.save_melspectrogram">[docs]</a><span class="k">def</span> <span class="nf">save_melspectrogram</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span>
     <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">dereverb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -139,14 +139,14 @@
 
     <span class="c1"># Locate song metadata</span>
     <span class="n">d_dict</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="n">d_dict</span><span class="p">[</span><span class="s1">&#39;wav_loc&#39;</span><span class="p">]</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">d_dict</span><span class="p">[</span><span class="s1">&#39;wav_file&#39;</span><span class="p">]</span>
 
     <span class="c1"># load audio file with librosa</span>
     <span class="n">dat</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
 
     <span class="c1"># Compute mel spec</span>
     <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">melspectrogram</span><span class="p">(</span>
-        <span class="n">dat</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span> <span class="n">n_fft</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">fft_size</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">dat</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span> <span class="n">n_fft</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">fft_size</span><span class="p">,</span>
         <span class="n">win_length</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">window_length</span><span class="p">,</span>
         <span class="n">hop_length</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span>
         <span class="n">n_mels</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_mel_bins</span><span class="p">,</span>
@@ -155,7 +155,7 @@
 
     <span class="c1"># To dB</span>
     <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">amplitude_to_db</span><span class="p">(</span>
-        <span class="n">mel_spectrogram</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">top_dB</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+        <span class="n">S</span><span class="o">=</span><span class="n">mel_spectrogram</span><span class="p">,</span> <span class="n">top_db</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">top_dB</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">bandpass</span><span class="p">:</span>
         <span class="c1"># Mask anything outside frequency bounding box</span>
@@ -174,7 +174,7 @@
     <span class="n">makedir</span><span class="p">(</span><span class="n">spec_out_dir</span><span class="p">)</span>
     <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">spec_out_dir</span><span class="p">,</span> <span class="n">mel_spectrogram</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">spec_out_dir</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">spec_out_dir</span><span class="p">}</span></div>
 
 
 <span class="nd">@ray</span><span class="o">.</span><span class="n">remote</span>
@@ -187,7 +187,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">save_melspectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="_save_melspectrogram_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram._save_melspectrogram_parallel">[docs]</a><span class="k">def</span> <span class="nf">_save_melspectrogram_parallel</span><span class="p">(</span>
+<div class="viewcode-block" id="_save_melspectrogram_parallel"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram._save_melspectrogram_parallel">[docs]</a><span class="k">def</span> <span class="nf">_save_melspectrogram_parallel</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -218,7 +218,7 @@
     <span class="k">return</span> <span class="n">dictlist_to_dict</span><span class="p">(</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">spec_locs</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="retrieve_spectrogram"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.retrieve_spectrogram">[docs]</a><span class="k">def</span> <span class="nf">retrieve_spectrogram</span><span class="p">(</span><span class="n">nparray_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="retrieve_spectrogram"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.retrieve_spectrogram">[docs]</a><span class="k">def</span> <span class="nf">retrieve_spectrogram</span><span class="p">(</span><span class="n">nparray_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Loads an spectrogram that was saved as a numpy array.</span>
 
@@ -231,7 +231,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">nparray_dir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="_mask_melspec"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram._mask_melspec">[docs]</a><span class="k">def</span> <span class="nf">_mask_melspec</span><span class="p">(</span>
+<div class="viewcode-block" id="_mask_melspec"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram._mask_melspec">[docs]</a><span class="k">def</span> <span class="nf">_mask_melspec</span><span class="p">(</span>
         <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span> <span class="n">d_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
         <span class="n">mel_spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -262,7 +262,7 @@
     <span class="k">return</span> <span class="n">mel_spectrogram</span></div>
 
 
-<div class="viewcode-block" id="pad_spectrogram"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.pad_spectrogram">[docs]</a><span class="nd">@njit</span>
+<div class="viewcode-block" id="pad_spectrogram"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.pad_spectrogram">[docs]</a><span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">pad_spectrogram</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                     <span class="n">pad_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -284,7 +284,7 @@
     <span class="k">return</span> <span class="n">padded_spec</span></div>
 
 
-<div class="viewcode-block" id="crop_spectrogram"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.crop_spectrogram">[docs]</a><span class="nd">@njit</span>
+<div class="viewcode-block" id="crop_spectrogram"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.crop_spectrogram">[docs]</a><span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">crop_spectrogram</span><span class="p">(</span>
         <span class="n">spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">crop_x</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">crop_y</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -305,7 +305,7 @@
     <span class="k">return</span> <span class="n">spectrogram</span><span class="p">[</span><span class="n">start_y</span><span class="p">:</span><span class="n">start_y</span><span class="o">+</span><span class="n">crop_y</span><span class="p">,</span> <span class="n">start_x</span><span class="p">:</span><span class="n">start_x</span><span class="o">+</span><span class="n">crop_x</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="cut_or_pad_spectrogram"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.cut_or_pad_spectrogram">[docs]</a><span class="nd">@njit</span>
+<div class="viewcode-block" id="cut_or_pad_spectrogram"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.cut_or_pad_spectrogram">[docs]</a><span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">cut_or_pad_spectrogram</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cut or pad a spectrogram to be a given length. </span>
@@ -325,7 +325,7 @@
         <span class="k">return</span> <span class="n">spectrogram</span></div>
 
 
-<div class="viewcode-block" id="get_unit_spectrograms"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_unit_spectrograms">[docs]</a><span class="nd">@njit</span>
+<div class="viewcode-block" id="get_unit_spectrograms"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.get_unit_spectrograms">[docs]</a><span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">get_unit_spectrograms</span><span class="p">(</span>
         <span class="n">spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">onsets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">offsets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">sr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">,</span> <span class="n">hop_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -354,7 +354,7 @@
     <span class="k">return</span> <span class="n">units</span></div>
 
 
-<div class="viewcode-block" id="get_vocalisation_units"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_vocalisation_units">[docs]</a><span class="k">def</span> <span class="nf">get_vocalisation_units</span><span class="p">(</span>
+<div class="viewcode-block" id="get_vocalisation_units"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.get_vocalisation_units">[docs]</a><span class="k">def</span> <span class="nf">get_vocalisation_units</span><span class="p">(</span>
         <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span>
         <span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -396,7 +396,7 @@
         <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">unit_spectrograms</span><span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="get_indv_units"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_indv_units">[docs]</a><span class="k">def</span> <span class="nf">get_indv_units</span><span class="p">(</span>
+<div class="viewcode-block" id="get_indv_units"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.get_indv_units">[docs]</a><span class="k">def</span> <span class="nf">get_indv_units</span><span class="p">(</span>
         <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
@@ -446,7 +446,7 @@
 <span class="n">_get_indv_units_r</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">get_indv_units</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_indv_units_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_indv_units_parallel">[docs]</a><span class="k">def</span> <span class="nf">get_indv_units_parallel</span><span class="p">(</span>
+<div class="viewcode-block" id="get_indv_units_parallel"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.get_indv_units_parallel">[docs]</a><span class="k">def</span> <span class="nf">get_indv_units_parallel</span><span class="p">(</span>
         <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">,</span>
         <span class="n">pad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -492,7 +492,7 @@
     <span class="k">return</span> <span class="n">dictlist_to_dict</span><span class="p">(</span><span class="n">dic_locs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="window"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.window">[docs]</a><span class="nd">@njit</span>
+<div class="viewcode-block" id="window"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.window">[docs]</a><span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">window</span><span class="p">(</span>
     <span class="n">spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">wlength</span><span class="p">:</span> <span class="nb">int</span>
@@ -517,7 +517,7 @@
         <span class="k">yield</span> <span class="n">spectrogram</span><span class="p">[:,</span> <span class="n">ymin</span><span class="p">:</span><span class="n">ymax</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="extract_windows"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.extract_windows">[docs]</a><span class="nd">@njit</span>
+<div class="viewcode-block" id="extract_windows"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.extract_windows">[docs]</a><span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">extract_windows</span><span class="p">(</span>
     <span class="n">spectrograms</span><span class="p">:</span> <span class="n">numba</span><span class="o">.</span><span class="n">typed</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
     <span class="n">wlength</span><span class="p">:</span> <span class="nb">int</span>
@@ -542,7 +542,7 @@
     <span class="k">return</span> <span class="n">windows</span><span class="p">,</span> <span class="n">n_windows</span></div>
 
 
-<div class="viewcode-block" id="flatten_spectrograms"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.flatten_spectrograms">[docs]</a><span class="nd">@njit</span>
+<div class="viewcode-block" id="flatten_spectrograms"><a class="viewcode-back" href="../../../source/pykanto.signal.html#pykanto.signal.spectrogram.flatten_spectrograms">[docs]</a><span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">flatten_spectrograms</span><span class="p">(</span>
     <span class="n">windows</span><span class="p">:</span> <span class="n">numba</span><span class="o">.</span><span class="n">typed</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numba</span><span class="o">.</span><span class="n">typed</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>

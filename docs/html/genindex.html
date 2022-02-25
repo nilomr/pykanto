@@ -49,12 +49,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pykanto.plot.html">pykanto.plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="_autosummary/pykanto.utils.html">pykanto.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 </ul>
 
         </div>
@@ -94,6 +94,7 @@
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -111,19 +112,33 @@
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.__init__">__init__() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.__init__">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.__init__">__init__() (pykanto.dataset.SongDataset method)</a>
 
       <ul>
-        <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.__init__">(pykanto.parameters.Parameters method)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.__init__">[1]</a>
+        <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.__init__">(pykanto.parameters.Parameters method)</a>
+</li>
+        <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.__init__">(pykanto.signal.segment.ReadWav method)</a>
+</li>
+        <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata.__init__">(pykanto.signal.segment.SegmentMetadata method)</a>
 </li>
         <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.__init__">(pykanto.utils.paths.ProjDirs method)</a>
 </li>
-        <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndent.__init__">(pykanto.utils.write.NoIndent method)</a>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.__init__">(pykanto.utils.types.Annotation method)</a>
 </li>
-        <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder.__init__">(pykanto.utils.write.NoIndentEncoder method)</a>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation.__init__">(pykanto.utils.types.AudioAnnotation method)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.__init__">(pykanto.utils.types.Metadata method)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation.__init__">(pykanto.utils.types.SegmentAnnotation method)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.ValidDirs.__init__">(pykanto.utils.types.ValidDirs method)</a>
 </li>
       </ul></li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._compute_melspectrograms">_compute_melspectrograms() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset._compute_melspectrograms">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo._asdict">_asdict() (pykanto.utils.types.Chunkinfo method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata._build_metadata">_build_metadata() (pykanto.signal.segment.SegmentMetadata method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._compute_melspectrograms">_compute_melspectrograms() (pykanto.dataset.SongDataset method)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs._deep_update_paths">_deep_update_paths() (pykanto.utils.paths.ProjDirs method)</a>
 </li>
@@ -131,23 +146,39 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo._field_defaults">_field_defaults (pykanto.utils.types.Chunkinfo attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo._fields">_fields (pykanto.utils.types.Chunkinfo attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo._fields_defaults">_fields_defaults (pykanto.utils.types.Chunkinfo attribute)</a>
+</li>
       <li><a href="_autosummary/pykanto.utils.read.html#pykanto.utils.read._get_json">_get_json() (in module pykanto.utils.read)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.read.html#pykanto.utils.read._get_json_parallel">_get_json_parallel() (in module pykanto.utils.read)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_sound_info">_get_sound_info() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset._get_sound_info">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_sound_info">_get_sound_info() (pykanto.dataset.SongDataset method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_unique_ids">_get_unique_ids() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset._get_unique_ids">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_unique_ids">_get_unique_ids() (pykanto.dataset.SongDataset method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_wav_json_filedirs">_get_wav_json_filedirs() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset._get_wav_json_filedirs">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_wav_json_filedirs">_get_wav_json_filedirs() (pykanto.dataset.SongDataset method)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto._listdir_nohidden">_listdir_nohidden() (in module pykanto.utils.xenocanto)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._load_metadata">_load_metadata() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset._load_metadata">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._load_metadata">_load_metadata() (pykanto.dataset.SongDataset method)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav._load_metadata">(pykanto.signal.segment.ReadWav method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram._mask_melspec">_mask_melspec() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram._mask_melspec">[1]</a>
+      </ul></li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav._load_wav">_load_wav() (pykanto.signal.segment.ReadWav method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram._save_melspectrogram_parallel">_save_melspectrogram_parallel() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram._save_melspectrogram_parallel">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo._make">_make() (pykanto.utils.types.Chunkinfo class method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram._mask_melspec">_mask_melspec() (in module pykanto.signal.spectrogram)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo._replace">_replace() (pykanto.utils.types.Chunkinfo method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram._save_melspectrogram_parallel">_save_melspectrogram_parallel() (in module pykanto.signal.spectrogram)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -155,11 +186,31 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.add">add() (pykanto.parameters.Parameters method)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.add">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.add">add() (pykanto.parameters.Parameters method)</a>
 </li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata.all_metadata">all_metadata (pykanto.signal.segment.SegmentMetadata attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation">Annotation (class in pykanto.utils.types)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.annotation_file">annotation_file (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.annotation_file">(pykanto.utils.types.Metadata attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation.annotation_file">(pykanto.utils.types.SegmentAnnotation attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.append">append() (pykanto.utils.paths.ProjDirs method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.as_dict">as_dict() (pykanto.signal.segment.ReadWav method)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata.as_dict">(pykanto.signal.segment.SegmentMetadata method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation">AudioAnnotation (class in pykanto.utils.types)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -167,11 +218,15 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.batch_segment_songs">batch_segment_songs() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.batch_segment_songs">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.batch_segment_songs">batch_segment_songs() (in module pykanto.signal.segment_tmp_remove)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.batch_segment_songs_single">batch_segment_songs_single() (in module pykanto.signal.segment_tmp_remove)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.batch_segment_songs_single">batch_segment_songs_single() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.batch_segment_songs_single">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation.bit_rate">bit_rate (pykanto.utils.types.AudioAnnotation attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.build_legend">build_legend() (in module pykanto.labelapp.main)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -183,15 +238,21 @@
 </li>
       <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.change_data_loc">change_data_loc() (in module pykanto.utils.paths)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.cluster_individuals">cluster_individuals() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.cluster_individuals">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo">Chunkinfo (class in pykanto.utils.types)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo.chunksize">chunksize (pykanto.utils.types.Chunkinfo attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.close_app">close_app() (in module pykanto.labelapp.main)</a>
+</li>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.cluster_individuals">cluster_individuals() (pykanto.dataset.SongDataset method)</a>
+</li>
       <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.copy_xml_files">copy_xml_files() (in module pykanto.utils.write)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.crop_spectrogram">crop_spectrogram() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.crop_spectrogram">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.crop_spectrogram">crop_spectrogram() (in module pykanto.signal.spectrogram)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.cut_or_pad_spectrogram">cut_or_pad_spectrogram() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.cut_or_pad_spectrogram">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.cut_or_pad_spectrogram">cut_or_pad_spectrogram() (in module pykanto.signal.spectrogram)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -199,43 +260,55 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.dB_delta">dB_delta (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.dB_delta">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.dB_delta">dB_delta (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder.default">default() (pykanto.utils.write.NoIndentEncoder method)</a>
+      <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NumpyEncoder.default">default() (pykanto.utils.write.NumpyEncoder method)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.delete">delete() (in module pykanto.utils.xenocanto)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.dereverb">dereverb (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.dereverb">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.dereverb">dereverb (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.dereverberate">dereverberate() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.dereverberate">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.dereverberate">dereverberate() (in module pykanto.signal.filter)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.dereverberate_jit">dereverberate_jit() (in module pykanto.signal.filter)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.dereverberate_jit">dereverberate_jit() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.dereverberate_jit">[1]</a>
-</li>
       <li><a href="_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.dictlist_to_dict">dictlist_to_dict() (in module pykanto.utils.compute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels.dilation_kern">dilation_kern (pykanto.signal.filter.kernels attribute)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.kernels.dilation_kern">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels.dilation_kern">dilation_kern (pykanto.signal.filter.kernels attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.DIRS">DIRS (pykanto.dataset.SongDataset attribute)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.DIRS">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.DIRS">DIRS (pykanto.dataset.SongDataset attribute)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.download">download() (in module pykanto.utils.xenocanto)</a>
 </li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.drop_zero_len_units">drop_zero_len_units() (in module pykanto.signal.segment)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.durations">durations (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation.durations">(pykanto.utils.types.SegmentAnnotation attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.intlabel.data.html#pykanto.intlabel.data.embeddable_image">embeddable_image() (in module pykanto.intlabel.data)</a>, <a href="source/pykanto.intlabel.html#pykanto.intlabel.data.embeddable_image">[1]</a>
+      <li><a href="_autosummary/pykanto.labelapp.data.html#pykanto.labelapp.data.embeddable_image">embeddable_image() (in module pykanto.labelapp.data)</a>
 </li>
-      <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder.encode">encode() (pykanto.utils.write.NoIndentEncoder method)</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.end_times">end_times (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation.end_times">(pykanto.utils.types.SegmentAnnotation attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels.erosion_kern">erosion_kern (pykanto.signal.filter.kernels attribute)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.kernels.erosion_kern">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels.erosion_kern">erosion_kern (pykanto.signal.filter.kernels attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.extract_windows">extract_windows() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.extract_windows">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.extract_windows">extract_windows() (in module pykanto.signal.spectrogram)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -243,19 +316,23 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.fft_rate">fft_rate (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.fft_rate">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.f_exists">f_exists() (in module pykanto.utils.types)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.fft_size">fft_size (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.fft_size">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.fft_rate">fft_rate (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.find_units">find_units() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.find_units">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.fft_size">fft_size (pykanto.parameters.Parameters attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.find_units">find_units() (in module pykanto.signal.segment)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.find_units">(in module pykanto.signal.segment_tmp_remove)</a>
+</li>
+      </ul></li>
       <li><a href="_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.flatten_list">flatten_list() (in module pykanto.utils.compute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.flatten_spectrograms">flatten_spectrograms() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.flatten_spectrograms">[1]</a>
-</li>
-      <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder.FORMAT_SPEC">FORMAT_SPEC (pykanto.utils.write.NoIndentEncoder attribute)</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.flatten_spectrograms">flatten_spectrograms() (in module pykanto.signal.spectrogram)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -263,9 +340,9 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.gauss_sigma">gauss_sigma (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.gauss_sigma">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.gauss_sigma">gauss_sigma (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.gaussian_blur">gaussian_blur() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.gaussian_blur">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.gaussian_blur">gaussian_blur() (in module pykanto.signal.filter)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.gen_meta">gen_meta() (in module pykanto.utils.xenocanto)</a>
 </li>
@@ -275,27 +352,49 @@
 </li>
       <li><a href="_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.get_ebmp_data">get_ebmp_data() (in module pykanto.utils.custom)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_indv_units">get_indv_units() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.get_indv_units">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_file_paths">get_file_paths() (in module pykanto.utils.paths)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_indv_units_parallel">get_indv_units_parallel() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.get_indv_units_parallel">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_indv_units">get_indv_units() (in module pykanto.signal.spectrogram)</a>
 </li>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_indv_units_parallel">get_indv_units_parallel() (in module pykanto.signal.spectrogram)</a>
+</li>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.get_legend_items">get_legend_items() (in module pykanto.labelapp.main)</a>
+</li>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.get_markers">get_markers() (in module pykanto.labelapp.main)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.get_metadata">get_metadata() (pykanto.signal.segment.ReadWav method)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata.get_metadata">(pykanto.signal.segment.SegmentMetadata method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.get_norm_spectral_envelope">get_norm_spectral_envelope() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.get_norm_spectral_envelope">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.get_norm_spectral_envelope">get_norm_spectral_envelope() (in module pykanto.signal.filter)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.get_peak_freqs">get_peak_freqs() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.get_peak_freqs">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.get_peak_freqs">get_peak_freqs() (in module pykanto.signal.filter)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.get_recorded_dates_df">get_recorded_dates_df() (in module pykanto.utils.custom)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.get_segment_info">get_segment_info() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.get_segment_info">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.get_segment_info">get_segment_info() (in module pykanto.signal.segment)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.get_segment_info">(in module pykanto.signal.segment_tmp_remove)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_unit_spectrograms">get_unit_spectrograms() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.get_unit_spectrograms">[1]</a>
+      </ul></li>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.get_selections">get_selections() (in module pykanto.labelapp.main)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.get_units">get_units() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.get_units">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_unit_spectrograms">get_unit_spectrograms() (in module pykanto.signal.spectrogram)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_vocalisation_units">get_vocalisation_units() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.get_vocalisation_units">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.get_units">get_units() (pykanto.dataset.SongDataset method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_vocalisation_units">get_vocalisation_units() (in module pykanto.signal.spectrogram)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.get_wav">get_wav() (pykanto.signal.segment.ReadWav method)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_wav_filepaths">get_wav_filepaths() (in module pykanto.utils.paths)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_wavs_w_annotation">get_wavs_w_annotation() (in module pykanto.utils.paths)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_xml_filepaths">get_xml_filepaths() (in module pykanto.utils.paths)</a>
 </li>
@@ -305,17 +404,39 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.hdbscan_cluster">hdbscan_cluster() (in module pykanto.signal.cluster)</a>, <a href="source/pykanto.signal.html#pykanto.signal.cluster.hdbscan_cluster">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.hdbscan_cluster">hdbscan_cluster() (in module pykanto.signal.cluster)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.highcut">highcut (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.highcut">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.highcut">highcut (pykanto.parameters.Parameters attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.hop_length">hop_length (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.hop_length">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.hop_length">hop_length (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.hop_length_ms">hop_length_ms (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.hop_length_ms">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.hop_length_ms">hop_length_ms (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.hz_to_mel_lib">hz_to_mel_lib() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.hz_to_mel_lib">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.hz_to_mel_lib">hz_to_mel_lib() (in module pykanto.signal.filter)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.ID">ID (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.ID">(pykanto.utils.types.Metadata attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation.ID">(pykanto.utils.types.SegmentAnnotation attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata.index">index (pykanto.signal.segment.SegmentMetadata attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.is_list_of_int">is_list_of_int() (in module pykanto.utils.types)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.is_list_of_str">is_list_of_str() (in module pykanto.utils.types)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -323,7 +444,7 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels">kernels (class in pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.kernels">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels">kernels (class in pykanto.signal.filter)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -331,14 +452,36 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.link_project_data">link_project_data() (in module pykanto.utils.paths)</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.label">label (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.label">(pykanto.utils.types.Metadata attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation.label">(pykanto.utils.types.SegmentAnnotation attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo.last_chunk">last_chunk (pykanto.utils.types.Chunkinfo attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo.len_iterable">len_iterable (pykanto.utils.types.Chunkinfo attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation.length_s">length_s (pykanto.utils.types.AudioAnnotation attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.intlabel.data.html#pykanto.intlabel.data.load_bk_data">load_bk_data() (in module pykanto.intlabel.data)</a>, <a href="source/pykanto.intlabel.html#pykanto.intlabel.data.load_bk_data">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.link_project_data">link_project_data() (in module pykanto.utils.paths)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.lowcut">lowcut (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.lowcut">[1]</a>
+      <li><a href="_autosummary/pykanto.labelapp.data.html#pykanto.labelapp.data.load_bk_data">load_bk_data() (in module pykanto.labelapp.data)</a>
 </li>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.lowcut">lowcut (pykanto.parameters.Parameters attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.lower_freq">lower_freq (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.lower_freq">(pykanto.utils.types.Metadata attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation.lower_freq">(pykanto.utils.types.SegmentAnnotation attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -351,47 +494,57 @@
 </li>
       <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.makedir">makedir() (in module pykanto.utils.write)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.max_dB">max_dB (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.max_dB">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.max_amplitude">max_amplitude (pykanto.utils.types.Metadata attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.max_unit_length">max_unit_length (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.max_unit_length">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.max_dB">max_dB (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.mel_to_hz">mel_to_hz() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.mel_to_hz">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.max_unit_length">max_unit_length (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.mels_to_hzs">mels_to_hzs() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.mels_to_hzs">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.mel_to_hz">mel_to_hz() (in module pykanto.signal.filter)</a>
 </li>
-      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.melspectrogram">melspectrogram() (in module pykanto.plot)</a>, <a href="source/pykanto.html#pykanto.plot.melspectrogram">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.mels_to_hzs">mels_to_hzs() (in module pykanto.signal.filter)</a>
+</li>
+      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.melspectrogram">melspectrogram() (in module pykanto.plot)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata">Metadata (class in pykanto.utils.types)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.metadata">metadata() (in module pykanto.utils.xenocanto)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.min_silence_length">min_silence_length (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.min_silence_length">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.min_amplitude">min_amplitude (pykanto.utils.types.Metadata attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.min_unit_length">min_unit_length (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.min_unit_length">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.min_silence_length">min_silence_length (pykanto.parameters.Parameters attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.min_unit_length">min_unit_length (pykanto.parameters.Parameters attribute)</a>
 </li>
       <li>
     module
 
       <ul>
-        <li><a href="index.html#module-pykanto">pykanto</a>, <a href="source/pykanto.html#module-pykanto">[1]</a>
+        <li><a href="source/pykanto.html#module-pykanto">pykanto</a>
 </li>
-        <li><a href="_autosummary/pykanto.dataset.html#module-pykanto.dataset">pykanto.dataset</a>, <a href="source/pykanto.html#module-pykanto.dataset">[1]</a>
+        <li><a href="_autosummary/pykanto.dataset.html#module-pykanto.dataset">pykanto.dataset</a>
 </li>
-        <li><a href="_autosummary/pykanto.intlabel.html#module-pykanto.intlabel">pykanto.intlabel</a>, <a href="source/pykanto.intlabel.html#module-pykanto.intlabel">[1]</a>
+        <li><a href="_autosummary/pykanto.labelapp.html#module-pykanto.labelapp">pykanto.labelapp</a>
 </li>
-        <li><a href="_autosummary/pykanto.intlabel.data.html#module-pykanto.intlabel.data">pykanto.intlabel.data</a>, <a href="source/pykanto.intlabel.html#module-pykanto.intlabel.data">[1]</a>
+        <li><a href="_autosummary/pykanto.labelapp.data.html#module-pykanto.labelapp.data">pykanto.labelapp.data</a>
 </li>
-        <li><a href="_autosummary/pykanto.parameters.html#module-pykanto.parameters">pykanto.parameters</a>, <a href="source/pykanto.html#module-pykanto.parameters">[1]</a>
+        <li><a href="_autosummary/pykanto.labelapp.main.html#module-pykanto.labelapp.main">pykanto.labelapp.main</a>
 </li>
-        <li><a href="_autosummary/pykanto.plot.html#module-pykanto.plot">pykanto.plot</a>, <a href="source/pykanto.html#module-pykanto.plot">[1]</a>
+        <li><a href="_autosummary/pykanto.parameters.html#module-pykanto.parameters">pykanto.parameters</a>
 </li>
-        <li><a href="_autosummary/pykanto.signal.html#module-pykanto.signal">pykanto.signal</a>, <a href="source/pykanto.signal.html#module-pykanto.signal">[1]</a>
+        <li><a href="_autosummary/pykanto.plot.html#module-pykanto.plot">pykanto.plot</a>
 </li>
-        <li><a href="_autosummary/pykanto.signal.cluster.html#module-pykanto.signal.cluster">pykanto.signal.cluster</a>, <a href="source/pykanto.signal.html#module-pykanto.signal.cluster">[1]</a>
+        <li><a href="_autosummary/pykanto.signal.html#module-pykanto.signal">pykanto.signal</a>
 </li>
-        <li><a href="_autosummary/pykanto.signal.filter.html#module-pykanto.signal.filter">pykanto.signal.filter</a>, <a href="source/pykanto.signal.html#module-pykanto.signal.filter">[1]</a>
+        <li><a href="_autosummary/pykanto.signal.cluster.html#module-pykanto.signal.cluster">pykanto.signal.cluster</a>
 </li>
-        <li><a href="_autosummary/pykanto.signal.segment.html#module-pykanto.signal.segment">pykanto.signal.segment</a>, <a href="source/pykanto.signal.html#module-pykanto.signal.segment">[1]</a>
+        <li><a href="_autosummary/pykanto.signal.filter.html#module-pykanto.signal.filter">pykanto.signal.filter</a>
 </li>
-        <li><a href="_autosummary/pykanto.signal.spectrogram.html#module-pykanto.signal.spectrogram">pykanto.signal.spectrogram</a>, <a href="source/pykanto.signal.html#module-pykanto.signal.spectrogram">[1]</a>
+        <li><a href="_autosummary/pykanto.signal.segment.html#module-pykanto.signal.segment">pykanto.signal.segment</a>
+</li>
+        <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#module-pykanto.signal.segment_tmp_remove">pykanto.signal.segment_tmp_remove</a>
+</li>
+        <li><a href="_autosummary/pykanto.signal.spectrogram.html#module-pykanto.signal.spectrogram">pykanto.signal.spectrogram</a>
 </li>
         <li><a href="_autosummary/pykanto.utils.html#module-pykanto.utils">pykanto.utils</a>
 </li>
@@ -403,6 +556,8 @@
 </li>
         <li><a href="_autosummary/pykanto.utils.read.html#module-pykanto.utils.read">pykanto.utils.read</a>
 </li>
+        <li><a href="_autosummary/pykanto.utils.types.html#module-pykanto.utils.types">pykanto.utils.types</a>
+</li>
         <li><a href="_autosummary/pykanto.utils.write.html#module-pykanto.utils.write">pykanto.utils.write</a>
 </li>
         <li><a href="_autosummary/pykanto.utils.xenocanto.html#module-pykanto.utils.xenocanto">pykanto.utils.xenocanto</a>
@@ -410,7 +565,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.mspaced_mask">mspaced_mask() (in module pykanto.plot)</a>, <a href="source/pykanto.html#pykanto.plot.mspaced_mask">[1]</a>
+      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.mspaced_mask">mspaced_mask() (in module pykanto.plot)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -418,21 +573,25 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.n_jobs">n_jobs (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.n_jobs">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo.n_chunks">n_chunks (pykanto.utils.types.Chunkinfo attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndent">NoIndent (class in pykanto.utils.write)</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.n_jobs">n_jobs (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder">NoIndentEncoder (class in pykanto.utils.write)</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo.n_workers">n_workers (pykanto.utils.types.Chunkinfo attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.next_plot">next_plot() (in module pykanto.labelapp.main)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.noise">noise (pykanto.dataset.SongDataset attribute)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.noise">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.noise">noise (pykanto.dataset.SongDataset attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.norm">norm() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.norm">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.norm">norm() (in module pykanto.signal.filter)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.normalise">normalise() (in module pykanto.signal.filter)</a>, <a href="source/pykanto.signal.html#pykanto.signal.filter.normalise">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.normalise">normalise() (in module pykanto.signal.filter)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.num_mel_bins">num_mel_bins (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.num_mel_bins">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.num_mel_bins">num_mel_bins (pykanto.parameters.Parameters attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NumpyEncoder">NumpyEncoder (class in pykanto.utils.write)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -440,11 +599,15 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.onsets_offsets">onsets_offsets() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.onsets_offsets">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.onsets_offsets">onsets_offsets() (in module pykanto.signal.segment)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.onsets_offsets">(in module pykanto.signal.segment_tmp_remove)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.open_label_app">open_label_app() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.open_label_app">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.open_label_app">open_label_app() (pykanto.dataset.SongDataset method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -452,17 +615,23 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.pad_spectrogram">pad_spectrogram() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.pad_spectrogram">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.pad_spectrogram">pad_spectrogram() (in module pykanto.signal.spectrogram)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters">Parameters (class in pykanto.parameters)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters">Parameters (class in pykanto.parameters)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.parameters">parameters (pykanto.dataset.SongDataset attribute)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.parameters">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.parameters">parameters (pykanto.dataset.SongDataset attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.plot_vocalisation_segmentation">plot_vocalisation_segmentation() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.plot_vocalisation_segmentation">[1]</a>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.parse_boolean">parse_boolean() (in module pykanto.labelapp.main)</a>
 </li>
-      <li><a href="_autosummary/pykanto.intlabel.data.html#pykanto.intlabel.data.prepare_datasource">prepare_datasource() (in module pykanto.intlabel.data)</a>, <a href="source/pykanto.intlabel.html#pykanto.intlabel.data.prepare_datasource">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.parse_sonic_visualiser_xml">parse_sonic_visualiser_xml() (in module pykanto.utils.custom)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.prepare_interactive_data">prepare_interactive_data() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.prepare_interactive_data">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.plot_vocalisation_segmentation">plot_vocalisation_segmentation() (pykanto.dataset.SongDataset method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.labelapp.data.html#pykanto.labelapp.data.prepare_datasource">prepare_datasource() (in module pykanto.labelapp.data)</a>
+</li>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.prepare_interactive_data">prepare_interactive_data() (pykanto.dataset.SongDataset method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.prepare_legend">prepare_legend() (in module pykanto.labelapp.main)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.print_dict">print_dict() (in module pykanto.utils.compute)</a>
 </li>
@@ -470,85 +639,101 @@
 </li>
       <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs">ProjDirs (class in pykanto.utils.paths)</a>
 </li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.ValidDirs.PROJECT">PROJECT (pykanto.utils.types.ValidDirs attribute)</a>
+</li>
       <li><a href="_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.purge">purge() (in module pykanto.utils.xenocanto)</a>
 </li>
       <li>
     pykanto
 
       <ul>
-        <li><a href="index.html#module-pykanto">module</a>, <a href="source/pykanto.html#module-pykanto">[1]</a>
+        <li><a href="source/pykanto.html#module-pykanto">module</a>
 </li>
       </ul></li>
       <li>
     pykanto.dataset
 
       <ul>
-        <li><a href="_autosummary/pykanto.dataset.html#module-pykanto.dataset">module</a>, <a href="source/pykanto.html#module-pykanto.dataset">[1]</a>
+        <li><a href="_autosummary/pykanto.dataset.html#module-pykanto.dataset">module</a>
 </li>
       </ul></li>
       <li>
-    pykanto.intlabel
+    pykanto.labelapp
 
       <ul>
-        <li><a href="_autosummary/pykanto.intlabel.html#module-pykanto.intlabel">module</a>, <a href="source/pykanto.intlabel.html#module-pykanto.intlabel">[1]</a>
+        <li><a href="_autosummary/pykanto.labelapp.html#module-pykanto.labelapp">module</a>
 </li>
       </ul></li>
       <li>
-    pykanto.intlabel.data
+    pykanto.labelapp.data
 
       <ul>
-        <li><a href="_autosummary/pykanto.intlabel.data.html#module-pykanto.intlabel.data">module</a>, <a href="source/pykanto.intlabel.html#module-pykanto.intlabel.data">[1]</a>
+        <li><a href="_autosummary/pykanto.labelapp.data.html#module-pykanto.labelapp.data">module</a>
+</li>
+      </ul></li>
+      <li>
+    pykanto.labelapp.main
+
+      <ul>
+        <li><a href="_autosummary/pykanto.labelapp.main.html#module-pykanto.labelapp.main">module</a>
 </li>
       </ul></li>
       <li>
     pykanto.parameters
 
       <ul>
-        <li><a href="_autosummary/pykanto.parameters.html#module-pykanto.parameters">module</a>, <a href="source/pykanto.html#module-pykanto.parameters">[1]</a>
+        <li><a href="_autosummary/pykanto.parameters.html#module-pykanto.parameters">module</a>
 </li>
       </ul></li>
       <li>
     pykanto.plot
 
       <ul>
-        <li><a href="_autosummary/pykanto.plot.html#module-pykanto.plot">module</a>, <a href="source/pykanto.html#module-pykanto.plot">[1]</a>
-</li>
-      </ul></li>
-      <li>
-    pykanto.signal
-
-      <ul>
-        <li><a href="_autosummary/pykanto.signal.html#module-pykanto.signal">module</a>, <a href="source/pykanto.signal.html#module-pykanto.signal">[1]</a>
+        <li><a href="_autosummary/pykanto.plot.html#module-pykanto.plot">module</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
+    pykanto.signal
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.html#module-pykanto.signal">module</a>
+</li>
+      </ul></li>
+      <li>
     pykanto.signal.cluster
 
       <ul>
-        <li><a href="_autosummary/pykanto.signal.cluster.html#module-pykanto.signal.cluster">module</a>, <a href="source/pykanto.signal.html#module-pykanto.signal.cluster">[1]</a>
+        <li><a href="_autosummary/pykanto.signal.cluster.html#module-pykanto.signal.cluster">module</a>
 </li>
       </ul></li>
       <li>
     pykanto.signal.filter
 
       <ul>
-        <li><a href="_autosummary/pykanto.signal.filter.html#module-pykanto.signal.filter">module</a>, <a href="source/pykanto.signal.html#module-pykanto.signal.filter">[1]</a>
+        <li><a href="_autosummary/pykanto.signal.filter.html#module-pykanto.signal.filter">module</a>
 </li>
       </ul></li>
       <li>
     pykanto.signal.segment
 
       <ul>
-        <li><a href="_autosummary/pykanto.signal.segment.html#module-pykanto.signal.segment">module</a>, <a href="source/pykanto.signal.html#module-pykanto.signal.segment">[1]</a>
+        <li><a href="_autosummary/pykanto.signal.segment.html#module-pykanto.signal.segment">module</a>
+</li>
+      </ul></li>
+      <li>
+    pykanto.signal.segment_tmp_remove
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#module-pykanto.signal.segment_tmp_remove">module</a>
 </li>
       </ul></li>
       <li>
     pykanto.signal.spectrogram
 
       <ul>
-        <li><a href="_autosummary/pykanto.signal.spectrogram.html#module-pykanto.signal.spectrogram">module</a>, <a href="source/pykanto.signal.html#module-pykanto.signal.spectrogram">[1]</a>
+        <li><a href="_autosummary/pykanto.signal.spectrogram.html#module-pykanto.signal.spectrogram">module</a>
 </li>
       </ul></li>
       <li>
@@ -587,6 +772,13 @@
 </li>
       </ul></li>
       <li>
+    pykanto.utils.types
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#module-pykanto.utils.types">module</a>
+</li>
+      </ul></li>
+      <li>
     pykanto.utils.write
 
       <ul>
@@ -606,7 +798,9 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.rand_jitter">rand_jitter() (in module pykanto.plot)</a>, <a href="source/pykanto.html#pykanto.plot.rand_jitter">[1]</a>
+      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.rand_jitter">rand_jitter() (in module pykanto.plot)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.ValidDirs.RAW_DATA">RAW_DATA (pykanto.utils.types.ValidDirs attribute)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.read.html#pykanto.utils.read.read_json">read_json() (in module pykanto.utils.read)</a>
 
@@ -614,19 +808,19 @@
         <li><a href="_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.read_json">(in module pykanto.utils.xenocanto)</a>
 </li>
       </ul></li>
-      <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.reduce_and_cluster">reduce_and_cluster() (in module pykanto.signal.cluster)</a>, <a href="source/pykanto.signal.html#pykanto.signal.cluster.reduce_and_cluster">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav">ReadWav (class in pykanto.signal.segment)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.reduce_and_cluster_parallel">reduce_and_cluster_parallel() (in module pykanto.signal.cluster)</a>, <a href="source/pykanto.signal.html#pykanto.signal.cluster.reduce_and_cluster_parallel">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.reduce_and_cluster">reduce_and_cluster() (in module pykanto.signal.cluster)</a>
 </li>
-      <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.NoIndentEncoder.regex">regex (pykanto.utils.write.NoIndentEncoder attribute)</a>
+      <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.reduce_and_cluster_parallel">reduce_and_cluster_parallel() (in module pykanto.signal.cluster)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.relabel_noise_segments">relabel_noise_segments() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.relabel_noise_segments">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.relabel_noise_segments">relabel_noise_segments() (pykanto.dataset.SongDataset method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.reload">reload() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.reload">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.reload">reload() (pykanto.dataset.SongDataset method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.retrieve_spectrogram">retrieve_spectrogram() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.retrieve_spectrogram">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.retrieve_spectrogram">retrieve_spectrogram() (in module pykanto.signal.spectrogram)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -634,47 +828,87 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.sample_info">sample_info() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.sample_info">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.sample_info">sample_info() (pykanto.dataset.SongDataset method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation.sample_rate">sample_rate (pykanto.utils.types.AudioAnnotation attribute)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.save_json">save_json() (in module pykanto.utils.write)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.save_melspectrogram">save_melspectrogram() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.save_melspectrogram">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.save_melspectrogram">save_melspectrogram() (in module pykanto.signal.spectrogram)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.save_segment">save_segment() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.save_segment">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.save_segment">save_segment() (in module pykanto.signal.segment_tmp_remove)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.save_to_disk">save_to_disk() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.save_to_disk">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.save_segments">save_segments() (in module pykanto.signal.segment)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_into_songs">segment_into_songs() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.segment_into_songs">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.save_to_disk">save_to_disk() (pykanto.dataset.SongDataset method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.segment_into_units">segment_into_units() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.segment_into_units">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_file">segment_file() (in module pykanto.signal.segment)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_song_into_units">segment_song_into_units() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.segment_song_into_units">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_files">segment_files() (in module pykanto.signal.segment)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_song_into_units_parallel">segment_song_into_units_parallel() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.segment_song_into_units_parallel">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_files_parallel">segment_files_parallel() (in module pykanto.signal.segment)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_songs">segment_songs() (in module pykanto.signal.segment)</a>, <a href="source/pykanto.signal.html#pykanto.signal.segment.segment_songs">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_files_r">segment_files_r (in module pykanto.signal.segment)</a>
 </li>
+      <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.segment_into_songs">segment_into_songs() (in module pykanto.signal.segment_tmp_remove)</a>
+</li>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.segment_into_units">segment_into_units() (pykanto.dataset.SongDataset method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_is_valid">segment_is_valid() (in module pykanto.signal.segment)</a>
+</li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_song_into_units">segment_song_into_units() (in module pykanto.signal.segment)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.segment_song_into_units">(in module pykanto.signal.segment_tmp_remove)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_song_into_units_parallel">segment_song_into_units_parallel() (in module pykanto.signal.segment)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.segment_song_into_units_parallel">(in module pykanto.signal.segment_tmp_remove)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.segmentation">segmentation() (in module pykanto.plot)</a>, <a href="source/pykanto.html#pykanto.plot.segmentation">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment_tmp_remove.html#pykanto.signal.segment_tmp_remove.segment_songs">segment_songs() (in module pykanto.signal.segment_tmp_remove)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.show_extreme_samples">show_extreme_samples() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.show_extreme_samples">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation">SegmentAnnotation (class in pykanto.utils.types)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.silence_threshold">silence_threshold (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.silence_threshold">[1]</a>
+      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.segmentation">segmentation() (in module pykanto.plot)</a>
 </li>
-      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.sns_histoplot">sns_histoplot() (in module pykanto.plot)</a>, <a href="source/pykanto.html#pykanto.plot.sns_histoplot">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata">SegmentMetadata (class in pykanto.signal.segment)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.song_level">song_level (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.song_level">[1]</a>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.set_range">set_range() (in module pykanto.labelapp.main)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset">SongDataset (class in pykanto.dataset)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.show_extreme_samples">show_extreme_samples() (pykanto.dataset.SongDataset method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.sr">sr (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.sr">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.silence_threshold">silence_threshold (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.subset">subset (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.subset">[1]</a>
+      <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.sns_histoplot">sns_histoplot() (in module pykanto.plot)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.subset">subset() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.subset">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.song_level">song_level (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.summary_plot">summary_plot() (pykanto.dataset.SongDataset method)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.summary_plot">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset">SongDataset (class in pykanto.dataset)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation.source_wav">source_wav (pykanto.utils.types.AudioAnnotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.source_wav">(pykanto.utils.types.Metadata attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.sr">sr (pykanto.parameters.Parameters attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.start_times">start_times (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation.start_times">(pykanto.utils.types.SegmentAnnotation attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.subset">subset (pykanto.parameters.Parameters attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.subset">subset() (pykanto.dataset.SongDataset method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.summary_plot">summary_plot() (pykanto.dataset.SongDataset method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -688,7 +922,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.top_dB">top_dB (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.top_dB">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.top_dB">top_dB (pykanto.parameters.Parameters attribute)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.tqdmm">tqdmm() (in module pykanto.utils.compute)</a>
 </li>
@@ -698,27 +932,43 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.umap_reduce">umap_reduce() (in module pykanto.signal.cluster)</a>, <a href="source/pykanto.signal.html#pykanto.signal.cluster.umap_reduce">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.umap_reduce">umap_reduce() (in module pykanto.signal.cluster)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.units">units (pykanto.dataset.SongDataset attribute)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.units">[1]</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.units">units (pykanto.dataset.SongDataset attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.update">update() (pykanto.parameters.Parameters method)</a>
+</li>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.update_class_examples_div">update_class_examples_div() (in module pykanto.labelapp.main)</a>
+</li>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.update_feedback_text">update_feedback_text() (in module pykanto.labelapp.main)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.update">update() (pykanto.parameters.Parameters method)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.update">[1]</a>
-</li>
       <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.update_json_locs">update_json_locs() (pykanto.utils.paths.ProjDirs method)</a>
 </li>
+      <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.update_labels">update_labels() (in module pykanto.labelapp.main)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.upper_freq">upper_freq (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.upper_freq">(pykanto.utils.types.Metadata attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation.upper_freq">(pykanto.utils.types.SegmentAnnotation attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.verbose">verbose (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.verbose">[1]</a>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.ValidDirs">ValidDirs (class in pykanto.utils.types)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.vocalisations">vocalisations (pykanto.dataset.SongDataset attribute)</a>, <a href="source/pykanto.html#pykanto.dataset.SongDataset.vocalisations">[1]</a>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.verbose">verbose (pykanto.parameters.Parameters attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.vocalisations">vocalisations (pykanto.dataset.SongDataset attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -726,11 +976,15 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.window">window() (in module pykanto.signal.spectrogram)</a>, <a href="source/pykanto.signal.html#pykanto.signal.spectrogram.window">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.wav_dir">wav_dir (pykanto.signal.segment.ReadWav attribute)</a>
+</li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.wav_file">wav_file (pykanto.utils.types.Metadata attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.window_length">window_length (pykanto.parameters.Parameters attribute)</a>, <a href="source/pykanto.html#pykanto.parameters.Parameters.window_length">[1]</a>
+      <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.window">window() (in module pykanto.signal.spectrogram)</a>
+</li>
+      <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.window_length">window_length (pykanto.parameters.Parameters attribute)</a>
 </li>
   </ul></td>
 </tr></table>

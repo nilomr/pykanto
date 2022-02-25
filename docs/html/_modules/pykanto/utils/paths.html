@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
@@ -91,20 +91,23 @@
 <span class="c1"># ─── DEPENDENCIES ─────────────────────────────────────────────────────────────</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">attr</span>
+<span class="kn">from</span> <span class="nn">attr</span> <span class="kn">import</span> <span class="n">validators</span>
 <span class="kn">import</span> <span class="nn">ray</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">calc_chunks</span><span class="p">,</span> <span class="n">get_chunks</span><span class="p">,</span> <span class="n">print_dict</span><span class="p">,</span> <span class="n">print_parallel_info</span><span class="p">,</span> <span class="n">to_iterator</span><span class="p">,</span> <span class="n">tqdmm</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="p">(</span><span class="n">calc_chunks</span><span class="p">,</span> <span class="n">get_chunks</span><span class="p">,</span> <span class="n">print_dict</span><span class="p">,</span>
+                                   <span class="n">print_parallel_info</span><span class="p">,</span> <span class="n">to_iterator</span><span class="p">,</span> <span class="n">tqdmm</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.read</span> <span class="kn">import</span> <span class="n">read_json</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.types</span> <span class="kn">import</span> <span class="n">ValidDirs</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span><span class="p">,</span> <span class="n">save_json</span>
 
 <span class="c1"># ──── CLASSES ─────────────────────────────────────────────────────────────────</span>
 
 
 <div class="viewcode-block" id="ProjDirs"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs">[docs]</a><span class="k">class</span> <span class="nc">ProjDirs</span><span class="p">():</span>
-<div class="viewcode-block" id="ProjDirs.__init__"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PROJECT_DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ProjDirs.__init__"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialises a ProjDirs class, which is used to store a </span>
 <span class="sd">        project&#39;s file structure. This is required when constructing </span>
@@ -112,31 +115,41 @@
 <span class="sd">        useful to keep paths tidy and in the same location.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            PROJECT_DIR (Path): Root directory of the project. </span>
+<span class="sd">            PROJECT (Path): Root directory of the project.</span>
+<span class="sd">            RAW_DATA (Path): (Immutable) location of the raw data to be used in </span>
+<span class="sd">                this project.</span>
 <span class="sd">            mkdir (bool, optional): Wether to create directories if they </span>
 <span class="sd">                don&#39;t already exist. Defaults to False.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; PROJROOT = Path(&#39;user&#39; / &#39;projects&#39; / &#39;myproject&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; PROJROOT = Path(&#39;home&#39; / &#39;user&#39; / &#39;projects&#39; / &#39;myproject&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; RAW_DATA= Path(&#39;bigexternaldrive&#39; / &#39;fieldrecordings&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; DIRS = ProjDirs(PROJROOT, mkdir=False)</span>
 <span class="sd">            &gt;&gt;&gt; print(DIRS)</span>
 <span class="sd">            Items held:</span>
 <span class="sd">            PROJECT (/user/projects/myproject)</span>
-<span class="sd">            DATA (/user/projects/myproject/data)</span>
-<span class="sd">            RESOURCES (/user/projects/myproject/resources)</span>
-<span class="sd">            REPORTS (/user/projects/myproject/reports)</span>
-<span class="sd">            FIGURES (/user/projects/myproject/reports/figures)</span>
+<span class="sd">            RAW_DATA (/bigexternaldrive/fieldrecordings)</span>
+<span class="sd">            DATA (./myproject/data)</span>
+<span class="sd">            SEGMENTED (.segmented/fieldrecordings)</span>
+<span class="sd">            RESOURCES (./resources)</span>
+<span class="sd">            REPORTS (./reports)</span>
+<span class="sd">            FIGURES (./reports/figures)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">PROJECT_DIR</span><span class="si">}</span><span class="s2"> must be an instance of (pathlib) Path&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">PROJECT</span> <span class="o">=</span> <span class="n">PROJECT_DIR</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DATA</span> <span class="o">=</span> <span class="n">PROJECT_DIR</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">RESOURCES</span> <span class="o">=</span> <span class="n">PROJECT_DIR</span> <span class="o">/</span> <span class="s2">&quot;resources&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">REPORTS</span> <span class="o">=</span> <span class="n">PROJECT_DIR</span> <span class="o">/</span> <span class="s2">&quot;reports&quot;</span>
+        <span class="c1"># Type check input paths</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">ValidDirs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">)</span>
+
+        <span class="c1"># Define project directories</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PROJECT</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">PROJECT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DATA</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">PROJECT</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RAW_DATA</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">RAW_DATA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;segmented&quot;</span> <span class="o">/</span> <span class="n">d</span><span class="o">.</span><span class="n">RAW_DATA</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">RESOURCES</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">PROJECT</span> <span class="o">/</span> <span class="s2">&quot;resources&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">REPORTS</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">PROJECT</span> <span class="o">/</span> <span class="s2">&quot;reports&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">FIGURES</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">REPORTS</span> <span class="o">/</span> <span class="s2">&quot;figures&quot;</span>
 
+        <span class="c1"># Create them if needed</span>
         <span class="k">if</span> <span class="n">mkdir</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">makedir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
@@ -149,7 +162,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">print_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ProjDirs.append"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_value</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ProjDirs.append"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">new_attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Appends a new attribute to the class instance.</span>
 
@@ -169,24 +187,24 @@
             <span class="k">if</span> <span class="n">mkdir</span><span class="p">:</span>
                 <span class="n">makedir</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProjDirs._deep_update_paths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs._deep_update_paths">[docs]</a>    <span class="k">def</span> <span class="nf">_deep_update_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">OLD_PROJECT_DIR</span><span class="p">,</span> <span class="n">NEW_PROJECT_DIR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ProjDirs._deep_update_paths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs._deep_update_paths">[docs]</a>    <span class="k">def</span> <span class="nf">_deep_update_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">change_data_loc</span><span class="p">(</span>
-                    <span class="n">v</span><span class="p">,</span> <span class="n">OLD_PROJECT_DIR</span><span class="p">,</span>  <span class="n">NEW_PROJECT_DIR</span><span class="p">)</span>
+                    <span class="n">v</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span>  <span class="n">NEW_PROJECT</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">change_data_loc</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">OLD_PROJECT_DIR</span><span class="p">,</span> <span class="n">NEW_PROJECT_DIR</span><span class="p">)</span>
+                    <span class="n">change_data_loc</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">k1</span><span class="p">,</span> <span class="n">v1</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>  <span class="c1"># Level 1</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">k1</span><span class="p">]</span> <span class="o">=</span> <span class="n">change_data_loc</span><span class="p">(</span>
-                            <span class="n">v1</span><span class="p">,</span> <span class="n">OLD_PROJECT_DIR</span><span class="p">,</span> <span class="n">NEW_PROJECT_DIR</span><span class="p">)</span>
+                            <span class="n">v1</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                         <span class="k">for</span> <span class="n">k2</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="n">v1</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                             <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">k1</span><span class="p">][</span><span class="n">k2</span><span class="p">]</span> <span class="o">=</span> <span class="n">change_data_loc</span><span class="p">(</span>
-                                <span class="n">v2</span><span class="p">,</span> <span class="n">OLD_PROJECT_DIR</span><span class="p">,</span> <span class="n">NEW_PROJECT_DIR</span><span class="p">)</span>
+                                <span class="n">v2</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="n">k1</span> <span class="o">==</span> <span class="s1">&#39;already_checked&#39;</span><span class="p">:</span>
                         <span class="k">continue</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -204,11 +222,11 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">ignore_checks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Updates the &#39;wav_loc&#39; field in JSON metadata files for a given project.</span>
+<span class="sd">        Updates the &#39;wav_file&#39; field in JSON metadata files for a given project.</span>
 <span class="sd">        This is useful if you have moved your data to a location different to</span>
 <span class="sd">        where it was first generated. It will fix broken links to the .wav</span>
 <span class="sd">        files, provided that the :class:`~pykanto.utils.paths.ProjDirs` object</span>
-<span class="sd">        has a &#39;WAVFILES&#39; attribute pointing to a valid directory containing</span>
+<span class="sd">        has a &#39;SEGMENTED&#39; attribute pointing to a valid directory containing</span>
 <span class="sd">        &#39;WAV&#39; and &#39;JSON&#39; subdirectories.</span>
 
 <span class="sd">        Args:</span>
@@ -219,67 +237,67 @@
 <span class="sd">                a different location to where the rest of the data are.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;WAVFILES&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;SEGMENTED&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                <span class="s2">&quot;This ProjDirs object does not have a WAVFILES attribute. &quot;</span>
+                <span class="s2">&quot;This ProjDirs object does not have a SEGMENTED attribute. &quot;</span>
                 <span class="s2">&quot;You can append it like so: &quot;</span>
-                <span class="s2">&quot;`DIRS.append(&#39;WAVFILES&#39;, Path(...))`&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;`DIRS.append(&#39;SEGMENTED&#39;, Path(...))`&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">WAVFILES</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">WAVFILES</span><span class="si">}</span><span class="s2"> does not exist.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="si">}</span><span class="s2"> does not exist.&quot;</span><span class="p">)</span>
 
-        <span class="n">WAV_LIST</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wav&quot;</span><span class="p">)))</span>
-        <span class="n">JSON_LIST</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s2">&quot;JSON&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.JSON&quot;</span><span class="p">)))</span>
+        <span class="n">WAV_LIST</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wav&quot;</span><span class="p">)))</span>
+        <span class="n">JSON_LIST</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;JSON&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.JSON&quot;</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">WAV_LIST</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore_checks</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;There are no .wav files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;There are no .wav files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">WAV_LIST</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore_checks</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;There is an unequal number of .wav and .json &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">WAVFILES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Check that file can be read &amp; wav_loc needs to be changed</span>
+        <span class="c1"># Check that file can be read &amp; wav_file needs to be changed</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">jf</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">JSON_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> does not exist or is empty.&quot;</span><span class="p">)</span>
 
-        <span class="n">wavloc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">jf</span><span class="p">[</span><span class="s1">&#39;wav_loc&#39;</span><span class="p">])</span>
+        <span class="n">wavloc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">jf</span><span class="p">[</span><span class="s1">&#39;wav_file&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">wavloc</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">wavloc</span><span class="si">}</span><span class="s1"> exists: no need to update paths. &#39;</span>
                 <span class="s1">&#39;You can force update by setting `overwrite = True`.&#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="k">def</span> <span class="nf">change_wav_loc</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">change_wav_file</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">jf</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2"> does not exist or is empty.&quot;</span><span class="p">)</span>
 
-            <span class="n">newloc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WAVFILES</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="n">jf</span><span class="p">[</span><span class="s1">&#39;wav_loc&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span>
-            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">jf</span><span class="p">[</span><span class="s1">&#39;wav_loc&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="n">newloc</span><span class="p">:</span>
+            <span class="n">newloc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="n">jf</span><span class="p">[</span><span class="s1">&#39;wav_file&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">jf</span><span class="p">[</span><span class="s1">&#39;wav_file&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="n">newloc</span><span class="p">:</span>
                 <span class="k">return</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">jf</span><span class="p">[</span><span class="s1">&#39;wav_loc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">newloc</span><span class="p">)</span>
+                    <span class="n">jf</span><span class="p">[</span><span class="s1">&#39;wav_file&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">newloc</span><span class="p">)</span>
                     <span class="n">save_json</span><span class="p">(</span><span class="n">jf</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not save </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">batch_change_wav_loc</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">batch_change_wav_file</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                    <span class="n">change_wav_loc</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                    <span class="n">change_wav_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">change_wav_loc</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+                <span class="n">change_wav_file</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
         <span class="n">kk</span> <span class="o">=</span> <span class="n">JSON_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">change_wav_loc</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">change_wav_file</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="c1"># Run in paralell</span>
-        <span class="n">b_change_wav_loc_r</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">batch_change_wav_loc</span><span class="p">)</span>
+        <span class="n">b_change_wav_file_r</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">batch_change_wav_file</span><span class="p">)</span>
         <span class="n">chunk_info</span> <span class="o">=</span> <span class="n">calc_chunks</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">chunk_length</span><span class="p">,</span> <span class="n">n_chunks</span> <span class="o">=</span> <span class="n">chunk_info</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">chunk_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">chunks</span> <span class="o">=</span> <span class="n">get_chunks</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
@@ -288,7 +306,7 @@
             <span class="s1">&#39;individual IDs&#39;</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
 
         <span class="c1"># Distribute with ray</span>
-        <span class="n">obj_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">b_change_wav_loc_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">]</span>
+        <span class="n">obj_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">b_change_wav_file_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">]</span>
         <span class="n">pbar</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;desc&#39;</span><span class="p">:</span> <span class="s2">&quot;Projecting and clustering vocalisations&quot;</span><span class="p">,</span>
                 <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="n">n_chunks</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">):</span>
@@ -300,8 +318,32 @@
 <span class="c1"># ─── FUNCTIONS ────────────────────────────────────────────────────────────────</span>
 
 
+<div class="viewcode-block" id="get_wavs_w_annotation"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_wavs_w_annotation">[docs]</a><span class="k">def</span> <span class="nf">get_wavs_w_annotation</span><span class="p">(</span>
+        <span class="n">wav_filepaths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span>
+        <span class="n">annotation_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a list of tuples containing paths to wavfiles for which there is an </span>
+<span class="sd">    annotation file and paths to its annotation file. Assumes that wav and paths </span>
+<span class="sd">    to the annotation files share the same file name and only their file </span>
+<span class="sd">    extension changes, and that the wavfiles are &#39;*.wav&#39; and not &#39;*.WAV&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        wav_filepaths (List[Path]): List of paths to wav files. </span>
+<span class="sd">        annotation_paths (List[Path]): List of paths to annotation files.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Tuple[Path, Path]]: Filtered list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">filtered_wavpaths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">.wav&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">annotation_paths</span>
+        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">.wav&#39;</span> <span class="ow">in</span> <span class="n">wav_filepaths</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">filtered_wavpaths</span></div>
+
+
 <div class="viewcode-block" id="change_data_loc"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.change_data_loc">[docs]</a><span class="k">def</span> <span class="nf">change_data_loc</span><span class="p">(</span>
-        <span class="n">DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PROJECT_DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">NEW_PROJECT_DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+        <span class="n">DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates the location of the parent directories of a project, including </span>
 <span class="sd">    the project name, for a given path. Used when the location of a dataset changes </span>
@@ -309,18 +351,18 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        DIR (Path): Path to update</span>
-<span class="sd">        PROJECT_DIR ([type]): Old -broken- project directory.</span>
-<span class="sd">        NEW_PROJECT_DIR (Path): New working project directory.</span>
+<span class="sd">        PROJECT ([type]): Old -broken- project directory.</span>
+<span class="sd">        NEW_PROJECT (Path): New working project directory.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Path: Updated path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="n">DIR</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">PROJECT_DIR</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">new_path</span> <span class="o">=</span> <span class="n">NEW_PROJECT_DIR</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="o">*</span><span class="n">DIR</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">DIR</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">PROJECT</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">new_path</span> <span class="o">=</span> <span class="n">NEW_PROJECT</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="o">*</span><span class="n">DIR</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">:])</span>
     <span class="k">return</span> <span class="n">new_path</span></div>
 
 
-<div class="viewcode-block" id="get_wav_filepaths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_wav_filepaths">[docs]</a><span class="k">def</span> <span class="nf">get_wav_filepaths</span><span class="p">(</span><span class="n">ORIGIN_DIR</span><span class="p">:</span>
+<div class="viewcode-block" id="get_wav_filepaths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_wav_filepaths">[docs]</a><span class="k">def</span> <span class="nf">get_wav_filepaths</span><span class="p">(</span><span class="n">RAW_DATA_DIR</span><span class="p">:</span>
                       <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a list of wav files in a directory, including subdirectories, if</span>
@@ -328,10 +370,10 @@
 <span class="sd">    segmentation metadata from .xml files output by Sonic Visualiser.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ORIGIN_DIR (PosixPath): Directory to search</span>
+<span class="sd">        RAW_DATA_DIR (PosixPath): Directory to search</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ORIGIN_DIR</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">RAW_DATA_DIR</span><span class="p">)):</span>
         <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">((</span><span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.wav&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.WAV&quot;</span><span class="p">))</span>
                     <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.xml&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">files</span><span class="p">):</span>
@@ -345,10 +387,10 @@
 
 
 <span class="c1"># NOTE: move this to custom</span>
-<div class="viewcode-block" id="get_xml_filepaths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_xml_filepaths">[docs]</a><span class="k">def</span> <span class="nf">get_xml_filepaths</span><span class="p">(</span><span class="n">ORIGIN_DIR</span><span class="p">:</span>
+<div class="viewcode-block" id="get_xml_filepaths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_xml_filepaths">[docs]</a><span class="k">def</span> <span class="nf">get_xml_filepaths</span><span class="p">(</span><span class="n">RAW_DATA_DIR</span><span class="p">:</span>
                       <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
     <span class="n">file_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ORIGIN_DIR</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">RAW_DATA_DIR</span><span class="p">)):</span>
         <span class="n">xml_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.xml&#39;</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">xml_files</span><span class="p">:</span>
             <span class="n">file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">/</span> <span class="n">file</span><span class="p">)</span>
@@ -363,16 +405,55 @@
         <span class="k">return</span> <span class="n">file_list</span></div>
 
 
+<div class="viewcode-block" id="get_file_paths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_file_paths">[docs]</a><span class="k">def</span> <span class="nf">get_file_paths</span><span class="p">(</span><span class="n">root_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">extensions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns paths to files with given extension found recursively within a</span>
+<span class="sd">    directory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        root_dir (Path): Root directory to search recursively.</span>
+<span class="sd">        extensions (List[str]): File extensions to look for (e.g., .wav)</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: No files found.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Path]: List with path to files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2"> and/or &quot;</span>
+                   <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">extensions</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">extensions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span>
+                   <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">extensions</span><span class="p">)])</span>
+
+    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">root_dir</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">extensions</span><span class="p">)):</span>
+                <span class="n">file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">/</span> <span class="n">file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;There are no </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> files in this directory&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> files in </span><span class="si">{</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">file_list</span></div>
+
+
 <div class="viewcode-block" id="link_project_data"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.link_project_data">[docs]</a><span class="k">def</span> <span class="nf">link_project_data</span><span class="p">(</span><span class="n">origin</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="n">project_data_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a symlink from a project&#39;s data folder (not under version control)</span>
 <span class="sd">    to the directory where the data lives (e.g. on an external HDD).</span>
 
-<span class="sd">    Args: origin (os.PathLike): Path to the directory where the data are.</span>
+<span class="sd">    Args: origin (os.PathLike): Path to the directory containing your &#39;raw&#39; data folder.</span>
 <span class="sd">        project_data_dir (Path): A project&#39;s data folder to link with &#39;origin&#39;.</span>
 
-<span class="sd">    Raises: ValueError: The &#39;project_data_dir&#39; already contains data or is a</span>
+<span class="sd">    Note:</span>
+<span class="sd">        This will work in unix-like systems but might cause problems in Windows.</span>
+<span class="sd">        See `how to enable symlinks in </span>
+<span class="sd">        Windows &lt;https://csatlas.com/python-create-symlink/#windows&gt;`_</span>
+
+<span class="sd">    Raises: </span>
+<span class="sd">        ValueError: The &#39;project_data_dir&#39; already contains data or is a</span>
 <span class="sd">        symlink.</span>
+<span class="sd">        FileExistsError: File exists; your target folder already exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">project_data_dir</span><span class="p">):</span>
@@ -383,7 +464,8 @@
         <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">project_data_dir</span><span class="p">,</span> <span class="n">target_is_directory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Symbolic link created successfully.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The destination directory is not empty.&#39;</span><span class="p">)</span></div>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;link_project_data() failed: &#39;</span>
+                      <span class="s1">&#39;the destination directory is not empty.&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

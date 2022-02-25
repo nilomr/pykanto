@@ -22,7 +22,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pykanto.utils.write" href="pykanto.utils.write.html" />
+    <link rel="next" title="pykanto.utils.types" href="pykanto.utils.types.html" />
     <link rel="prev" title="pykanto.utils.paths" href="pykanto.utils.paths.html" /> 
 </head>
 
@@ -54,7 +54,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pykanto.parameters.html">pykanto.parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.dataset.html">pykanto.dataset</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pykanto.intlabel.html">pykanto.intlabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pykanto.labelapp.html">pykanto.labelapp</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.plot.html">pykanto.plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pykanto.signal.html">pykanto.signal</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="pykanto.utils.html">pykanto.utils</a><ul class="current">
@@ -62,6 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.custom.html">pykanto.utils.custom</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.paths.html">pykanto.utils.paths</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">pykanto.utils.read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pykanto.utils.types.html">pykanto.utils.types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.write.html">pykanto.utils.write</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pykanto.utils.xenocanto.html">pykanto.utils.xenocanto</a></li>
 </ul>
@@ -96,6 +97,7 @@
              
   <section id="module-pykanto.utils.read">
 <span id="pykanto-utils-read"></span><h1>pykanto.utils.read<a class="headerlink" href="#module-pykanto.utils.read" title="Permalink to this headline"></a></h1>
+<p>Functions to read external files -e.g. JSON- efficiently.</p>
 <p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -110,7 +112,7 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.utils.read.read_json">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.read.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_loc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/read.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.read.read_json" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.read.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_loc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/read.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.read.read_json" title="Permalink to this definition"></a></dt>
 <dd><p>Reads a .json file using ujson.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -135,7 +137,7 @@ its value was ‘NOISE’ and ‘VOCALISATION’ in all other cases.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.utils.read._get_json_parallel">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.read.</span></span><span class="sig-name descname"><span class="pre">_get_json_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/read.html#_get_json_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.read._get_json_parallel" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.read.</span></span><span class="sig-name descname"><span class="pre">_get_json_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lst</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/read.html#_get_json_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.read._get_json_parallel" title="Permalink to this definition"></a></dt>
 <dd><p>Parallel implementation of
 <a class="reference internal" href="#pykanto.utils.read._get_json" title="pykanto.utils.read._get_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">_get_json()</span></code></a>.</p>
 </dd></dl>
@@ -150,8 +152,8 @@ its value was ‘NOISE’ and ‘VOCALISATION’ in all other cases.</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer
         navigation">
         
-        <a href="pykanto.utils.write.html" class="btn btn-neutral float-right"
-            title="pykanto.utils.write" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="pykanto.utils.types.html" class="btn btn-neutral float-right"
+            title="pykanto.utils.types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
         <a href="pykanto.utils.paths.html" class="btn btn-neutral float-left" title="pykanto.utils.paths" accesskey="p" rel="prev"><span class="fa

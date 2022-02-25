@@ -31,6 +31,7 @@
    pykanto.utils.custom
    pykanto.utils.paths
    pykanto.utils.read
+   pykanto.utils.types
    pykanto.utils.write
    pykanto.utils.xenocanto
 
