@@ -33,7 +33,7 @@ def save_melspectrogram(
     dataset: SongDataset,
     key: str,
     dereverb: bool = True,
-    bandpass: bool = True
+    bandpass: bool = True,
 ) -> Dict[str, Path]:
     """
     Computes and saves a melspectrogram as a numpy array 
@@ -60,7 +60,7 @@ def save_melspectrogram(
     dat, _ = librosa.load(file, sr=dataset.parameters.sr)
 
     # Compute mel spec
-    mel_spectrogram = librosa.feature.melspectrogram(
+    spec = librosa.feature.melspectrogram(
         y=dat, sr=dataset.parameters.sr, n_fft=dataset.parameters.fft_size,
         win_length=dataset.parameters.window_length,
         hop_length=dataset.parameters.hop_length,
@@ -69,16 +69,16 @@ def save_melspectrogram(
         fmax=dataset.parameters.highcut)
 
     # To dB
-    mel_spectrogram = librosa.amplitude_to_db(
-        S=mel_spectrogram, top_db=dataset.parameters.top_dB, ref=np.max)
+    spec = librosa.amplitude_to_db(
+        S=spec, top_db=dataset.parameters.top_dB, ref=np.max)
 
     if bandpass:
         # Mask anything outside frequency bounding box
-        mel_spectrogram = _mask_melspec(dataset, d_dict, mel_spectrogram)
+        spec = _mask_melspec(dataset, d_dict, spec)
 
     if dereverb:
-        mel_spectrogram = dereverberate(
-            mel_spectrogram, echo_range=100, echo_reduction=0.6,
+        spec = dereverberate(
+            spec, echo_range=100, echo_reduction=0.6,
             hop_length=dataset.parameters.hop_length, sr=dataset.parameters.sr)
 
     # Save spec
@@ -87,7 +87,7 @@ def save_melspectrogram(
     spec_out_dir: Path = dataset.DIRS.SPECTROGRAMS / \
         ID / (Path(file).stem + '.npy')
     makedir(spec_out_dir)
-    np.save(spec_out_dir, mel_spectrogram)
+    np.save(spec_out_dir, spec)
 
     return {Path(file).stem: spec_out_dir}
 
@@ -290,9 +290,12 @@ def get_vocalisation_units(
     """
 
     # Get spectrogram and segmentation information
+    if 'onsets' not in dataset.vocs.columns:
+        raise KeyError(
+            "'onsets':  This vocalisation has not yet been segmented.")
     spectrogram = retrieve_spectrogram(
-        dataset.vocalisations.at[key, 'spectrogram_loc'])
-    onsets, offsets = [dataset.vocalisations.at[key, i]
+        dataset.vocs.at[key, 'spectrogram_loc'])
+    onsets, offsets = [dataset.vocs.at[key, i]
                        for i in ['onsets', 'offsets']]
 
     # Get spectrogram for each unit
@@ -358,30 +361,27 @@ def get_indv_units(
     return {individual: out_dir}
 
 
-_get_indv_units_r = ray.remote(get_indv_units)
-
-
 def get_indv_units_parallel(
         dataset: SongDataset,
         pad: bool = True,
-        song_level: bool = False
+        song_level: bool = False,
+        num_cpus: float | None = None
 ) -> Dict[Dict[str, Path]]:
     """
     Parallel implementation of 
     :func:`~pykanto.signal.spectrogram.get_indv_units`.
     """
-
     indv_dict = {
-        indv: dataset.vocalisations
-        [dataset.vocalisations['ID'] == indv].index
-        for indv in set(dataset.vocalisations['ID'])}
+        indv: dataset.vocs
+        [dataset.vocs['ID'] == indv].index
+        for indv in set(dataset.vocs['ID'])}
 
     # Calculate and make chunks
     n = len(indv_dict)
     if not n:
         raise KeyError('No file keys were passed to '
                        'get_indv_units.')
-    chunk_info = calc_chunks(n, verbose=True)
+    chunk_info = calc_chunks(n, n_workers=num_cpus, verbose=True)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunkeys = get_chunks(list(indv_dict), chunk_length)
     chunks = [{k: v for k, v in indv_dict.items() if k in chunk}
@@ -392,6 +392,10 @@ def get_indv_units_parallel(
     dataset_ref = ray.put(dataset)
 
     # Distribute with ray
+    @ray.remote(num_cpus=num_cpus)
+    def _get_indv_units_r(*args, **kwargs):
+        return get_indv_units(*args, **kwargs)
+
     obj_ids = []
     for chunk in chunks:
         for ID, keys in chunk.items():

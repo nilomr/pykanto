@@ -15,6 +15,7 @@ import umap
 from hdbscan import HDBSCAN
 from pykanto.utils.compute import (calc_chunks, flatten_list, get_chunks,
                                    print_parallel_info, to_iterator, tqdmm)
+from pykanto.signal.spectrogram import pad_spectrogram
 from umap import UMAP
 
 if TYPE_CHECKING:
@@ -138,11 +139,25 @@ def reduce_and_cluster(
                       'Returning None.')
         return
 
+    # Pad if necessary # REVIEW
+    if song_level:
+        if not {unit.shape[1] for unit in units.values()} == 1:
+            max_frames = max([unit.shape[1]
+                              for unit in units.values()])
+            units = {key: pad_spectrogram(spec, max_frames)
+                     for key, spec in units.items()}
+    else:
+        if not {unit.shape[1] for ls in units.values() for unit in ls} == 1:
+            max_frames = max([unit.shape[1]
+                              for ls in units.values() for unit in ls])
+            units = {key: [pad_spectrogram(spec, max_frames) for spec in ls]
+                     for key, ls in units.items()}
+
     # Flatten units
     if song_level:
         flat_units = [unit.flatten() for unit in units.values()]
     else:
-        voc_keys = list(itertools.chain.from_iterable(
+        unitkeys = list(itertools.chain.from_iterable(
             [[key]*len(value) for key, value in units.items()]))
         flat_units = np.array([unit.flatten()
                                for ls in units.values() for unit in ls])
@@ -160,7 +175,7 @@ def reduce_and_cluster(
     cluster_df = pd.DataFrame(units_keys, columns=['index'])
     cluster_df.set_index('index', inplace=True)
     if song_level is False:
-        cluster_df['vocalisation_key'] = voc_keys
+        cluster_df['vocalisation_key'] = unitkeys
         cluster_df['ID'] = ID
         cluster_df['idx'] = [idx[-1] for idx in cluster_df.index]
     cluster_df['umap_x'] = embedding[:, 0]
@@ -172,19 +187,8 @@ def reduce_and_cluster(
     return cluster_df
 
 
-@ray.remote(num_gpus=1/psutil.cpu_count() if _has_cuml else 0)
-def _reduce_and_cluster_r(
-    dataset: SongDataset,
-    IDS: List[str],
-    song_level: bool = False,
-    min_sample: int = 10
-) -> List[pd.DataFrame]:
-    return [reduce_and_cluster(dataset, ID, song_level=song_level,
-            min_sample=min_sample) for ID in IDS]
-
-
 def reduce_and_cluster_parallel(
-    dataset: SongDataset, min_sample: int = 10
+    dataset: SongDataset, min_sample: int = 10, num_cpus: float | None = None
 ) -> pd.DataFrame:
     """
     Parallel implementation of 
@@ -198,7 +202,7 @@ def reduce_and_cluster_parallel(
     if not n:
         raise KeyError('No sound file keys were passed to '
                        'reduce_and_cluster.')
-    chunk_info = calc_chunks(n, verbose=True)
+    chunk_info = calc_chunks(n,  n_workers=num_cpus, verbose=True)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunks = get_chunks(list(IDS), chunk_length)
     print_parallel_info(n, 'individual IDs', n_chunks, chunk_length)
@@ -207,6 +211,17 @@ def reduce_and_cluster_parallel(
     dataset_ref = ray.put(dataset)
 
     # Distribute with ray
+    @ray.remote(num_cpus=num_cpus, num_gpus=1 / psutil.cpu_count()
+                if _has_cuml else 0)
+    def _reduce_and_cluster_r(
+        dataset: SongDataset,
+        IDS: List[str],
+        song_level: bool = False,
+        min_sample: int = 10
+    ) -> List[pd.DataFrame]:
+        return [reduce_and_cluster(dataset, ID, song_level=song_level,
+                min_sample=min_sample) for ID in IDS]
+
     obj_ids = [_reduce_and_cluster_r.remote(
         dataset_ref, i, song_level=song_level,
         min_sample=min_sample) for i in chunks]

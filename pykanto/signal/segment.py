@@ -18,7 +18,6 @@ import audio_metadata as audiometa
 import librosa
 import librosa.display
 import numpy as np
-from pkg_resources import ResourceManager
 import ray
 import soundfile as sf
 from pykanto.signal.filter import (dereverberate, dereverberate_jit,
@@ -36,10 +35,12 @@ from skimage.filters.rank import median
 from skimage.morphology import dilation, disk, erosion
 from skimage.util import img_as_ubyte
 
+from pykanto.utils.write import makedir
+
 if TYPE_CHECKING:
     from pykanto.dataset import SongDataset
 
-from pykanto.utils.paths import get_xml_filepaths
+from pykanto.utils.paths import ProjDirs, get_file_paths
 
 # ──── DIVIDING RAW FILES INTO SEGMENTS ─────────────────────────────────────────
 
@@ -335,8 +336,8 @@ def save_segments(
 def segment_is_valid(
         metadata: Annotation,
         i: int,
-        min_duration: float = .5,
-        min_freqrange: int = 200,
+        min_duration: float = .1,
+        min_freqrange: int = 100,
         labels_to_ignore: List[str] = ["NO", "NOISE"]) -> bool:
     """
     Checks whether a segment of index i within a dictionary is a valid segment.
@@ -344,8 +345,8 @@ def segment_is_valid(
     Args:
         metadata (Annotation): Dictionary with segment inf
         i (int): _description_
-        min_duration (float, optional): _description_. Defaults to .5.
-        min_freqrange (int, optional): _description_. Defaults to 200.
+        min_duration (float, optional): _description_. Defaults to .1.
+        min_freqrange (int, optional): _description_. Defaults to 100.
         labels_to_ignore (List[str], optional): _description_. Defaults to ["NO", "NOISE"].
 
     Returns:
@@ -396,7 +397,7 @@ def segment_files(
 
     for wav_dir, metadata_dir in tqdmm(
             datapaths,
-            desc="Finding and savings audio segments and their metadata",
+            desc="Finding and saving audio segments and their metadata",
             disable=False if pbar else True):
         try:
             segment_file(wav_dir, metadata_dir, wav_outdir, json_outdir,
@@ -406,14 +407,13 @@ def segment_files(
 
 
 segment_files_r = ray.remote(segment_files)
-"""Remote'd version of :func:`~pykanto.signal.segment.segment_files"""
+"""Remote'd version of :func:`~pykanto.signal.segment.segment_files`"""
 
 
 @timing
 def segment_files_parallel(
         datapaths: List[Tuple[Path, Path]],
-        wav_outdir: Path,
-        json_outdir: Path,
+        dirs: ProjDirs,
         resample: int | None = 22050,
         parser_func: Callable[[Path], SegmentAnnotation] = parse_sonic_visualiser_xml,
         **kwargs):
@@ -422,11 +422,13 @@ def segment_files_parallel(
     Parallel version of :func:`~pykanto.signal.segment.segment_files`.
     Works well with large files (only reads one chunk at a time).
 
+    Note:
+        Creates ["WAV", "JSON"] output subfolders in data/segmented/dataset.
+
     Args:
         datapaths (List[Tuple[Path, Path]]): List of tuples with pairs of paths
             to raw data files and their annotation metadata files.
-        wav_outdir (Path): Location where to save generated wav files.
-        json_outdir (Path): Location where to save generated json metadata files.
+        dirs (ProjDirs): Project directory structure.
         resample (int | None, optional): Whether to resample audio.
             Defaults to 22050.
         parser_func (Callable[[Path], dict[str, Any]], optional): 
@@ -435,6 +437,10 @@ def segment_files_parallel(
         **kwargs: Keyword arguments passed to 
             :func:`~pykanto.signal.segment.segment_is_valid`
     """
+
+    # Make sure output folders exists
+    wav_outdir, json_outdir = [makedir(dirs.SEGMENTED / ext)
+                               for ext in ["WAV", "JSON"]]
 
     # Calculate and make chunks
     n = len(datapaths)
@@ -454,7 +460,7 @@ def segment_files_parallel(
             parser_func=parser_func, pbar=False, **kwargs)
         for paths in chunks]
     pbar = {
-        'desc': "Finding and savings audio segments and their metadata",
+        'desc': "Finding and saving audio segments and their metadata",
         'total': n_chunks}
     [obj_id for obj_id in tqdmm(to_iterator(obj_ids), **pbar)]
 
@@ -484,7 +490,7 @@ def get_segment_info(
     # TODO: Make it work with any file type (by passing a custom parser
     # function)
 
-    XML_LIST = get_xml_filepaths(RAW_DATA_DIR)
+    XML_LIST = get_file_paths(RAW_DATA_DIR, ['.xml'])
     cnt = 0
     noise_cnt = 0
     signal_cnt = 0
@@ -620,7 +626,7 @@ def segment_song_into_units(
 ) -> Tuple[str, np.ndarray, np.ndarray] | None:
 
     mel_spectrogram = retrieve_spectrogram(
-        dataset.vocalisations.at[key, 'spectrogram_loc'])
+        dataset.vocs.at[key, 'spectrogram_loc'])
 
     # NOTE: numba version (dereverberate_jit) more likely to crash when running
     # this in parallel in low memory situations for obvious reasons.
@@ -692,3 +698,28 @@ def segment_song_into_units_parallel(
 
     # Flatten and return
     return flatten_list(units)
+
+
+def drop_zero_len_units(dataset: SongDataset, onsets: np.ndarray,
+                        offsets: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Removes onset/offset pairs which (under this dataset's spectrogram parameter
+    combination) would result in a unit of length zero.
+
+    Args:
+        dataset (SongDataset): SongDataset instance containing parameters.
+        onsets (np.ndarray): In seconds
+        offsets (np.ndarray): In seconds
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: Remaining onsets and offsets
+    """
+
+    durations_s = offsets - onsets
+    mindur_frames = np.floor(
+        durations_s * dataset.parameters.sr / dataset.parameters.hop_length)
+
+    mask = np.ones(onsets.size, dtype=bool)
+    mask[np.where(mindur_frames == 0)] = False
+
+    return onsets[mask], offsets[mask]

@@ -1,3 +1,11 @@
+# ─── DESCRIPTION ──────────────────────────────────────────────────────────────
+
+"""
+Functions and methods to perform spectrogram filtering, dereverberating,
+bandpassio, etc.
+"""
+
+# ──── IMPORTS ─────────────────────────────────────────────────────────────────
 
 from __future__ import annotations
 from typing import TYPE_CHECKING, Tuple
@@ -9,6 +17,8 @@ from scipy.ndimage import gaussian_filter
 
 if TYPE_CHECKING:
     from pykanto.dataset import SongDataset
+
+# ──── FUNCTIONS ───────────────────────────────────────────────────────────────
 
 
 def dereverberate(spectrogram: np.ndarray, echo_range: int = 100,
@@ -170,26 +180,3 @@ def mels_to_hzs(dataset: SongDataset) -> np.ndarray[int]:
                                          fmax=dataset.parameters.highcut,
                                          n_mels=dataset.parameters.num_mel_bins)
     return freqs.astype(int)
-
-
-def get_peak_freqs(dataset: SongDataset,
-                   spectrograms: np.ndarray,
-                   melscale: bool = True,
-                   threshold: float = 0.3):
-
-    minfreq = dataset.parameters.lowcut
-    min_db = - dataset.parameters.top_dB
-
-    if melscale:
-        hz_freq = mels_to_hzs(dataset)
-        result = np.array(
-            [hz_freq[np.argmax(np.max(w, axis=1))]
-             if(max(np.max(w, axis=1)) > min_db * (1 - threshold)) else -1
-             for w in spectrograms])
-
-        return result
-
-    else:
-        return np.array([minfreq + np.argmax(np.max(w, axis=1))
-                         for w in spectrograms])
-        # REVIEW did not test for melscale = False
