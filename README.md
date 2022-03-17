@@ -41,9 +41,13 @@ conda install -c conda-forge gitpython
 - Show hot to start a project and then symlink the data folder to an external drive, configure git for version control, etc
 
 # Known issues:
-If using the autoreload ipython magic, might get the following error:
+- If using the autoreload ipython magic, might get the following error:
 `Can't pickle <class 'pykanto.dataset.SongDataset'>: it's not the same object as pykanto.dataset.SongDataset`
 Fix: restart your kernel without the autoreload extension.
+
+
+- Ray throws a fork support INFO message `Fork support is only compatible with the epoll1 and poll polling strategies` with grpcio==1.44.0 -  keep track of https://github.com/ray-project/ray/issues/22518
+
 
 1. Clone the repository:
 `git clone https://github.com/nilomr/pykanto.git`.
