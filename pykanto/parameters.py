@@ -5,10 +5,10 @@ Classes and methods to store and modify pykanto parameters.
 """
 
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
-
+from __future__ import annotations
 import json
 from typing import Any, Tuple
-
+import attr
 from pykanto.utils.compute import print_dict
 
 # ──── CLASSES AND METHODS ─────────────────────────────────────────────────────
@@ -78,13 +78,14 @@ class Parameters():
         self.song_level: bool = False
         """Whether to return the average of all units.
         Defaults to False (return individual units in each vocalisation)"""
-        self.subset: Tuple[int, int] = (0, -1)
+        self.subset: Tuple[int, int] | None = None
         """Indices of the first and last items to include in the dataset. 
-        Defaults to (0,-1); full dataset"""
-        self.n_jobs: int = -2
-        """How many jobs to create. Default is available number of cores -2."""
-        self.verbose: bool = True
-        """How much detail to provide. Defaults to True (verbose)."""
+        Optional, defaults to None."""
+        self.num_cpus: None | float = None
+        """How many cpus to use for parallel computing. Default is available
+        number of cpus"""
+        self.verbose: bool = False
+        """How much detail to provide. Defaults to False (not verbose)."""
         # Update with user-provided parameters.
         self.__dict__.update(kwargs)
 

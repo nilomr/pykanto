@@ -1,3 +1,12 @@
+
+# ─── DESCRIPTION ──────────────────────────────────────────────────────────────
+
+"""
+Classes and methods to store and modify pykanto parameters.
+"""
+
+# ──── IMPORTS ─────────────────────────────────────────────────────────────────
+
 from __future__ import annotations
 
 import math
@@ -10,6 +19,7 @@ import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from matplotlib.cm import get_cmap
 from matplotlib import gridspec
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
@@ -22,6 +32,8 @@ from pykanto.parameters import Parameters
 if TYPE_CHECKING:
     from pykanto.dataset import SongDataset
 
+
+# ──── FUNCTIONS ───────────────────────────────────────────────────────────────
 
 def sns_histoplot(data, nbins=100) -> None:
     """
@@ -37,16 +49,16 @@ def sns_histoplot(data, nbins=100) -> None:
 
 
 def melspectrogram(
-        nparray_or_dir: os.PathLike | np.ndarray,
-        parameters: Parameters = None,
-        title: str = None,
+        nparray_or_dir: Path | np.ndarray,
+        parameters: None | Parameters = None,
+        title: None | str = None,
         cmap: str = 'bone',
-        max_lenght: float = None,
+        max_lenght: None | float = None,
         colour_bar=False) -> None:
 
-    if type(nparray_or_dir) == np.ndarray:
+    if isinstance(nparray_or_dir, np.ndarray):
         mel_spectrogram = nparray_or_dir
-    elif isinstance(nparray_or_dir, os.PathLike):
+    elif isinstance(nparray_or_dir, Path):
         mel_spectrogram = retrieve_spectrogram(nparray_or_dir)
     else:
         raise TypeError('nparray_or_dir must be of type Path or np.ndarray')
@@ -79,9 +91,13 @@ def melspectrogram(
         hop_length=parameters.hop_length, fmin=parameters.lowcut,
         fmax=parameters.highcut, sr=parameters.sr, cmap=cmap, ax=ax)
 
+    # Set background in case spectrogram doesnt reach 0
+    ax.set_facecolor(get_cmap(cmap)(0))
+
     # Ticks and labels
     xlims = ax.get_xlim()
-    ax.set_xticks([min(xlims), max(xlims)/2, max(xlims)])
+    ax.set_xticks([min(xlims),  max(xlims)*0.25, max(xlims)
+                  * 0.5, max(xlims)*0.75, max(xlims)])
     ax.xaxis.set_major_formatter(FormatStrFormatter('%1.1f'))
     ax.tick_params(axis=u'both', which=u'both', length=0, colors=text_colour)
     plt.tick_params(axis='both', which='major',
@@ -138,9 +154,9 @@ def segmentation(
 
     params = dataset.parameters
     if not isinstance(spectrogram, np.ndarray):
-        spectrogram = retrieve_spectrogram(dataset.vocalisations.at
+        spectrogram = retrieve_spectrogram(dataset.vocs.at
                                            [key, 'spectrogram_loc'])
-        onsets_offsets = [dataset.vocalisations.at[key, i]
+        onsets_offsets = [dataset.vocs.at[key, i]
                           for i in ['onsets', 'offsets']]
 
     ax = melspectrogram(spectrogram, parameters=params,
@@ -190,3 +206,73 @@ def mspaced_mask(N: int, M: int) -> List[int]:
 def rand_jitter(arr, jitter: float = .001):
     stdev = jitter * (max(arr) - min(arr))
     return arr + np.random.randn(len(arr)) * stdev
+
+
+def show_spec_centroid_bandwidth(
+        dataset: SongDataset, centroid: np.ndarray, spec_bw: np.ndarray,
+        key: None | str = None, spec: None | np.ndarray = None) -> None:
+    """
+    Plots spectral centroids and bandwiths over a mel spectrogram.
+    You can either provide a key string for a vocalisation or its
+    mel spectrogram directly.
+
+    Args:
+        dataset (SongDataset): Dataset object with your data.
+        centroid (np.ndarray): Array of centroids.
+        spec_bw (np.ndarray): Array of badwidths.
+        key (None | str = None): Key of a vocalisation. Defaults to None.
+        spec (spec: None | np.ndarray): Mel spectrogram. Defaults to None.
+    """
+
+    if not key and not isinstance(spec, np.ndarray):
+        KeyError('You need to provide either a key or a spectrogram')
+
+    if not isinstance(spec, np.ndarray):
+        spec = retrieve_spectrogram(dataset.vocs.at
+                                    [key, 'spectrogram_loc'])
+
+    times = (np.array(range(spec.shape[1]))
+             * dataset.parameters.hop_length / dataset.parameters.sr)
+
+    ax = melspectrogram(spec, parameters=dataset.parameters, title=key)
+    ax.fill_between(
+        times, np.maximum(0, centroid - spec_bw),
+        np.minimum(centroid + spec_bw,
+                   dataset.parameters.sr / 2),
+        alpha=0.5, label='Bandwidth')
+    ax.plot(times, centroid, label='Spectral centroid', color='w')
+    ax.legend(loc='upper right', frameon=False, labelcolor='w')
+    plt.show()
+
+
+def show_minmax_frequency(
+        dataset: SongDataset, minfreqs: np.ndarray, maxfreqs: np.ndarray,
+        key: None | str = None, spec: None | np.ndarray = None) -> None:
+    """
+    Plots approximate minimum and maximum frequencies over a mel spectrogram.
+    You can either provide a key string for a vocalisation or its
+    mel spectrogram directly.
+
+    Args:
+        dataset (SongDataset): Dataset object with your data.
+        rolloff_max (np.ndarray): Array of maximum frequencies.
+        rolloff_min (np.ndarray): Array of minimum frequencies.
+        key (None | str = None): Key of a vocalisation. Defaults to None.
+        spec (spec: None | np.ndarray): Mel spectrogram. Defaults to None.
+    """
+
+    if not key and not isinstance(spec, np.ndarray):
+        KeyError('You need to provide either a key or a spectrogram')
+
+    if not isinstance(spec, np.ndarray):
+        spec = retrieve_spectrogram(dataset.vocs.at
+                                    [key, 'spectrogram_loc'])
+
+    times = (np.array(range(spec.shape[1]))
+             * dataset.parameters.hop_length / dataset.parameters.sr)
+
+    ax = melspectrogram(spec, parameters=dataset.parameters, title=key)
+    ax.plot(times, maxfreqs, label='Max frequency (roll = 0.95)')
+    ax.plot(times, minfreqs, label='Min frequency (roll = 0.1)')
+    ax.legend(loc='upper right', frameon=False, labelcolor='w')
+    plt.show()

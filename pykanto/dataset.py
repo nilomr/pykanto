@@ -1,6 +1,7 @@
 # ─── DESCRIPTION ──────────────────────────────────────────────────────────────
 """
-Create a SongDataset object and auxiliary classes
+Build the main dataset class and its methods to visualise, segment and label 
+animal vocalisations.
 """
 
 # ─── LIBRARIES ────────────────────────────────────────────────────────────────
@@ -30,7 +31,7 @@ from pykanto import __name__ as modname
 from pykanto.labelapp.data import prepare_datasource
 from pykanto.parameters import Parameters
 from pykanto.signal.cluster import reduce_and_cluster_parallel
-from pykanto.signal.segment import segment_song_into_units_parallel
+from pykanto.signal.segment import drop_zero_len_units, segment_song_into_units_parallel
 from pykanto.signal.spectrogram import (_save_melspectrogram_parallel,
                                         get_indv_units_parallel)
 from pykanto.utils.compute import (dictlist_to_dict, print_dict, timing,
@@ -57,8 +58,8 @@ class SongDataset():
 
     def __init__(
         self, DATASET_ID: str, DIRS: ProjDirs,
-        parameters: Parameters = None,
-        random_subset: int = None,
+        parameters: None | Parameters = None,
+        random_subset: None | int = None,
         overwrite_dataset: bool = False,
         overwrite_data: bool = False
     ) -> None:
@@ -149,7 +150,7 @@ class SongDataset():
     # SongDataset: Private methods
 
     @timing
-    def _get_wav_json_filedirs(self, random_subset: int = None) -> None:
+    def _get_wav_json_filedirs(self, random_subset: None | int = None) -> None:
         """
         Get paths of wav and json files for this dataset.
 
@@ -165,17 +166,17 @@ class SongDataset():
             raise KeyError(
                 'The ProjDirs object you used to initialise '
                 'this SongDataset object does not have a SEGMENTED attribute. '
-                'See the docs for SongDataset for mroe information.')
+                'Search the docs for SongDataset for more information.')
 
         # TODO: read both lower and uppercase wav and json extensions.
         # Load and check file paths:
-        self.DIRS.WAV_LIST: List[Path] = sorted(
+        self.DIRS.WAV_LIST = sorted(
             list((self.DIRS.SEGMENTED / "WAV").glob("*.wav")))
-        self.DIRS.JSON_LIST: List[Path] = sorted(
-            list((self.DIRS.SEGMENTED / "JSON").glob("*.JSON")))
         if not len(self.DIRS.WAV_LIST):
             raise FileNotFoundError(
                 f'There are no .wav files in {self.DIRS.WAV_LIST}')
+        self.DIRS.JSON_LIST = sorted(
+            list((self.DIRS.SEGMENTED / "JSON").glob("*.JSON")))
 
         wavnames = [wav.stem for wav in self.DIRS.WAV_LIST]
         matching_jsons = [json for json in self.DIRS.JSON_LIST
@@ -193,22 +194,26 @@ class SongDataset():
             self.DIRS.JSON_LIST = matching_jsons
 
         # Subset as per parameters if possible
-        if len(self.DIRS.WAV_LIST) == 1:
-            if self.parameters.subset != (0, -1):
-                warnings.warn("Cannot subset: there is only one file.")
-                pass
-        elif self.parameters.subset[0] < len(
-                self.DIRS.WAV_LIST) and self.parameters.subset[1] <= len(
-                self.DIRS.WAV_LIST):
-            self.DIRS.WAV_LIST = self.DIRS.WAV_LIST[
-                self.parameters.subset[0]:self.parameters.subset[1]]
-            self.DIRS.JSON_LIST = self.DIRS.JSON_LIST[
-                self.parameters.subset[0]:self.parameters.subset[1]]
-        else:
-            raise IndexError(
-                "List index out of range: the provided "
-                f"'subset' parameter {self.parameters.subset} is ouside "
-                f"the range of the dataset (0, {len(self.DIRS.WAV_LIST)}).")
+        if self.parameters.subset:
+
+            if len(self.DIRS.WAV_LIST) == 1:
+                if self.parameters.subset != (0, len(self.DIRS.WAV_LIST)):
+                    warnings.warn("Cannot subset: there is only one file.")
+                    pass
+
+            elif self.parameters.subset[0] < len(
+                    self.DIRS.WAV_LIST) and self.parameters.subset[1] <= len(
+                    self.DIRS.WAV_LIST):
+                self.DIRS.WAV_LIST = self.DIRS.WAV_LIST[
+                    self.parameters.subset[0]:self.parameters.subset[1]]
+                self.DIRS.JSON_LIST = self.DIRS.JSON_LIST[
+                    self.parameters.subset[0]:self.parameters.subset[1]]
+
+            else:
+                raise IndexError(
+                    "List index out of range: the provided "
+                    f"'subset' parameter {self.parameters.subset} is ouside "
+                    f"the range of the dataset (0, {len(self.DIRS.WAV_LIST)}).")
 
         if random_subset:
             if random_subset > len(self.DIRS.JSON_LIST):
@@ -227,8 +232,8 @@ class SongDataset():
     @timing
     def _load_metadata(self) -> None:
         """
-        Loads json metadata in sequence if there are < 100 items, 
-        in parallel chunks of length chunk_len if there are > 1000 items.
+        Loads json metadata in sequence if there are < 100 items, in parallel
+        chunks of length chunk_len if there are > 1000 items.
         """
 
         n_jsonfiles = len(self.DIRS.JSON_LIST)
@@ -249,8 +254,8 @@ class SongDataset():
 
     def _get_unique_ids(self) -> None:
         """
-        Adds a 'unique_ID' attribute holding an array 
-        with unique IDs in the dataset.
+        Adds a 'unique_ID' attribute holding an array with unique IDs in the
+        dataset.
         """
         self.ID = np.array(
             [value["ID"] for _, value in self.metadata.items()]
@@ -259,31 +264,26 @@ class SongDataset():
 
     def _get_sound_info(self) -> None:
         """
-        Adds pandas DataFrames with vocalisation and noise 
-        information to dataset ('vocalisations' and 'noise' 
-        attributes, respectively).
-        Also adds information about mim/max bounding box
-        frequencies and durations in the dataset 
-        ('minmax_values' attribute), and unit onsets/offsets
-        if present.
+        Adds pandas DataFrames with vocalisation and noise information to
+        dataset ('vocs' and 'noise' attributes, respectively). Also
+        adds information about mim/max bounding box frequencies and durations in
+        the dataset ('minmax_values' attribute), and unit onsets/offsets if
+        present.
+
+        Warning:
+            Removes onset/offset pairs which (under current spectrogram
+            parameter combinations) would result in a unit of length zero.
         """
         vocalisations_dict = {}
         noise_dict = {}
         for key, file in self.metadata.items():
             data = file
-            # data = {
-            #     "wav_file": file['wav_file'],
-            #     "ID": file["ID"],
-            #     "lower_freq": file["lower_freq"],
-            #     "upper_freq": file["upper_freq"],
-            #     "length_s": file['length_s'],
 
-            # }
             if all(e in file for e in ['onsets', 'offsets']):
-                data['onsets'], data['offsets'] = (
-                    np.array(file['onsets']), np.array(file['offsets']))
+                data['onsets'], data['offsets'] = drop_zero_len_units(
+                    self, np.array(file['onsets']), np.array(file['offsets']))
 
-            if file['label'] == 'VOCALISATION':
+            if file['label'] == 'VOCALISATION':  # FIXME: remove this label and give option to use any
                 vocalisations_dict[key] = data
             elif file['label'] == 'NOISE':
                 noise_dict[key] = data
@@ -292,16 +292,16 @@ class SongDataset():
                     f"Warning: {key} has an incorrect label: {file['label']}")
 
         # Add to a dataframe
-        self.vocalisations = pd.DataFrame.from_dict(
+        self.vocs = pd.DataFrame.from_dict(
             vocalisations_dict, orient='index')
         self.noise = pd.DataFrame.from_dict(noise_dict, orient='index')
 
         # Get minimum and maximum frequencies and durations in song dataset
         self.minmax_values = {
-            'max_freq': max(self.vocalisations['upper_freq']),
-            'min_freq': min(self.vocalisations['lower_freq']),
-            'max_duration': max(self.vocalisations['length_s']),
-            'min_duration': min(self.vocalisations['length_s'])
+            'max_freq': max(self.vocs['upper_freq']),
+            'min_freq': min(self.vocs['lower_freq']),
+            'max_duration': max(self.vocs['length_s']),
+            'min_duration': min(self.vocs['length_s'])
         }
 
     @timing
@@ -327,7 +327,7 @@ class SongDataset():
                 return {Path(file).stem: path}
 
         # Check if spectrograms already exist for any keys:
-        existing_voc = [_spec_exists(key) for key in self.vocalisations.index]
+        existing_voc = [_spec_exists(key) for key in self.vocs.index]
         existing_voc = dictlist_to_dict(
             [x for x in existing_voc if x is not None])
         existing_noise = [_spec_exists(key) for key in self.noise.index]
@@ -336,10 +336,10 @@ class SongDataset():
 
         # Get new keys (all keys if overwrite_data=True)
         if overwrite_data:
-            new_voc_keys = self.vocalisations.index.tolist()
+            new_voc_keys = self.vocs.index.tolist()
             new_noise_keys = self.noise.index.tolist()
         else:
-            new_voc_keys = [key for key in self.vocalisations.index
+            new_voc_keys = [key for key in self.vocs.index
                             if key not in existing_voc]
             new_noise_keys = [
                 key for key in self.noise.index
@@ -351,7 +351,7 @@ class SongDataset():
         specs = {
             **specs, **(existing_voc if (existing_voc and
                                          not overwrite_data) else{})}
-        self.vocalisations['spectrogram_loc'] = pd.Series(specs)
+        self.vocs['spectrogram_loc'] = pd.Series(specs)
 
         # Now compute noise melspectrograms if present
         n_specs = _save_melspectrogram_parallel(
@@ -359,7 +359,7 @@ class SongDataset():
         n_specs = {
             **n_specs, **(existing_noise if (existing_noise and
                                              not overwrite_data) else {})}
-        self.noise['spectrogram_loc'] = pd.Series(n_specs)
+        self.noise['spectrogram_loc'] = pd.Series(n_specs, dtype=object)
 
     # ──────────────────────────────────────────────────────────────────────────
     # SongDataset: Public methods
@@ -402,10 +402,10 @@ class SongDataset():
                 continue
 
             if var == 'frequency':
-                data = {'upper_freq': self.vocalisations['upper_freq'],
-                        'lower_freq': self.vocalisations['lower_freq']}
+                data = {'upper_freq': self.vocs['upper_freq'],
+                        'lower_freq': self.vocs['lower_freq']}
             else:
-                data = {'song_duration': self.vocalisations['length_s']}
+                data = {'song_duration': self.vocs['length_s']}
 
             nax = i if variable == 'all' else 0
             sns.histplot(data, bins=nbins, kde=True,
@@ -431,7 +431,7 @@ class SongDataset():
 
         # Build sample size plot
         if variable in ['sample_size', 'all']:
-            individual_ss = self.vocalisations['ID'].value_counts()
+            individual_ss = self.vocs['ID'].value_counts()
             data = pd.DataFrame(individual_ss).rename(columns={'ID': 'n'})
             data['ID'] = individual_ss.index
             sns.histplot(
@@ -439,7 +439,7 @@ class SongDataset():
                 bins=nbins, ax=axes if variable != 'all' else axes[2], alpha=0.6,
                 legend=False)
             (axes[2] if variable == 'all' else axes).set(
-                xlabel=f'Sample size (total: {len(self.vocalisations)})',
+                xlabel=f'Sample size (total: {len(self.vocs)})',
                 ylabel='Count')
             # Reduce xtick density
             nlabs = len(
@@ -468,7 +468,7 @@ class SongDataset():
         """
         out = inspect.cleandoc(f"""
         Total length: {len(self.metadata)}
-        Vocalisations: {len(self.vocalisations)}
+        Vocalisations: {len(self.vocs)}
         Noise: {len(self.noise)}
         Unique IDs: {len(self.unique_ID)}""")
         print(out)
@@ -517,14 +517,14 @@ class SongDataset():
                 "show_extreme_songs: query must be one of "
                 "['duration', 'maxfreq', 'minfreq']")
 
-        testkeys = self.vocalisations[idx].sort_values(
+        testkeys = self.vocs[idx].sort_values(
             ascending=True if order == 'ascending' else False)[:n_songs].index
 
         for key in testkeys:
             if return_keys:
                 print(key)
             kplot.melspectrogram(
-                self.vocalisations.at[key, 'spectrogram_loc'],
+                self.vocs.at[key, 'spectrogram_loc'],
                 parameters=self.parameters, title=Path(key).stem, **kwargs)
 
         if return_keys:
@@ -552,9 +552,9 @@ class SongDataset():
             >>> dataset.relabel_segments(keys_to_move)
 
         """
-        df_tomove = self.vocalisations.loc[keys]
+        df_tomove = self.vocs.loc[keys]
         self.noise = pd.concat([self.noise, df_tomove], join='inner')
-        self.vocalisations.drop(keys, inplace=True)
+        self.vocs.drop(keys, inplace=True)
         # Change label in json metadata - TODO: also in original json file
         for key in keys:
             self.metadata[key]['label'] = 'NOISE'
@@ -572,7 +572,7 @@ class SongDataset():
     def segment_into_units(self, overwrite: bool = False) -> None:  # ANCHOR
         """
         Adds segment onsets, offsets, unit and silence durations
-        to :attr:`~.SongDataset.vocalisations`.
+        to :attr:`~.SongDataset.vocs`.
 
         Warning:
             If segmentation fails for a vocalisation it will be dropped from
@@ -589,16 +589,16 @@ class SongDataset():
         # First check that you are not running this by mistake:
 
         # Throw segmentation already exists
-        if 'unit_durations' in self.vocalisations.columns and overwrite is False:
+        if 'unit_durations' in self.vocs.columns and overwrite is False:
             raise FileExistsError(
                 'The vocalisations in this dataset have already been segmented. '
                 'If you want to do it again, you can overwrite the existing '
                 'segmentation information by it by setting `overwrite=True`')
 
         # Find song units iff onset/offset metadata not present
-        if not 'onsets' in self.vocalisations.columns:
+        if not 'onsets' in self.vocs.columns:
             units = segment_song_into_units_parallel(
-                self, self.vocalisations.index)
+                self, self.vocs.index)
             onoff_df = pd.DataFrame(
                 units, columns=['index', 'onsets', 'offsets']).dropna()
             onoff_df.set_index('index', inplace=True)
@@ -606,7 +606,7 @@ class SongDataset():
         # Otherwise just use that
         else:
             print('Using existing unit onset/offset information.')
-            onoff_df = self.vocalisations[["onsets", "offsets"]].dropna()
+            onoff_df = self.vocs[["onsets", "offsets"]].dropna()
             onoff_df['index'] = onoff_df.index
 
         # Calculate durations and add to dataset
@@ -614,28 +614,20 @@ class SongDataset():
         onoff_df['silence_durations'] = onoff_df.apply(
             lambda row: [a - b for a, b in zip(row['onsets'][1:],
                                                row['offsets'])], axis=1)
-        self.vocalisations = self.vocalisations.drop(
+        self.vocs.drop(
             ['index', 'onsets', 'offsets'],
-            axis=1, errors='ignore')
-        self.vocalisations = self.vocalisations.merge(
+            axis=1, errors='ignore', inplace=True)
+        self.vocs = self.vocs.merge(
             onoff_df, left_index=True, right_index=True)
+        self.vocs.drop(
+            ['index'],
+            axis=1, errors='ignore', inplace=True)
 
         # Save
         self.save_to_disk(verbose=self.parameters.verbose)
-        n_units = sum([len(self.vocalisations.at[i, 'unit_durations'])
-                       for i in self.vocalisations.index])
+        n_units = sum([len(self.vocs.at[i, 'unit_durations'])
+                       for i in self.vocs.index])
         print(f'Found and segmented {n_units} units.')
-
-    def save_to_disk(self, verbose: bool = True) -> None:
-        """
-        Save dataset to disk.
-        """
-        # Save dataset
-        out_dir = self.DIRS.DATASET
-        makedir(out_dir)
-        pickle.dump(self, open(out_dir, "wb"))
-        if verbose:
-            print(f"Saved dataset to {out_dir}")
 
     @timing
     def subset(self, ids: List[str], new_dataset: str) -> SongDataset:
@@ -665,7 +657,7 @@ class SongDataset():
         subself = copy.deepcopy(self)
 
         # Remove unwanted data
-        subself.vocalisations = subself.vocalisations[subself.vocalisations['ID'].isin(
+        subself.vocs = subself.vocs[subself.vocs['ID'].isin(
             ids)]
         if hasattr(self, 'average_units'):
             rm_keys = [key for key in subself.average_units if key not in ids]
@@ -692,9 +684,20 @@ class SongDataset():
         print(f"Saved subset to {subself.DIRS.DATASET}")
         return subself
 
+    def save_to_disk(self, verbose: bool = True) -> None:
+        """
+        Save dataset to disk.
+        """
+        # Save dataset
+        out_dir = self.DIRS.DATASET
+        makedir(out_dir)
+        pickle.dump(self, open(out_dir, "wb"))
+        if verbose:
+            print(f"Saved dataset to {out_dir}")
+
     def reload(self) -> SongDataset:
         """
-        Load the current dataset from disk.
+        Load the current dataset from disk. Remember to assign the output!
 
         Warning:
             You will lose any changes that happened after the last time
@@ -708,7 +711,7 @@ class SongDataset():
         """
         return pickle.load(open(self.DIRS.DATASET, "rb"))
 
-    def plot_vocalisation_segmentation(self, key: str, **kwargs) -> None:
+    def plot_voc_seg(self, key: str, **kwargs) -> None:
         """
         Plots a vocalisation and overlays the results
         of the segmentation process.
@@ -718,14 +721,14 @@ class SongDataset():
             **kwargs: Keyword arguments to be passed to
                 :func:`~pykanto.plot.melspectrogram`
         """
-        if 'onsets' not in self.vocalisations.columns:
+        if 'onsets' not in self.vocs.columns:
             raise KeyError("This method requires that you have "
                            "run `.segment_into_units()` or provided unit "
                            "segmentation information.")
         kplot.segmentation(self, key, **kwargs)
 
     @timing
-    def get_units(self, pad: bool = True) -> None:
+    def get_units(self, pad: bool = False) -> None:
         """
         Creates and saves a dictionary containing spectrogram
         representations of the units or the average of
@@ -737,15 +740,25 @@ class SongDataset():
 
         Args:
             pad (bool, optional): Whether to pad spectrograms 
-                to the maximum lenght (per ID). Defaults to True.
+                to the maximum lenght (per ID). Defaults to False.
 
         Note:
-            If ``pad = True``, unit spectrograms are padded to the maximum
+            If `pad = True`, unit spectrograms are padded to the maximum
             duration found among units that belong to the same ID, 
             not the global maximum.
+
+        Note:
+            If each of your IDs (grouping factor, such as individual or
+            population) has lots of data and you are using a machine with very
+            limited memory resources you will likely run out of it when
+            executing this funtion in parallel. If this is the case, you can
+            limit the number of cpus to be used at once by setting the
+            `num_cpus` parameter to a smaller number.
         """
         song_level = self.parameters.song_level
-        dic_locs = get_indv_units_parallel(self, pad=pad, song_level=song_level)
+        dic_locs = get_indv_units_parallel(
+            self, pad=pad, song_level=song_level,
+            num_cpus=self.parameters.num_cpus)
 
         if song_level:
             self.DIRS.AVG_UNITS = dic_locs
@@ -754,26 +767,27 @@ class SongDataset():
         self.save_to_disk(verbose=self.parameters.verbose)
 
     @timing
-    def cluster_individuals(self, min_sample: int = 10) -> None:
+    def cluster_ids(self, min_sample: int = 10) -> None:
         """
         Dimensionality reduction using UMAP + unsupervised clustering
-        using HDBSCAN. This will fail if the sample size for an individual
-        is too small.
+        using HDBSCAN. This will fail if the sample size for an ID (grouping factor, such as individual or
+            population) is too small.
 
         Adds cluster membership information and 2D UMAP coordinates to 
-        :attr:`~.SongDataset.vocalisations` if `song_level=True` 
+        :attr:`~.SongDataset.vocs` if `song_level=True` 
         in :attr:`~.SongDataset.parameters`, else to :attr:`~.SongDataset.units`.
 
         Args:
-            min_sample (int): Minimum sample size below which an individual will
-                be skipped. Defaults to 10, but you can expect good automatic 
-                results above ~100.
+            min_sample (int): Minimum sample size below which an ID will
+                be skipped. Defaults to 10, but you can reallistically expect
+                good automatic results above ~100.
 
         """
-        df = reduce_and_cluster_parallel(self, min_sample=min_sample)
+        df = reduce_and_cluster_parallel(self, min_sample=min_sample,
+                                         num_cpus=self.parameters.num_cpus)
 
         if self.parameters.song_level:
-            self.vocalisations = self.vocalisations.combine_first(df)
+            self.vocs = self.vocs.combine_first(df)
         else:
             self.units = df
 
@@ -801,22 +815,22 @@ class SongDataset():
         if not hasattr(self, 'units') and not song_level:
             raise KeyError(
                 "This function requires the output of "
-                "`self.cluster_individuals()`. "
+                "`self.cluster_ids()`. "
                 "Make sure you that have run it, then try again")
 
         elif not set(
                 ['auto_cluster_label', 'umap_x', 'umap_y']).issubset(
-                self.vocalisations.columns if song_level
+                self.vocs.columns if song_level
                 else self.units.columns):
             raise KeyError(
                 "This function requires the output of "
-                "`self.cluster_individuals()`. "
+                "`self.cluster_ids()`. "
                 "Make sure you that have run it, then try again")
 
         # Prepare dataframes with spectrogram pngs
         prepare_datasource_r = ray.remote(prepare_datasource)
         indvs = np.unique(
-            self.vocalisations['ID'] if song_level else self.units['ID'])
+            self.vocs['ID'] if song_level else self.units['ID'])
 
         # Set or get spectrogram length (affects width of unit/voc preview)
         # NOTE: this is set to maxlen=50%len if using units, 4*maxlen if using
@@ -824,9 +838,10 @@ class SongDataset():
         if not spec_length:
             max_l = max(
                 [i
-                 for array in self.vocalisations.unit_durations.values
+                 for array in self.vocs.unit_durations.values
                  for i in array])
-            spec_length = (max_l + 0.5*max_l) if not song_level else 4*max_l
+            spec_length = (max_l + 0.7*max_l) if not song_level else 6*max_l
+
         spec_length_frames = int(np.floor(
             spec_length * self.parameters.sr / self.parameters.hop_length_ms))
 
@@ -894,7 +909,7 @@ class SongDataset():
         song_level = self.parameters.song_level
 
         if song_level:
-            dataset_type = 'vocalisations'
+            dataset_type = 'vocs'
             dataset_labels = 'VOCALISATION_LABELS'
         else:
             dataset_type = 'units'
@@ -920,7 +935,7 @@ class SongDataset():
                 return None
 
         if 'auto_cluster_label' not in getattr(self, dataset_type).columns:
-            raise ValueError('You need to run `self.cluster_individuals`'
+            raise ValueError('You need to run `self.cluster_ids`'
                              ' before you can check its results.')
 
         if set(
