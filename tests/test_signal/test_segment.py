@@ -1,13 +1,8 @@
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
-
-from attr import validators
-import attr
 from pathlib import Path
-from typing import List
-
-import git
 import numpy as np
+import pkg_resources
 import pytest
 import soundfile as sf
 from pykanto.signal.segment import ReadWav, SegmentMetadata, segment_is_valid
@@ -19,19 +14,11 @@ from pykanto.utils.types import Annotation, AudioAnnotation, Metadata
 
 @pytest.fixture()
 def DIRS():
-    PROJECT = Path(
-        git.Repo('.', search_parent_directories=True).working_tree_dir)
-    RAW_DATA = PROJECT / 'pykanto' / 'data' / 'raw'
-    DIRS = ProjDirs(PROJECT / 'pykanto', RAW_DATA, mkdir=True)
+    DATA_PATH = Path(pkg_resources.resource_filename('pykanto', 'data'))
+    PROJECT = Path(DATA_PATH).parent
+    RAW_DATA = DATA_PATH / 'raw'
+    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
     return DIRS
-
-
-@pytest.fixture()
-def datapaths(DIRS):
-    annotation_paths = get_file_paths(DIRS.RAW_DATA, ['.xml'])
-    wav_filepaths = get_file_paths(DIRS.RAW_DATA, ['.wav'])
-    datapaths = get_wavs_w_annotation(wav_filepaths, annotation_paths)
-    return datapaths
 
 
 @pytest.fixture()
