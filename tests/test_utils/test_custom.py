@@ -1,16 +1,10 @@
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
-from attr import validators
-import attr
 from pathlib import Path
-from typing import List
-
-import git
+import pkg_resources
 import pytest
-import soundfile as sf
-from pykanto.signal.segment import ReadWav
 from pykanto.utils.custom import parse_sonic_visualiser_xml
-from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
+from pykanto.utils.paths import ProjDirs, get_file_paths
 from pykanto.utils.types import SegmentAnnotation
 
 
@@ -19,10 +13,10 @@ from pykanto.utils.types import SegmentAnnotation
 
 @pytest.fixture()
 def DIRS():
-    PROJECT = Path(
-        git.Repo('.', search_parent_directories=True).working_tree_dir)
-    RAW_DATA = PROJECT / 'pykanto' / 'data' / 'raw'
-    DIRS = ProjDirs(PROJECT / 'pykanto', RAW_DATA, mkdir=True)
+    DATA_PATH = Path(pkg_resources.resource_filename('pykanto', 'data'))
+    PROJECT = Path(DATA_PATH).parent
+    RAW_DATA = DATA_PATH / 'raw'
+    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
     return DIRS
 
 
