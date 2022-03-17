@@ -22,34 +22,36 @@ from pykanto.utils.write import makedir, save_json
 
 
 class ProjDirs():
+    """
+    Initialises a ProjDirs class, which is used to store a 
+    project's file structure. This is required when constructing 
+    a :class:`~pykanto.dataset.SongDataset` object and generally 
+    useful to keep paths tidy and in the same location.
+
+    Args:
+        PROJECT (Path): Root directory of the project.
+        RAW_DATA (Path): (Immutable) location of the raw data to be used in 
+            this project.
+        mkdir (bool, optional): Wether to create directories if they 
+            don't already exist. Defaults to False.
+
+    Examples:
+        >>> PROJROOT = Path('home' / 'user' / 'projects' / 'myproject')
+        >>> RAW_DATA= Path('bigexternaldrive' / 'fieldrecordings')
+        >>> DIRS = ProjDirs(PROJROOT, RAW_DATA, mkdir=True)
+        >>> print(DIRS)
+
+        Items held:
+        PROJECT:   (/user/projects/myproject)
+        DATA:      (/user/projects/myproject/data)
+        RAW_DATA:  (/bigexternaldrive/fieldrecordings)
+        SEGMENTED: (/user/projects/myproject/data/segmented/bengalese_finch)
+        RESOURCES: (/user/projects/myproject/resources)
+        REPORTS:   (/user/projects/myproject/reports)
+        FIGURES:   (/user/projects/myproject/reports/figures)
+    """
+
     def __init__(self, PROJECT: Path, RAW_DATA: Path, mkdir: bool = False):
-        """
-        Initialises a ProjDirs class, which is used to store a 
-        project's file structure. This is required when constructing 
-        a :class:`~pykanto.dataset.SongDataset` object and generally 
-        useful to keep paths tidy and in the same location.
-
-        Args:
-            PROJECT (Path): Root directory of the project.
-            RAW_DATA (Path): (Immutable) location of the raw data to be used in 
-                this project.
-            mkdir (bool, optional): Wether to create directories if they 
-                don't already exist. Defaults to False.
-
-        Examples:
-            >>> PROJROOT = Path('home' / 'user' / 'projects' / 'myproject')
-            >>> RAW_DATA= Path('bigexternaldrive' / 'fieldrecordings')
-            >>> DIRS = ProjDirs(PROJROOT, mkdir=False)
-            >>> print(DIRS)
-            Items held:
-            PROJECT (/user/projects/myproject)
-            RAW_DATA (/bigexternaldrive/fieldrecordings)
-            DATA (./myproject/data)
-            SEGMENTED (.segmented/fieldrecordings)
-            RESOURCES (./resources)
-            REPORTS (./reports)
-            FIGURES (./reports/figures)
-        """
 
         # Type check input paths
         d = ValidDirs(PROJECT, RAW_DATA)
@@ -58,11 +60,14 @@ class ProjDirs():
         self.PROJECT = d.PROJECT
         self.DATA = d.PROJECT / "data"
         self.RAW_DATA = d.RAW_DATA
-        self.SEGMENTED = self.DATA / "segmented" / d.RAW_DATA.name
+        self.SEGMENTED = self.DATA / "segmented" / d.RAW_DATA.name.lower()
 
         self.RESOURCES = d.PROJECT / "resources"
         self.REPORTS = d.PROJECT / "reports"
         self.FIGURES = self.REPORTS / "figures"
+
+        # Type annotations for later use within SongDataset objects
+        self.DATASET: Path
 
         # Create them if needed
         if mkdir:
@@ -137,12 +142,12 @@ class ProjDirs():
             self, overwrite: bool = False,
             ignore_checks: bool = False) -> None:
         """
-        Updates the 'wav_file' field in JSON metadata files for a given project.
-        This is useful if you have moved your data to a location different to
-        where it was first generated. It will fix broken links to the .wav
-        files, provided that the :class:`~pykanto.utils.paths.ProjDirs` object
-        has a 'SEGMENTED' attribute pointing to a valid directory containing
-        'WAV' and 'JSON' subdirectories.
+        Updates the `wav_file` field in JSON metadata files for a given project.
+        This is useful if you have moved your data to a new location. It will
+        fix broken links to the .wav files, provided that the
+        :class:`~pykanto.utils.paths.ProjDirs` object has a `SEGMENTED`
+        attribute pointing to a valid directory containing `/WAV` and `/JSON`
+        subdirectories.
 
         Args:
             overwrite (bool, optional): Whether to force change paths 
@@ -150,6 +155,7 @@ class ProjDirs():
             ignore_checks (bool, optional): Wether to check that wav and 
                 JSON files coincide. Useful if you just want to change JSONS in
                 a different location to where the rest of the data are.
+                Defaults to False.
         """
 
         if not hasattr(self, 'SEGMENTED'):
@@ -166,7 +172,8 @@ class ProjDirs():
 
         if not len(WAV_LIST) and not ignore_checks:
             raise FileNotFoundError(
-                f'There are no .wav files in {self.SEGMENTED / "WAV"}')
+                f'There are no .wav files in {self.SEGMENTED / "WAV"}'
+                ' will not look for JSON files.')
         if len(WAV_LIST) != len(JSON_LIST) and not ignore_checks:
             raise KeyError(
                 "There is an unequal number of .wav and .json "
@@ -180,13 +187,14 @@ class ProjDirs():
                 f"{JSON_LIST[0]} does not exist or is empty.")
 
         wavloc = Path(jf['wav_file'])
+        print(wavloc)
+
         if wavloc.exists() and overwrite is False:
-            warnings.warn(
+            raise FileExistsError(
                 f'{wavloc} exists: no need to update paths. '
                 'You can force update by setting `overwrite = True`.')
-            return
 
-        def change_wav_file(file):
+        def change_wav_file_field(file):
             try:
                 jf = read_json(file)
             except:
@@ -202,17 +210,17 @@ class ProjDirs():
                 except:
                     raise IndexError(f"Could not save {file}")
 
-        def batch_change_wav_file(files: List[Path]) -> None:
+        def batch_change_wav_file_field(files: List[Path]) -> None:
             if isinstance(files, list):
                 for file in files:
-                    change_wav_file(file)
+                    change_wav_file_field(file)
             else:
-                change_wav_file(files)
-        kk = JSON_LIST[0]
-        change_wav_file(JSON_LIST[0])
+                change_wav_file_field(files)
+
+        change_wav_file_field(JSON_LIST[0])
 
         # Run in paralell
-        b_change_wav_file_r = ray.remote(batch_change_wav_file)
+        b_change_wav_file_r = ray.remote(batch_change_wav_file_field)
         chunk_info = calc_chunks(len(JSON_LIST), verbose=True)
         chunk_length, n_chunks = chunk_info[3], chunk_info[2]
         chunks = get_chunks(JSON_LIST, chunk_length)
@@ -222,7 +230,7 @@ class ProjDirs():
 
         # Distribute with ray
         obj_ids = [b_change_wav_file_r.remote(i) for i in chunks]
-        pbar = {'desc': "Projecting and clustering vocalisations",
+        pbar = {'desc': "Updating the `wav_file` field in JSON metadata files.",
                 'total': n_chunks}
         for obj_id in tqdmm(to_iterator(obj_ids), **pbar):
             pass
@@ -237,10 +245,10 @@ def get_wavs_w_annotation(
         wav_filepaths: List[Path],
         annotation_paths: List[Path]) -> List[Tuple[Path, Path]]:
     """
-    Returns a list of tuples containing paths to wavfiles for which there is an 
-    annotation file and paths to its annotation file. Assumes that wav and paths 
-    to the annotation files share the same file name and only their file 
-    extension changes, and that the wavfiles are '*.wav' and not '*.WAV'.
+    Returns a list of tuples containing [0] paths to wavfiles for which there is
+    an annotation file and [1] paths to its annotation file. Assumes that wav
+    and paths to the annotation files share the same file name and only their
+    file extension changes, and that the wavfiles are '*.wav' and not '*.WAV'.
 
     Args:
         wav_filepaths (List[Path]): List of paths to wav files. 
@@ -260,8 +268,8 @@ def get_wavs_w_annotation(
 def change_data_loc(
         DIR: Path, PROJECT: Path, NEW_PROJECT: Path) -> Path:
     """
-    Updates the location of the parent directories of a project, including 
-    the project name, for a given path. Used when the location of a dataset changes 
+    Updates the location of the parent directories of a project, including the
+    project name, for a given path. Used when the location of a dataset changes
     (e.g if transferring a project to a new machine).
 
     Args:
@@ -275,49 +283,6 @@ def change_data_loc(
     index = DIR.parts.index(PROJECT.name)
     new_path = NEW_PROJECT.joinpath(*DIR.parts[index+1:])
     return new_path
-
-
-def get_wav_filepaths(RAW_DATA_DIR:
-                      Union[str, Path]) -> List[Path]:
-    """
-    Get a list of wav files in a directory, including subdirectories, if
-    there is a corresponding .xml file with segmentation information. Works for
-    segmentation metadata from .xml files output by Sonic Visualiser.
-
-    Args:
-        RAW_DATA_DIR (PosixPath): Directory to search
-    """
-    file_list: List[Path] = []
-    for root, _, files in os.walk(str(RAW_DATA_DIR)):
-        for file in files:
-            if ((file.endswith(".wav") or file.endswith(".WAV"))
-                    and str(file.rsplit('.', 1)[0] + ".xml") in files):
-                file_list.append(Path(root) / file)
-    if len(file_list) == 0:
-        raise FileNotFoundError(
-            "There are no .wav files with matching .xml in this directory")
-    else:
-        print(f"Found {len(file_list)} .wav files with matching .xml files")
-        return file_list
-
-
-# NOTE: move this to custom
-def get_xml_filepaths(RAW_DATA_DIR:
-                      Union[str, Path]) -> List[Path]:
-    file_list: List[Path] = []
-    for root, _, files in os.walk(str(RAW_DATA_DIR)):
-        xml_files = [file for file in files if file.endswith('.xml')]
-        for file in xml_files:
-            file_list.append(Path(root) / file)
-
-    if len(file_list) == 0:
-        raise FileNotFoundError("There are no .xml files in this directory")
-    else:
-        nfolders = len(set([path.parent.name for path in file_list]))
-        print(
-            f"Found {len(file_list)} .xml files in "
-            f"{nfolders} folders")
-        return file_list
 
 
 def get_file_paths(root_dir: Path, extensions: List[str]) -> List[Path]:
@@ -346,7 +311,7 @@ def get_file_paths(root_dir: Path, extensions: List[str]) -> List[Path]:
                 file_list.append(Path(root) / file)
     if len(file_list) == 0:
         raise FileNotFoundError(
-            f"There are no {ext} files in this directory")
+            f"There are no {ext} files in directory {root_dir}.")
     else:
         print(f"Found {len(file_list)} {ext} files in {root_dir}")
     return file_list

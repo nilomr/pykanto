@@ -1,25 +1,34 @@
+# ─── DESCRIPTION ──────────────────────────────────────────────────────────────
+
+"""
+A collection of functions and methods used to create directories and write data
+to disk.
+"""
+
+# ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
 from __future__ import annotations
-import os.path
-import tarfile
-import re
+
 import json
-from _ctypes import PyObj_FromPtr
 import os
-from pathlib import Path
-import sys
-from typing import Dict, List
-import numpy as np
-from tqdm import tqdm
+import os.path
 import shutil
+import sys
+import tarfile
+from pathlib import Path
+from typing import Dict, List
+
+import numpy as np
 import ujson
+from tqdm import tqdm
+
+# ──── FUNCTIONS ───────────────────────────────────────────────────────────────
 
 
-def makedir(DIR: Path, return_path: bool = True) -> Path:
+def makedir(DIR: Path, return_path: bool = True) -> Path | None:
     """
     Make a safely nested directory. Returns the Path object by default. Modified
-    from `code`_ by Tim Sainburg.
-    .. _code: https://github.com/timsainb/src.avgn_paper/blob/vizmerge/src.avgn/utils/paths.py
+    from code by Tim Sainburg (`source <https://shorturl.at/douA0>`_).
 
     Args:
         DIR (Path): Path to be created. return_path (bool, optional): Whether to
@@ -66,7 +75,7 @@ def copy_xml_files(file_list: List[Path], dest_dir: Path) -> None:
     print(f"Done copying {len(file_list)} files to {dest_dir}")
 
 
-def save_json(json_object: Dict, json_loc: Path) -> Dict:
+def save_json(json_object: Dict, json_loc: Path) -> None:
     """
     Saves a .json file using ujson.
 

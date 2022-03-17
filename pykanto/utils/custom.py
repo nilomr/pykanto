@@ -1,14 +1,20 @@
 import glob
+import gzip
+import json
 import os
+import pickle
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Union
+from typing import Any, Dict, List, Tuple, Union
 from xml.etree import ElementTree
 
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from pykanto.utils.compute import timing, tqdmm
+from pykanto.utils.paths import get_file_paths
+from pykanto.utils.read import read_json
 
 from pykanto.utils.types import SegmentAnnotation
 
@@ -65,109 +71,94 @@ def parse_sonic_visualiser_xml(xml_filepath: Path) -> SegmentAnnotation:
 # ──── OTHERS ───────────────────────────────────────────────────────────────────
 
 
-def get_boxes_data(YEAR: str, RAW_DATA_DIR: Union[str, Path],
-                   RESOURCES_DIR: Union[str, Path],
-                   days_before_laydate: Union[int, None] = None):
-    """Returns a dataframe with brood information for each nestbox that was
-    recorded within a specified time window. Prints some basic information about
-    sample sizes.
+def open_gzip(file: Path) -> Tuple[
+    Dict[str, Any],
+    Dict[str, List[int]],
+    float
+]:
+    """
+    Reads syllable segmentation generated
+    with `Chipper <https://github.com/CreanzaLab/chipper>`_.
 
     Args:
-        YEAR (str): Year of data to extract
-        RAW_DATA_DIR (PosixPath): Location of sound files to use
-        RESOURCES_DIR (PosixPath): Path to 'resources' folder in the project; 
-            assumes `RESOURCES_DIR / "brood_data" / YEAR / *.csv` exists.
-        days_before_laydate (int, optional): Maximum difference allowed between
-        first day of recording and first egg allowed. In days, defaults to None.
+        file (Path): Path to the .gzip file.
 
     Returns:
-        final_df (pd.DataFrame): Those that laid eggs and were recorded a
-        maximum of 10 days before the first egg was laid
-        full_df (pd.DataFrame): Every box that was recorded
+        Tuple[Dict[str, Any], Dict[str, List[int]], float]: Tuple containing
+        two dictionaries (the first contains chipper parameters, the second
+        has two keys ['Onsets', 'Offsets']) and a parameter 'timeAxisConversion'.
+    """
+    with gzip.open(file, "rb") as f:
+        data = f.read()
+    song_data = pickle.loads(data, encoding="utf-8")
+
+    return song_data[0], song_data[1], song_data[3]['timeAxisConversion']
+
+
+@timing
+def chipper_units_to_json(
+        directory: Path,
+        n_fft: int = 1024,
+        overlap: int = 1010,
+        pad: int = 150,
+        window_offset: bool = True,
+        overwrite_json: bool = False,
+        pbar: bool = True):
+    """
+    Reads audio unit segmentation metadata from .gzip files output by Chipper and appends them to pykanto .JSON metadata files.
+
+    Args:
+        directory (Path): _description_
+        n_fft (int, optional): _description_. Defaults to 1024.
+        overlap (int, optional): _description_. Defaults to 1010.
+        pad (int, optional): _description_. Defaults to 150.
+        window_offset (bool, optional): _description_. Defaults to True.
+        overwrite_json (bool, optional): _description_. Defaults to False.
+        pbar (bool, optional): _description_. Defaults to True.
+
+    Raises:
+        FileExistsError: _description_
     """
 
-    filelist: np.ndarray = np.sort(list(RAW_DATA_DIR.glob("**/*.WAV")))
-    recorded_nestboxes = set([file.parent.name for file in filelist])
-    ebmp_df, breeding_attempts = get_ebmp_data(YEAR, RESOURCES_DIR)
+    woffset: int = n_fft // 2 if window_offset else 0
 
-    # Get only those boxes that were recorded
-    ebmp_df = ebmp_df[ebmp_df['Nestbox'].isin(recorded_nestboxes)]
-    dates_df = get_recorded_dates_df(filelist)
+    jsons, gzips = [
+        get_file_paths(directory, ext)
+        for ext in (['.json', '.JSON'],
+                    [".gzip", ".GZIP"])]
 
-    # Join both dataframes
-    full_df = pd.merge(ebmp_df, dates_df, left_on='Nestbox', right_on='index')
+    jsons = {path.stem: path for path in jsons}
+    gzips = {path.stem.replace(
+        'SegSyllsOutput_', ''): path for path in gzips}
 
-    variables = [  # Variables to keep in dataframe
-        'Nestbox', 'first_date', 'Lay date',
-        'last_date', 'Clear date', 'Species',
-        'April lay date', 'Incubation started',
-        'Hatch date', 'Clutch size', 'Num chicks',
-        'Num fledglings', 'Mean chick weight', 'Father',
-        'Mother'
-    ]
+    if len([gzip for gzip in gzips if gzip in jsons]) == 0:
+        raise KeyError('No JSON and GZIP file names match')
 
-    if days_before_laydate is not None:
+    for gz_name, gz_path in tqdmm(
+            gzips.items(),
+            desc='Adding unit onset/offset information '
+            'from .gzip to .json files',
+            disable=False if pbar else True
+    ):
 
-        # NOTE: This is not a particularly good way of doing this. So,
-        # TODO: Make get_recorded_dates_df() get all dates and decide based on this;
-        # the first/last recording dates are not representative when a nestbox
-        # was recorded more than once
+        if gz_name in jsons:
 
-        # Make a boolean mask
-        mask = (
-            full_df['Lay date'] + timedelta(days=days_before_laydate) >
-            full_df['first_date']) & (
-            full_df['last_date'] < full_df['Clear date'])
+            jsondict = read_json(jsons[gz_name])
+            if 'onsets' in jsondict and not overwrite_json:
+                raise FileExistsError(
+                    'Json files already contain unit onset/offset times.'
+                    'Set `overwrite_json = True` if you want '
+                    'to overwrite them.')
 
-        # Select the sub-DataFrame:
-        final_df = full_df.loc[mask][variables]
-        recorded_within_window = len(final_df)
+            sr = jsondict['sample_rate']
+            gzip_onoff = open_gzip(gz_path)[1]
+            on, off = np.array(
+                gzip_onoff['Onsets']), np.array(
+                gzip_onoff['Offsets'])
 
-    # Print info
-    print(f"\nYou recorded a total of {(len(filelist))} hours of audio.\n"
-          f"You recorded {len(ebmp_df)} out of a total of {breeding_attempts} "
-          "breeding attempts this year")
-    if days_before_laydate is not None:
-        print(f"Of those, {recorded_within_window} laid eggs and were recorded "
-              "a maximum of 10 days before the first egg was laid")
-        return final_df  # Those that laid eggs and were recorded a maximum of n days before the first egg was laid
+            jsondict['onsets'], jsondict['offsets'] = [(
+                ((arr - pad) * (n_fft - overlap) + woffset) / sr).tolist()
+                for arr in (on, off)]
 
-    return full_df[variables]  # Every box that was recorded
-
-
-def get_recorded_dates_df(filelist):
-    # Get first and last recorded files per nestbox
-    recorded_nestboxes = set([file.parent.name for file in filelist])
-    times_dict = {}
-    for box in tqdm(recorded_nestboxes,
-                    desc="Getting recording dates",
-                    leave=True, position=0,
-                    file=sys.stdout):
-        dt_list = [datetime.strptime(
-            file.stem, "%Y%m%d_%H%M%S") for file in filelist
-            if file.parents[0].name == box]
-        times_dict[box] = [dt_list[0], dt_list[-1]]
-
-    dates_df = pd.DataFrame.from_dict(times_dict, orient='index', columns=[
-        "first_date", "last_date"]).reset_index(level=0)
-
-    return dates_df
-
-
-def get_ebmp_data(YEAR, RESOURCES_DIR):
-    # Import the latest brood data downloaded from https://ebmp.zoo.ox.ac.uk/broods
-    brood_data_path = RESOURCES_DIR / "brood_data" / YEAR
-    list_of_files = glob.glob(os.fspath(brood_data_path) + "/*.csv")
-    latest_file = max(list_of_files, key=os.path.getctime)
-
-    # Read csv
-    ebmp_df = pd.read_csv(latest_file).query('Species == "g"')
-    breeding_attempts = len(ebmp_df)
-    ebmp_df.insert(1, "Nestbox", ebmp_df["Pnum"].str[5:])
-    ebmp_df.drop(list(ebmp_df.filter(regex='Legacy')), axis=1, inplace=True)
-
-    # Ensure dates are dtype datetime64[ns]:
-    ebmp_df[["Clear date", "Lay date"]] = ebmp_df[[
-        "Clear date", "Lay date"]].apply(pd.to_datetime, format="%d-%m-%Y")
-
-    return ebmp_df, breeding_attempts
+            with open(jsons[gz_name].as_posix(), "w") as f:
+                json.dump(jsondict, f, indent=2)

@@ -1,10 +1,19 @@
 
+# ─── DESCRIPTION ──────────────────────────────────────────────────────────────
+
+"""
+A collection of functions and decorators used to manage common operations (e.g.,
+parallelisation, timing).
+"""
+
+# ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
+
 from __future__ import annotations
-from collections import ChainMap, namedtuple
-import itertools
 
 import gc
+import itertools
 import sys
+from collections import ChainMap
 from functools import wraps
 from time import time
 from typing import Any, Dict, Iterable, List
@@ -13,22 +22,26 @@ import numpy as np
 import pandas as pd
 import psutil
 import ray
+from pykanto.utils.types import Chunkinfo
 from tqdm.auto import tqdm
 
-from pykanto.utils.types import Chunkinfo
+# ──── FUNCTIONS ───────────────────────────────────────────────────────────────
 
 
-def to_iterator(obj_ids):
+def to_iterator(obj_ids, breaks: bool = True):
     """
     Use ray paralell with a progress bar.
     Modified from https://git.io/JMv6r.
     """
     while obj_ids:
         done, obj_ids = ray.wait(obj_ids)
-        try:
+        if breaks:
             yield ray.get(done[0])
-        except Exception as e:
-            print(f'{done[0]} failed: {e}')
+        else:
+            try:
+                yield ray.get(done[0])
+            except Exception as e:
+                print(f'{done[0]} failed: {e}')
         del done[0]
         gc.collect()
 
@@ -96,7 +109,8 @@ def timing(f):
 
 
 def calc_chunks(
-        len_iterable: int, factor: int = 2, verbose: bool = False) -> Chunkinfo:
+        len_iterable: int, factor: int = 2, n_workers: float | None = None,
+        verbose: bool = False) -> Chunkinfo:
     """
     Calculate chunk size to optimise parallel computing.
     Adapted from https://stackoverflow.com/a/54032744.
@@ -105,7 +119,8 @@ def calc_chunks(
                       'chunksize', 'last_chunk']
 
     """
-    n_workers = len(psutil.Process().cpu_affinity())
+    if not n_workers:
+        n_workers = len(psutil.Process().cpu_affinity())
 
     chunksize, extra = divmod(len_iterable, n_workers * factor)
     if extra:

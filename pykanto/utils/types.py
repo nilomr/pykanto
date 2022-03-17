@@ -55,8 +55,8 @@ class ValidDirs:
 @attr.s
 class SegmentAnnotation:
     """
-    Type-checks and stores annotations necessary to segment regions of interest present
-    in an audio file (e.g. songs or song bouts).
+    Type-checks and stores annotations necessary to segment regions of interest
+    present in an audio file (e.g. songs or song bouts).
     """
     ID: str = attr.ib(validator=validators.instance_of(str))
     start_times: List[int] = attr.ib(validator=is_list_of_int)
