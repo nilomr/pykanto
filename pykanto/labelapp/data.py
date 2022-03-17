@@ -38,18 +38,18 @@ def embeddable_image(
     <https://umap-learn.readthedocs.io/en/latest/basic_usage.html>`_.
 
     Args:
-        data (np.ndarray): Image to embed
+        data (np.ndarray): Image to embed.
         invert (bool, optional): Whether to invert image. Defaults to True.
-        background (int, optional): RGB grey value. Defaults to 41 (same as app)
+        background (int, optional): RGB grey value. Defaults to 41 (same as app).
 
     Returns:
-        str: a decoded png image
+        str: A decoded png image.
     """
-    img_data = np.interp(
+    img_data = np.rot90(np.interp(
         data, (data.min(),
                data.max()),
         (0, 255)).astype(
-        np.uint8)
+        np.uint8), 2)
     image = Image.fromarray(img_data, mode='L').resize((64, 64), Image.BICUBIC)
     enhancer = ImageEnhance.Contrast(image)
     image = enhancer.enhance(2)
@@ -83,13 +83,13 @@ def prepare_datasource(
 
     # Get a subset of the main dataset for this individual
     if song_level:
-        df = dataset.vocalisations[dataset.vocalisations['ID'] == individual][[
-            'auto_cluster_label', 'umap_x', 'umap_y', 'spectrogram_loc']].copy()
+        df = dataset.vocs[dataset.vocs['ID'] == individual][[
+            'ID', 'auto_cluster_label', 'umap_x', 'umap_y', 'spectrogram_loc']].copy()
         spectrograms = [retrieve_spectrogram(spec_loc)
                         for spec_loc in df['spectrogram_loc']]
     else:
         df = dataset.units[dataset.units['ID'] == individual][[
-            'auto_cluster_label', 'umap_x', 'umap_y']].copy()
+            'ID', 'auto_cluster_label', 'umap_x', 'umap_y']].copy()
         units = pickle.load(open(dataset.DIRS.UNITS[individual], "rb"))
         spectrograms = list(itertools.chain.from_iterable(units.values()))
 
@@ -123,5 +123,5 @@ def load_bk_data(
     df_loc = getattr(dataset.DIRS, dataloc.upper())['predatasource'][individual]
     df = pickle.load(open(df_loc, "rb"))
     source = ColumnDataSource(
-        df[['auto_cluster_label', 'umap_x', 'umap_y', 'spectrogram']])
+        df[['ID', 'auto_cluster_label', 'umap_x', 'umap_y', 'spectrogram']])
     return source

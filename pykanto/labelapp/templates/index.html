@@ -5,28 +5,47 @@
     <meta charset="utf-8">
     {{ bokeh_css }}
     {{ bokeh_js }}
+    <!-- <link rel="stylesheet" href="styles.css" />  -->
     <style type="text/css">{% include 'styles.css' %}</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
 
   <body>
 
-    <h1>Interactive song labelling</h1>
+    <div class='row'>
+      <div class='column'>
+        <div class='pykanto-column'>
+          <img class="pykanto_logo" src="labelapp/static/pykanto-logo.svg">
+          <!-- <img class="pykanto_logo" src="../static/pykanto-logo.svg"> -->
+        </div>
+      </div>
+      <div class='column'>
+        <div class='interactive-column'>
+          <h1>Interactive song labelling</h1>
+        </div>
+      </div>
+    </div>
 
-    <p>You can use this app to explore the vocal repertoire of an individual
-      animal: hover the mouse cursor over points in the acoustic space to see a
-      preview of each vocalisation or acoustic unit. <br>
-      <img class="sample_tools" style="vertical-align:middle;width: 1em;"
-        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gEMEgwlGP1qdAAABMBJREFUWMO9V1uIVVUY/r61z57ZMx4DnbzgkbQXL5iCJphlWdpIGY4jpFBkEiU9ZNaDRRcITcIwMwgxoQtU2IMXdAZfMjFvpERXYiSbysyBEXFmyuHMnLP32uvrwT2xnY5nxvHQ93Jg7fWv71/r//7L4a59TRgqJk+Z6v3a+sv0OI5nk5wu6VaSVZImAThHsgjgrKTvM5nMUWvtmf5n8HodCIKgOgzDhc65pSTrJQWDsSNpJX1ljHnDOfdT37oZLLHv+8OMMasKhcIJ59xHAJYMlhwAJGUAzJfUTHLFuFzOG5QDU6dNMyQfs9Yedc5tBpAD4IYYNQGoBrDtQnt7/b0LFrJsCHzfn2itfQfAnZLiazytA3AaQAuAiwDaEgeNpGkkswAWSBqRONB38b88z5uTKePt6iiKXkk8jq+iJC5LOmiMaTLGHLPWhmWeHr7vV0dRtATAapAzIVmSo51zyzIlbm2stesFPA6pKk0r6Ryg93y/ek8YFvPOOTg3cDSiKCoC2OP7/rEoirYm4rUkF12lAWNM1lr7lqQn0+QA8gI2jBg5cj6Aj8OwmB+KAKIoukhyp6SRJAUgl0ndPLDWPi9pJQCbuviXvu+/GIZhW1dnJ24UJFuTjCCA2ADA8sYGWmsXS3qmL94kDYAtkh4Nw7ANlQJ5U6INT1KrAYC9zQdykl7nFSj5fXp5Y8NWVBhy7mUAjqShMYdMXV2dJ2klyRwAJ8lIeuGWCRMP7N7frEqSG2OmAFhKshNAp5wrmO7u7jEAngPQm1S2z2pqapr+OPt7XEly0oxwzq2RdFmSD2AMgKKJouhhAL4kA+Cs53l7e3t7uytJHgRBreTWkXwkKVJnJD0B4GAGwIJE9R6AFufc6UqSZ7PZbD6ff5dkA4CQZEHSqwAOISmXtwGIE+F1SeqqIP8d+Xz+C0mLJYWSAODteXffczjdDQNJ0BWMCoLg5gqIbRTJNwHsljQhUb0luWPM2LE7Thw/9m/5NCT/TByxAOYWi8X6/gdWV1dnfN8fNRBxJpMZTXKdc+6IpFVJWAEgkvSJpA0X2tvtVTaSjgOYBCAEEADYSHK87/sfhmEYA9gShuEDkgzJHyWtB/B1irQ2juP7ADxkrX0wOUOpzmdpzEY590HJ7Ni1r2kSyZOSiv2+hSRjSTXp/QAukzySNJOJkmalyNIl10hqMcasdc61XDNcQRD8BnITgNp+36r6kfcNFMMlLQGwTNLMEuQGQBfJl2bdPru+HDkAZAqFQux53jZHEsC6aw0eg2gylNRBcqcx5v04ji999+03AwsWAOI4Lsy9a94WkisAnE5a5WCJYwCfA1g7LJudI2lTHMeXBm1faiQzxkyRtF3S5CTupeAB+KG2tnZFT0/P30NO2VKLzrmfAbwGMipjG5Oc0dPTc0Md05SZ5U4Q2FxChErtEYD7jTGNQ3UgM8Asv90Yc9I5LSKRlXSI5CxJa0jWSALJjKRnAewfkniT+vwf7N7fXHK9rq7O7+jo+BTA/NRrdBpjnnLOnUrvXd7YMPQXSBunneno6IhIHgYwW1JtkgmBpBkATlVMAwOk3nFJ+VSoqgCMr6gIy2FcLtdKspAedyQN/98caDt/3kpyabUmf8WvG/8A1vODTBVE/0MAAAAASUVORK5CYII=">
-      <p style="vertical-align:middle; display:inline;">Use the lasso tool to
-        select multiple points at once </p>
-      <img class="sample_tools" style="vertical-align:middle;width: 1em;"
-        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gEMEgwlGP1qdAAABMBJREFUWMO9V1uIVVUY/r61z57ZMx4DnbzgkbQXL5iCJphlWdpIGY4jpFBkEiU9ZNaDRRcITcIwMwgxoQtU2IMXdAZfMjFvpERXYiSbysyBEXFmyuHMnLP32uvrwT2xnY5nxvHQ93Jg7fWv71/r//7L4a59TRgqJk+Z6v3a+sv0OI5nk5wu6VaSVZImAThHsgjgrKTvM5nMUWvtmf5n8HodCIKgOgzDhc65pSTrJQWDsSNpJX1ljHnDOfdT37oZLLHv+8OMMasKhcIJ59xHAJYMlhwAJGUAzJfUTHLFuFzOG5QDU6dNMyQfs9Yedc5tBpAD4IYYNQGoBrDtQnt7/b0LFrJsCHzfn2itfQfAnZLiazytA3AaQAuAiwDaEgeNpGkkswAWSBqRONB38b88z5uTKePt6iiKXkk8jq+iJC5LOmiMaTLGHLPWhmWeHr7vV0dRtATAapAzIVmSo51zyzIlbm2stesFPA6pKk0r6Ryg93y/ek8YFvPOOTg3cDSiKCoC2OP7/rEoirYm4rUkF12lAWNM1lr7lqQn0+QA8gI2jBg5cj6Aj8OwmB+KAKIoukhyp6SRJAUgl0ndPLDWPi9pJQCbuviXvu+/GIZhW1dnJ24UJFuTjCCA2ADA8sYGWmsXS3qmL94kDYAtkh4Nw7ANlQJ5U6INT1KrAYC9zQdykl7nFSj5fXp5Y8NWVBhy7mUAjqShMYdMXV2dJ2klyRwAJ8lIeuGWCRMP7N7frEqSG2OmAFhKshNAp5wrmO7u7jEAngPQm1S2z2pqapr+OPt7XEly0oxwzq2RdFmSD2AMgKKJouhhAL4kA+Cs53l7e3t7uytJHgRBreTWkXwkKVJnJD0B4GAGwIJE9R6AFufc6UqSZ7PZbD6ff5dkA4CQZEHSqwAOISmXtwGIE+F1SeqqIP8d+Xz+C0mLJYWSAODteXffczjdDQNJ0BWMCoLg5gqIbRTJNwHsljQhUb0luWPM2LE7Thw/9m/5NCT/TByxAOYWi8X6/gdWV1dnfN8fNRBxJpMZTXKdc+6IpFVJWAEgkvSJpA0X2tvtVTaSjgOYBCAEEADYSHK87/sfhmEYA9gShuEDkgzJHyWtB/B1irQ2juP7ADxkrX0wOUOpzmdpzEY590HJ7Ni1r2kSyZOSiv2+hSRjSTXp/QAukzySNJOJkmalyNIl10hqMcasdc61XDNcQRD8BnITgNp+36r6kfcNFMMlLQGwTNLMEuQGQBfJl2bdPru+HDkAZAqFQux53jZHEsC6aw0eg2gylNRBcqcx5v04ji999+03AwsWAOI4Lsy9a94WkisAnE5a5WCJYwCfA1g7LJudI2lTHMeXBm1faiQzxkyRtF3S5CTupeAB+KG2tnZFT0/P30NO2VKLzrmfAbwGMipjG5Oc0dPTc0Md05SZ5U4Q2FxChErtEYD7jTGNQ3UgM8Asv90Yc9I5LSKRlXSI5CxJa0jWSALJjKRnAewfkniT+vwf7N7fXHK9rq7O7+jo+BTA/NRrdBpjnnLOnUrvXd7YMPQXSBunneno6IhIHgYwW1JtkgmBpBkATlVMAwOk3nFJ+VSoqgCMr6gIy2FcLtdKspAedyQN/98caDt/3kpyabUmf8WvG/8A1vODTBVE/0MAAAAASUVORK5CYII=">
-      <p style="vertical-align:middle; display:inline;">Use the lasso tool to
-        select multiple points at once </p>
+    <p>You can use this app to explore and label  the vocal repertoire of an
+    individual animal or a population. Hover the mouse cursor over a point in
+    the acoustic space to see its corresponding spectrogram.</p>
 
+      <p style="vertical-align:middle; display:inline; font-size:0.9em;"> 
+        Use the lasso (<img class="sample_tools" src="labelapp/static/lasso.png">) tool to select multiple points at once. 
+         |  <span class='keyboard_key'>&#8679;</span>+ <span class='keyboard_key_small'>CLICK</span>
+        to select multiple points one by one  |  
+        <span class='keyboard_key'>&#8679;</span>+ <img class="sample_tools" src="labelapp/static/lasso.png">
+        to make multiple lasso selections.
+      </p>
+      <br>
+      <br>
 
       {{plot_div}}
       {{plot_script}}
+      
+      <div id="footer">
+        <div id="docsbutton"><a href="https://github.com/nilomr/pykanto"><i class="fa fa-github"></i> Docs</a></div>
+      </div>
 
     </body>
 

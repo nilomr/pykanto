@@ -14,9 +14,11 @@ body {
     max-width: 1100px;
     min-height: 500px;
     max-height: 800px;
-    width: 99%;
+    width: 80%;
     height: 99%;
     margin: auto;
+    padding-left: 2em;
+    padding-right: 2em;
 }
 
 .content {
@@ -24,40 +26,66 @@ body {
 }
 
 h1 {
-    margin: 2em 0 0 0;
-    color: #3f6268;
+    margin: 3.5em 0 0 0;
+    line-height: 1em;
+    color: #b3b3b3;
     font-family: 'Julius Sans One', sans-serif;
-    font-size: 1.5em;
+    font-size: 0.97em;
     text-transform: uppercase;
 }
 
+
+/* footer */
+
+#footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+}
+
+#docsbutton {
+    text-align: center;
+    font-size: 1em;
+    width: 100px;
+    float: left;
+    color: #a0a0a0;
+    border: 0px solid #a0a0a0;
+    background-color: transparent;
+}
+
 a:link {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: bold;
     text-decoration: none;
-    color: #0d8ba1;
+    color: #a0a0a0;
 }
 
 a:visited {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: bold;
     text-decoration: none;
-    color: #1a5952;
+    color: #a0a0a0;
 }
 
 a:hover, a:focus, a:active {
-    text-decoration: underline;
-    color: #9685BA;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-decoration: none;
+    color: #50787a;
 }
 
 p {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 1em;
+    font-size: 0.9em;
     text-align: justify;
     text-justify: inter-word;
     color: #a0a0a0;
+    max-width: 800px;
 }
+
 
 .bk-root {
     height: 100%;
+    padding-top: 1em;
 }
 
 /* No cursor on hover */
@@ -184,13 +212,44 @@ span mark-triangle {
 
 /* Button/menu aesthetics */
 
+
+img.sample_tools {
+    vertical-align: middle;
+    display: inline;
+    width: 1em;
+    color: grey;
+}
+
+
+
+.keyboard_key {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1.2em;
+    text-align: justify;
+    text-justify: inter-word;
+    color: #a0a0a0;
+    font-weight: 1000;
+    vertical-align: -10%;
+
+}
+
+.keyboard_key_small {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 0.8em;
+    text-align: justify;
+    text-justify: inter-word;
+    color: #a0a0a0;
+    font-weight: 1000
+}
+
+
 .button_div {
     position: relative !important;
     display: block !important;
     left: -5px !important;
     top: -1px !important;
     width: auto !important;
-    height: 32px !important;
+    height: 27px !important;
     margin: 0px !important;
 }
 
@@ -249,6 +308,11 @@ span mark-triangle {
     width: 80px
 }
 
+
+.bk-root .bk-above .bk-toolbar-button.bk-active {
+    border-bottom-color: #50787a;
+}
+
 /* Help text */
 
 .bk-root .help_text {
@@ -294,4 +358,50 @@ span mark-triangle {
     color: #949494;
     font-size: 1.2em;
     font-weight: bold;
+}
+
+.bk-root .bk, .bk-root .bk:before, .bk-root .bk:after {
+    box-sizing: inherit;
+    margin: 0;
+    border: 0;
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1;
+}
+
+/* ROW AND COLUMN LAYOUT ──────────────────────────────────────────────────── */
+
+
+img.pykanto_logo {
+    vertical-align: bottom;
+    width: 200px;
+    padding-top: 2.75em;
+
+}
+
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 190px;
+
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+}
+
+.pykanto-column {
+    height: 100px;
+    width: 205px;
+
+}
+
+.interactive-column {
+    height: 100px;
+    width: 220px;
 }
