@@ -1,0 +1,37 @@
+
+
+
+# Documentation
+
+The following topic areas will help you understand and use the theme.
+
+```{toctree}
+:caption: User guides
+:maxdepth: 1
+
+contents/dataset_class
+contents/nb-test
+contents/intro
+contents/dataset
+contents/paths
+contents/hpc
+contents/segmentation
+contents/analysis
+contents/FAQs
+```
+
+
+# Modules
+
+```{_autosummary}
+:caption: API reference
+:toctree: _autosummary
+:recursive:
+
+pykanto.signal
+pykanto.parameters
+pykanto.dataset
+pykanto.labelapp
+pykanto.utils
+pykanto.plot
+```

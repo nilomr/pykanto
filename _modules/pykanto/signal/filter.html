@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pykanto.signal.filter &mdash; pykanto 0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html">
+            <img src="../../../_static/pykanto-logo-white-03.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset_class.html">SongDataset API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/dataset.html">Creating a SongDataset object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/paths.html">Working with paths and directories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/hpc.html">Pykanto and High Performance Computing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/segmentation.html">Vocalisation segmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/analysis.html">Vocalisation analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contents/FAQs.html">FAQs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.signal.html">pykanto.signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">pykanto.parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">pykanto.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">pykanto.labelapp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.utils.html">pykanto.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/pykanto.plot.html">pykanto.plot</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+    <img src="../../../_static/pykanto-logo-white-03.svg" class="mobile-logo" alt="Logo" />
+    
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pykanto.signal.filter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pykanto.signal.filter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions and methods to perform spectrogram filtering, dereverberating,</span>
+<span class="sd">bandpassio, etc.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ──── IMPORTS ─────────────────────────────────────────────────────────────────</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">librosa</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numba.core.decorators</span> <span class="kn">import</span> <span class="n">njit</span>
+<span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">gaussian_filter</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pykanto.dataset</span> <span class="kn">import</span> <span class="n">SongDataset</span>
+
+<span class="c1"># ──── FUNCTIONS ───────────────────────────────────────────────────────────────</span>
+
+
+<div class="viewcode-block" id="dereverberate"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.dereverberate">[docs]</a><span class="k">def</span> <span class="nf">dereverberate</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">echo_range</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                  <span class="n">echo_reduction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                  <span class="n">hop_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span> <span class="n">sr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+    <span class="n">hop_length_ms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hop_length</span> <span class="o">/</span> <span class="n">sr</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">echo_range</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">echo_range</span> <span class="o">/</span> <span class="n">hop_length_ms</span><span class="p">)</span>
+
+    <span class="n">nbins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">mindb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">echo_range</span> <span class="o">&gt;</span> <span class="n">nbins</span><span class="p">:</span>
+        <span class="n">echo_range</span> <span class="o">=</span> <span class="n">nbins</span>
+
+    <span class="n">newspec</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">spectrogram</span><span class="p">:</span>
+        <span class="n">newrow</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">colindex</span><span class="p">,</span> <span class="n">amplitude</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+            <span class="n">anterior</span> <span class="o">=</span> <span class="n">row</span><span class="p">[(</span><span class="n">colindex</span> <span class="o">-</span> <span class="n">echo_range</span><span class="p">):</span> <span class="n">colindex</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">colindex</span> <span class="o">&lt;</span> <span class="n">echo_range</span><span class="p">:</span>
+                <span class="n">posterior</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">colindex</span><span class="p">:</span> <span class="p">(</span><span class="n">colindex</span> <span class="o">+</span> <span class="n">echo_range</span><span class="p">)]</span>
+                <span class="n">newval</span> <span class="o">=</span> <span class="n">amplitude</span> <span class="o">-</span> <span class="n">echo_reduction</span> <span class="o">*</span> \
+                    <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">posterior</span><span class="p">)</span> <span class="o">-</span> <span class="n">amplitude</span><span class="p">)</span>
+                <span class="n">newrow</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newval</span> <span class="k">if</span> <span class="n">newval</span> <span class="o">&gt;</span> <span class="n">mindb</span> <span class="k">else</span> <span class="n">mindb</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">anterior</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">anterior</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">amplitude</span><span class="p">):</span>
+                <span class="n">newval</span> <span class="o">=</span> <span class="n">amplitude</span> <span class="o">-</span> <span class="n">echo_reduction</span> <span class="o">*</span> \
+                    <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">anterior</span><span class="p">)</span> <span class="o">-</span> <span class="n">amplitude</span><span class="p">)</span>
+                <span class="n">newrow</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newval</span> <span class="k">if</span> <span class="n">newval</span> <span class="o">&gt;</span> <span class="n">mindb</span> <span class="k">else</span> <span class="n">mindb</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">newrow</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">amplitude</span><span class="p">)</span>
+        <span class="n">newspec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newrow</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">newspec</span><span class="p">)</span></div>
+
+
+<span class="n">dereverberate_jit</span> <span class="o">=</span> <span class="n">njit</span><span class="p">(</span><span class="n">dereverberate</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_norm_spectral_envelope"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.get_norm_spectral_envelope">[docs]</a><span class="k">def</span> <span class="nf">get_norm_spectral_envelope</span><span class="p">(</span>
+        <span class="n">mel_spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">mindb</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a spectral envelope of sorts - useful to quickly characterise a </span>
+<span class="sd">    song&#39;s frequency distribution. Minmax rescaled to [0,1]</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mel_spectrogram (np.ndarray): Source spectrogram</span>
+<span class="sd">        mindb (int): Min value to threshold.</span>
+<span class="sd">        kernel_size (int, optional): That. Defaults to 10.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">spec</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">normalise</span><span class="p">(</span><span class="n">mel_spectrogram</span><span class="p">,</span> <span class="n">min_level_db</span><span class="o">=-</span> <span class="n">mindb</span><span class="p">))</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">spec</span><span class="p">[</span><span class="n">spec</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">amp_envelope</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">kernel_size</span>
+    <span class="n">data_convolved</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">amp_envelope</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">norm</span><span class="p">(</span><span class="n">data_convolved</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gaussian_blur"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.gaussian_blur">[docs]</a><span class="k">def</span> <span class="nf">gaussian_blur</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">gauss_sigma</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="nb">max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gaussian blur a 2d numpy array, rescale to desired range to account for loss.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        array (np.ndarray): An array to be blurred</span>
+<span class="sd">        gauss_sigma (int, optional): Standard deviation for Gaussian kernel. Defaults to 3.</span>
+<span class="sd">        max (int, optional): Max value in returned array. Defaults to 0.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: Blurred and interpolated array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">gaussian_filter</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">gauss_sigma</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">array</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span> <span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="nb">max</span><span class="p">))</span></div>
+    <span class="c1"># NOTE: can change 0 to mel_spectrogram.max() if needed</span>
+
+
+<span class="c1"># ────────────────────────────────────────────────────────────────────────────────</span>
+
+<span class="c1"># Minor helper functions here</span>
+
+<div class="viewcode-block" id="kernels"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels">[docs]</a><span class="k">class</span> <span class="nc">kernels</span><span class="p">():</span>
+    <span class="n">erosion_kern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+         <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+    <span class="n">dilation_kern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+         <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span></div>
+
+
+<div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.norm">[docs]</a><span class="nd">@njit</span>
+<span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="normalise"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.normalise">[docs]</a><span class="k">def</span> <span class="nf">normalise</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">min_level_db</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">S</span> <span class="o">-</span> <span class="n">min_level_db</span><span class="p">)</span> <span class="o">/</span> <span class="o">-</span><span class="n">min_level_db</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hz_to_mel_lib"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.hz_to_mel_lib">[docs]</a><span class="k">def</span> <span class="nf">hz_to_mel_lib</span><span class="p">(</span><span class="n">hz</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minmax_freq</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert hz to mel frequencies</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        hz (int): [description]</span>
+<span class="sd">        minmax_freq (Tuple): [description]</span>
+<span class="sd">        parameters ([type]): [description]</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [type]: [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mel_frequencies</span><span class="p">(</span><span class="n">fmin</span><span class="o">=</span><span class="n">minmax_freq</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                         <span class="n">fmax</span><span class="o">=</span><span class="n">minmax_freq</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                         <span class="n">n_mels</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_mel_bins</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">freqs</span> <span class="o">-</span> <span class="n">hz</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="mel_to_hz"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.mel_to_hz">[docs]</a><span class="k">def</span> <span class="nf">mel_to_hz</span><span class="p">(</span><span class="n">mel_bin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the original frequency from a mel bin index.</span>
+<span class="sd">    Requires a SongDataset object with set parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mel_bin (int): Mel bin to convert</span>
+<span class="sd">        dataset (SongDataset): SongDataset object</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Approximate original frequency in hertzs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mel_frequencies</span><span class="p">(</span><span class="n">fmin</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">lowcut</span><span class="p">,</span>
+                                         <span class="n">fmax</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">highcut</span><span class="p">,</span>
+                                         <span class="n">n_mels</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_mel_bins</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">mel_bin</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="mels_to_hzs"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.mels_to_hzs">[docs]</a><span class="k">def</span> <span class="nf">mels_to_hzs</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">SongDataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the original frequencies from the mel bins used in a dataset.</span>
+<span class="sd">    Requires a SongDataset object with set parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset (SongDataset): SongDataset object</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray[int]: Approximate original frequencies in hertzs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mel_frequencies</span><span class="p">(</span><span class="n">fmin</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">lowcut</span><span class="p">,</span>
+                                         <span class="n">fmax</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">highcut</span><span class="p">,</span>
+                                         <span class="n">n_mels</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_mel_bins</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">freqs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p>
+                
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>
+        
+        
+        
+        
+        Uses
+        <a href="https://www.sphinx-doc.org/">Sphinx</a> and a 
+        theme
+        
+         modified from <a href="https://readthedocs.org">Read the
+            Docs</a>.
+
+    </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

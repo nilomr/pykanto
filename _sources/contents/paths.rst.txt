@@ -1,0 +1,85 @@
+.. highlight:: python
+   :linenothreshold: 1
+   
+Working with paths and directories
+==================================
+
+`pykanto` provies a convenient way to store all paths under a single roof
+so that you can keep track of stuff
+
+
+
+Find your project's root directory. You can do this in any number of ways.
+For example, the below assumes that you are working with git. Which you should!
+
+.. code-block:: python
+
+    PROJECT_ROOT = Path(
+    git.Repo('.', search_parent_directories=True).working_tree_dir)
+
+
+It is common to have raw data on a large external drive (for example I
+use a RAID system). If this is the case for you, you probably want to link
+the actual location of your raw data to a `/data` folder in your project
+for ease of access and clarity. Pykanto has a function to do just that:
+(Skip this if your data direcrory IS inside your project.)
+
+.. code-block:: python
+
+    DATA_LOCATION = Path('path/to/your/data/drive')
+    link_project_data(DATA_LOCATION, PROJECT_ROOT / 'data')
+
+
+Note:
+    You wil likely create different derived datasets from the same raw data, and
+    that is why pykanto lets your data live wherever you want.
+    I stronfgly recommend that you make its directory read-only and
+    never ever touch it.
+
+.. code-block:: python
+    
+    # Now, where are the raw data for this project?
+    RAW_DATA = PROJECT_ROOT / 'data' / 'raw' / 'BIGBIRD_2021'
+
+Build the project's directory tree, then you can print the object and take a
+a look. This will create new directories within your project.
+
+.. code-block:: python
+
+    DIRS = ProjDirs(PROJECT_ROOT, RAW_DATA, mkdir=True)
+    print(DIRS)
+
+
+
+.. code-block:: python
+
+    from pykanto.utils.paths import ProjDirs
+
+    print(DIRS) # Print the directories currently held in DIRS
+    print(dataset.DIRS)
+
+If you need to upload your raw or segmented data and you have lots of small files
+you may want to consider creating a ``tar`` file to reduce overhead. 
+
+.. code-block:: python
+
+    from pykanto.utils.write import make_tarfile 
+    out_dir = DIRS.SEGMENTED / 'JSON.tar.gz'
+    in_dir = DIRS.SEGMENTED / 'JSON'
+    make_tarfile(out_dir, in_dir)
+
+If you need to change the location of your raw data before you create a dataset,
+you can use the following method:
+
+.. code-block:: python
+
+    DIRS.update_json_locs(PROJECT)
+
+You can safely try this even if you haven't moved your data at all; you will just get 
+a message ``Files exist: no need to update paths. You can force update by setting `overwrite_dataset = True`.``.
+
+
+If you need to change the location of your dataset,
+
+.. code-block:: python
+

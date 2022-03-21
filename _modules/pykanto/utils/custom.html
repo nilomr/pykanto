@@ -1,0 +1,550 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pykanto.utils.custom &#8212; pykanto 0.1 documentation</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-book-theme.css?digest=84ace793992934648b4de8eed757e5a2" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/sphinx-book-theme.9d8b4a8b9bb19db25eeaddc40d639ba2.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<div class="col-12 col-md-3 bd-sidebar site-navigation " id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../../_static/pykanto-logo-grey-04.svg" class="logo" alt="logo">
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  User guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/1_getting-started.html">
+   Installing
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pykanto
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/2_paths-and-dirs.html">
+   Working with paths and directories
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/nb-test.html">
+   Jupyter notebooks
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/intro.html">
+   IDE example
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/dataset.html">
+   Creating a SongDataset object
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/hpc.html">
+   High Performance Computing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/segmentation.html">
+   Vocalisation segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/analysis.html">
+   Vocalisation analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/FAQs.html">
+   FAQs
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  API reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../_autosummary/pykanto.signal.html">
+   pykanto.signal
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.analysis.html">
+     pykanto.signal.analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.cluster.html">
+     pykanto.signal.cluster
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.filter.html">
+     pykanto.signal.filter
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.segment.html">
+     pykanto.signal.segment
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.spectrogram.html">
+     pykanto.signal.spectrogram
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">
+   pykanto.parameters
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">
+   pykanto.dataset
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">
+   pykanto.labelapp
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.data.html">
+     pykanto.labelapp.data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.main.html">
+     pykanto.labelapp.main
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../_autosummary/pykanto.utils.html">
+   pykanto.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.compute.html">
+     pykanto.utils.compute
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.custom.html">
+     pykanto.utils.custom
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.read.html">
+     pykanto.utils.read
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.types.html">
+     pykanto.utils.types
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.write.html">
+     pykanto.utils.write
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.xenocanto.html">
+     pykanto.utils.xenocanto
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../_autosummary/pykanto.plot.html">
+   pykanto.plot
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<!-- This is an invisible pixel that we watch to see if we've scrolled. -->
+<div class="sbt-scroll-pixel-helper"></div>
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            <div class="topbar-left">
+                
+                <label class="nav-toggle-button" for="__navigation">
+                    <div class="visually-hidden">Toggle navigation</div>
+                    <i class="fas fa-bars"></i>
+                </label>
+                
+            </div>
+            
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/nilomr/pykanto"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <h1>Source code for pykanto.utils.custom</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">xml.etree</span> <span class="kn">import</span> <span class="n">ElementTree</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">timing</span><span class="p">,</span> <span class="n">tqdmm</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">get_file_paths</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.read</span> <span class="kn">import</span> <span class="n">read_json</span>
+
+<span class="kn">from</span> <span class="nn">pykanto.utils.types</span> <span class="kn">import</span> <span class="n">SegmentAnnotation</span>
+
+<span class="c1"># ──── METADATA FILE PARSERS ────────────────────────────────────────────────────</span>
+
+
+<div class="viewcode-block" id="parse_sonic_visualiser_xml"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.parse_sonic_visualiser_xml">[docs]</a><span class="k">def</span> <span class="nf">parse_sonic_visualiser_xml</span><span class="p">(</span><span class="n">xml_filepath</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SegmentAnnotation</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses an xml annotation file generated by Sonic Visualiser and returns</span>
+<span class="sd">    a SegmentAnnotation.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        The individual ID string = folder name + file name + segment index.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        xml_filepath (Path): Path to xml file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        SegmentAnnotation: Object with relevant metadata.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Parse xml</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xml_filepath</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+
+    <span class="c1"># Data to extract from xml</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;extent&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Retrieve segment information</span>
+    <span class="n">seq_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">segment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;data/dataset/point&#39;</span><span class="p">)):</span>
+        <span class="c1"># Extract relevant information from xml file</span>
+        <span class="n">seg_info</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
+        <span class="n">label</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">))]</span>
+        <span class="n">seq_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seg_info</span> <span class="o">+</span> <span class="n">label</span><span class="p">)</span>
+
+    <span class="c1"># Organise in a dictionary</span>
+    <span class="n">starts</span><span class="p">,</span> <span class="n">durations</span><span class="p">,</span> <span class="n">lower_freqs</span><span class="p">,</span> <span class="n">freq_extents</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">seq_list</span><span class="p">)</span>
+
+    <span class="n">sa</span> <span class="o">=</span> <span class="n">SegmentAnnotation</span><span class="p">(</span>
+        <span class="n">ID</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">xml_filepath</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+        <span class="c1"># ID=[f&quot;{parname}_{filename}_{i}&quot; for i in range(len(starts))],</span>
+        <span class="n">start_times</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">starts</span><span class="p">),</span>
+        <span class="n">durations</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">durations</span><span class="p">),</span>
+        <span class="n">end_times</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">starts</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">durations</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="n">lower_freq</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">lower_freqs</span><span class="p">),</span>
+        <span class="n">upper_freq</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">lower_freqs</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">freq_extents</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="n">label</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span>
+        <span class="n">annotation_file</span><span class="o">=</span><span class="n">xml_filepath</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sa</span></div>
+
+
+<span class="c1"># ──── OTHERS ───────────────────────────────────────────────────────────────────</span>
+
+
+<div class="viewcode-block" id="open_gzip"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.open_gzip">[docs]</a><span class="k">def</span> <span class="nf">open_gzip</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
+    <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="nb">float</span>
+<span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads syllable segmentation generated</span>
+<span class="sd">    with `Chipper &lt;https://github.com/CreanzaLab/chipper&gt;`_.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file (Path): Path to the .gzip file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[Dict[str, Any], Dict[str, List[int]], float]: Tuple containing</span>
+<span class="sd">        two dictionaries (the first contains chipper parameters, the second</span>
+<span class="sd">        has two keys [&#39;Onsets&#39;, &#39;Offsets&#39;]) and a parameter &#39;timeAxisConversion&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">song_data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">song_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">song_data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">song_data</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s1">&#39;timeAxisConversion&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="chipper_units_to_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.chipper_units_to_json">[docs]</a><span class="nd">@timing</span>
+<span class="k">def</span> <span class="nf">chipper_units_to_json</span><span class="p">(</span>
+        <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">n_fft</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="n">overlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1010</span><span class="p">,</span>
+        <span class="n">pad</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span>
+        <span class="n">window_offset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">overwrite_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">pbar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads audio unit segmentation metadata from .gzip files output by Chipper and appends them to pykanto .JSON metadata files.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        directory (Path): _description_</span>
+<span class="sd">        n_fft (int, optional): _description_. Defaults to 1024.</span>
+<span class="sd">        overlap (int, optional): _description_. Defaults to 1010.</span>
+<span class="sd">        pad (int, optional): _description_. Defaults to 150.</span>
+<span class="sd">        window_offset (bool, optional): _description_. Defaults to True.</span>
+<span class="sd">        overwrite_json (bool, optional): _description_. Defaults to False.</span>
+<span class="sd">        pbar (bool, optional): _description_. Defaults to True.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileExistsError: _description_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">woffset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">n_fft</span> <span class="o">//</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">window_offset</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="n">jsons</span><span class="p">,</span> <span class="n">gzips</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">get_file_paths</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">([</span><span class="s1">&#39;.json&#39;</span><span class="p">,</span> <span class="s1">&#39;.JSON&#39;</span><span class="p">],</span>
+                    <span class="p">[</span><span class="s2">&quot;.gzip&quot;</span><span class="p">,</span> <span class="s2">&quot;.GZIP&quot;</span><span class="p">])]</span>
+
+    <span class="n">jsons</span> <span class="o">=</span> <span class="p">{</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">}</span>
+    <span class="n">gzips</span> <span class="o">=</span> <span class="p">{</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="s1">&#39;SegSyllsOutput_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span> <span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">gzips</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">gzip</span> <span class="k">for</span> <span class="n">gzip</span> <span class="ow">in</span> <span class="n">gzips</span> <span class="k">if</span> <span class="n">gzip</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;No JSON and GZIP file names match&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">gz_name</span><span class="p">,</span> <span class="n">gz_path</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
+            <span class="n">gzips</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Adding unit onset/offset information &#39;</span>
+            <span class="s1">&#39;from .gzip to .json files&#39;</span><span class="p">,</span>
+            <span class="n">disable</span><span class="o">=</span><span class="kc">False</span> <span class="k">if</span> <span class="n">pbar</span> <span class="k">else</span> <span class="kc">True</span>
+    <span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">gz_name</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">:</span>
+
+            <span class="n">jsondict</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">jsons</span><span class="p">[</span><span class="n">gz_name</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;onsets&#39;</span> <span class="ow">in</span> <span class="n">jsondict</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_json</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                    <span class="s1">&#39;Json files already contain unit onset/offset times.&#39;</span>
+                    <span class="s1">&#39;Set `overwrite_json = True` if you want &#39;</span>
+                    <span class="s1">&#39;to overwrite them.&#39;</span><span class="p">)</span>
+
+            <span class="n">sr</span> <span class="o">=</span> <span class="n">jsondict</span><span class="p">[</span><span class="s1">&#39;sample_rate&#39;</span><span class="p">]</span>
+            <span class="n">gzip_onoff</span> <span class="o">=</span> <span class="n">open_gzip</span><span class="p">(</span><span class="n">gz_path</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">on</span><span class="p">,</span> <span class="n">off</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">gzip_onoff</span><span class="p">[</span><span class="s1">&#39;Onsets&#39;</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">gzip_onoff</span><span class="p">[</span><span class="s1">&#39;Offsets&#39;</span><span class="p">])</span>
+
+            <span class="n">jsondict</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">],</span> <span class="n">jsondict</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span>
+                <span class="p">((</span><span class="n">arr</span> <span class="o">-</span> <span class="n">pad</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_fft</span> <span class="o">-</span> <span class="n">overlap</span><span class="p">)</span> <span class="o">+</span> <span class="n">woffset</span><span class="p">)</span> <span class="o">/</span> <span class="n">sr</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="p">(</span><span class="n">on</span><span class="p">,</span> <span class="n">off</span><span class="p">)]</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">jsons</span><span class="p">[</span><span class="n">gz_name</span><span class="p">]</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">jsondict</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+</pre></div>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            
+        </div>
+    </div>
+    <footer>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p> 
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>    
+        Using
+        <a
+        href="https://www.sphinx-doc.org/">Sphinx</a> //  theme  
+        modified from <a href="https://executablebooks.org/en/latest/">The
+        Executable Book Project</a>.
+
+    </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

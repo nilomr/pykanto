@@ -1,0 +1,478 @@
+/*
+* ─── PAGE BACKGROUND ────────────────────────────────────────────────────────────
+*/
+
+.wy-nav-content-wrap {
+    background: #fdfdfd;
+}
+
+.wy-nav-content {
+    margin: 0;
+    background: #fdfdfd;
+}
+
+/*
+* ─── TEXT ───────────────────────────────────────────────────────────────────────
+*/
+
+body {
+    font-family: Lato, proxima-nova, Helvetica Neue, Arial, sans-serif;
+    font-weight: 270;
+    color: #3a3a3a;
+}
+
+a {
+    color: #516b78;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:visited {
+    color: #878787;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover {
+    color: #031928;
+}
+
+/* highlighted search */
+
+.rst-content .highlighted {
+    background: #ffbf0061;
+    box-shadow: 0 0 0 2px #ffbf0061;
+    display: inline;
+    font-weight: 700;
+}
+
+/*
+* ─── LEFT SIDE BAR ──────────────────────────────────────────────────────────────
+*/
+
+/* logo and search container */
+
+.wy-side-nav-search {
+    background-color: #698d9b;
+    padding: 0.6em;
+}
+
+.wy-side-nav-search .wy-dropdown>a:hover, .wy-side-nav-search>a:hover {
+    background: hsl(0deg 0% 100% / 0%);
+}
+
+.wy-side-nav-search input[type=text] {
+    width: 114%;
+    margin-left: -19px;
+    margin-bottom: -7px;
+    margin-top: 1px;
+    border-radius: 0px;
+    padding: 6px 25px;
+    padding-top: 8px;
+    border-color: #8383836e;
+}
+
+/* mobile */
+
+.wy-nav-top {
+    background: #698d9b;
+    color: #fff;
+    line-height: 44px;
+}
+
+s
+/* Logo and text */
+
+.wy-side-nav-search .wy-dropdown>a, .wy-side-nav-search>a {
+    color: #dee3e5;
+    font-size: 100%;
+    font-weight: 700;
+}
+
+/* Desktop Logo properties */
+
+.wy-side-nav-search .wy-dropdown>a img.logo, .wy-side-nav-search>a img.logo {
+    display: block;
+    margin-top: 6em;
+    margin-bottom: 0em;
+    width: 89%;
+    height: 100%;
+    padding-right: 30px;
+    border-radius: 0;
+    max-width: 100%;
+    background: transparent;
+}
+
+/* Mobile Logo properties */
+.wy-nav-top .mobile-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 120px;
+    height: 100%;
+    background: transparent;
+    border-radius: 0;
+    padding-top: 0.5em;
+}
+
+/* Mobile menu button */
+.wy-nav-top i {
+    float: left;
+    font-size: 30px;
+    cursor: pointer;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/* Mobile menu side bar - do not fit to screen */
+@media screen and (max-width: 768px) {
+    .wy-menu.wy-menu-vertical, .wy-side-nav-search, .wy-side-scroll {
+        width: 270px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .wy-nav-side.shift {
+        width: 270px;
+        left: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .wy-nav-content-wrap.shift {
+        position: fixed;
+        min-width: 100%;
+        left: 270px;
+        top: 0;
+        height: 100%;
+        color: #e0e0e0;
+        /* change text colour when menu is open */
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .wy-menu.wy-menu-vertical, .wy-side-nav-search, .wy-side-scroll {
+        width: 270px;
+        border: 3px;
+        border-right-color: white;
+        border-right-style: solid;
+        overflow-x: hidden;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .wy-nav-content {
+        position: relative;
+        left: 8em;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .wy-nav-side {
+        left: -270px;
+    }
+}
+
+.wy-nav-side {
+    width: 270px;
+}
+
+
+@media screen and (min-width: 769px) {
+    .wy-nav-side {
+        position: fixed;
+        left: 9em;
+    }
+}
+
+/* side scroll */
+.wy-side-scroll {
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 100%;
+}
+
+/* background colour */
+.wy-nav-side {
+    background: #fdfdfd;
+}
+
+
+/* menu items and hover  */
+.wy-menu-vertical a {
+    line-height: 18px;
+    padding: 0.4045em 2.618em;
+    display: block;
+    position: relative;
+    font-size: 90%;
+    color: #444444;
+}
+
+.wy-menu-vertical a:hover {
+    background-color: #e7e7e7;
+    cursor: pointer;
+}
+
+.wy-menu-vertical li.current {
+    /*expansion menu background */
+    background: #e7e7e7;
+}
+
+.wy-menu-vertical li.current>a, .wy-menu-vertical li.on a {
+    color: #404040;
+    font-weight: 700;
+    position: relative;
+    background: #fcfcfc;
+    border: none;
+    padding: 0.4045em 2.618em;
+}
+
+.wy-menu-vertical li.current a:hover {
+    background: #cdcdcd;
+}
+
+.wy-menu-vertical li button.toctree-expand {
+    display: block;
+    float: left;
+    margin-left: -1.2em;
+    line-height: 20px;
+    color: #5c5c5c;
+    border: none;
+    background: none;
+    padding: 0px;
+}
+
+ul {
+    margin-right: -1px;
+}
+
+.wy-menu-vertical li.current a:hover {
+    background: #e7e7e7;
+}
+
+.wy-menu-vertical header, .wy-menu-vertical p.caption {
+    color: #444444;
+    height: 32px;
+    line-height: 44px;
+    padding: 0 1.618em;
+    margin: 12px 0 0;
+    display: block;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 90%;
+    white-space: nowrap;
+}
+
+/*
+ * ─── FUNCTION BOXES ─────────────────────────────────────────────────────────────
+ */
+
+
+html.writer-html4 .rst-content dl:not(.docutils) dl:not(.field-list)>dt, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) dl:not(.field-list)>dt {
+    margin-bottom: 6px;
+    border: none;
+    border-left: 3px solid #d5d5d5;
+    background: #f3f3f3;
+    padding: 3px 6px;
+    color: #555;
+}
+
+.rst-content .admonition, .rst-content .admonition-todo, .rst-content .attention, .rst-content .caution, .rst-content .danger, .rst-content .error, .rst-content .hint, .rst-content .important, .rst-content .note, .rst-content .seealso, .rst-content .tip, .wy-alert {
+    padding: 12px;
+    /* line-height: 24px; */
+    margin-bottom: 24px;
+    background: #f3f3f3 !important;
+}
+
+.rst-content .admonition-title, .wy-alert-title {
+    font-weight: 700;
+    display: block;
+    color: #fff;
+    background: #6ea0a3 !important;
+    padding: 4px 12px;
+    margin: -12px -12px 12px;
+}
+
+.rst-content .warning .admonition-title {
+    background: #dd9a5ee3 !important;
+}
+
+/* function args */
+
+html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple)>dt {
+    display: table;
+    margin: 6px 0;
+    font-size: 90%;
+    line-height: normal;
+    background: #4f75b114;
+    color: #505050;
+    border-top: 5px solid #75838d;
+    padding: 6px;
+    position: relative;
+}
+
+/* function name colour */
+
+html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) .descname, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) .sig-name {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, Courier, monospace;
+    color: #c06617;
+    padding-right: 0.2em !important;
+}
+
+/* link to code source  */
+
+.rst-content .viewcode-back, .rst-content .viewcode-link {
+    display: inline-block;
+    color: #a2a2a2;
+    font-size: 79%;
+    padding-left: 7px;
+}
+
+
+/* notes */
+
+.rst-content .admonition-title, .wy-alert-title {
+    font-weight: 700;
+    display: block;
+    color: #fff;
+    background: #95b3b9 !important;
+    padding: 4px 12px;
+    margin: -12px -12px 12px;
+}
+
+
+/* CODE BLOCKS ────────────────────────────────────────────────────────────── */
+
+.rst-content div[class^=highlight], .rst-content pre.literal-block {
+    border: 0px solid #e1e4e5;
+    overflow-x: auto;
+    margin: 0px 0 20px;
+}
+
+.rst-content div[class^=highlight] pre {
+    white-space: pre;
+    margin: 0;
+    padding: 12px;
+    display: block;
+    background: #f3f3f3;
+    overflow: auto;
+}
+
+/* >>> */
+.highlight .gp {
+    color: #b3b3b3;
+    font-weight: bold;
+}
+
+.highlight .nn {
+    color: #cd680f;
+    font-weight: bold;
+}
+
+.highlight .kn {
+    color: #296589;
+    font-weight: bold;
+}
+
+.highlight .bp {
+    color: #1a71a5;
+}
+
+.highlight .nb {
+    color: #059977;
+}
+
+.highlight .s1 {
+    color: #00764b;
+}
+
+/* code blocks - numbered */
+.rst-content code.literal, .rst-content tt.literal {
+    color: #b85d0c;
+    white-space: normal;
+    padding: 1px 4px;
+}
+
+.rst-content div.highlight span.linenos {
+    display: inline-block;
+    padding-left: 0px;
+    padding-right: 6px;
+    margin-right: 8px;
+    border-right: 2px solid #e6e9ea;
+    color: #b5b5b5
+}
+
+/* INDEX TABLES ───────────────────────────────────────────────────────────── */
+
+table.indextable.genindextable {
+    border-collapse: separate;
+    width: 100% !important;
+    table-layout: fixed;
+    overflow-wrap: break-word;
+    gap: 42%;
+    align-content: center;
+    justify-content: space-between;
+}
+
+/* autosumamry table */
+
+.rst-content table.docutils, .wy-table-bordered-all {
+    border: 0px solid #fdfdfd;
+}
+
+.rst-content table.docutils td, .wy-table-bordered-all td {
+    border-bottom: 1px solid #e1e4e5;
+    border-left: 1px solid #e1e4e5;
+    padding-bottom: 5px;
+    padding-top: 8px;
+    padding-left: 8px;
+}
+
+/* INDEX TABLE LETTER SPACING ─────────────────────────────────────────────── */
+
+.rst-content .toctree-wrapper>p.caption, .rst-content h1, .rst-content h2, .rst-content h3, .rst-content h4, .rst-content h5, .rst-content h6 {
+    margin-bottom: 0px;
+    padding-top: .8em;
+    padding-bottom: .8em;
+}
+
+/* class/module summary table */
+
+.wy-table-responsive table td, .wy-table-responsive table th {
+    white-space: normal;
+}
+
+/* PREVIOUS/NEXT BUTTONS ──────────────────────────────────────────────────── */
+
+.btn-neutral {
+    background-color: #fdfdfd !important;
+    color: #5c5c5c !important;
+    border: none;
+    box-shadow: none;
+}
+
+.btn-neutral:hover {
+    background-color: #efefef !important;
+    color: #404040;
+}
+
+.btn-neutral:focus {
+    outline: none !important;
+    background-color: #c8d4dd !important;
+    color: #404040;
+}
+
+/* RST header level properties */
+
+.rst-content .toctree-wrapper>p.caption, h2 {
+    font-size: 125%;
+}
+
+/*
+ * ─── FOOTER ─────────────────────────────────────────────────────────────────────
+ */
+
+footer p {
+    margin-bottom: 0px;
+}
