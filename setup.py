@@ -1,6 +1,6 @@
 #!/usr/bin/env/python
 """
-Installation script
+Installation script.
 """
 
 
@@ -41,9 +41,10 @@ else:
         'dev': [
             'sphinx',
             'sphinx-copybutton',
-            'sphinx-rtd-theme',
+            'sphinx_book_theme',
             'pytest',
-            'autopep8'
+            'autopep8',
+            'nox'
         ]
     }
 
@@ -52,14 +53,22 @@ setup(
     description="Management and analysis of animal vocalisation data",
     license="MIT", author='Nilo M. Recalde',
     author_email="nilomerinorecalde@gmail.com",
-    url="https://github.com/nilomr/pykanto", long_description=LONG_DESCRIPTION,
+    url="https://github.com/nilomr/pykanto",
+    long_description=LONG_DESCRIPTION,
     packages=["pykanto", "pykanto.signal", "pykanto.utils", "pykanto.labelapp",
               "pykanto.utils"],
     package_data={
         'pykanto':
-        ["data/segmented/*/*/*.wav",
-         "data/segmented/*/*/*.JSON",
+        ["data/segmented/great_tit/*/*.wav",
+         "data/segmented/great_tit/*/*.JSON",
          "data/raw/*.wav",
          "data/raw/*.xml"]},
-    python_requires=">=3.8", install_requires=INSTALL_REQUIRES,
-    extras_require=EXTRAS_REQUIRES, include_package_data=True,)
+    python_requires=">=3.8",
+    install_requires=INSTALL_REQUIRES,
+    extras_require=EXTRAS_REQUIRES,
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'pykanto-slaunch = pykanto.utils.slurm.launch:submit_job',
+        ],
+    },)

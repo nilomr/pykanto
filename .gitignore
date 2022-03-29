@@ -22,6 +22,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+/.nox
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -73,6 +74,7 @@ target/
 
 # Jupyter NB Checkpoints
 .ipynb_checkpoints/
+*.py-jvsc-*
 
 # exclude data from source control by default
 # And data alias + other folders
@@ -90,6 +92,10 @@ target/
 /reports/text/talks
 embedding_remove
 pykanto/data/datasets
+!pykanto/data/segmented/great_tit
+pykanto/data/segmented/*
+/logs/
+
 
 # general file extensions
 *.doc
@@ -98,7 +104,7 @@ pykanto/data/datasets
 *.pdf
 .~lock.*
 *.xml
-!pykanto/data/raw/*.xml
+!pykanto/data/raw/*/*.xml
 
 # Mac OS-specific storage files
 .DS_Store
@@ -162,6 +168,13 @@ docs/_build/
 !docs/_templates/footer.html
 !docs/_templates/layout.html
 !docs/custom/custom.css
+
+# Weird recurrence in jupyter_execute
+docs/html/jupyter_execute/jupyter_execute/*
+docs/html/_sources/jupyter_execute/jupyter_execute/*
+docs/doctrees/jupyter_execute/jupyter_execute/*
+docs/jupyter_execute/jupyter_execute/*
+
 
 # manifest
 MANIFEST.in
