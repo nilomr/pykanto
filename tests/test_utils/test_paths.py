@@ -3,7 +3,7 @@
 from re import I
 import shutil
 import pytest
-from pykanto.utils.paths import ProjDirs, get_wavs_w_annotation
+from pykanto.utils.paths import ProjDirs, get_wavs_w_annotation, pykanto_data
 from pathlib import Path
 
 # ──── FIXTURES ─────────────────────────────────────────────────────────────────
@@ -45,3 +45,11 @@ def test_get_wavs_w_annotation(wav_filepaths, annotation_paths):
     r = get_wavs_w_annotation(wav_filepaths, annotation_paths)
     assert len(r) == 2
     assert r[0][0].suffix == '.wav'
+
+
+def test_pykanto_data():
+    DATASETS_ID = ["STORM-PETREL", "BENGALESE_FINCH", "GREAT_TIT"]
+    for dataset in DATASETS_ID:
+        DIRS = pykanto_data(dataset=dataset)
+        print(DIRS)
+        assert dataset.lower() == DIRS.SEGMENTED.name
