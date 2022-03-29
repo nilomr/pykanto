@@ -51,15 +51,16 @@ def _get_json_r(files: List[Path]) -> List[Dict[str, Any]]:
     return [_get_json(file) for file in files]
 
 
-def _get_json_parallel(lst: List[Path]) -> List[Dict[str, Any]]:
+def _get_json_parallel(lst: List[Path],
+                       verbose: bool = False
+                       ) -> List[Dict[str, Any]]:
     """
     Parallel implementation of 
     :func:`~pykanto.utils.read._get_json`.
     """
-
     # Calculate and make chunks
     n = len(lst)
-    chunk_info = calc_chunks(n, verbose=True)
+    chunk_info = calc_chunks(n, verbose=verbose)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunks = get_chunks(lst, chunk_length)
     print_parallel_info(n, 'JSON files', n_chunks, chunk_length)
