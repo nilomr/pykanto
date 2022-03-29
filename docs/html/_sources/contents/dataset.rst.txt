@@ -48,7 +48,7 @@ Check sample size per individual ID in the dataset:
 .. code-block:: python
     :linenos:
 
-    dataset.vocalisations['ID'].value_counts()
+    dataset.vocs['ID'].value_counts()
 
 .. code-block:: none
 

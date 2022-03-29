@@ -13,9 +13,8 @@ pykanto.utils.custom
 
    .. autosummary::
    
-      get_boxes_data
-      get_ebmp_data
-      get_recorded_dates_df
+      chipper_units_to_json
+      open_gzip
       parse_sonic_visualiser_xml
    
    

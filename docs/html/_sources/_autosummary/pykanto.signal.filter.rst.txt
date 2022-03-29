@@ -17,7 +17,6 @@ pykanto.signal.filter
       dereverberate_jit
       gaussian_blur
       get_norm_spectral_envelope
-      get_peak_freqs
       hz_to_mel_lib
       mel_to_hz
       mels_to_hzs

@@ -15,10 +15,9 @@ pykanto.utils.paths
    
       change_data_loc
       get_file_paths
-      get_wav_filepaths
       get_wavs_w_annotation
-      get_xml_filepaths
       link_project_data
+      pykanto_data
    
    
 

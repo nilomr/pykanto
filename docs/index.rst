@@ -5,21 +5,26 @@
 
 
 Documentation
---------------
+=============
 
 .. toctree::
    :caption: User guides
    :maxdepth: 1
    
-   contents/dataset_class
+   contents/1_getting-started
+   contents/2_paths-and-dirs
+   contents/3_basic-workflow
+   contents/4_segmenting-files
+   contents/intro
    contents/dataset
-   contents/paths
    contents/hpc
    contents/segmentation
+   contents/analysis
+   contents/FAQs
 
 
 Modules
-========
+=======
 
 .. autosummary::
    :caption: API reference
@@ -33,20 +38,3 @@ Modules
    pykanto.utils
    pykanto.plot
 
-
-Indices and tables
-===================
-
-- :ref:`genindex`
-- :ref:`modindex`
-- :ref:`search`
-
-
-See also
-========
-
-- Module :py:mod:`zipfile`.
-  Documentation of the :py:mod:`zipfile` standard module.
-
-- `GNU tar manual, Basic Tar Format <http://link>`_. 
-  Documentation for tar archive files, including GNU tar extensions.

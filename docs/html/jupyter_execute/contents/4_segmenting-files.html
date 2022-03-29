@@ -1,0 +1,610 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File segmentation &#8212; pykanto 0.1 documentation</title>
+    
+  <link href="../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=84ace793992934648b4de8eed757e5a2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/sphinx-book-theme.9d8b4a8b9bb19db25eeaddc40d639ba2.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<div class="col-12 col-md-3 bd-sidebar site-navigation " id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/pykanto-logo-grey-04.svg" class="logo" alt="logo">
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  User guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/1_getting-started.html">
+   Installing
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pykanto
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/2_paths-and-dirs.html">
+   Working with paths and directories
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/3_basic-workflow.html">
+   Basic workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/4_segmenting-files.html">
+   File segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/intro.html">
+   IDE example
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/dataset.html">
+   Creating a SongDataset object
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/hpc.html">
+   High Performance Computing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/segmentation.html">
+   Vocalisation segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/analysis.html">
+   Vocalisation analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/FAQs.html">
+   FAQs
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  API reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../_autosummary/pykanto.signal.html">
+   pykanto.signal
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.analysis.html">
+     pykanto.signal.analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.cluster.html">
+     pykanto.signal.cluster
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.filter.html">
+     pykanto.signal.filter
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.segment.html">
+     pykanto.signal.segment
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.spectrogram.html">
+     pykanto.signal.spectrogram
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../_autosummary/pykanto.parameters.html">
+   pykanto.parameters
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../_autosummary/pykanto.dataset.html">
+   pykanto.dataset
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../_autosummary/pykanto.labelapp.html">
+   pykanto.labelapp
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.labelapp.data.html">
+     pykanto.labelapp.data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.labelapp.main.html">
+     pykanto.labelapp.main
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../_autosummary/pykanto.utils.html">
+   pykanto.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.compute.html">
+     pykanto.utils.compute
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.custom.html">
+     pykanto.utils.custom
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.read.html">
+     pykanto.utils.read
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.slurm.html">
+     pykanto.utils.slurm
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../_autosummary/pykanto.utils.slurm.launch.html">
+       pykanto.utils.slurm.launch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../_autosummary/pykanto.utils.slurm.tester.html">
+       pykanto.utils.slurm.tester
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.types.html">
+     pykanto.utils.types
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.write.html">
+     pykanto.utils.write
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.xenocanto.html">
+     pykanto.utils.xenocanto
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../_autosummary/pykanto.plot.html">
+   pykanto.plot
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<!-- This is an invisible pixel that we watch to see if we've scrolled. -->
+<div class="sbt-scroll-pixel-helper"></div>
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            <div class="topbar-left">
+                
+                <label class="nav-toggle-button" for="__navigation">
+                    <div class="visually-hidden">Toggle navigation</div>
+                    <i class="fas fa-bars"></i>
+                </label>
+                
+            </div>
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../../_sources/jupyter_execute/contents/4_segmenting-files.ipynb.txt"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/nilomr/pykanto"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#segmenting-files-with-custom-metadata-fields">
+   Segmenting files with custom metadata fields
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>File segmentation</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#segmenting-files-with-custom-metadata-fields">
+   Segmenting files with custom metadata fields
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="tex2jax_ignore mathjax_ignore section" id="file-segmentation">
+<h1>File segmentation<a class="headerlink" href="#file-segmentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="segmenting-files-with-custom-metadata-fields">
+<h2>Segmenting files with custom metadata fields<a class="headerlink" href="#segmenting-files-with-custom-metadata-fields" title="Permalink to this headline">¶</a></h2>
+<p>Let’s say you are using
+<a class="reference external" href="https://www.openacousticdevices.info/audiomoth">AudioMoth</a> recorders and want
+to retrieve some non-standard metadata from its audio files: (1) the device ID,
+and (2) the date and time time of an audio segment.</p>
+<p>Here’s how you can do it:</p>
+<div class="cell tag_hide-output tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">import</span> <span class="nn">attr</span>
+<span class="kn">from</span> <span class="nn">attr</span> <span class="kn">import</span> <span class="n">validators</span>
+<span class="kn">from</span> <span class="nn">dateutil.parser</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.segment</span> <span class="kn">import</span> <span class="n">ReadWav</span><span class="p">,</span> <span class="n">SegmentMetadata</span><span class="p">,</span> <span class="n">segment_files</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.custom</span> <span class="kn">import</span> <span class="n">parse_sonic_visualiser_xml</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_file_paths</span><span class="p">,</span> <span class="n">get_wavs_w_annotation</span><span class="p">,</span>
+                                 <span class="n">pykanto_data</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.types</span> <span class="kn">import</span> <span class="n">Annotation</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>First, to make it easier to see what fields are available you can create a
+<code class="docutils literal notranslate"><span class="pre">ReadWav</span></code> object from a file and print its metadata, like so:</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Loads a sample AudioMoth file, included with pykanto</span>
+<span class="n">DIRS</span> <span class="o">=</span> <span class="n">pykanto_data</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="s2">&quot;AM&quot;</span><span class="p">)</span>
+
+<span class="n">wav_dirs</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span><span class="n">DIRS</span><span class="o">.</span><span class="n">RAW_DATA</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.WAV&#39;</span><span class="p">])</span>
+<span class="n">meta</span> <span class="o">=</span> <span class="n">ReadWav</span><span class="p">(</span><span class="n">wav_dirs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">all_metadata</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;WAVE({
+    &#39;filepath&#39;: &#39;/home/nilomr/projects/pykanto/pykanto/data/raw/AM/20210502_040000.WAV&#39;,
+    &#39;filesize&#39;: &#39;92.23 KiB&#39;,
+    &#39;pictures&#39;: [],
+    &#39;streaminfo&#39;: &lt;WAVEStreamInfo({
+        &#39;audio_format&#39;: &lt;WAVEAudioFormat.PCM&gt;,
+        &#39;bit_depth&#39;: 16,
+        &#39;bitrate&#39;: &#39;768 Kbps&#39;,
+        &#39;channels&#39;: 1,
+        &#39;duration&#39;: &#39;00:01&#39;,
+        &#39;sample_rate&#39;: &#39;48.0 KHz&#39;,
+    })&gt;,
+    &#39;tags&#39;: &lt;RIFFTags({
+        &#39;ISFT&#39;: [&#39;Lavf57.83.100&#39;],
+        &#39;artist&#39;: [&#39;AudioMoth 247AA5075E06337D&#39;],
+        &#39;comment&#39;: [
+            &#39;Recorded at 04:00:00 02/05/2021 (UTC) by AudioMoth 247AA5075E06337D at gain setting 2 while battery state was 4.2V.&#39;,
+        ],
+    })&gt;,
+})&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s acess the metadata of interest and tell <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> that we want to add
+these to the .JSON files and, later, to our database.</p>
+<p>First, add any new attributes, along with their data type annotations and any
+validators to the Annotation class. This will make sure that your new
+attributes, or fields, are properly parsed.</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
+<span class="k">class</span> <span class="nc">CustomAnnotation</span><span class="p">(</span><span class="n">Annotation</span><span class="p">):</span>
+    <span class="n">rec_unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+    <span class="c1"># This is intended as a short example, but in reality you could make sure that</span>
+    <span class="c1"># this string can be parsed as a datetime object.</span>
+    <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+
+<span class="n">Annotation</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="n">CustomAnnotation</span><span class="o">.</span><span class="fm">__init__</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then, <a class="reference external" href="https://en.wikipedia.org/wiki/Monkey_patch">monkey-patch</a> the
+<code class="docutils literal notranslate"><span class="pre">get_metadata</span></code> methods of the ReadWav and SegmentMetadata classes to add any
+extra fields that your project might require. This will save you from having to
+define the full classes and their methods again from scratch. Some people would
+say this is ugly, and I’d tend to agree, but it is the most concise way of doing
+this that I could think of that preserves enough flexibility.</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ReadWav_patch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="n">comment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_metadata</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">comment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">add_to_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;rec_unit&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;AudioMoth.(.*?) at gain&quot;</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
+        <span class="s1">&#39;datetime&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">parse</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;at.(.*?) \(UTC\)&quot;</span><span class="p">,</span> <span class="n">comment</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="o">**</span><span class="n">add_to_dict</span><span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">SegmentMetadata_patch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_metadata</span><span class="o">.</span><span class="n">start_times</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_metadata</span><span class="o">.</span><span class="n">sample_rate</span>
+    <span class="n">datetime</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_metadata</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">start</span><span class="p">)</span>
+    <span class="n">add_to_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;rec_unit&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_metadata</span><span class="o">.</span><span class="n">rec_unit</span><span class="p">,</span>
+        <span class="s1">&#39;datetime&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="o">**</span><span class="n">add_to_dict</span><span class="p">}</span>
+
+
+<span class="n">ReadWav</span><span class="o">.</span><span class="n">get_metadata</span> <span class="o">=</span> <span class="n">ReadWav_patch</span>
+<span class="n">SegmentMetadata</span><span class="o">.</span><span class="n">get_metadata</span> <span class="o">=</span> <span class="n">SegmentMetadata_patch</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now you can segment your annotated files like you would normally do - their
+metadata will contain your custom fields.</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wav_filepaths</span><span class="p">,</span> <span class="n">xml_filepaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_file_paths</span><span class="p">(</span>
+    <span class="n">DIRS</span><span class="o">.</span><span class="n">RAW_DATA</span><span class="p">,</span> <span class="p">[</span><span class="n">ext</span><span class="p">])</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;.WAV&#39;</span><span class="p">,</span> <span class="s1">&#39;.xml&#39;</span><span class="p">]]</span>
+<span class="n">files_to_segment</span> <span class="o">=</span> <span class="n">get_wavs_w_annotation</span><span class="p">(</span><span class="n">wav_filepaths</span><span class="p">,</span> <span class="n">xml_filepaths</span><span class="p">)</span>
+
+<span class="n">wav_outdir</span><span class="p">,</span> <span class="n">json_outdir</span> <span class="o">=</span> <span class="p">[</span><span class="n">makedir</span><span class="p">(</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="n">ext</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;WAV&quot;</span><span class="p">,</span> <span class="s2">&quot;JSON&quot;</span><span class="p">]]</span>
+
+<span class="n">segment_files</span><span class="p">(</span>
+    <span class="n">files_to_segment</span><span class="p">,</span>
+    <span class="n">wav_outdir</span><span class="p">,</span>
+    <span class="n">json_outdir</span><span class="p">,</span>
+    <span class="n">parser_func</span><span class="o">=</span><span class="n">parse_sonic_visualiser_xml</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "93e06495591e41a5b2840e9c07e6dc1a", "version_major": 2, "version_minor": 0}
+</script></div>
+</div>
+<p>Note: if you want to run this in paralell with ray (as in
+<code class="docutils literal notranslate"><span class="pre">segment_files_parallel</span></code>) monkey-patching will not work: for now, you will have
+to properly extend <code class="docutils literal notranslate"><span class="pre">ReadWav</span></code> and <code class="docutils literal notranslate"><span class="pre">SegmentMetadata</span></code>.</p>
+</div>
+</div>
+
+
+<script type="application/vnd.jupyter.widget-state+json">
+{"state": {"0d46db0bcd994c118a52274bb7ed3f52": {"model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "model_name": "ProgressStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "3695aa0f62ed4f0c8fb9cc3cd541b0b6": {"model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HTMLView", "description": "", "description_tooltip": null, "layout": "IPY_MODEL_55fba9f09d2642cf8f52a5abbec2e727", "placeholder": "\u200b", "style": "IPY_MODEL_7a061cb8e50a444d925a51b4c7d4ff9c", "value": " 1/1 [00:00&lt;00:00,  2.60it/s]"}}, "55fba9f09d2642cf8f52a5abbec2e727": {"model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "7a061cb8e50a444d925a51b4c7d4ff9c": {"model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "model_name": "DescriptionStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "DescriptionStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": ""}}, "8a02778f650f46f3972a3c92f9d4645c": {"model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "9378ad11c5de4179a3eacd983c68103b": {"model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "model_name": "FloatProgressModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_tooltip": null, "layout": "IPY_MODEL_964adcbfb7ab49aab51e1b59248f61f7", "max": 1.0, "min": 0.0, "orientation": "horizontal", "style": "IPY_MODEL_0d46db0bcd994c118a52274bb7ed3f52", "value": 1.0}}, "93e06495591e41a5b2840e9c07e6dc1a": {"model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "model_name": "HBoxModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_a7dcc4e004bc4cc48164b3bcee8a2ff4", "IPY_MODEL_9378ad11c5de4179a3eacd983c68103b", "IPY_MODEL_3695aa0f62ed4f0c8fb9cc3cd541b0b6"], "layout": "IPY_MODEL_8a02778f650f46f3972a3c92f9d4645c"}}, "964adcbfb7ab49aab51e1b59248f61f7": {"model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "a7dcc4e004bc4cc48164b3bcee8a2ff4": {"model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "model_name": "HTMLModel", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HTMLView", "description": "", "description_tooltip": null, "layout": "IPY_MODEL_c0de9a4a862442febc985594a9ad087e", "placeholder": "\u200b", "style": "IPY_MODEL_da4c7a8d2585402da12a86024f7876de", "value": "Finding and saving audio segments and their metadata: 100%"}}, "c0de9a4a862442febc985594a9ad087e": {"model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "model_name": "LayoutModel", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "da4c7a8d2585402da12a86024f7876de": {"model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "model_name": "DescriptionStyleModel", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "DescriptionStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": ""}}}, "version_major": 2, "version_minor": 0}
+</script>
+
+
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            
+        </div>
+    </div>
+    <footer>
+    
+
+    <hr/>
+
+        <div role="contentinfo">
+            <p> 
+                &copy;  2021, Nilo M. Recalde
+
+            </p>
+        </div>    
+        Using
+        <a
+        href="https://www.sphinx-doc.org/">Sphinx</a> //  theme  
+        modified from <a href="https://executablebooks.org/en/latest/">The
+        Executable Book Project</a>.
+
+    </footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>

@@ -39,7 +39,7 @@ release = '0.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx_rtd_theme',
+    "myst_nb",
     'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
@@ -56,7 +56,6 @@ autodoc_member_order = 'bysource'
 
 # Strip input prompts from copied code
 copybutton_prompt_text = ">>> "
-
 copybutton_prompt_text = r">>> |^\d+|\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
 copybutton_prompt_is_regexp = True
 
@@ -74,28 +73,35 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '_templates']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+
+html_theme = 'sphinx_book_theme'
+
+html_theme_options = {
+    "repository_url": "https://github.com/nilomr/pykanto",
+    "use_repository_button": True,
+    "logo_only": True,
+    "extra_navbar": False,
+}
+
+jupyter_execute_notebooks = "cache"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['custom']
+html_static_path = ['_static']
 
 html_css_files = [
-    'custom.css',
+    'css/custom.css',
 ]
 
-html_logo = str(Path("custom") / "pykanto-logo-white-03.svg")
-html_theme_options = {
-    'logo_only': True,
-    'display_version': False,
+html_logo = str(Path("custom") / "pykanto-logo-grey-04.svg")
+
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+    'special-members': '__init__',
+    "private-members": True,
+    'member-order': 'bysource'
 }
-
-
-autodoc_default_options = {"members": True,
-                           "undoc-members": True,
-                           'special-members': '__init__',
-                           "private-members": True,
-                           'member-order': 'bysource'}
 
 default_role = 'py:obj'
