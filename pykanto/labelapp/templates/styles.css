@@ -38,9 +38,9 @@ h1 {
 /* footer */
 
 #footer {
-    position: fixed;
-    right: 0;
-    bottom: 0;
+    position: absolute;
+    right: 18.3%;
+    bottom: inherit;
 }
 
 #docsbutton {
