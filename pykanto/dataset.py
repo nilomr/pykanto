@@ -186,7 +186,7 @@ class SongDataset():
             ndrop = len(self.DIRS.JSON_LIST) - len(matching_jsons)
             warnings.warn(
                 "There is an unequal number of matching .wav and .json "
-                f"files in {self.DIRS.SEGMENTED}."
+                f"files in {self.DIRS.SEGMENTED}. "
                 f"Keeping only those that match: dropped {ndrop}")
             keepnames = [json.stem for json in matching_jsons]
             self.DIRS.WAV_LIST = [wav for wav in self.DIRS.WAV_LIST
@@ -246,7 +246,8 @@ class SongDataset():
                     total=n_jsonfiles)]
 
         else:
-            jsons = _get_json_parallel(self.DIRS.JSON_LIST)
+            jsons = _get_json_parallel(
+                self.DIRS.JSON_LIST, verbose=self.parameters.verbose)
 
         self.metadata = {
             Path(json["wav_file"]).stem: json for json in jsons
@@ -769,9 +770,9 @@ class SongDataset():
     @timing
     def cluster_ids(self, min_sample: int = 10) -> None:
         """
-        Dimensionality reduction using UMAP + unsupervised clustering
-        using HDBSCAN. This will fail if the sample size for an ID (grouping factor, such as individual or
-            population) is too small.
+        Dimensionality reduction using UMAP + unsupervised clustering using
+        HDBSCAN. This will fail if the sample size for an ID (grouping factor,
+        such as individual or population) is too small.
 
         Adds cluster membership information and 2D UMAP coordinates to 
         :attr:`~.SongDataset.vocs` if `song_level=True` 
