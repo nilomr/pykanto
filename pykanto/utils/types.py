@@ -93,9 +93,6 @@ class Metadata(AudioAnnotation):
     Type-checks and stores metadata for ONE audio segment 
     (e.g. a song or song bout). Type checks ensure that 
     instances of this class are JSON-serializable as a dictionary.
-
-    Args:
-        AudioAnnotation (_type_): _description_
     """
     ID: str = attr.ib(validator=validators.instance_of(str))
     label: str = attr.ib(validator=validators.instance_of(str))
