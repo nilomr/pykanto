@@ -16,7 +16,7 @@ import sys
 from collections import ChainMap
 from functools import wraps
 from time import time
-from typing import Any, Dict, Iterable, List
+from typing import Any, Dict, Iterable, List, TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -24,6 +24,7 @@ import psutil
 import ray
 from pykanto.utils.types import Chunkinfo
 from tqdm.auto import tqdm
+
 
 # ──── FUNCTIONS ───────────────────────────────────────────────────────────────
 
@@ -66,7 +67,7 @@ def print_dict(dictionary: Dict) -> str:
     Pretty print a class __dict__ attribute.
 
     Args:
-        dictionary (Dict): __dict__ attribute 
+        dictionary (Dict): __dict__ attribute
             containing an object's writable attributes.
 
     Returns:
@@ -95,15 +96,20 @@ def print_dict(dictionary: Dict) -> str:
 
 def timing(f):
     """
-    Custom timer decorator.
+    Custom timer decorator. Prints time info unless used within a SongDataset
+    where parameters.verbose = False.
     """
     @wraps(f)
     def wrap(*args, **kwargs):
         start = time()
         output = f(*args, **kwargs)
         end = time()
-        print(
-            f"Function '{f.__name__}' took {end-start:2.4f} sec.")
+        from pykanto.dataset import SongDataset
+        verbose = args[0].parameters.verbose if isinstance(
+            args[0], SongDataset) else True
+        if verbose:
+            print(
+                f"Function '{f.__name__}' took {end-start:2.4f} sec.")
         return output
     return wrap
 
