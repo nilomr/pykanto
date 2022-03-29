@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import List, Tuple, Union
 import attr
 from attr import validators
+import pkg_resources
 import ray
 from pykanto.utils.compute import (calc_chunks, get_chunks, print_dict,
                                    print_parallel_info, to_iterator, tqdmm)
@@ -68,6 +69,9 @@ class ProjDirs():
 
         # Type annotations for later use within SongDataset objects
         self.DATASET: Path
+        self.SPECTROGRAMS: Path
+        self.WAV_LIST: List[Path]
+        self.JSON_LIST: List[Path]
 
         # Create them if needed
         if mkdir:
@@ -258,9 +262,12 @@ def get_wavs_w_annotation(
         List[Tuple[Path, Path]]: Filtered list.
     """
 
+    wavcase = wav_filepaths[0].suffix
+
     filtered_wavpaths = [
-        (file.parent / f'{file.stem}.wav', file) for file in annotation_paths
-        if file.parent / f'{file.stem}.wav' in wav_filepaths]
+        (file.parent / f'{file.stem}{wavcase}', file)
+        for file in annotation_paths
+        if file.parent / f'{file.stem}{wavcase}' in wav_filepaths]
 
     return filtered_wavpaths
 
@@ -285,7 +292,9 @@ def change_data_loc(
     return new_path
 
 
-def get_file_paths(root_dir: Path, extensions: List[str]) -> List[Path]:
+def get_file_paths(
+        root_dir: Path, extensions: List[str],
+        verbose: bool = False) -> List[Path]:
     """
     Returns paths to files with given extension found recursively within a
     directory.
@@ -313,7 +322,8 @@ def get_file_paths(root_dir: Path, extensions: List[str]) -> List[Path]:
         raise FileNotFoundError(
             f"There are no {ext} files in directory {root_dir}.")
     else:
-        print(f"Found {len(file_list)} {ext} files in {root_dir}")
+        if verbose:
+            print(f"Found {len(file_list)} {ext} files in {root_dir}")
     return file_list
 
 
@@ -346,3 +356,25 @@ def link_project_data(origin: os.PathLike, project_data_dir: Path) -> None:
     else:
         warnings.warn('link_project_data() failed: '
                       'the destination directory is not empty.')
+
+
+def pykanto_data(dataset: str = "GREAT_TIT") -> ProjDirs:
+    """
+    Loads pykanto's sample datasets. These are minimal data examples intended
+    for testing and tutorials.
+
+    Args:
+        dataset (str, optional): Dataset name, one of ["STORM-PETREL", 
+            "BENGALESE_FINCH", "GREAT_TIT", "AM"]. Defaults to "GREAT_TIT".
+
+    Returns:
+        ProjDirs: An object with paths to data directories that can then be used
+            to create a dataset.
+    """
+    dfolder = 'segmented' if dataset == "GREAT_TIT" else 'raw'
+    DATA_PATH = Path(pkg_resources.resource_filename('pykanto', 'data'))
+    PROJECT = Path(DATA_PATH).parent
+    RAW_DATA = (DATA_PATH / dfolder / (dataset.lower()
+                if dataset == "GREAT_TIT" else dataset))
+    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True if dataset != "AM" else False)
+    return DIRS
