@@ -9,11 +9,10 @@ from __future__ import annotations
 import json
 import warnings
 from pathlib import Path
-from typing import (TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Tuple,
-                    TypedDict)
+from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Tuple
 from xml.etree import ElementTree
-import attr
 
+import attr
 import audio_metadata as audiometa
 import librosa
 import librosa.display
@@ -23,24 +22,24 @@ import soundfile as sf
 from pykanto.signal.filter import (dereverberate, dereverberate_jit,
                                    gaussian_blur, kernels, norm, normalise)
 from pykanto.signal.spectrogram import retrieve_spectrogram
-from pykanto.utils.compute import (
-    calc_chunks, flatten_list, get_chunks, print_parallel_info, timing,
-    to_iterator, tqdmm)
+from pykanto.utils.compute import (calc_chunks, flatten_list, get_chunks,
+                                   print_parallel_info, timing, to_iterator,
+                                   tqdmm)
 from pykanto.utils.custom import parse_sonic_visualiser_xml
 from pykanto.utils.types import (Annotation, AudioAnnotation, Metadata,
                                  SegmentAnnotation)
+from pykanto.utils.write import makedir
 from scipy import ndimage
 from skimage.exposure import equalize_hist
 from skimage.filters.rank import median
 from skimage.morphology import dilation, disk, erosion
 from skimage.util import img_as_ubyte
 
-from pykanto.utils.write import makedir
-
 if TYPE_CHECKING:
     from pykanto.dataset import SongDataset
 
 from pykanto.utils.paths import ProjDirs, get_file_paths
+
 
 # ──── DIVIDING RAW FILES INTO SEGMENTS ─────────────────────────────────────────
 
@@ -122,7 +121,11 @@ class ReadWav:
         Returns:
             Dict[str, Any]: Wavfile metadata.
         """
-        return self.metadata.__dict__
+        out = self.get_metadata()
+        if isinstance(out, dict):
+            return out
+        else:
+            return out.__dict__
 
 
 class SegmentMetadata:
@@ -194,8 +197,6 @@ class SegmentMetadata:
 
         Returns: None
 
-        Note:
-            Call SegmentMetadata(args).get() to return dictionary.
         """
 
         self.metadata = Metadata(
@@ -213,6 +214,8 @@ class SegmentMetadata:
             wav_file=wav_out.as_posix()
         )
 
+        self.index = i
+
     def get_metadata(self) -> Metadata:
         """
         Get Metadata object.
@@ -229,7 +232,11 @@ class SegmentMetadata:
         Returns:
             Dict[str, Any]: Wavfile metadata.
         """
-        return self.metadata.__dict__
+        out = self.get_metadata()
+        if isinstance(out, dict):
+            return out
+        else:
+            return out.__dict__
 
 
 # ──── FUNCTIONS ────
@@ -336,21 +343,24 @@ def save_segments(
 def segment_is_valid(
         metadata: Annotation,
         i: int,
-        min_duration: float = .1,
-        min_freqrange: int = 100,
+        min_duration: float = 0.01,
+        min_freqrange: int = 1,
         labels_to_ignore: List[str] = ["NO", "NOISE"]) -> bool:
     """
     Checks whether a segment of index i within a dictionary is a valid segment.
 
     Args:
-        metadata (Annotation): Dictionary with segment inf
-        i (int): _description_
-        min_duration (float, optional): _description_. Defaults to .1.
-        min_freqrange (int, optional): _description_. Defaults to 100.
-        labels_to_ignore (List[str], optional): _description_. Defaults to ["NO", "NOISE"].
+        metadata (Annotation): Annotation object for a wav file.
+        i (int): Segment index.
+        min_duration (float, optional): Minimum duration of segment to 
+            consider valid, in seconds. Defaults to 0.01.
+        min_freqrange (int, optional): Minimum frequency range of segment to 
+            consider valid, in Hertzs. Defaults to 1.
+        labels_to_ignore (List[str], optional): Exclude any segments with these 
+            labels. Defaults to ["NO", "NOISE"].
 
     Returns:
-        bool: _description_
+        bool: Is this a valid segment?
     """
 
     min_frames = min_duration * metadata.sample_rate
@@ -368,7 +378,8 @@ def segment_files(
         wav_outdir: Path,
         json_outdir: Path,
         resample: int | None = 22050,
-        parser_func: Callable[[Path], SegmentAnnotation] = parse_sonic_visualiser_xml,
+        parser_func: Callable[[Path],
+                              SegmentAnnotation] = parse_sonic_visualiser_xml,
         pbar: bool = True,
         **kwargs) -> None:
     """
@@ -682,7 +693,7 @@ def segment_song_into_units_parallel(
     if not n:
         raise KeyError('No file keys were passed to '
                        'segment_song_into_units.')
-    chunk_info = calc_chunks(n, verbose=True)
+    chunk_info = calc_chunks(n, verbose=dataset.parameters.verbose)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunks = get_chunks(keys, chunk_length)
     print_parallel_info(n, 'vocalisations', n_chunks, chunk_length)

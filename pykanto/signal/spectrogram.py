@@ -115,7 +115,7 @@ def _save_melspectrogram_parallel(
     if not n:
         raise KeyError('No sound file keys were passed to '
                        'save_melspectrogram.')
-    chunk_info = calc_chunks(n, verbose=True)
+    chunk_info = calc_chunks(n, verbose=dataset.parameters.verbose)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunks = get_chunks(keys, chunk_length)
     print_parallel_info(n, 'new audio files', n_chunks, chunk_length)

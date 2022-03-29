@@ -1,3 +1,9 @@
+# ─── DESCRIPTION ──────────────────────────────────────────────────────────────
+
+"""Perform dimensionality reduction and clustering."""
+
+# ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
+
 from __future__ import annotations
 
 import itertools
@@ -7,15 +13,14 @@ from logging import warn
 from typing import TYPE_CHECKING, List, Tuple
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
 import psutil
 import ray
 import umap
 from hdbscan import HDBSCAN
+from pykanto.signal.spectrogram import pad_spectrogram
 from pykanto.utils.compute import (calc_chunks, flatten_list, get_chunks,
                                    print_parallel_info, to_iterator, tqdmm)
-from pykanto.signal.spectrogram import pad_spectrogram
 from umap import UMAP
 
 if TYPE_CHECKING:
@@ -30,8 +35,11 @@ else:
     _has_cuml = True
 
 
+# ──── FUNCTIONS ───────────────────────────────────────────────────────────────
+
+
 def umap_reduce(
-        data: npt.ArrayLike,
+        data: np.ndarray,
         n_neighbors: int = 15,
         n_components: int = 2,
         min_dist: float = 0.1,
@@ -71,7 +79,7 @@ def umap_reduce(
 
 def hdbscan_cluster(
         embedding: np.ndarray, min_cluster_size: int = 5,
-        min_samples: int = None,
+        min_samples: None | int = None,
         **kwargs) -> HDBSCAN:
     """
     Perform HDBSCAN clustering from vector array or distance matrix. 
@@ -108,19 +116,21 @@ def reduce_and_cluster(
         dataset: SongDataset,
         ID: str,
         song_level: bool = False,
-        min_sample: int = 10) -> pd.DataFrame:
+        min_sample: int = 10) -> pd.DataFrame | None:
     # TODO: pass UMAP and HDBSCAN params!
     """
     Args:
-        dataset (SongDataset): [description]
-        ID (str): [description]
+        dataset (SongDataset): Data to be used.
+        ID (str): Grouping factor.
         song_level (bool, optional): Whether to use the average of all units in 
             each vocalisation instead of all units. Defaults to False.
-        min_sample (int, optional): [description]. Defaults to 10.
+        min_sample (int, optional): Minimum number of vocalisations or units. 
+            Defaults to 10.
 
     Returns:
-        pd.DataFrame: Dataframe with columns ['vocalisation_key', 'ID', 'idx',
-        'umap_x', 'umap_y', 'auto_cluster_label']
+        pd.DataFrame | None: Dataframe with columns ['vocalisation_key', 'ID',
+            'idx', 'umap_x', 'umap_y', 'auto_cluster_label'] or None if sample size
+            is too small
     """
 
     # Retrieve units or averaged units for one individual
@@ -189,7 +199,7 @@ def reduce_and_cluster(
 
 def reduce_and_cluster_parallel(
     dataset: SongDataset, min_sample: int = 10, num_cpus: float | None = None
-) -> pd.DataFrame:
+) -> pd.DataFrame | None:
     """
     Parallel implementation of 
     :func:`~pykanto.signal.spectrogram.save_melspectrogram`.
@@ -218,7 +228,7 @@ def reduce_and_cluster_parallel(
         IDS: List[str],
         song_level: bool = False,
         min_sample: int = 10
-    ) -> List[pd.DataFrame]:
+    ) -> List[pd.DataFrame | None]:
         return [reduce_and_cluster(dataset, ID, song_level=song_level,
                 min_sample=min_sample) for ID in IDS]
 
