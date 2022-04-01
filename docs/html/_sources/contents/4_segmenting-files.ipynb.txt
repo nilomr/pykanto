@@ -33,7 +33,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 19,
    "metadata": {
     "tags": [
      "hide-output",
@@ -66,7 +66,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 18,
+   "execution_count": 20,
    "metadata": {
     "tags": [
      "hide-output"
@@ -124,7 +124,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 21,
    "metadata": {
     "tags": [
      "hide-output"
@@ -156,7 +156,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
+   "execution_count": 22,
    "metadata": {
     "tags": [
      "hide-output"
@@ -197,12 +197,8 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
-   "metadata": {
-    "tags": [
-     "hide-output"
-    ]
-   },
+   "execution_count": 23,
+   "metadata": {},
    "outputs": [
     {
      "name": "stdout",
@@ -210,7 +206,7 @@
      "text": [
       "Found 1 .WAV files in /home/nilomr/projects/pykanto/pykanto/data/raw/AM\n",
       "Found 1 .xml files in /home/nilomr/projects/pykanto/pykanto/data/raw/AM\n",
-      "Finding and saving audio segments and their metadata: 100%|██████████| 1/1 [00:00<00:00, 22.36it/s]\n"
+      "Finding and saving audio segments and their metadata: 100%|██████████| 1/1 [00:00<00:00, 30.90it/s]\n"
      ]
     }
    ],

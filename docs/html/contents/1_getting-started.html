@@ -43,6 +43,8 @@
     <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.9d8b4a8b9bb19db25eeaddc40d639ba2.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Working with paths and directories" href="2_paths-and-dirs.html" />
@@ -110,6 +112,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="3_basic-workflow.html">
    Basic workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="4_segmenting-files.html">
+   File segmentation
   </a>
  </li>
  <li class="toctree-l1">
@@ -263,6 +270,11 @@
        pykanto.utils.slurm.launch
       </a>
      </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../_autosummary/pykanto.utils.slurm.tester.html">
+       pykanto.utils.slurm.tester
+      </a>
+     </li>
     </ul>
    </li>
    <li class="toctree-l2">
@@ -372,6 +384,15 @@
    Basic installation
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#developer-installation">
+   Developer installation
+  </a>
+ </li>
 </ul>
 
             </nav>
@@ -397,6 +418,15 @@
    Basic installation
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#developer-installation">
+   Developer installation
+  </a>
+ </li>
 </ul>
 
                         </nav>
@@ -414,18 +444,53 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pykanto
 </pre></div>
 </div>
-<p>tip</p>
 <div class="tip admonition">
 <p class="admonition-title">Tip: avoid a <a class="reference external" href="https://en.wikipedia.org/wiki/Dependency_hell">dependency hell</a>!</p>
 <p>It is possible to use pip and install pykanto outside of a virtual environment, but this is not advised:</p>
 <blockquote class="epigraph">
 <div><p>Virtual environments create a clean Python environment that does not interfere with any existing system installation, can be easily removed, and contain only the package versions your application needs. They help avoid a common challenge known as dependency hell.</p>
-<p class="attribution">—<a class="reference external" href="https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst"> scikit-image docs</a></p>
+<p class="attribution">—<a class="reference external" href="https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst"> scikit-image docs</a>
+</p>
 </div></blockquote>
+<p>And only then install <code class="docutils literal notranslate"><span class="pre">pykanto</span></code>.</p>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+</div>
+<div class="section" id="id1">
+<h2><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Under the hood, <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> uses some libraries and algorithms (like UMAP) that
+can run much faster on a GPU. If you have a CUDA-supported GPU and install
+<a class="reference external" href="https://rapids.ai/">RAPIDS</a>’s <a class="reference external" href="https://github.com/rapidsai/cuml">cuML</a> in the
+same environment, <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> will detect it and switch to the faster GPU
+implementation.</p>
+<p>I recommend that, if this is the case, you first create a fresh environment with
+conda:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n pykanto-env <span class="nv">python</span><span class="o">==</span><span class="m">3</span>.8             
 </pre></div>
 </div>
+<p>And then install cuML &amp; <code class="docutils literal notranslate"><span class="pre">pykanto</span></code>, in that order.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c rapidsai -c nvidia -c conda-forge cuml 
+pip install pykanto
+</pre></div>
+</div>
+<p>(Also see the <a class="reference external" href="https://rapids.ai/start.html#rapids-release-selector">rapids release
+selector</a>)</p>
+<p>The same is true if you want to install <a class="reference external" href="https://pytorch.org/">pytorch</a>; the
+preferred order would be:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># pytorch and cuML installation via conda</span>
+conda install -c rapidsai -c nvidia -c conda-forge cuml
+conda install -c pytorch pytorch torchvision torchaudio   
+pip install pykanto
+</pre></div>
+</div>
+</div>
+<div class="section" id="developer-installation">
+<h2>Developer installation<a class="headerlink" href="#developer-installation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/nilomr/pykanto.git
+<span class="nb">cd</span> pykanto
+pip install -e .<span class="s1">&#39;[dev]&#39;</span>
+</pre></div>
+</div>
+<p>This will install extra dependencies, such as <code class="docutils literal notranslate"><span class="pre">pytest</span></code>, <code class="docutils literal notranslate"><span class="pre">nox</span></code> or <code class="docutils literal notranslate"><span class="pre">sphinx</span></code>.</p>
 </div>
 </div>
 
