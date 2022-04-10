@@ -1,22 +1,21 @@
 
 
-# High Performance Computing 
+# `pykanto` & HPC
 
 ## Introduction
 
-Many of the processes that `pykanto` carries out are computationally intensive,
-such as calculating spectrograms, performing operations on large arrays,
-dimensionality reduction and clustering. High-level, interpreted languages—like
+Many of the tasks that `pykanto` carries out are computationally intensive,
+such as calculating spectrograms and running dimensionality reduction and clustering algorithms. High-level, interpreted languages—like
 R or Python—are notoriously slow: where possible, I have optimised performance
 by both a) translating functions to optimized machine code at runtime using
 [Numba](https://numba.pydata.org/) and b) parallelising tasks using
 [Ray](https://www.ray.io/), a platform for distributed
-computing. As an example, the \texttt{segment\_into\_units()} function can find
+computing. As an example, the `segment_into_units()` function can find
 and segment 20.000 discrete acoustic units in approximately 16 seconds on a
 desktop 8-core machine; a dataset with over half a million (556.472) units takes
 ~132 seconds on a standard 48-core compute node.
 
-`pykanto` works in any (well, hopefully) personal machine, but for most real
+`pykanto` works in any (well, hopefully) personal machine, but for most real-world
 applications you will probably want to run it on a compute cluster. This can be a
 daunting task, so I have packaged some tools that should make it a little bit
 easier—at least they do for me!
@@ -30,7 +29,7 @@ refer to it.
 
 This library uses [Ray](https://www.ray.io/) for parallel/distributed computation. Ray provides tools to 'go from a single CPU to multi-core, multi-GPU or multi-node'. Submitting jobs that use multiple nodes or multiple GPUs is slightly more involved than using single-core or multi-core jobs. This might be overkill for some users, but if you need it—for example if you are training large models, or if you have a truly large dataset—
 
-````{admonition} Tip: testing your code on your local machine
+````{admonition} Tip: testing your code on your local machine first
 :class: tip, dropdown
 
 Before you run a large job on a compute cluster you might want to test your
@@ -83,7 +82,7 @@ print(ray.cluster_resources())
 1. Check the logfile for errors!
 
 
-````{admonition} Tip: Uploading data to your cluster storage area
+````{admonition} Tip: uploading data to your cluster storage area
 :class: tip, dropdown
 
 If you need to upload your raw or segmented data to use in a HPC cluster and you
