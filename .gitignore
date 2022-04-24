@@ -105,6 +105,7 @@ pykanto/data/segmented/*
 .~lock.*
 *.xml
 !pykanto/data/raw/*/*.xml
+!pykanto/data/raw/*/*/*.xml
 
 # Mac OS-specific storage files
 .DS_Store
