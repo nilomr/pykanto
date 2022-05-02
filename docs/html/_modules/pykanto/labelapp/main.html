@@ -397,7 +397,7 @@
 
 <div class="viewcode-block" id="prepare_legend"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.prepare_legend">[docs]</a><span class="k">def</span> <span class="nf">prepare_legend</span><span class="p">(</span>
         <span class="n">source</span><span class="p">:</span> <span class="n">ColumnDataSource</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">labs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">grouping_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">):</span>
+        <span class="n">labs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">grouping_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;auto_type_label&#39;</span><span class="p">):</span>
 
     <span class="c1"># Build marker shapes</span>
     <span class="n">marker_types</span> <span class="o">=</span> <span class="p">[</span>
@@ -422,8 +422,8 @@
     <span class="n">pre</span> <span class="o">=</span> <span class="s1">&#39;&lt;div class=&quot;legend_wrapper&quot;&gt;&#39;</span>
     <span class="n">img_htmls</span> <span class="o">=</span> <span class="p">[</span><span class="n">pre</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]),</span> <span class="n">key</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]),</span> <span class="n">key</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;spectrogram&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
         <span class="n">marker</span> <span class="o">=</span> <span class="n">html_markers</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;markers&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]]</span>
         <span class="n">span</span> <span class="o">=</span> <span class="n">span_mk_sizes</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;markers&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">]]</span>
@@ -532,7 +532,7 @@
     <span class="c1"># :func:`~pykanto.signal.cluster.dim_reduction_and_cluster`</span>
     <span class="c1"># because len &lt; min_sample)</span>
     <span class="n">indv_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span>
-        <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">])[</span><span class="s1">&#39;ID&#39;</span><span class="p">])</span>
+        <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">])[</span><span class="s1">&#39;ID&#39;</span><span class="p">])</span>
 
     <span class="c1"># Where to store labelling information?</span>
     <span class="k">if</span> <span class="s1">&#39;already_checked&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">):</span>
@@ -609,7 +609,7 @@
 <span class="s2">        &lt;div class=&quot;hover_container&quot;&gt;</span>
 <span class="s2">            &lt;img class=&#39;hover_img&#39; src=&#39;@spectrogram&#39; style=&#39;float: top; width:120px;height:120px;&#39;/&gt;</span>
 <span class="s2">            &lt;div class=&quot;image_label&quot;&gt;</span>
-<span class="s2">                &lt;span style=&#39;font-size: 16px; &#39;&gt;@auto_cluster_label&lt;/span&gt;</span>
+<span class="s2">                &lt;span style=&#39;font-size: 16px; &#39;&gt;@auto_type_label&lt;/span&gt;</span>
 <span class="s2">            &lt;/div&gt;</span>
 <span class="s2">        &lt;/div&gt;</span>
 <span class="s2">    &lt;/div&gt;</span>
@@ -643,7 +643,7 @@
     <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_legend_items</span><span class="p">():</span>
-        <span class="n">dummy_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]))</span>
+        <span class="n">dummy_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]))</span>
         <span class="n">legend_items</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">LegendItem</span><span class="p">(</span>
                 <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">renderers</span><span class="o">=</span><span class="p">[</span><span class="n">dummy_scatter</span><span class="p">],</span>
@@ -702,7 +702,7 @@
     <span class="n">feedback_text</span> <span class="o">=</span> <span class="n">Div</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">css_classes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;help_text&quot;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">update_class_examples_div</span><span class="p">():</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span>
                            <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;spectrogram&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># Panel with class examples</span>
@@ -745,7 +745,7 @@
 
         <span class="c1"># Save labels from last individual to dataset</span>
         <span class="n">label_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">label</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-            <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">])}</span>
+            <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">])}</span>
 
         <span class="k">if</span> <span class="s1">&#39;label&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_dict</span><span class="p">)</span>
@@ -769,7 +769,7 @@
 
         <span class="n">indv</span> <span class="o">=</span> <span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">source</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">load_bk_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">indv</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span>
         <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 
         <span class="c1"># Update legend</span>
@@ -794,9 +794,9 @@
     <span class="k">def</span> <span class="nf">update_labels</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;indices&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
             <span class="k">return</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span>
         <span class="n">labels</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">item</span>
-        <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
         <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 
         <span class="c1"># Update legend</span>

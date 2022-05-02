@@ -84,12 +84,12 @@ def prepare_datasource(
     # Get a subset of the main dataset for this individual
     if song_level:
         df = dataset.vocs[dataset.vocs['ID'] == individual][[
-            'ID', 'auto_cluster_label', 'umap_x', 'umap_y', 'spectrogram_loc']].copy()
+            'ID', 'auto_type_label', 'umap_x', 'umap_y', 'spectrogram_loc']].copy()
         spectrograms = [retrieve_spectrogram(spec_loc)
                         for spec_loc in df['spectrogram_loc']]
     else:
         df = dataset.units[dataset.units['ID'] == individual][[
-            'ID', 'auto_cluster_label', 'umap_x', 'umap_y']].copy()
+            'ID', 'auto_type_label', 'umap_x', 'umap_y']].copy()
         units = pickle.load(open(dataset.DIRS.UNITS[individual], "rb"))
         spectrograms = list(itertools.chain.from_iterable(units.values()))
 
@@ -123,5 +123,5 @@ def load_bk_data(
     df_loc = getattr(dataset.DIRS, dataloc.upper())['predatasource'][individual]
     df = pickle.load(open(df_loc, "rb"))
     source = ColumnDataSource(
-        df[['ID', 'auto_cluster_label', 'umap_x', 'umap_y', 'spectrogram']])
+        df[['ID', 'auto_type_label', 'umap_x', 'umap_y', 'spectrogram']])
     return source

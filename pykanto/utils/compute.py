@@ -16,7 +16,7 @@ import sys
 from collections import ChainMap
 from functools import wraps
 from time import time
-from typing import Any, Dict, Iterable, List, TYPE_CHECKING
+from typing import Any, Dict, Iterable, Iterator, List, TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -144,7 +144,7 @@ def calc_chunks(
     return chunks
 
 
-def get_chunks(lst: List[Any], n: int):
+def get_chunks(lst: List[Any], n: int) -> Iterator[Any]:
     """
     Yields successive n-sized chunks from list.
     Last chunk will be shorter if len(lst) % n != 0.
@@ -160,7 +160,7 @@ def get_chunks(lst: List[Any], n: int):
         yield lst[i:i + n]
 
 
-def flatten_list(lst: List[Any]) -> Iterable[Any]:
+def flatten_list(lst: List[Any]) -> List[Any]:
     """
     Flattens a list using chain.
     """

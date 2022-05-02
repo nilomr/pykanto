@@ -103,7 +103,7 @@ def test_cluster_ids(dataset):
     dataset.cluster_ids(min_sample=5)
     assert hasattr(dataset, 'units')
     assert 'umap_x' in dataset.units
-    assert 'auto_cluster_label' in dataset.units
+    assert 'auto_type_label' in dataset.units
 
 
 def test_prepare_interactive_data(dataset):

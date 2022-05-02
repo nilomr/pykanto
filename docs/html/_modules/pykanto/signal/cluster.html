@@ -493,7 +493,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        pd.DataFrame | None: Dataframe with columns [&#39;vocalisation_key&#39;, &#39;ID&#39;,</span>
-<span class="sd">            &#39;idx&#39;, &#39;umap_x&#39;, &#39;umap_y&#39;, &#39;auto_cluster_label&#39;] or None if sample size</span>
+<span class="sd">            &#39;idx&#39;, &#39;umap_x&#39;, &#39;umap_y&#39;, &#39;auto_type_label&#39;] or None if sample size</span>
 <span class="sd">            is too small</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -554,8 +554,8 @@
         <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">cluster_df</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
     <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;umap_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">embedding</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;umap_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">embedding</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">clusterer</span><span class="o">.</span><span class="n">labels_</span><span class="p">)</span>
-    <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+    <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">clusterer</span><span class="o">.</span><span class="n">labels_</span><span class="p">)</span>
+    <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cluster_df</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
         <span class="nb">str</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">cluster_df</span></div>

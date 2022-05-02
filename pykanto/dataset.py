@@ -71,8 +71,8 @@ class SongDataset():
             neural network), these should be labelled as 'NOISE' in the
             corresponding json file.
             I.e., `json_file["label"] == 'NOISE'`.
-            Files where `json_file["label"] == []` or "label" is not a key
-            will be automatically given the label 'VOCALISATION'.
+            Files where `json_file["label"] == []` or "label" is not a key in 
+            `json_file` will be automatically given the label 'VOCALISATION'.
 
         Args:
             DATASET_ID (str): Name of new dataset.
@@ -696,9 +696,22 @@ class SongDataset():
         if verbose:
             print(f"Saved dataset to {out_dir}")
 
+    def to_csv(self, path: Path) -> None:
+        """
+        Output vocalisation (and, if present, unit) metadata in the dataset as 
+        a .csv file.
+
+        Args:
+            path (Path): Directory where to save the file(s).
+        """
+        self.vocs.to_csv(path / f'{self.DIRS.DATASET.stem}_VOCS.csv')
+        if hasattr(self, 'units'):
+            self.units.to_csv(path / f'{self.DIRS.DATASET.stem}_UNITS.csv')
+
     def reload(self) -> SongDataset:
         """
-        Load the current dataset from disk. Remember to assign the output!
+        Load the current dataset from disk. Remember to assign the output to 
+        a variable!
 
         Warning:
             You will lose any changes that happened after the last time
@@ -820,7 +833,7 @@ class SongDataset():
                 "Make sure you that have run it, then try again")
 
         elif not set(
-                ['auto_cluster_label', 'umap_x', 'umap_y']).issubset(
+                ['auto_type_label', 'umap_x', 'umap_y']).issubset(
                 self.vocs.columns if song_level
                 else self.units.columns):
             raise KeyError(
@@ -935,14 +948,14 @@ class SongDataset():
                 print('Stopped.')
                 return None
 
-        if 'auto_cluster_label' not in getattr(self, dataset_type).columns:
+        if 'auto_type_label' not in getattr(self, dataset_type).columns:
             raise ValueError('You need to run `self.cluster_ids`'
                              ' before you can check its results.')
 
         if set(
             getattr(self.DIRS, dataset_labels)['already_checked']) == set(
             getattr(self, dataset_type).dropna(
-                subset=['auto_cluster_label'])['ID']):
+                subset=['auto_type_label'])['ID']):
             raise KeyError(
                 "You have already checked all the labels in this dataset. "
                 "If you want to re-check any/all, remove individuals from "
@@ -957,8 +970,8 @@ class SongDataset():
 
         # Check palette validity
         max_labs_data = getattr(self, dataset_type).dropna(
-            subset=['auto_cluster_label'])[
-            'auto_cluster_label'].astype(int).max() + 1
+            subset=['auto_type_label'])[
+            'auto_type_label'].astype(int).max() + 1
 
         max_labs = max_n_labs if max_n_labs > max_labs_data else max_labs_data
 

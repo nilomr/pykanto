@@ -73,11 +73,11 @@ def test_cluster_ids(dataset):
 
         if song_level:
             assert 'umap_x' in dataset.vocs
-            assert 'auto_cluster_label' in dataset.vocs
+            assert 'auto_type_label' in dataset.vocs
         else:
             assert hasattr(dataset, 'units')
             assert 'umap_x' in dataset.units
-            assert 'auto_cluster_label' in dataset.units
+            assert 'auto_type_label' in dataset.units
 
 
 def test_prepare_interactive_data(dataset):
@@ -113,7 +113,7 @@ def greti_data_test_manual():
     RAW_DATA = DATA_PATH / 'segmented' / 'great_tit'
     DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
 
-    params = Parameters(dereverb=True)
+    params = Parameters(dereverb=True, verbose=False)
     dataset = SongDataset(DATASET_ID, DIRS, parameters=params,
                           overwrite_dataset=True, overwrite_data=True)
     out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"

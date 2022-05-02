@@ -129,7 +129,7 @@ def reduce_and_cluster(
 
     Returns:
         pd.DataFrame | None: Dataframe with columns ['vocalisation_key', 'ID',
-            'idx', 'umap_x', 'umap_y', 'auto_cluster_label'] or None if sample size
+            'idx', 'umap_x', 'umap_y', 'auto_type_label'] or None if sample size
             is too small
     """
 
@@ -190,8 +190,8 @@ def reduce_and_cluster(
         cluster_df['idx'] = [idx[-1] for idx in cluster_df.index]
     cluster_df['umap_x'] = embedding[:, 0]
     cluster_df['umap_y'] = embedding[:, 1]
-    cluster_df['auto_cluster_label'] = list(clusterer.labels_)
-    cluster_df['auto_cluster_label'] = cluster_df['auto_cluster_label'].astype(
+    cluster_df['auto_type_label'] = list(clusterer.labels_)
+    cluster_df['auto_type_label'] = cluster_df['auto_type_label'].astype(
         str)
 
     return cluster_df

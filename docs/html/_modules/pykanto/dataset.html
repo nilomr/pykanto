@@ -1191,7 +1191,7 @@
                 <span class="s2">&quot;Make sure you that have run it, then try again&quot;</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span>
-                <span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">song_level</span>
                 <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
@@ -1306,14 +1306,14 @@
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Stopped.&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="s1">&#39;auto_cluster_label&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;auto_type_label&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to run `self.cluster_ids`&#39;</span>
                              <span class="s1">&#39; before you can check its results.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">set</span><span class="p">(</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s1">&#39;already_checked&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span>
-                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">])[</span><span class="s1">&#39;ID&#39;</span><span class="p">]):</span>
+                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">])[</span><span class="s1">&#39;ID&#39;</span><span class="p">]):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;You have already checked all the labels in this dataset. &quot;</span>
                 <span class="s2">&quot;If you want to re-check any/all, remove individuals from &quot;</span>
@@ -1328,8 +1328,8 @@
 
         <span class="c1"># Check palette validity</span>
         <span class="n">max_labs_data</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span>
-            <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">])[</span>
-            <span class="s1">&#39;auto_cluster_label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">])[</span>
+            <span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
 
         <span class="n">max_labs</span> <span class="o">=</span> <span class="n">max_n_labs</span> <span class="k">if</span> <span class="n">max_n_labs</span> <span class="o">&gt;</span> <span class="n">max_labs_data</span> <span class="k">else</span> <span class="n">max_labs_data</span>
 

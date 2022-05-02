@@ -118,7 +118,8 @@ def _save_melspectrogram_parallel(
     chunk_info = calc_chunks(n, verbose=dataset.parameters.verbose)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunks = get_chunks(keys, chunk_length)
-    print_parallel_info(n, 'new audio files', n_chunks, chunk_length)
+    if dataset.parameters.verbose:
+        print_parallel_info(n, 'new audio files', n_chunks, chunk_length)
 
     # Copy dataset to local object store
     dataset_ref = ray.put(dataset)
@@ -386,7 +387,8 @@ def get_indv_units_parallel(
     chunkeys = get_chunks(list(indv_dict), chunk_length)
     chunks = [{k: v for k, v in indv_dict.items() if k in chunk}
               for chunk in chunkeys]
-    print_parallel_info(n, 'different IDs', n_chunks, chunk_length)
+    if dataset.parameters.verbose:
+        print_parallel_info(n, 'new audio files', n_chunks, chunk_length)
 
     # Copy dataset to local object store
     dataset_ref = ray.put(dataset)
