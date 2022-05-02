@@ -13,7 +13,7 @@ Documentation
    
    contents/1_getting-started
    contents/2_basic-workflow
-   contents/3_paths-and-dirs
+   contents/3_project-structure
    contents/4_segmenting-files
    contents/intro
    contents/dataset

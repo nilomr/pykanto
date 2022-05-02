@@ -36,6 +36,10 @@ a:hover {
 }
 
 
+div.toctree-wrapper>ul>li>a {
+    font-size: 1em;
+}
+
 a.reference.internal span.doc.std.std-doc {
     color: #176685
 }
@@ -608,12 +612,42 @@ hr {
 
 footer {
     padding-left: 15px;
-    font-size: 0.8em;
-    line-height: 0.1;
+    font-size: 1em;
+    line-height: 1;
+    font-size: 1em;
     padding-bottom: 2em;
-    width: 77%;
     border-top: 1px solid #ccc;
 }
+
+
+.footer.col {
+    padding-left: 15px;
+    font-size: 1em;
+    line-height: 1;
+    font-size: 0.7em;
+    padding-bottom: 2em;
+    border-top: 1px solid #ccc;
+}
+
+
+.col.footer {
+    visibility: hidden;
+}
+
+
+.col.footer:after {
+    visibility: visible;
+    content: "© Nilo M. Recalde, 2021-present";
+    padding-left: 0px;
+    padding-top: 1.2em;
+    font-size: 1em;
+    line-height: 1em;
+    padding-bottom: 2em;
+    border-top: 1px solid #ccc;
+}
+
+
+
 
 
 /* EXTRA ──────────────────────────────────────────────────────────────────── */
