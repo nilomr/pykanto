@@ -23,7 +23,7 @@ from pykanto.signal.spectrogram import (cut_or_pad_spectrogram,
 from pykanto.utils.write import makedir
 
 if TYPE_CHECKING:
-    from pykanto.dataset import SongDataset
+    from pykanto.dataset import KantoData
 
 # ──── FUNCTIONS ────────────────────────────────────────────────────────────────
 
@@ -45,11 +45,11 @@ def embeddable_image(
     Returns:
         str: A decoded png image.
     """
-    img_data = np.rot90(np.interp(
+    img_data = np.flip(np.interp(
         data, (data.min(),
                data.max()),
         (0, 255)).astype(
-        np.uint8), 2)
+        np.uint8))
     image = Image.fromarray(img_data, mode='L').resize((64, 64), Image.BICUBIC)
     enhancer = ImageEnhance.Contrast(image)
     image = enhancer.enhance(2)
@@ -64,13 +64,13 @@ def embeddable_image(
 
 
 def prepare_datasource(
-        dataset: SongDataset, individual: str, spec_length: int = 500,
+        dataset: KantoData, individual: str, spec_length: int = 500,
         song_level: bool = False) -> Tuple[str, Path]:
     """
     Prepare and save data source for the interactibe labelling application.
 
     Args:
-        dataset (SongDataset): Source dataset.
+        dataset (KantoData): Source dataset.
         individual (str): ID to process.
         spec_length (int, optional): Desired spectrogram lenght, in frames. 
             Defaults to 500.
@@ -107,12 +107,12 @@ def prepare_datasource(
 
 
 def load_bk_data(
-        dataset: SongDataset, dataloc: str, individual: str) -> ColumnDataSource:
+        dataset: KantoData, dataloc: str, individual: str) -> ColumnDataSource:
     """
     Load saved data source to use in interctive labelling app.
 
     Args:
-        dataset (SongDataset): Source dataset.
+        dataset (KantoData): Source dataset.
         dataloc (str): Type of data to use (one of 'vocalisation_labels', 
             'unit_labels')
         individual (str): ID to process.

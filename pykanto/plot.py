@@ -30,7 +30,7 @@ from pykanto.signal.spectrogram import cut_or_pad_spectrogram, retrieve_spectrog
 from pykanto.parameters import Parameters
 
 if TYPE_CHECKING:
-    from pykanto.dataset import SongDataset
+    from pykanto.dataset import KantoData
 
 
 # ──── FUNCTIONS ───────────────────────────────────────────────────────────────
@@ -133,7 +133,7 @@ def melspectrogram(
 
 
 def segmentation(
-        dataset: SongDataset, key: str = None,
+        dataset: KantoData, key: str = None,
         spectrogram: bool | np.ndarray = False,
         onsets_offsets: bool | Tuple[np.ndarray, np.ndarray] = False,
         **kwargs) -> None:
@@ -142,7 +142,7 @@ def segmentation(
     of the segmentation process.
 
     Args:
-        dataset (SongDataset): A SongDataset object.
+        dataset (KantoData): A KantoData object.
         key (str, optional): Vocalisation key. Defaults to None.
         spectrogram (bool | np.ndarray, optional): [description]. 
             Defaults to False.
@@ -209,7 +209,7 @@ def rand_jitter(arr, jitter: float = .001):
 
 
 def show_spec_centroid_bandwidth(
-        dataset: SongDataset, centroid: np.ndarray, spec_bw: np.ndarray,
+        dataset: KantoData, centroid: np.ndarray, spec_bw: np.ndarray,
         key: None | str = None, spec: None | np.ndarray = None) -> None:
     """
     Plots spectral centroids and bandwiths over a mel spectrogram.
@@ -217,7 +217,7 @@ def show_spec_centroid_bandwidth(
     mel spectrogram directly.
 
     Args:
-        dataset (SongDataset): Dataset object with your data.
+        dataset (KantoData): Dataset object with your data.
         centroid (np.ndarray): Array of centroids.
         spec_bw (np.ndarray): Array of badwidths.
         key (None | str = None): Key of a vocalisation. Defaults to None.
@@ -246,7 +246,7 @@ def show_spec_centroid_bandwidth(
 
 
 def show_minmax_frequency(
-        dataset: SongDataset, minfreqs: np.ndarray, maxfreqs: np.ndarray,
+        dataset: KantoData, minfreqs: np.ndarray, maxfreqs: np.ndarray,
         key: None | str = None, spec: None | np.ndarray = None) -> None:
     """
     Plots approximate minimum and maximum frequencies over a mel spectrogram.
@@ -254,7 +254,7 @@ def show_minmax_frequency(
     mel spectrogram directly.
 
     Args:
-        dataset (SongDataset): Dataset object with your data.
+        dataset (KantoData): Dataset object with your data.
         rolloff_max (np.ndarray): Array of maximum frequencies.
         rolloff_min (np.ndarray): Array of minimum frequencies.
         key (None | str = None): Key of a vocalisation. Defaults to None.

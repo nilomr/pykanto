@@ -1,8 +1,0 @@
-
-
-```{code-cell} ipython3
-import pandas as pd
-df = pd.DataFrame(data.T, columns=['a', 'b', 'c'])
-df.head()
-```
-

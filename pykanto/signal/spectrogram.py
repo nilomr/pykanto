@@ -24,13 +24,13 @@ from pykanto.utils.compute import (calc_chunks, dictlist_to_dict, flatten_list,
 from pykanto.utils.write import makedir
 
 if TYPE_CHECKING:
-    from pykanto.dataset import SongDataset
+    from pykanto.dataset import KantoData
 
 # ──── FUNCTIONS ────────────────────────────────────────────────────────────────
 
 
 def save_melspectrogram(
-    dataset: SongDataset,
+    dataset: KantoData,
     key: str,
     dereverb: bool = True,
     bandpass: bool = True,
@@ -40,7 +40,7 @@ def save_melspectrogram(
     using dataset parameters.
 
     Args:
-        dataset (SongDataset): A SongDataset object.
+        dataset (KantoData): A KantoData object.
         key (str): Reference of wav file to open.
         dereverb (bool, optional): Whether to apply dereverberation to 
             the spectrogram. Defaults to True.
@@ -94,7 +94,7 @@ def save_melspectrogram(
 
 @ray.remote
 def _save_melspectrogram_r(
-    dataset: SongDataset, keys: List[str], **kwargs
+    dataset: KantoData, keys: List[str], **kwargs
 ) -> List[Dict[str, Path]]:
     """
     Helper of :func:`~pykanto.signal.spectrogram._save_melspectrogram_parallel`.
@@ -103,7 +103,7 @@ def _save_melspectrogram_r(
 
 
 def _save_melspectrogram_parallel(
-    dataset: SongDataset, keys: List[str], **kwargs
+    dataset: KantoData, keys: List[str], **kwargs
 ) -> Dict[str, Path]:
     """
     Parallel implementation of 
@@ -148,14 +148,14 @@ def retrieve_spectrogram(nparray_dir: Path) -> np.ndarray:
 
 
 def _mask_melspec(
-        dataset: SongDataset, d_dict: Dict[str, Any],
+        dataset: KantoData, d_dict: Dict[str, Any],
         mel_spectrogram: np.ndarray) -> np.ndarray:
     """
     Private method. Frequency-mask 'bandpass' a melspectrogram using
     frequency bounds contained in a vocalisation's metadata.
 
     Args:
-        dataset (SongDataset): Dataset with parameters object.
+        dataset (KantoData): Dataset with parameters object.
         d_dict (Dict[str, Any]): Vocalisation metadata as a dictionary.
         mel_spectrogram (np.ndarray): Melspectrogram to mask.
 
@@ -271,14 +271,14 @@ def get_unit_spectrograms(
 
 
 def get_vocalisation_units(
-        dataset: SongDataset, key: str, song_level: bool = False) -> Dict[
+        dataset: KantoData, key: str, song_level: bool = False) -> Dict[
         str, np.ndarray | List[np.ndarray]]:
     """
     Returns spectrogram representations of the units present in a vocalisation
     (e.g. in a song) or their average.
 
     Args:
-        dataset (SongDataset): A SongDataset object.
+        dataset (KantoData): A KantoData object.
         key (str): Single vocalisation locator (key).
         song_level (bool, optional): Whether to return average of all units.
             Defaults to False.
@@ -316,7 +316,7 @@ def get_vocalisation_units(
 
 
 def get_indv_units(
-        dataset: SongDataset, keys: List[str],
+        dataset: KantoData, keys: List[str],
         individual: str, pad: bool = True,
         song_level: bool = False) -> Dict[str, Path]:
     """
@@ -325,7 +325,7 @@ def get_indv_units(
     Saves the data as pickled dictionary, returns its location.
 
     Args:
-        dataset (SongDataset): Source dataset
+        dataset (KantoData): Source dataset
         keys (List[str]): List of keys belonging to an individual
         individual (str): Individual ID
         pad (bool, optional): Whether to pad spectrograms to the maximum lenght.
@@ -363,7 +363,7 @@ def get_indv_units(
 
 
 def get_indv_units_parallel(
-        dataset: SongDataset,
+        dataset: KantoData,
         pad: bool = True,
         song_level: bool = False,
         num_cpus: float | None = None
@@ -382,7 +382,8 @@ def get_indv_units_parallel(
     if not n:
         raise KeyError('No file keys were passed to '
                        'get_indv_units.')
-    chunk_info = calc_chunks(n, n_workers=num_cpus, verbose=True)
+    chunk_info = calc_chunks(n, n_workers=num_cpus,
+                             verbose=dataset.parameters.verbose)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunkeys = get_chunks(list(indv_dict), chunk_length)
     chunks = [{k: v for k, v in indv_dict.items() if k in chunk}

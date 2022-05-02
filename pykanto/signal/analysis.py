@@ -18,12 +18,12 @@ from pykanto.plot import show_minmax_frequency, show_spec_centroid_bandwidth
 from pykanto.signal.spectrogram import retrieve_spectrogram
 from pykanto.signal.filter import mels_to_hzs
 if TYPE_CHECKING:
-    from pykanto.dataset import SongDataset
+    from pykanto.dataset import KantoData
 
 # ──── FUNCTIONS ───────────────────────────────────────────────────────────────
 
 
-def get_peak_freqs(dataset: SongDataset,
+def get_peak_freqs(dataset: KantoData,
                    spectrograms: np.ndarray,
                    melscale: bool = True,
                    threshold: float = 0.3):
@@ -46,7 +46,7 @@ def get_peak_freqs(dataset: SongDataset,
         # REVIEW did not test for melscale = False
 
 
-def spec_centroid_bandwidth(dataset: SongDataset,
+def spec_centroid_bandwidth(dataset: KantoData,
                             key: None | str = None,
                             spec: None | np.ndarray = None,
                             plot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
@@ -56,7 +56,7 @@ def spec_centroid_bandwidth(dataset: SongDataset,
     mel spectrogram directly.
 
     Args:
-        dataset (SongDataset): Dataset object with your data.
+        dataset (KantoData): Dataset object with your data.
         key (None | str = None): Key of a vocalisation. Defaults to None.
         spec (spec: None | np.ndarray): Mel spectrogram. Defaults to None.
         plot (bool, optional): Whether to show the result. Defaults to False.
@@ -110,7 +110,7 @@ def get_mean_sd_mfcc(
     return mean_sd
 
 
-def approximate_minmax_frequency(dataset: SongDataset,
+def approximate_minmax_frequency(dataset: KantoData,
                                  key: None | str = None,
                                  spec: None | np.ndarray = None,
                                  plot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
@@ -120,7 +120,7 @@ def approximate_minmax_frequency(dataset: SongDataset,
     mel spectrogram directly.
 
     Args:
-        dataset (SongDataset): Dataset object with your data.
+        dataset (KantoData): Dataset object with your data.
         key (None | str = None): Key of a vocalisation. Defaults to None.
         spec (spec: None | np.ndarray): Mel spectrogram. Defaults to None.
         plot (bool, optional): Whether to show the result. Defaults to False.

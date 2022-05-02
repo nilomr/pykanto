@@ -42,7 +42,7 @@ conda install -c conda-forge gitpython
 
 # Known issues:
 - If using the autoreload ipython magic, might get the following error:
-`Can't pickle <class 'pykanto.dataset.SongDataset'>: it's not the same object as pykanto.dataset.SongDataset`
+`Can't pickle <class 'pykanto.dataset.KantoData'>: it's not the same object as pykanto.dataset.KantoData`
 Fix: restart your kernel without the autoreload extension.
 
 

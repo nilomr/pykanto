@@ -16,7 +16,7 @@ from numba.core.decorators import njit
 from scipy.ndimage import gaussian_filter
 
 if TYPE_CHECKING:
-    from pykanto.dataset import SongDataset
+    from pykanto.dataset import KantoData
 
 # ──── FUNCTIONS ───────────────────────────────────────────────────────────────
 
@@ -147,14 +147,14 @@ def hz_to_mel_lib(hz: int, minmax_freq: Tuple[int, int], parameters):
     return np.argmin(abs(freqs - hz))
 
 
-def mel_to_hz(mel_bin: int, dataset: SongDataset) -> int:
+def mel_to_hz(mel_bin: int, dataset: KantoData) -> int:
     """
     Returns the original frequency from a mel bin index.
-    Requires a SongDataset object with set parameters.
+    Requires a KantoData object with set parameters.
 
     Args:
         mel_bin (int): Mel bin to convert
-        dataset (SongDataset): SongDataset object
+        dataset (KantoData): KantoData object
 
     Returns:
         int: Approximate original frequency in hertzs
@@ -165,13 +165,13 @@ def mel_to_hz(mel_bin: int, dataset: SongDataset) -> int:
     return int(freqs[mel_bin])
 
 
-def mels_to_hzs(dataset: SongDataset) -> np.ndarray[int]:
+def mels_to_hzs(dataset: KantoData) -> np.ndarray[int]:
     """
     Returns the original frequencies from the mel bins used in a dataset.
-    Requires a SongDataset object with set parameters.
+    Requires a KantoData object with set parameters.
 
     Args:
-        dataset (SongDataset): SongDataset object
+        dataset (KantoData): KantoData object
 
     Returns:
         np.ndarray[int]: Approximate original frequencies in hertzs

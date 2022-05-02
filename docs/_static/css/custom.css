@@ -144,10 +144,11 @@ main.bd-content #main-content, main.bd-content #print-main-content {
 
 
 @media (min-width: 720px) and (max-width: 768px) {
-.col-md-3 {
-    flex: 0 0 25%;
-    max-width: none !important ;
-}}
+    .col-md-3 {
+        flex: 0 0 25%;
+        max-width: none !important;
+    }
+}
 
 /* HEADING STYLES ─────────────────────────────────────────────────────────── */
 
@@ -401,6 +402,14 @@ div.cell_output table {
     /* border-spacing: 65px !important; */
     table-layout: fixed;
 }
+
+.output.text_html {
+    border: none;
+    box-shadow: none;
+    overflow-y: hidden !important;
+    overflow-x: scroll;
+}
+
 
 div.cell_output tr, div.cell_output th, div.cell_output td {
     text-align: left;

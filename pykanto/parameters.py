@@ -17,7 +17,7 @@ from pykanto.utils.compute import print_dict
 class Parameters():
     """
     General parameters class - stores parameters to be passed to 
-    a :meth:`~pykanto.dataset.SongDataset` object.
+    a :meth:`~pykanto.dataset.KantoData` object.
     """
 
     def __init__(self, **kwargs: Any):

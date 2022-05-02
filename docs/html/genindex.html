@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Index &#8212; pykanto 0.1 documentation</title>
     
-  <link href="_static/css/theme.css" rel="stylesheet">
-  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,18 +19,15 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=84ace793992934648b4de8eed757e5a2" />
-    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
     
-  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -41,10 +39,8 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="_static/sphinx-book-theme.9d8b4a8b9bb19db25eeaddc40d639ba2.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -54,7 +50,21 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -63,14 +73,10 @@
     <div class="container-xl">
       <div class="row">
           
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<div class="col-12 col-md-3 bd-sidebar site-navigation " id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -103,13 +109,13 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="contents/2_paths-and-dirs.html">
-   Working with paths and directories
+  <a class="reference internal" href="contents/2_basic-workflow.html">
+   Basic workflow
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="contents/3_basic-workflow.html">
-   Basic workflow
+  <a class="reference internal" href="contents/3_paths-and-dirs.html">
+   Managing your project structure
   </a>
  </li>
  <li class="toctree-l1">
@@ -124,12 +130,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="contents/dataset.html">
-   Creating a SongDataset object
+   Creating a KantoData object
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="contents/hpc.html">
-   High Performance Computing
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pykanto
+    </span>
+   </code>
+   &amp; HPC
   </a>
  </li>
  <li class="toctree-l1">
@@ -300,8 +311,13 @@
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
 </div>
 
 
@@ -309,57 +325,72 @@
 
 
           
-<!-- This is an invisible pixel that we watch to see if we've scrolled. -->
+<!-- A tiny helper pixel to detect if we've scrolled -->
 <div class="sbt-scroll-pixel-helper"></div>
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+<!-- Main content -->
+<div class="col py-0 content-container">
     
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            <div class="topbar-left">
-                
-                <label class="nav-toggle-button" for="__navigation">
-                    <div class="visually-hidden">Toggle navigation</div>
-                    <i class="fas fa-bars"></i>
-                </label>
-                
-            </div>
-            
-            <!-- Source interaction buttons -->
+    <div class="header-article row sticky-top noprint">
+        
 
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/nilomr/pykanto"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
         
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
         
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/nilomr/pykanto"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
     </div>
 </div>
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-        </div>
-    </div>
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1></h1>
@@ -370,7 +401,8 @@
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
 
@@ -404,7 +436,7 @@
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.__init__">__init__() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.__init__">__init__() (pykanto.dataset.KantoData method)</a>
 
       <ul>
         <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.__init__">(pykanto.parameters.Parameters method)</a>
@@ -417,6 +449,8 @@
 </li>
         <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation.__init__">(pykanto.utils.types.Annotation method)</a>
 </li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AttrProto.__init__">(pykanto.utils.types.AttrProto method)</a>
+</li>
         <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation.__init__">(pykanto.utils.types.AudioAnnotation method)</a>
 </li>
         <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata.__init__">(pykanto.utils.types.Metadata method)</a>
@@ -426,11 +460,25 @@
         <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.ValidDirs.__init__">(pykanto.utils.types.ValidDirs method)</a>
 </li>
       </ul></li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation._abc_impl">_abc_impl (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AttrProto._abc_impl">(pykanto.utils.types.AttrProto attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation._abc_impl">(pykanto.utils.types.AudioAnnotation attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata._abc_impl">(pykanto.utils.types.Metadata attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation._abc_impl">(pykanto.utils.types.SegmentAnnotation attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.ValidDirs._abc_impl">(pykanto.utils.types.ValidDirs attribute)</a>
+</li>
+      </ul></li>
       <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo._asdict">_asdict() (pykanto.utils.types.Chunkinfo method)</a>
 </li>
       <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata._build_metadata">_build_metadata() (pykanto.signal.segment.SegmentMetadata method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._compute_melspectrograms">_compute_melspectrograms() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._compute_melspectrograms">_compute_melspectrograms() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs._deep_update_paths">_deep_update_paths() (pykanto.utils.paths.ProjDirs method)</a>
 </li>
@@ -448,15 +496,29 @@
 </li>
       <li><a href="_autosummary/pykanto.utils.read.html#pykanto.utils.read._get_json_parallel">_get_json_parallel() (in module pykanto.utils.read)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_sound_info">_get_sound_info() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_sound_info">_get_sound_info() (pykanto.dataset.KantoData method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_unique_ids">_get_unique_ids() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_unique_ids">_get_unique_ids() (pykanto.dataset.KantoData method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_wav_json_filedirs">_get_wav_json_filedirs() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_wav_json_filedirs">_get_wav_json_filedirs() (pykanto.dataset.KantoData method)</a>
 </li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Annotation._is_protocol">_is_protocol (pykanto.utils.types.Annotation attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AttrProto._is_protocol">(pykanto.utils.types.AttrProto attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation._is_protocol">(pykanto.utils.types.AudioAnnotation attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata._is_protocol">(pykanto.utils.types.Metadata attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation._is_protocol">(pykanto.utils.types.SegmentAnnotation attribute)</a>
+</li>
+        <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.ValidDirs._is_protocol">(pykanto.utils.types.ValidDirs attribute)</a>
+</li>
+      </ul></li>
       <li><a href="_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto._listdir_nohidden">_listdir_nohidden() (in module pykanto.utils.xenocanto)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._load_metadata">_load_metadata() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._load_metadata">_load_metadata() (pykanto.dataset.KantoData method)</a>
 
       <ul>
         <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav._load_metadata">(pykanto.signal.segment.ReadWav method)</a>
@@ -504,6 +566,8 @@
         <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata.as_dict">(pykanto.signal.segment.SegmentMetadata method)</a>
 </li>
       </ul></li>
+      <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AttrProto">AttrProto (class in pykanto.utils.types)</a>
+</li>
       <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation">AudioAnnotation (class in pykanto.utils.types)</a>
 </li>
   </ul></td>
@@ -536,7 +600,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo.chunksize">chunksize (pykanto.utils.types.Chunkinfo attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.cluster_ids">cluster_ids() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.cluster_ids">cluster_ids() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.write.html#pykanto.utils.write.copy_xml_files">copy_xml_files() (in module pykanto.utils.write)</a>
 </li>
@@ -568,7 +632,7 @@
 </li>
       <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels.dilation_kern">dilation_kern (pykanto.signal.filter.kernels attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.DIRS">DIRS (pykanto.dataset.SongDataset attribute)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.DIRS">DIRS (pykanto.dataset.KantoData attribute)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.download">download() (in module pykanto.utils.xenocanto)</a>
 </li>
@@ -660,7 +724,7 @@
 </li>
       <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_unit_spectrograms">get_unit_spectrograms() (in module pykanto.signal.spectrogram)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.get_units">get_units() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.get_units">get_units() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_vocalisation_units">get_vocalisation_units() (in module pykanto.signal.spectrogram)</a>
 </li>
@@ -713,6 +777,10 @@
 
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData">KantoData (class in pykanto.dataset)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels">kernels (class in pykanto.signal.filter)</a>
 </li>
@@ -851,7 +919,7 @@
 </li>
       <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo.n_workers">n_workers (pykanto.utils.types.Chunkinfo attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.noise">noise (pykanto.dataset.SongDataset attribute)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.noise">noise (pykanto.dataset.KantoData attribute)</a>
 </li>
       <li><a href="_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.norm">norm() (in module pykanto.signal.filter)</a>
 </li>
@@ -873,11 +941,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.onsets_offsets">onsets_offsets() (in module pykanto.signal.segment)</a>
 </li>
+      <li><a href="_autosummary/pykanto.utils.read.html#pykanto.utils.read.open_dataset">open_dataset() (in module pykanto.utils.read)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.open_gzip">open_gzip() (in module pykanto.utils.custom)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.open_label_app">open_label_app() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.open_label_app">open_label_app() (pykanto.dataset.KantoData method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -889,17 +959,17 @@
 </li>
       <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters">Parameters (class in pykanto.parameters)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.parameters">parameters (pykanto.dataset.SongDataset attribute)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.parameters">parameters (pykanto.dataset.KantoData attribute)</a>
 </li>
       <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.parse_boolean">parse_boolean() (in module pykanto.labelapp.main)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.parse_sonic_visualiser_xml">parse_sonic_visualiser_xml() (in module pykanto.utils.custom)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.plot_voc_seg">plot_voc_seg() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.plot_voc_seg">plot_voc_seg() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.labelapp.data.html#pykanto.labelapp.data.prepare_datasource">prepare_datasource() (in module pykanto.labelapp.data)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.prepare_interactive_data">prepare_interactive_data() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.prepare_interactive_data">prepare_interactive_data() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.prepare_legend">prepare_legend() (in module pykanto.labelapp.main)</a>
 </li>
@@ -1102,9 +1172,9 @@
 </li>
       <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.reduce_and_cluster_parallel">reduce_and_cluster_parallel() (in module pykanto.signal.cluster)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.relabel_noise_segments">relabel_noise_segments() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.relabel_noise_segments">relabel_noise_segments() (pykanto.dataset.KantoData method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.reload">reload() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.reload">reload() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.retrieve_spectrogram">retrieve_spectrogram() (in module pykanto.signal.spectrogram)</a>
 </li>
@@ -1114,7 +1184,7 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.sample_info">sample_info() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.sample_info">sample_info() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation.sample_rate">sample_rate (pykanto.utils.types.AudioAnnotation attribute)</a>
 </li>
@@ -1124,7 +1194,7 @@
 </li>
       <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.save_segments">save_segments() (in module pykanto.signal.segment)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.save_to_disk">save_to_disk() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.save_to_disk">save_to_disk() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_file">segment_file() (in module pykanto.signal.segment)</a>
 </li>
@@ -1132,9 +1202,7 @@
 </li>
       <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_files_parallel">segment_files_parallel() (in module pykanto.signal.segment)</a>
 </li>
-      <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_files_r">segment_files_r (in module pykanto.signal.segment)</a>
-</li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.segment_into_units">segment_into_units() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.segment_into_units">segment_into_units() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_is_valid">segment_is_valid() (in module pykanto.signal.segment)</a>
 </li>
@@ -1152,7 +1220,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.set_range">set_range() (in module pykanto.labelapp.main)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.show_extreme_samples">show_extreme_samples() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.show_extreme_samples">show_extreme_samples() (pykanto.dataset.KantoData method)</a>
 </li>
       <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.show_minmax_frequency">show_minmax_frequency() (in module pykanto.plot)</a>
 </li>
@@ -1163,8 +1231,6 @@
       <li><a href="_autosummary/pykanto.plot.html#pykanto.plot.sns_histoplot">sns_histoplot() (in module pykanto.plot)</a>
 </li>
       <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.song_level">song_level (pykanto.parameters.Parameters attribute)</a>
-</li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset">SongDataset (class in pykanto.dataset)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation.source_wav">source_wav (pykanto.utils.types.AudioAnnotation attribute)</a>
 
@@ -1186,9 +1252,9 @@
 </li>
       <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.subset">subset (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.subset">subset() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.subset">subset() (pykanto.dataset.KantoData method)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.summary_plot">summary_plot() (pykanto.dataset.SongDataset method)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.summary_plot">summary_plot() (pykanto.dataset.KantoData method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1198,10 +1264,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.timing">timing() (in module pykanto.utils.compute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.to_iterator">to_iterator() (in module pykanto.utils.compute)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.to_csv">to_csv() (pykanto.dataset.KantoData method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.to_iterator">to_iterator() (in module pykanto.utils.compute)</a>
+</li>
       <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.top_dB">top_dB (pykanto.parameters.Parameters attribute)</a>
 </li>
       <li><a href="_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.tqdmm">tqdmm() (in module pykanto.utils.compute)</a>
@@ -1214,7 +1282,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pykanto.signal.cluster.html#pykanto.signal.cluster.umap_reduce">umap_reduce() (in module pykanto.signal.cluster)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.units">units (pykanto.dataset.SongDataset attribute)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.units">units (pykanto.dataset.KantoData attribute)</a>
 </li>
       <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.update">update() (pykanto.parameters.Parameters method)</a>
 </li>
@@ -1244,7 +1312,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters.verbose">verbose (pykanto.parameters.Parameters attribute)</a>
 </li>
-      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.vocalisations">vocalisations (pykanto.dataset.SongDataset attribute)</a>
+      <li><a href="_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.vocalisations">vocalisations (pykanto.dataset.KantoData attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1269,38 +1337,34 @@
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Nilo M. Recalde<br/>
+  
+      &copy; Copyright 2021, Nilo M. Recalde.<br/>
+</p>
+        </footer>
+    </div>
     
-
-    <hr/>
-
-        <div role="contentinfo">
-            <p> 
-                &copy;  2021, Nilo M. Recalde
-
-            </p>
-        </div>    
-        Using
-        <a
-        href="https://www.sphinx-doc.org/">Sphinx</a> //  theme  
-        modified from <a href="https://executablebooks.org/en/latest/">The
-        Executable Book Project</a>.
-
-    </footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>

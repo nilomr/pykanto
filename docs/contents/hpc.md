@@ -43,7 +43,7 @@ To use a random subset,
 ```{code-block} python
 :linenos:
 
-dataset = SongDataset(... , random_subset=200)
+dataset = KantoData(... , random_subset=200)
 ```
 To use a slice of the data:
 
@@ -51,7 +51,7 @@ To use a slice of the data:
 :linenos:
 
 params = Parameters(... , subset=(100, 300))
-dataset = SongDataset(... , parameters=params)
+dataset = KantoData(... , parameters=params)
 ```
 ````
 

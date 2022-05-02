@@ -38,7 +38,7 @@ from skimage.morphology import dilation, disk, erosion
 from skimage.util import img_as_ubyte
 
 if TYPE_CHECKING:
-    from pykanto.dataset import SongDataset
+    from pykanto.dataset import KantoData
 
 from pykanto.utils.paths import ProjDirs, get_file_paths
 
@@ -458,7 +458,7 @@ def segment_files_parallel(
         raise KeyError('No file keys were passed to '
                        'segment_song_into_units.')
     chunk_length, n_chunks = map(calc_chunks(
-        n, verbose=True).__getitem__, [3, 2])
+        n, verbose=dataset.parameters.verbose).__getitem__, [3, 2])
     chunks = get_chunks(datapaths, chunk_length)
     print_parallel_info(n, 'files', n_chunks, chunk_length)
 
@@ -550,12 +550,12 @@ def get_segment_info(
 
 
 def find_units(
-    dataset: SongDataset,
+    dataset: KantoData,
     spectrogram: np.ndarray
 ) -> Tuple[np.ndarray, np.ndarray] | tuple[None, None]:
     """
     Segment a given spectrogram array into its units. For convenience,
-    parameters are defined in a SongDataset class instance (class Parameters).
+    parameters are defined in a KantoData class instance (class Parameters).
     Based on Tim Sainburg's 
     `vocalseg <https://github.com/timsainb/vocalization-segmentation/>`_ code.
 
@@ -636,7 +636,7 @@ def onsets_offsets(signal: np.ndarray) -> np.ndarray:
 
 
 def segment_song_into_units(
-    dataset: SongDataset,
+    dataset: KantoData,
     key: str
 ) -> Tuple[str, np.ndarray, np.ndarray] | None:
 
@@ -678,7 +678,7 @@ def segment_song_into_units(
 
 
 def segment_song_into_units_parallel(
-    dataset: SongDataset,
+    dataset: KantoData,
     keys: Iterable[str],
     **kwargs
 ) -> List[Tuple[str, np.ndarray, np.ndarray]]:
@@ -712,14 +712,14 @@ def segment_song_into_units_parallel(
     return flatten_list(units)
 
 
-def drop_zero_len_units(dataset: SongDataset, onsets: np.ndarray,
+def drop_zero_len_units(dataset: KantoData, onsets: np.ndarray,
                         offsets: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Removes onset/offset pairs which (under this dataset's spectrogram parameter
     combination) would result in a unit of length zero.
 
     Args:
-        dataset (SongDataset): SongDataset instance containing parameters.
+        dataset (KantoData): KantoData instance containing parameters.
         onsets (np.ndarray): In seconds
         offsets (np.ndarray): In seconds
 

@@ -36,7 +36,7 @@ import pytest
 import ray
 import seaborn as sns
 import soundfile as sf
-from pykanto.dataset import SongDataset
+from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import get_segment_info, segment_files_parallel
 from pykanto.utils.compute import flatten_list, to_iterator, tqdmm
@@ -107,7 +107,7 @@ print(DIRS)
 
 # # np.random.seed(123)
 # # random.seed(123)
-# dataset = SongDataset(
+# dataset = KantoData(
 #     DATASET_ID, DIRS, parameters=params, overwrite_dataset=True,
 #     random_subset=None, overwrite_data=False)
 
@@ -117,10 +117,12 @@ print(DIRS)
 
 # dataset.get_units()
 # dataset.cluster_ids(min_sample=20)
-# dataset.prepare_interactive_data()
+dataset.prepare_interactive_data()
 
 
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
 dataset = pickle.load(open(out_dir, "rb"))
 
 dataset.open_label_app()
+
+dataset.save_to_disk()

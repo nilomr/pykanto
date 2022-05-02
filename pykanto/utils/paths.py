@@ -8,9 +8,8 @@ different types of files"""
 import os
 import warnings
 from pathlib import Path
-from typing import List, Tuple, Union
-import attr
-from attr import validators
+from typing import List, Tuple
+
 import pkg_resources
 import ray
 from pykanto.utils.compute import (calc_chunks, get_chunks, print_dict,
@@ -26,7 +25,7 @@ class ProjDirs():
     """
     Initialises a ProjDirs class, which is used to store a 
     project's file structure. This is required when constructing 
-    a :class:`~pykanto.dataset.SongDataset` object and generally 
+    a :class:`~pykanto.dataset.KantoData` object and generally 
     useful to keep paths tidy and in the same location.
 
     Args:
@@ -67,7 +66,7 @@ class ProjDirs():
         self.REPORTS = d.PROJECT / "reports"
         self.FIGURES = self.REPORTS / "figures"
 
-        # Type annotations for later use within SongDataset objects
+        # Type annotations for later use within KantoData objects
         self.DATASET: Path
         self.SPECTROGRAMS: Path
         self.WAV_LIST: List[Path]

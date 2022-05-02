@@ -13,7 +13,7 @@ import shutil
 import pkg_resources
 from pathlib import Path
 import pickle
-from pykanto.dataset import SongDataset
+from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import segment_files_parallel
 from pykanto.utils.compute import flatten_list
@@ -50,8 +50,8 @@ def files_to_segment(DIRS):
 def new_dataset(DIRS):
     params = Parameters(sr=32000, top_dB=125, lowcut=200,
                         highcut=11000, dereverb=True)
-    new_dataset = SongDataset(DATASET_ID, DIRS, parameters=params,
-                              overwrite_dataset=True, overwrite_data=True)
+    new_dataset = KantoData(DATASET_ID, DIRS, parameters=params,
+                            overwrite_dataset=True, overwrite_data=True)
     return new_dataset
 
 
@@ -146,8 +146,8 @@ def bf_data_test_manual():
 
     params = Parameters(sr=32000, top_dB=130, lowcut=200,
                         highcut=11000, dereverb=True)
-    dataset = SongDataset(DATASET_ID, DIRS, parameters=params,
-                          overwrite_dataset=True, overwrite_data=True)
+    dataset = KantoData(DATASET_ID, DIRS, parameters=params,
+                        overwrite_dataset=True, overwrite_data=True)
 
     out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
     dataset = pickle.load(open(out_dir, "rb"))

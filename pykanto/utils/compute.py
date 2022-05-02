@@ -96,7 +96,7 @@ def print_dict(dictionary: Dict) -> str:
 
 def timing(f):
     """
-    Custom timer decorator. Prints time info unless used within a SongDataset
+    Custom timer decorator. Prints time info unless used within a KantoData
     where parameters.verbose = False.
     """
     @wraps(f)
@@ -104,9 +104,9 @@ def timing(f):
         start = time()
         output = f(*args, **kwargs)
         end = time()
-        from pykanto.dataset import SongDataset
+        from pykanto.dataset import KantoData
         verbose = args[0].parameters.verbose if isinstance(
-            args[0], SongDataset) else True
+            args[0], KantoData) else True
         if verbose:
             print(
                 f"Function '{f.__name__}' took {end-start:2.4f} sec.")

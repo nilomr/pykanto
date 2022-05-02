@@ -6,15 +6,24 @@ Functions to read external files -e.g. JSON- efficiently.
 """
 
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
-
+from __future__ import annotations
 from pathlib import Path
-from typing import Any, Dict, List
+import pickle
+from typing import TYPE_CHECKING, Any, Dict, List
 import ray
 import ujson as json
+
+if TYPE_CHECKING:
+    from pykanto.dataset import KantoData
+
 from pykanto.utils.compute import (calc_chunks, flatten_list, get_chunks,
                                    print_parallel_info, to_iterator, tqdmm)
 
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
+
+
+def open_dataset(dataset: Path) -> KantoData:
+    return pickle.load(open(dataset, "rb"))
 
 
 def read_json(json_loc: Path) -> Dict:

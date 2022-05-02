@@ -24,7 +24,7 @@ from pykanto.utils.compute import (calc_chunks, flatten_list, get_chunks,
 from umap import UMAP
 
 if TYPE_CHECKING:
-    from pykanto.dataset import SongDataset
+    from pykanto.dataset import KantoData
 try:
     from cuml import UMAP as cumlUMAP
 except:
@@ -113,14 +113,14 @@ def hdbscan_cluster(
 
 
 def reduce_and_cluster(
-        dataset: SongDataset,
+        dataset: KantoData,
         ID: str,
         song_level: bool = False,
         min_sample: int = 10) -> pd.DataFrame | None:
     # TODO: pass UMAP and HDBSCAN params!
     """
     Args:
-        dataset (SongDataset): Data to be used.
+        dataset (KantoData): Data to be used.
         ID (str): Grouping factor.
         song_level (bool, optional): Whether to use the average of all units in 
             each vocalisation instead of all units. Defaults to False.
@@ -198,7 +198,7 @@ def reduce_and_cluster(
 
 
 def reduce_and_cluster_parallel(
-    dataset: SongDataset, min_sample: int = 10, num_cpus: float | None = None
+    dataset: KantoData, min_sample: int = 10, num_cpus: float | None = None
 ) -> pd.DataFrame | None:
     """
     Parallel implementation of 
@@ -212,7 +212,8 @@ def reduce_and_cluster_parallel(
     if not n:
         raise KeyError('No sound file keys were passed to '
                        'reduce_and_cluster.')
-    chunk_info = calc_chunks(n,  n_workers=num_cpus, verbose=True)
+    chunk_info = calc_chunks(n,  n_workers=num_cpus,
+                             verbose=dataset.parameters.verbose)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunks = get_chunks(list(IDS), chunk_length)
     print_parallel_info(n, 'individual IDs', n_chunks, chunk_length)
@@ -224,7 +225,7 @@ def reduce_and_cluster_parallel(
     @ray.remote(num_cpus=num_cpus, num_gpus=1 / psutil.cpu_count()
                 if _has_cuml else 0)
     def _reduce_and_cluster_r(
-        dataset: SongDataset,
+        dataset: KantoData,
         IDS: List[str],
         song_level: bool = False,
         min_sample: int = 10

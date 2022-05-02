@@ -39,7 +39,7 @@ import pytest
 import ray
 import seaborn as sns
 import soundfile as sf
-from pykanto.dataset import SongDataset
+from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import segment_files, segment_files_parallel, ReadWav, SegmentMetadata
 from pykanto.utils.compute import flatten_list, to_iterator, tqdmm
@@ -207,7 +207,7 @@ segment_files_parallel(
 
 # %%
 params = Parameters(dereverb=True, verbose=False)
-dataset = SongDataset(
+dataset = KantoData(
     DATASET_ID, DIRS, parameters=params, overwrite_dataset=True,
     overwrite_data=True, random_subset=10)
 
@@ -272,7 +272,7 @@ params = Parameters(
 
 # np.random.seed(123)
 # random.seed(123)
-dataset = SongDataset(
+dataset = KantoData(
     DATASET_ID, DIRS, parameters=params, overwrite_dataset=True,
     overwrite_data=False)
 

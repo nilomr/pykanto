@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pykanto.dataset &#8212; pykanto 0.1 documentation</title>
     
-  <link href="../../_static/css/theme.css" rel="stylesheet">
-  <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,18 +19,15 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-book-theme.css?digest=84ace793992934648b4de8eed757e5a2" />
-    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
     
-  <link rel="preload" as="script" href="../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -41,10 +39,8 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../../_static/sphinx-book-theme.9d8b4a8b9bb19db25eeaddc40d639ba2.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -54,7 +50,21 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -63,14 +73,10 @@
     <div class="container-xl">
       <div class="row">
           
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<div class="col-12 col-md-3 bd-sidebar site-navigation " id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -103,13 +109,13 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../contents/2_paths-and-dirs.html">
-   Working with paths and directories
+  <a class="reference internal" href="../../contents/2_basic-workflow.html">
+   Basic workflow
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../contents/3_basic-workflow.html">
-   Basic workflow
+  <a class="reference internal" href="../../contents/3_paths-and-dirs.html">
+   Managing your project structure
   </a>
  </li>
  <li class="toctree-l1">
@@ -124,12 +130,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/dataset.html">
-   Creating a SongDataset object
+   Creating a KantoData object
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/hpc.html">
-   High Performance Computing
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pykanto
+    </span>
+   </code>
+   &amp; HPC
   </a>
  </li>
  <li class="toctree-l1">
@@ -268,6 +279,11 @@
        pykanto.utils.slurm.launch
       </a>
      </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../_autosummary/pykanto.utils.slurm.tester.html">
+       pykanto.utils.slurm.tester
+      </a>
+     </li>
     </ul>
    </li>
    <li class="toctree-l2">
@@ -295,8 +311,13 @@
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
 </div>
 
 
@@ -304,57 +325,72 @@
 
 
           
-<!-- This is an invisible pixel that we watch to see if we've scrolled. -->
+<!-- A tiny helper pixel to detect if we've scrolled -->
 <div class="sbt-scroll-pixel-helper"></div>
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+<!-- Main content -->
+<div class="col py-0 content-container">
     
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            <div class="topbar-left">
-                
-                <label class="nav-toggle-button" for="__navigation">
-                    <div class="visually-hidden">Toggle navigation</div>
-                    <i class="fas fa-bars"></i>
-                </label>
-                
-            </div>
-            
-            <!-- Source interaction buttons -->
+    <div class="header-article row sticky-top noprint">
+        
 
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/nilomr/pykanto"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
         
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
         
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/nilomr/pykanto"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
     </div>
 </div>
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-        </div>
-    </div>
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1></h1>
@@ -365,7 +401,8 @@
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
   <h1>Source code for pykanto.dataset</h1><div class="highlight"><pre>
@@ -414,7 +451,7 @@
 <span class="c1"># ─── CLASSES ──────────────────────────────────────────────────────────────────</span>
 
 
-<div class="viewcode-block" id="SongDataset"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset">[docs]</a><span class="k">class</span> <span class="nc">SongDataset</span><span class="p">():</span>
+<div class="viewcode-block" id="KantoData"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData">[docs]</a><span class="k">class</span> <span class="nc">KantoData</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main dataset class. See __init__ documentation.</span>
 
@@ -427,7 +464,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SongDataset.__init__"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="KantoData.__init__"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">DATASET_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">DIRS</span><span class="p">:</span> <span class="n">ProjDirs</span><span class="p">,</span>
         <span class="n">parameters</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">random_subset</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -442,8 +479,8 @@
 <span class="sd">            neural network), these should be labelled as &#39;NOISE&#39; in the</span>
 <span class="sd">            corresponding json file.</span>
 <span class="sd">            I.e., `json_file[&quot;label&quot;] == &#39;NOISE&#39;`.</span>
-<span class="sd">            Files where `json_file[&quot;label&quot;] == []` or &quot;label&quot; is not a key</span>
-<span class="sd">            will be automatically given the label &#39;VOCALISATION&#39;.</span>
+<span class="sd">            Files where `json_file[&quot;label&quot;] == []` or &quot;label&quot; is not a key in </span>
+<span class="sd">            `json_file` will be automatically given the label &#39;VOCALISATION&#39;.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            DATASET_ID (str): Name of new dataset.</span>
@@ -509,7 +546,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Pretty printed dictionary contents</span>
 <span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; dataset = SongDataset(...)</span>
+<span class="sd">            &gt;&gt;&gt; dataset = KantoData(...)</span>
 <span class="sd">            &gt;&gt;&gt; print(dataset)</span>
 <span class="sd">            Items held:</span>
 <span class="sd">            minmax_values: {&#39;max_freq&#39;: 10249} + 3 other entries.</span>
@@ -518,9 +555,9 @@
         <span class="k">return</span> <span class="n">print_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 
     <span class="c1"># ──────────────────────────────────────────────────────────────────────────</span>
-    <span class="c1"># SongDataset: Private methods</span>
+    <span class="c1"># KantoData: Private methods</span>
 
-<div class="viewcode-block" id="SongDataset._get_wav_json_filedirs"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_wav_json_filedirs">[docs]</a>    <span class="nd">@timing</span>
+<div class="viewcode-block" id="KantoData._get_wav_json_filedirs"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_wav_json_filedirs">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">_get_wav_json_filedirs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">random_subset</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get paths of wav and json files for this dataset.</span>
@@ -536,8 +573,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="s1">&#39;SEGMENTED&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s1">&#39;The ProjDirs object you used to initialise &#39;</span>
-                <span class="s1">&#39;this SongDataset object does not have a SEGMENTED attribute. &#39;</span>
-                <span class="s1">&#39;Search the docs for SongDataset for more information.&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;this KantoData object does not have a SEGMENTED attribute. &#39;</span>
+                <span class="s1">&#39;Search the docs for KantoData for more information.&#39;</span><span class="p">)</span>
 
         <span class="c1"># TODO: read both lower and uppercase wav and json extensions.</span>
         <span class="c1"># Load and check file paths:</span>
@@ -600,7 +637,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset._load_metadata"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._load_metadata">[docs]</a>    <span class="nd">@timing</span>
+<div class="viewcode-block" id="KantoData._load_metadata"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._load_metadata">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">_load_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Loads json metadata in sequence if there are &lt; 100 items, in parallel</span>
@@ -624,7 +661,7 @@
             <span class="n">Path</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;wav_file&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">jsons</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="SongDataset._get_unique_ids"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_unique_ids">[docs]</a>    <span class="k">def</span> <span class="nf">_get_unique_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData._get_unique_ids"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_unique_ids">[docs]</a>    <span class="k">def</span> <span class="nf">_get_unique_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a &#39;unique_ID&#39; attribute holding an array with unique IDs in the</span>
 <span class="sd">        dataset.</span>
@@ -634,7 +671,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unique_ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset._get_sound_info"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._get_sound_info">[docs]</a>    <span class="k">def</span> <span class="nf">_get_sound_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData._get_sound_info"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_sound_info">[docs]</a>    <span class="k">def</span> <span class="nf">_get_sound_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds pandas DataFrames with vocalisation and noise information to</span>
 <span class="sd">        dataset (&#39;vocs&#39; and &#39;noise&#39; attributes, respectively). Also</span>
@@ -676,11 +713,11 @@
             <span class="s1">&#39;min_duration&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;length_s&#39;</span><span class="p">])</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="SongDataset._compute_melspectrograms"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset._compute_melspectrograms">[docs]</a>    <span class="nd">@timing</span>
+<div class="viewcode-block" id="KantoData._compute_melspectrograms"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._compute_melspectrograms">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">_compute_melspectrograms</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute melspectrograms and add their location to the SongDataset object.</span>
+<span class="sd">        Compute melspectrograms and add their location to the KantoData object.</span>
 <span class="sd">        It applies both dereverberation and bandpasses vocalisation data by</span>
 <span class="sd">        default, and neither of these to noise data.</span>
 
@@ -734,9 +771,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">n_specs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
     <span class="c1"># ──────────────────────────────────────────────────────────────────────────</span>
-    <span class="c1"># SongDataset: Public methods</span>
+    <span class="c1"># KantoData: Public methods</span>
 
-<div class="viewcode-block" id="SongDataset.summary_plot"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.summary_plot">[docs]</a>    <span class="k">def</span> <span class="nf">summary_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nbins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+<div class="viewcode-block" id="KantoData.summary_plot"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.summary_plot">[docs]</a>    <span class="k">def</span> <span class="nf">summary_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nbins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
                      <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;frequency&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots a histogram + kernel densiyy estimate of the frequency</span>
@@ -834,9 +871,9 @@
         <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SongDataset.sample_info"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.sample_info">[docs]</a>    <span class="k">def</span> <span class="nf">sample_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData.sample_info"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.sample_info">[docs]</a>    <span class="k">def</span> <span class="nf">sample_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Prints the length of the SongDataset and other information.</span>
+<span class="sd">        Prints the length of the KantoData and other information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        Total length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
@@ -845,7 +882,7 @@
 <span class="s2">        Unique IDs: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_ID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset.show_extreme_samples"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.show_extreme_samples">[docs]</a>    <span class="k">def</span> <span class="nf">show_extreme_samples</span><span class="p">(</span>
+<div class="viewcode-block" id="KantoData.show_extreme_samples"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.show_extreme_samples">[docs]</a>    <span class="k">def</span> <span class="nf">show_extreme_samples</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">n_songs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
             <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;maxfreq&#39;</span><span class="p">,</span>
@@ -902,7 +939,7 @@
         <span class="k">if</span> <span class="n">return_keys</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">testkeys</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset.relabel_noise_segments"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.relabel_noise_segments">[docs]</a>    <span class="k">def</span> <span class="nf">relabel_noise_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData.relabel_noise_segments"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.relabel_noise_segments">[docs]</a>    <span class="k">def</span> <span class="nf">relabel_noise_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Moves entries from the vocalisations subset to the noise subset.</span>
 <span class="sd">        You will be prompted to choose whether to save the dataset to disk.</span>
@@ -919,7 +956,7 @@
 <span class="sd">            keys (List[str]): A list of the segments to move.</span>
 
 <span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; dataset = SongDataset(...)</span>
+<span class="sd">            &gt;&gt;&gt; dataset = KantoData(...)</span>
 <span class="sd">            &gt;&gt;&gt; keys_to_move = [&#39;ABC.wav&#39;,&#39;CBA.wav&#39;]</span>
 <span class="sd">            &gt;&gt;&gt; dataset.relabel_segments(keys_to_move)</span>
 
@@ -940,11 +977,11 @@
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done.&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset.segment_into_units"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.segment_into_units">[docs]</a>    <span class="nd">@timing</span>
+<div class="viewcode-block" id="KantoData.segment_into_units"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.segment_into_units">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">segment_into_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># ANCHOR</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds segment onsets, offsets, unit and silence durations</span>
-<span class="sd">        to :attr:`~.SongDataset.vocs`.</span>
+<span class="sd">        to :attr:`~.KantoData.vocs`.</span>
 
 <span class="sd">        Warning:</span>
 <span class="sd">            If segmentation fails for a vocalisation it will be dropped from</span>
@@ -1001,8 +1038,8 @@
                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found and segmented </span><span class="si">{</span><span class="n">n_units</span><span class="si">}</span><span class="s1"> units.&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset.subset"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.subset">[docs]</a>    <span class="nd">@timing</span>
-    <span class="k">def</span> <span class="nf">subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">new_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SongDataset</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData.subset"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.subset">[docs]</a>    <span class="nd">@timing</span>
+    <span class="k">def</span> <span class="nf">subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">new_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KantoData</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new dataset containing a subset of the IDs present</span>
 <span class="sd">        in the original dataset (e.g., different individual birds). </span>
@@ -1023,7 +1060,7 @@
 <span class="sd">            new_dataset (str): Name of new dataset.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            SongDataset: A subset of the dataset.</span>
+<span class="sd">            KantoData: A subset of the dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Copy dataset</span>
         <span class="n">subself</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -1056,7 +1093,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved subset to </span><span class="si">{</span><span class="n">subself</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">subself</span></div>
 
-<div class="viewcode-block" id="SongDataset.save_to_disk"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.save_to_disk">[docs]</a>    <span class="k">def</span> <span class="nf">save_to_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData.save_to_disk"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.save_to_disk">[docs]</a>    <span class="k">def</span> <span class="nf">save_to_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save dataset to disk.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1067,23 +1104,36 @@
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved dataset to </span><span class="si">{</span><span class="n">out_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset.reload"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.reload">[docs]</a>    <span class="k">def</span> <span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SongDataset</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData.to_csv"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.to_csv">[docs]</a>    <span class="k">def</span> <span class="nf">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load the current dataset from disk. Remember to assign the output!</span>
+<span class="sd">        Output vocalisation (and, if present, unit) metadata in the dataset as </span>
+<span class="sd">        a .csv file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (Path): Directory where to save the file(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">_VOCS.csv&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">_UNITS.csv&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.reload"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.reload">[docs]</a>    <span class="k">def</span> <span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KantoData</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the current dataset from disk. Remember to assign the output to </span>
+<span class="sd">        a variable!</span>
 
 <span class="sd">        Warning:</span>
 <span class="sd">            You will lose any changes that happened after the last time</span>
 <span class="sd">            you saved the dataset to disk.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            SongDataset: Last saved version of the dataset.</span>
+<span class="sd">            KantoData: Last saved version of the dataset.</span>
 
 <span class="sd">        Examples:</span>
 <span class="sd">            &gt;&gt;&gt; dataset = dataset.reload()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="SongDataset.plot_voc_seg"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.plot_voc_seg">[docs]</a>    <span class="k">def</span> <span class="nf">plot_voc_seg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData.plot_voc_seg"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.plot_voc_seg">[docs]</a>    <span class="k">def</span> <span class="nf">plot_voc_seg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots a vocalisation and overlays the results</span>
 <span class="sd">        of the segmentation process.</span>
@@ -1099,7 +1149,7 @@
                            <span class="s2">&quot;segmentation information.&quot;</span><span class="p">)</span>
         <span class="n">kplot</span><span class="o">.</span><span class="n">segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset.get_units"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.get_units">[docs]</a>    <span class="nd">@timing</span>
+<div class="viewcode-block" id="KantoData.get_units"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.get_units">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">get_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates and saves a dictionary containing spectrogram</span>
@@ -1108,7 +1158,7 @@
 <span class="sd">        in the dataset. The dictionary&#39;s location can be found</span>
 <span class="sd">        at `self.DIRS.UNITS` if `song_level = False`, and</span>
 <span class="sd">        at `self.DIRS.AVG_UNITS` if `song_level = True` in </span>
-<span class="sd">        :attr:`~.SongDataset.parameters`.</span>
+<span class="sd">        :attr:`~.KantoData.parameters`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            pad (bool, optional): Whether to pad spectrograms </span>
@@ -1138,7 +1188,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">UNITS</span> <span class="o">=</span> <span class="n">dic_locs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset.cluster_ids"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.cluster_ids">[docs]</a>    <span class="nd">@timing</span>
+<div class="viewcode-block" id="KantoData.cluster_ids"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.cluster_ids">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">cluster_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_sample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dimensionality reduction using UMAP + unsupervised clustering using</span>
@@ -1146,8 +1196,8 @@
 <span class="sd">        such as individual or population) is too small.</span>
 
 <span class="sd">        Adds cluster membership information and 2D UMAP coordinates to </span>
-<span class="sd">        :attr:`~.SongDataset.vocs` if `song_level=True` </span>
-<span class="sd">        in :attr:`~.SongDataset.parameters`, else to :attr:`~.SongDataset.units`.</span>
+<span class="sd">        :attr:`~.KantoData.vocs` if `song_level=True` </span>
+<span class="sd">        in :attr:`~.KantoData.parameters`, else to :attr:`~.KantoData.units`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            min_sample (int): Minimum sample size below which an ID will</span>
@@ -1165,14 +1215,14 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset.prepare_interactive_data"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.prepare_interactive_data">[docs]</a>    <span class="nd">@timing</span>
+<div class="viewcode-block" id="KantoData.prepare_interactive_data"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.prepare_interactive_data">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">prepare_interactive_data</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare lightweigth representations of each vocalization</span>
-<span class="sd">        or unit (if song_level=False in :attr:`~.SongDataset.parameters`) </span>
+<span class="sd">        or unit (if song_level=False in :attr:`~.KantoData.parameters`) </span>
 <span class="sd">        for each individual in the dataset. These are linked from </span>
-<span class="sd">        VOCALISATION_LABELS or UNIT_LABELS in :attr:`~.SongDataset.DIRS`.</span>
+<span class="sd">        VOCALISATION_LABELS or UNIT_LABELS in :attr:`~.KantoData.DIRS`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            spec_length (float, optional): In seconds, duration of </span>
@@ -1241,7 +1291,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SongDataset.open_label_app"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.SongDataset.open_label_app">[docs]</a>    <span class="k">def</span> <span class="nf">open_label_app</span><span class="p">(</span>
+<div class="viewcode-block" id="KantoData.open_label_app"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.open_label_app">[docs]</a>    <span class="k">def</span> <span class="nf">open_label_app</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Set3_12</span><span class="p">,</span> <span class="n">max_n_labs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Opens a new web browser tab with an interactive app that can be used to</span>
@@ -1251,7 +1301,7 @@
 
 <span class="sd">        Note:</span>
 <span class="sd">            Starting this app requires the output of</span>
-<span class="sd">            :func:`~pykanto.dataset.SongDataset.prepare_interactive_data`; you will</span>
+<span class="sd">            :func:`~pykanto.dataset.KantoData.prepare_interactive_data`; you will</span>
 <span class="sd">            be prompted to choose whether to run it if it is missing.</span>
 
 <span class="sd">        Note:</span>
@@ -1316,8 +1366,9 @@
                 <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">])[</span><span class="s1">&#39;ID&#39;</span><span class="p">]):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;You have already checked all the labels in this dataset. &quot;</span>
-                <span class="s2">&quot;If you want to re-check any/all, remove individuals from &quot;</span>
-                <span class="s2">&quot;`self.(vocalisations/unit)_labels[&#39;already_checked&#39;]`, &quot;</span>
+                <span class="s2">&quot;If you want to re-check any/all, remove individuals from the &quot;</span>
+                <span class="s2">&quot;&#39;already checked&#39; list &quot;</span>
+                <span class="s2">&quot;(@ self.DIRS.VOCALISATION_LABELS[&#39;already_checked&#39;]), &quot;</span>
                 <span class="s2">&quot;then run again.&quot;</span><span class="p">)</span>
 
         <span class="c1"># Check that we are where we should</span>
@@ -1358,38 +1409,34 @@
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
 <div class='prev-next-area'>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Nilo M. Recalde<br/>
+  
+      &copy; Copyright 2021, Nilo M. Recalde.<br/>
+</p>
+        </footer>
+    </div>
     
-
-    <hr/>
-
-        <div role="contentinfo">
-            <p> 
-                &copy;  2021, Nilo M. Recalde
-
-            </p>
-        </div>    
-        Using
-        <a
-        href="https://www.sphinx-doc.org/">Sphinx</a> //  theme  
-        modified from <a href="https://executablebooks.org/en/latest/">The
-        Executable Book Project</a>.
-
-    </footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>

@@ -13,6 +13,7 @@ pykanto.utils.read
 
    .. autosummary::
    
+      open_dataset
       read_json
    
    

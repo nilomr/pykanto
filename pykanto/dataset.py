@@ -43,7 +43,7 @@ from pykanto.utils.write import makedir
 # ─── CLASSES ──────────────────────────────────────────────────────────────────
 
 
-class SongDataset():
+class KantoData():
     """
     Main dataset class. See __init__ documentation.
 
@@ -138,7 +138,7 @@ class SongDataset():
         Returns:
             str: Pretty printed dictionary contents
         Examples:
-            >>> dataset = SongDataset(...)
+            >>> dataset = KantoData(...)
             >>> print(dataset)
             Items held:
             minmax_values: {'max_freq': 10249} + 3 other entries.
@@ -147,7 +147,7 @@ class SongDataset():
         return print_dict(self.__dict__)
 
     # ──────────────────────────────────────────────────────────────────────────
-    # SongDataset: Private methods
+    # KantoData: Private methods
 
     @timing
     def _get_wav_json_filedirs(self, random_subset: None | int = None) -> None:
@@ -165,8 +165,8 @@ class SongDataset():
         if not hasattr(self.DIRS, 'SEGMENTED'):
             raise KeyError(
                 'The ProjDirs object you used to initialise '
-                'this SongDataset object does not have a SEGMENTED attribute. '
-                'Search the docs for SongDataset for more information.')
+                'this KantoData object does not have a SEGMENTED attribute. '
+                'Search the docs for KantoData for more information.')
 
         # TODO: read both lower and uppercase wav and json extensions.
         # Load and check file paths:
@@ -309,7 +309,7 @@ class SongDataset():
     def _compute_melspectrograms(
             self, overwrite_data: bool = False, **kwargs) -> None:
         """
-        Compute melspectrograms and add their location to the SongDataset object.
+        Compute melspectrograms and add their location to the KantoData object.
         It applies both dereverberation and bandpasses vocalisation data by
         default, and neither of these to noise data.
 
@@ -363,7 +363,7 @@ class SongDataset():
         self.noise['spectrogram_loc'] = pd.Series(n_specs, dtype=object)
 
     # ──────────────────────────────────────────────────────────────────────────
-    # SongDataset: Public methods
+    # KantoData: Public methods
 
     def summary_plot(self, nbins: int = 50,
                      variable: str = 'frequency') -> None:
@@ -465,7 +465,7 @@ class SongDataset():
 
     def sample_info(self) -> None:
         """
-        Prints the length of the SongDataset and other information.
+        Prints the length of the KantoData and other information.
         """
         out = inspect.cleandoc(f"""
         Total length: {len(self.metadata)}
@@ -548,7 +548,7 @@ class SongDataset():
             keys (List[str]): A list of the segments to move.
 
         Examples:
-            >>> dataset = SongDataset(...)
+            >>> dataset = KantoData(...)
             >>> keys_to_move = ['ABC.wav','CBA.wav']
             >>> dataset.relabel_segments(keys_to_move)
 
@@ -573,7 +573,7 @@ class SongDataset():
     def segment_into_units(self, overwrite: bool = False) -> None:  # ANCHOR
         """
         Adds segment onsets, offsets, unit and silence durations
-        to :attr:`~.SongDataset.vocs`.
+        to :attr:`~.KantoData.vocs`.
 
         Warning:
             If segmentation fails for a vocalisation it will be dropped from
@@ -631,7 +631,7 @@ class SongDataset():
         print(f'Found and segmented {n_units} units.')
 
     @timing
-    def subset(self, ids: List[str], new_dataset: str) -> SongDataset:
+    def subset(self, ids: List[str], new_dataset: str) -> KantoData:
         """
         Creates a new dataset containing a subset of the IDs present
         in the original dataset (e.g., different individual birds). 
@@ -652,7 +652,7 @@ class SongDataset():
             new_dataset (str): Name of new dataset.
 
         Returns:
-            SongDataset: A subset of the dataset.
+            KantoData: A subset of the dataset.
         """
         # Copy dataset
         subself = copy.deepcopy(self)
@@ -708,7 +708,7 @@ class SongDataset():
         if hasattr(self, 'units'):
             self.units.to_csv(path / f'{self.DIRS.DATASET.stem}_UNITS.csv')
 
-    def reload(self) -> SongDataset:
+    def reload(self) -> KantoData:
         """
         Load the current dataset from disk. Remember to assign the output to 
         a variable!
@@ -718,7 +718,7 @@ class SongDataset():
             you saved the dataset to disk.
 
         Returns:
-            SongDataset: Last saved version of the dataset.
+            KantoData: Last saved version of the dataset.
 
         Examples:
             >>> dataset = dataset.reload()
@@ -750,7 +750,7 @@ class SongDataset():
         in the dataset. The dictionary's location can be found
         at `self.DIRS.UNITS` if `song_level = False`, and
         at `self.DIRS.AVG_UNITS` if `song_level = True` in 
-        :attr:`~.SongDataset.parameters`.
+        :attr:`~.KantoData.parameters`.
 
         Args:
             pad (bool, optional): Whether to pad spectrograms 
@@ -788,8 +788,8 @@ class SongDataset():
         such as individual or population) is too small.
 
         Adds cluster membership information and 2D UMAP coordinates to 
-        :attr:`~.SongDataset.vocs` if `song_level=True` 
-        in :attr:`~.SongDataset.parameters`, else to :attr:`~.SongDataset.units`.
+        :attr:`~.KantoData.vocs` if `song_level=True` 
+        in :attr:`~.KantoData.parameters`, else to :attr:`~.KantoData.units`.
 
         Args:
             min_sample (int): Minimum sample size below which an ID will
@@ -812,9 +812,9 @@ class SongDataset():
             self, spec_length: float | None = None) -> None:
         """
         Prepare lightweigth representations of each vocalization
-        or unit (if song_level=False in :attr:`~.SongDataset.parameters`) 
+        or unit (if song_level=False in :attr:`~.KantoData.parameters`) 
         for each individual in the dataset. These are linked from 
-        VOCALISATION_LABELS or UNIT_LABELS in :attr:`~.SongDataset.DIRS`.
+        VOCALISATION_LABELS or UNIT_LABELS in :attr:`~.KantoData.DIRS`.
 
         Args:
             spec_length (float, optional): In seconds, duration of 
@@ -893,7 +893,7 @@ class SongDataset():
 
         Note:
             Starting this app requires the output of
-            :func:`~pykanto.dataset.SongDataset.prepare_interactive_data`; you will
+            :func:`~pykanto.dataset.KantoData.prepare_interactive_data`; you will
             be prompted to choose whether to run it if it is missing.
 
         Note:
@@ -958,8 +958,9 @@ class SongDataset():
                 subset=['auto_type_label'])['ID']):
             raise KeyError(
                 "You have already checked all the labels in this dataset. "
-                "If you want to re-check any/all, remove individuals from "
-                "`self.(vocalisations/unit)_labels['already_checked']`, "
+                "If you want to re-check any/all, remove individuals from the "
+                "'already checked' list "
+                "(@ self.DIRS.VOCALISATION_LABELS['already_checked']), "
                 "then run again.")
 
         # Check that we are where we should

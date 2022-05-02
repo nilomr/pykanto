@@ -4,11 +4,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>pykanto.dataset &#8212; pykanto 0.1 documentation</title>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -18,18 +20,15 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=84ace793992934648b4de8eed757e5a2" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -41,10 +40,8 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.9d8b4a8b9bb19db25eeaddc40d639ba2.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pykanto.labelapp" href="pykanto.labelapp.html" />
@@ -56,7 +53,21 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
     
     <div class="container-fluid" id="banner"></div>
 
@@ -65,14 +76,10 @@
     <div class="container-xl">
       <div class="row">
           
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<div class="col-12 col-md-3 bd-sidebar site-navigation " id="site-navigation">
-    
-        <div class="navbar-brand-box">
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../index.html">
       
         <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
@@ -105,13 +112,13 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/2_paths-and-dirs.html">
-   Working with paths and directories
+  <a class="reference internal" href="../contents/2_basic-workflow.html">
+   Basic workflow
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/3_basic-workflow.html">
-   Basic workflow
+  <a class="reference internal" href="../contents/3_paths-and-dirs.html">
+   Managing your project structure
   </a>
  </li>
  <li class="toctree-l1">
@@ -126,12 +133,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../contents/dataset.html">
-   Creating a SongDataset object
+   Creating a KantoData object
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../contents/hpc.html">
-   High Performance Computing
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pykanto
+    </span>
+   </code>
+   &amp; HPC
   </a>
  </li>
  <li class="toctree-l1">
@@ -302,8 +314,13 @@
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
 </div>
 
 
@@ -311,74 +328,118 @@
 
 
           
-<!-- This is an invisible pixel that we watch to see if we've scrolled. -->
+<!-- A tiny helper pixel to detect if we've scrolled -->
 <div class="sbt-scroll-pixel-helper"></div>
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+<!-- Main content -->
+<div class="col py-0 content-container">
     
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            <div class="topbar-left">
-                
-                <label class="nav-toggle-button" for="__navigation">
-                    <div class="visually-hidden">Toggle navigation</div>
-                    <i class="fas fa-bars"></i>
-                </label>
-                
-            </div>
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
+    <div class="header-article row sticky-top noprint">
         
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/_autosummary/pykanto.dataset.rst.txt"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.rst</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/nilomr/pykanto"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/_autosummary/pykanto.dataset.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
     </div>
 </div>
 
-            <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/nilomr/pykanto"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        
-        
-    </div>
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
 </div>
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-        </div>
     </div>
-</div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
                 <h1>pykanto.dataset</h1>
@@ -389,11 +450,12 @@
                     </div>
                 </div>
             </div>
-            
+            <main id="main-content" role="main">
+                
               <div>
                 
-  <div class="section" id="module-pykanto.dataset">
-<span id="pykanto-dataset"></span><h1>pykanto.dataset<a class="headerlink" href="#module-pykanto.dataset" title="Permalink to this headline">¶</a></h1>
+  <section id="module-pykanto.dataset">
+<span id="pykanto-dataset"></span><h1>pykanto.dataset<a class="headerlink" href="#module-pykanto.dataset" title="Permalink to this headline">#</a></h1>
 <p>Build the main dataset class and its methods to visualise, segment and label
 animal vocalisations.</p>
 <p class="rubric">Classes</p>
@@ -403,18 +465,18 @@ animal vocalisations.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SongDataset</span></code></a>(DATASET_ID, DIRS[, parameters, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KantoData</span></code></a>(DATASET_ID, DIRS[, parameters, ...])</p></td>
 <td><p>Main dataset class.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py class">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykanto.dataset.</span></span><span class="sig-name descname"><span class="pre">SongDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATASET_ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DIRS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><span class="pre">ProjDirs</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pykanto.parameters.html#pykanto.parameters.Parameters" title="pykanto.parameters.Parameters"><span class="pre">Parameters</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykanto.dataset.</span></span><span class="sig-name descname"><span class="pre">KantoData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATASET_ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DIRS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><span class="pre">ProjDirs</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pykanto.parameters.html#pykanto.parameters.Parameters" title="pykanto.parameters.Parameters"><span class="pre">Parameters</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData" title="Permalink to this definition">#</a></dt>
 <dd><p>Main dataset class. See __init__ documentation.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.DIRS">
-<span class="sig-name descname"><span class="pre">DIRS</span></span><a class="headerlink" href="#pykanto.dataset.SongDataset.DIRS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.DIRS">
+<span class="sig-name descname"><span class="pre">DIRS</span></span><a class="headerlink" href="#pykanto.dataset.KantoData.DIRS" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a></p>
@@ -423,26 +485,26 @@ animal vocalisations.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.vocalisations">
-<span class="sig-name descname"><span class="pre">vocalisations</span></span><a class="headerlink" href="#pykanto.dataset.SongDataset.vocalisations" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.vocalisations">
+<span class="sig-name descname"><span class="pre">vocalisations</span></span><a class="headerlink" href="#pykanto.dataset.KantoData.vocalisations" title="Permalink to this definition">#</a></dt>
 <dd><p>Placeholder</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.noise">
-<span class="sig-name descname"><span class="pre">noise</span></span><a class="headerlink" href="#pykanto.dataset.SongDataset.noise" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.noise">
+<span class="sig-name descname"><span class="pre">noise</span></span><a class="headerlink" href="#pykanto.dataset.KantoData.noise" title="Permalink to this definition">#</a></dt>
 <dd><p>Placeholder</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.units">
-<span class="sig-name descname"><span class="pre">units</span></span><a class="headerlink" href="#pykanto.dataset.SongDataset.units" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.units">
+<span class="sig-name descname"><span class="pre">units</span></span><a class="headerlink" href="#pykanto.dataset.KantoData.units" title="Permalink to this definition">#</a></dt>
 <dd><p>Placeholder</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.parameters">
-<span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#pykanto.dataset.SongDataset.parameters" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.parameters">
+<span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#pykanto.dataset.KantoData.parameters" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="pykanto.parameters.html#pykanto.parameters.Parameters" title="pykanto.parameters.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a></p>
@@ -451,8 +513,8 @@ animal vocalisations.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATASET_ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DIRS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><span class="pre">ProjDirs</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pykanto.parameters.html#pykanto.parameters.Parameters" title="pykanto.parameters.Parameters"><span class="pre">Parameters</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATASET_ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DIRS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><span class="pre">ProjDirs</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pykanto.parameters.html#pykanto.parameters.Parameters" title="pykanto.parameters.Parameters"><span class="pre">Parameters</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Instantiates the main dataset class.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -460,8 +522,8 @@ animal vocalisations.</p>
 neural network), these should be labelled as ‘NOISE’ in the
 corresponding json file.
 I.e., <code class="xref py py-obj docutils literal notranslate"><span class="pre">json_file[&quot;label&quot;]</span> <span class="pre">==</span> <span class="pre">'NOISE'</span></code>.
-Files where <code class="xref py py-obj docutils literal notranslate"><span class="pre">json_file[&quot;label&quot;]</span> <span class="pre">==</span> <span class="pre">[]</span></code> or “label” is not a key
-will be automatically given the label ‘VOCALISATION’.</p>
+Files where <code class="xref py py-obj docutils literal notranslate"><span class="pre">json_file[&quot;label&quot;]</span> <span class="pre">==</span> <span class="pre">[]</span></code> or “label” is not a key in
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">json_file</span></code> will be automatically given the label ‘VOCALISATION’.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -489,8 +551,8 @@ files if they already exist. Defaults to False.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset._get_wav_json_filedirs">
-<span class="sig-name descname"><span class="pre">_get_wav_json_filedirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset._get_wav_json_filedirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset._get_wav_json_filedirs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData._get_wav_json_filedirs">
+<span class="sig-name descname"><span class="pre">_get_wav_json_filedirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._get_wav_json_filedirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._get_wav_json_filedirs" title="Permalink to this definition">#</a></dt>
 <dd><p>Get paths of wav and json files for this dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -505,22 +567,22 @@ repetition. Defaults to None.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset._load_metadata">
-<span class="sig-name descname"><span class="pre">_load_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset._load_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset._load_metadata" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData._load_metadata">
+<span class="sig-name descname"><span class="pre">_load_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._load_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._load_metadata" title="Permalink to this definition">#</a></dt>
 <dd><p>Loads json metadata in sequence if there are &lt; 100 items, in parallel
 chunks of length chunk_len if there are &gt; 1000 items.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset._get_unique_ids">
-<span class="sig-name descname"><span class="pre">_get_unique_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset._get_unique_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset._get_unique_ids" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData._get_unique_ids">
+<span class="sig-name descname"><span class="pre">_get_unique_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._get_unique_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._get_unique_ids" title="Permalink to this definition">#</a></dt>
 <dd><p>Adds a ‘unique_ID’ attribute holding an array with unique IDs in the
 dataset.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset._get_sound_info">
-<span class="sig-name descname"><span class="pre">_get_sound_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset._get_sound_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset._get_sound_info" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData._get_sound_info">
+<span class="sig-name descname"><span class="pre">_get_sound_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._get_sound_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._get_sound_info" title="Permalink to this definition">#</a></dt>
 <dd><p>Adds pandas DataFrames with vocalisation and noise information to
 dataset (‘vocs’ and ‘noise’ attributes, respectively). Also
 adds information about mim/max bounding box frequencies and durations in
@@ -534,9 +596,9 @@ parameter combinations) would result in a unit of length zero.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset._compute_melspectrograms">
-<span class="sig-name descname"><span class="pre">_compute_melspectrograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overwrite_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset._compute_melspectrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset._compute_melspectrograms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute melspectrograms and add their location to the SongDataset object.
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData._compute_melspectrograms">
+<span class="sig-name descname"><span class="pre">_compute_melspectrograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overwrite_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._compute_melspectrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._compute_melspectrograms" title="Permalink to this definition">#</a></dt>
+<dd><p>Compute melspectrograms and add their location to the KantoData object.
 It applies both dereverberation and bandpasses vocalisation data by
 default, and neither of these to noise data.</p>
 <dl class="field-list simple">
@@ -552,8 +614,8 @@ default, and neither of these to noise data.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.summary_plot">
-<span class="sig-name descname"><span class="pre">summary_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'frequency'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.summary_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.summary_plot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.summary_plot">
+<span class="sig-name descname"><span class="pre">summary_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'frequency'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.summary_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.summary_plot" title="Permalink to this definition">#</a></dt>
 <dd><p>Plots a histogram + kernel densiyy estimate of the frequency
 distribution of vocalisation duration and frequencies.</p>
 <div class="admonition note">
@@ -579,14 +641,14 @@ any outliers, and to quickly explore the full range of data.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.sample_info">
-<span class="sig-name descname"><span class="pre">sample_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.sample_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.sample_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints the length of the SongDataset and other information.</p>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.sample_info">
+<span class="sig-name descname"><span class="pre">sample_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.sample_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.sample_info" title="Permalink to this definition">#</a></dt>
+<dd><p>Prints the length of the KantoData and other information.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.show_extreme_samples">
-<span class="sig-name descname"><span class="pre">show_extreme_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_songs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'maxfreq'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'descending'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.show_extreme_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.show_extreme_samples" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.show_extreme_samples">
+<span class="sig-name descname"><span class="pre">show_extreme_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_songs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'maxfreq'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'descending'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.show_extreme_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.show_extreme_samples" title="Permalink to this definition">#</a></dt>
 <dd><p>Show mel spectrograms for songs at the ends of the time or
 frequency distribution.</p>
 <div class="admonition note">
@@ -622,8 +684,8 @@ the keys of the displayed spectrograms.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.relabel_noise_segments">
-<span class="sig-name descname"><span class="pre">relabel_noise_segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.relabel_noise_segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.relabel_noise_segments" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.relabel_noise_segments">
+<span class="sig-name descname"><span class="pre">relabel_noise_segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.relabel_noise_segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.relabel_noise_segments" title="Permalink to this definition">#</a></dt>
 <dd><p>Moves entries from the vocalisations subset to the noise subset.
 You will be prompted to choose whether to save the dataset to disk.</p>
 <div class="admonition warning">
@@ -641,7 +703,7 @@ reproducible!</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">SongDataset</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">KantoData</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">keys_to_move</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ABC.wav&#39;</span><span class="p">,</span><span class="s1">&#39;CBA.wav&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">relabel_segments</span><span class="p">(</span><span class="n">keys_to_move</span><span class="p">)</span>
 </pre></div>
@@ -649,8 +711,8 @@ reproducible!</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.segment_into_units">
-<span class="sig-name descname"><span class="pre">segment_into_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.segment_into_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.segment_into_units" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.segment_into_units">
+<span class="sig-name descname"><span class="pre">segment_into_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.segment_into_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.segment_into_units" title="Permalink to this definition">#</a></dt>
 <dd><p>Adds segment onsets, offsets, unit and silence durations
 to <code class="xref py py-attr docutils literal notranslate"><span class="pre">vocs</span></code>.</p>
 <div class="admonition warning">
@@ -673,8 +735,8 @@ the database so that it doesn’t cause trouble downstream.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.subset">
-<span class="sig-name descname"><span class="pre">subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><span class="pre">SongDataset</span></a></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.subset" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.subset">
+<span class="sig-name descname"><span class="pre">subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">pykanto.dataset.KantoData</span></a></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.subset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.subset" title="Permalink to this definition">#</a></dt>
 <dd><p>Creates a new dataset containing a subset of the IDs present
 in the original dataset (e.g., different individual birds).</p>
 <div class="admonition note">
@@ -701,21 +763,34 @@ the new dataset.</p></li>
 <dd class="field-even"><p>A subset of the dataset.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset">SongDataset</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData">KantoData</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.save_to_disk">
-<span class="sig-name descname"><span class="pre">save_to_disk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.save_to_disk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.save_to_disk" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.save_to_disk">
+<span class="sig-name descname"><span class="pre">save_to_disk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.save_to_disk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.save_to_disk" title="Permalink to this definition">#</a></dt>
 <dd><p>Save dataset to disk.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.reload">
-<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset"><span class="pre">pykanto.dataset.SongDataset</span></a></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.reload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.reload" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the current dataset from disk. Remember to assign the output!</p>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.to_csv">
+<span class="sig-name descname"><span class="pre">to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.to_csv" title="Permalink to this definition">#</a></dt>
+<dd><p>Output vocalisation (and, if present, unit) metadata in the dataset as
+a .csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – Directory where to save the file(s).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.reload">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">pykanto.dataset.KantoData</span></a></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.reload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.reload" title="Permalink to this definition">#</a></dt>
+<dd><p>Load the current dataset from disk. Remember to assign the output to
+a variable!</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>You will lose any changes that happened after the last time
@@ -726,7 +801,7 @@ you saved the dataset to disk.</p>
 <dd class="field-odd"><p>Last saved version of the dataset.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#pykanto.dataset.SongDataset" title="pykanto.dataset.SongDataset">SongDataset</a></p>
+<dd class="field-even"><p><a class="reference internal" href="#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData">KantoData</a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -736,8 +811,8 @@ you saved the dataset to disk.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.plot_voc_seg">
-<span class="sig-name descname"><span class="pre">plot_voc_seg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.plot_voc_seg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.plot_voc_seg" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.plot_voc_seg">
+<span class="sig-name descname"><span class="pre">plot_voc_seg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.plot_voc_seg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.plot_voc_seg" title="Permalink to this definition">#</a></dt>
 <dd><p>Plots a vocalisation and overlays the results
 of the segmentation process.</p>
 <dl class="field-list simple">
@@ -752,15 +827,15 @@ of the segmentation process.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.get_units">
-<span class="sig-name descname"><span class="pre">get_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.get_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.get_units" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.get_units">
+<span class="sig-name descname"><span class="pre">get_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.get_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.get_units" title="Permalink to this definition">#</a></dt>
 <dd><p>Creates and saves a dictionary containing spectrogram
 representations of the units or the average of
 the units present in the vocalisations of each individual ID
 in the dataset. The dictionary’s location can be found
 at <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.DIRS.UNITS</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">song_level</span> <span class="pre">=</span> <span class="pre">False</span></code>, and
 at <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.DIRS.AVG_UNITS</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">song_level</span> <span class="pre">=</span> <span class="pre">True</span></code> in
-<a class="reference internal" href="#pykanto.dataset.SongDataset.parameters" title="pykanto.dataset.SongDataset.parameters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters</span></code></a>.</p>
+<a class="reference internal" href="#pykanto.dataset.KantoData.parameters" title="pykanto.dataset.KantoData.parameters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>pad</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to pad spectrograms
@@ -785,14 +860,14 @@ limit the number of cpus to be used at once by setting the
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.cluster_ids">
-<span class="sig-name descname"><span class="pre">cluster_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.cluster_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.cluster_ids" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.cluster_ids">
+<span class="sig-name descname"><span class="pre">cluster_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.cluster_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.cluster_ids" title="Permalink to this definition">#</a></dt>
 <dd><p>Dimensionality reduction using UMAP + unsupervised clustering using
 HDBSCAN. This will fail if the sample size for an ID (grouping factor,
 such as individual or population) is too small.</p>
 <p>Adds cluster membership information and 2D UMAP coordinates to
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">vocs</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">song_level=True</span></code>
-in <a class="reference internal" href="#pykanto.dataset.SongDataset.parameters" title="pykanto.dataset.SongDataset.parameters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters</span></code></a>, else to <a class="reference internal" href="#pykanto.dataset.SongDataset.units" title="pykanto.dataset.SongDataset.units"><code class="xref py py-attr docutils literal notranslate"><span class="pre">units</span></code></a>.</p>
+in <a class="reference internal" href="#pykanto.dataset.KantoData.parameters" title="pykanto.dataset.KantoData.parameters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters</span></code></a>, else to <a class="reference internal" href="#pykanto.dataset.KantoData.units" title="pykanto.dataset.KantoData.units"><code class="xref py py-attr docutils literal notranslate"><span class="pre">units</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>min_sample</strong> (<em>int</em>) – Minimum sample size below which an ID will
@@ -803,12 +878,12 @@ good automatic results above ~100.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.prepare_interactive_data">
-<span class="sig-name descname"><span class="pre">prepare_interactive_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spec_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.prepare_interactive_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.prepare_interactive_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.prepare_interactive_data">
+<span class="sig-name descname"><span class="pre">prepare_interactive_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spec_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.prepare_interactive_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.prepare_interactive_data" title="Permalink to this definition">#</a></dt>
 <dd><p>Prepare lightweigth representations of each vocalization
-or unit (if song_level=False in <a class="reference internal" href="#pykanto.dataset.SongDataset.parameters" title="pykanto.dataset.SongDataset.parameters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters</span></code></a>)
+or unit (if song_level=False in <a class="reference internal" href="#pykanto.dataset.KantoData.parameters" title="pykanto.dataset.KantoData.parameters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters</span></code></a>)
 for each individual in the dataset. These are linked from
-VOCALISATION_LABELS or UNIT_LABELS in <a class="reference internal" href="#pykanto.dataset.SongDataset.DIRS" title="pykanto.dataset.SongDataset.DIRS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DIRS</span></code></a>.</p>
+VOCALISATION_LABELS or UNIT_LABELS in <a class="reference internal" href="#pykanto.dataset.KantoData.DIRS" title="pykanto.dataset.KantoData.DIRS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DIRS</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -823,8 +898,8 @@ VOCALISATION_LABELS or UNIT_LABELS in <a class="reference internal" href="#pykan
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.SongDataset.open_label_app">
-<span class="sig-name descname"><span class="pre">open_label_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('#8dd3c7',</span> <span class="pre">'#ffffb3',</span> <span class="pre">'#bebada',</span> <span class="pre">'#fb8072',</span> <span class="pre">'#80b1d3',</span> <span class="pre">'#fdb462',</span> <span class="pre">'#b3de69',</span> <span class="pre">'#fccde5',</span> <span class="pre">'#d9d9d9',</span> <span class="pre">'#bc80bd',</span> <span class="pre">'#ccebc5',</span> <span class="pre">'#ffed6f')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_labs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#SongDataset.open_label_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.SongDataset.open_label_app" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pykanto.dataset.KantoData.open_label_app">
+<span class="sig-name descname"><span class="pre">open_label_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('#8dd3c7',</span> <span class="pre">'#ffffb3',</span> <span class="pre">'#bebada',</span> <span class="pre">'#fb8072',</span> <span class="pre">'#80b1d3',</span> <span class="pre">'#fdb462',</span> <span class="pre">'#b3de69',</span> <span class="pre">'#fccde5',</span> <span class="pre">'#d9d9d9',</span> <span class="pre">'#bc80bd',</span> <span class="pre">'#ccebc5',</span> <span class="pre">'#ffed6f')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_n_labs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData.open_label_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData.open_label_app" title="Permalink to this definition">#</a></dt>
 <dd><p>Opens a new web browser tab with an interactive app that can be used to
 check the accuracy of the automaticaly assigned labels. Uses average
 units per vocalisation (if song_level=True in self.parameters) or
@@ -832,7 +907,7 @@ individual units.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Starting this app requires the output of
-<a class="reference internal" href="#pykanto.dataset.SongDataset.prepare_interactive_data" title="pykanto.dataset.SongDataset.prepare_interactive_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">prepare_interactive_data()</span></code></a>; you will
+<a class="reference internal" href="#pykanto.dataset.KantoData.prepare_interactive_data" title="pykanto.dataset.KantoData.prepare_interactive_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">prepare_interactive_data()</span></code></a>; you will
 be prompted to choose whether to run it if it is missing.</p>
 </div>
 <div class="admonition note">
@@ -867,14 +942,16 @@ the dataset. Defaults to 10.</p></li>
 
 </dd></dl>
 
-</div>
+</section>
 
 
               </div>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="pykanto.parameters.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -890,34 +967,28 @@ the dataset. Defaults to 10.</p></li>
     <i class="fas fa-angle-right"></i>
     </a>
 </div>
-            
+            </footer>
         </div>
     </div>
-    <footer>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Nilo M. Recalde<br/>
+  
+      &copy; Copyright 2021, Nilo M. Recalde.<br/>
+</p>
+        </footer>
+    </div>
     
-
-    <hr/>
-
-        <div role="contentinfo">
-            <p> 
-                &copy;  2021, Nilo M. Recalde
-
-            </p>
-        </div>    
-        Using
-        <a
-        href="https://www.sphinx-doc.org/">Sphinx</a> //  theme  
-        modified from <a href="https://executablebooks.org/en/latest/">The
-        Executable Book Project</a>.
-
-    </footer>
-</main>
+</div>
 
 
       </div>
     </div>
   
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
 
   </body>
 </html>

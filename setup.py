@@ -43,7 +43,9 @@ else:
             'sphinx-copybutton',
             'sphinx_book_theme',
             'pytest',
+            'myst_nb',
             'autopep8',
+            'ipywidgets',
             'nox'
         ]
     }

@@ -1,5 +1,5 @@
 
-Creating a SongDataset object
+Creating a KantoData object
 =============================
 
 Parameters
@@ -77,7 +77,7 @@ at least some spectrogram files were saved succesfully.
     :linenos:
 
     DATASET_ID = "BIGBIRD"
-    dataset = SongDataset(DATASET_ID, DIRS, parameters=params,
+    dataset = KantoData(DATASET_ID, DIRS, parameters=params,
                         overwrite_dataset=True, overwrite_data=False)
 
 

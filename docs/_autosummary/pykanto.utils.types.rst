@@ -26,6 +26,7 @@ pykanto.utils.types
    .. autosummary::
    
       Annotation
+      AttrProto
       AudioAnnotation
       Chunkinfo
       Metadata
