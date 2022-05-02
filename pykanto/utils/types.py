@@ -11,7 +11,7 @@ from collections import namedtuple
 import attr
 from attr import validators
 from pathlib import Path
-from typing import List, TypedDict
+from typing import Any, List, Protocol, TypedDict
 
 
 # ──── DEFINITIONS ──────────────────────────────────────────────────────────────
@@ -42,8 +42,14 @@ def f_exists(instance, attribute, f: Path):
         raise FileNotFoundError(f)
 
 
+class AttrProto(Protocol):
+    """Inherit to silence attr related errors in Pyrigh"""
+
+    def __init__(self, **kwargs: Any) -> None: ...
+
+
 @attr.s
-class ValidDirs:
+class ValidDirs(AttrProto):
     """
     Type check user input before instantiating main ProjDirs class.
     """
@@ -53,7 +59,7 @@ class ValidDirs:
 
 
 @attr.s
-class SegmentAnnotation:
+class SegmentAnnotation(AttrProto):
     """
     Type-checks and stores annotations necessary to segment regions of interest
     present in an audio file (e.g. songs or song bouts).
@@ -69,7 +75,7 @@ class SegmentAnnotation:
 
 
 @attr.s
-class AudioAnnotation:
+class AudioAnnotation(AttrProto):
     """
     Type-checks and stores audio metadata.
     """
