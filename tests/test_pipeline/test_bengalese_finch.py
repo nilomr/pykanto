@@ -124,11 +124,25 @@ def test_remove_output(dataset):
 
 
 def bf_data_test_manual():
-    DATASET_ID = "BENGALESE_FINCH"
     DATA_PATH = Path(pkg_resources.resource_filename('pykanto', 'data'))
     PROJECT = Path(DATA_PATH).parent
     RAW_DATA = DATA_PATH / 'raw' / DATASET_ID
     DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+
+    # Get files to segment and segment them
+    wav_filepaths, xml_filepaths = [get_file_paths(
+        DIRS.RAW_DATA, [ext]) for ext in ['.wav', '.xml']]
+    files_to_segment = get_wavs_w_annotation(wav_filepaths, xml_filepaths)
+
+    segment_files_parallel(
+        files_to_segment,
+        DIRS,
+        resample=None,
+        parser_func=parse_sonic_visualiser_xml,
+        min_duration=.5,
+        min_freqrange=200,
+        labels_to_ignore=["NOISE"]
+    )
 
     params = Parameters(sr=32000, top_dB=130, lowcut=200,
                         highcut=11000, dereverb=True)
@@ -148,5 +162,4 @@ def bf_data_test_manual():
 
     dataset.parameters.update(song_level=False)
     dataset.prepare_interactive_data()
-
     dataset.open_label_app()
