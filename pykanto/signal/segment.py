@@ -5,6 +5,7 @@
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
 from __future__ import annotations
+from numba import njit
 
 import json
 import warnings
@@ -17,6 +18,7 @@ import audio_metadata as audiometa
 import librosa
 import librosa.display
 import numpy as np
+import psutil
 import ray
 import soundfile as sf
 from pykanto.signal.filter import (dereverberate, dereverberate_jit,
@@ -417,16 +419,13 @@ def segment_files(
             print(f'Failed to export {wav_dir}: ', e)
 
 
-segment_files_r = ray.remote(segment_files)
-"""Remote'd version of :func:`~pykanto.signal.segment.segment_files`"""
-
-
 @timing
 def segment_files_parallel(
         datapaths: List[Tuple[Path, Path]],
         dirs: ProjDirs,
         resample: int | None = 22050,
         parser_func: Callable[[Path], SegmentAnnotation] = parse_sonic_visualiser_xml,
+        num_cpus: float | None = None,
         **kwargs):
     """
     Finds and saves audio segments and their metadata.
@@ -464,6 +463,9 @@ def segment_files_parallel(
     print_parallel_info(n, 'files', n_chunks, chunk_length)
 
     # Distribute with ray
+    segment_files_r = ray.remote(
+        segment_files, num_cpus=num_cpus)
+
     obj_ids = [
         segment_files_r.remote(
             paths, wav_outdir, json_outdir,
@@ -609,7 +611,7 @@ def onsets_offsets(signal: np.ndarray) -> np.ndarray:
     """
     Labels features in array as insets and offsets.
     Based on Tim Sainburg's 
-    `vocalseg <https://github.com/timsainb/vocalization-segmentation/>`_ code.
+    `vocalseg <https://github.com/timsainb/vocalization-segmentation/>`_.
 
     Args:
         signal (np.ndarray): _description_
@@ -641,7 +643,8 @@ def segment_song_into_units(
 
     # NOTE: numba version (dereverberate_jit) more likely to crash when running
     # this in parallel in low memory situations for obvious reasons.
-    mel_spectrogram_d = dereverberate_jit(
+
+    mel_spectrogram_d = dereverberate(
         mel_spectrogram, echo_range=100, echo_reduction=3,
         hop_length=dataset.parameters.hop_length, sr=dataset.parameters.sr)
     mel_spectrogram_d = img_as_ubyte(norm(mel_spectrogram_d))
@@ -672,15 +675,6 @@ def segment_song_into_units(
     return key, onsets, offsets
 
 
-@ray.remote
-def _segment_song_into_units_r(
-        dataset: SongDataset,
-        keys: Iterable[str],
-        **kwargs
-) -> List[Tuple[str, np.ndarray, np.ndarray]]:
-    return [segment_song_into_units(dataset, key, **kwargs) for key in keys]
-
-
 def segment_song_into_units_parallel(
     dataset: SongDataset,
     keys: Iterable[str],
@@ -696,12 +690,17 @@ def segment_song_into_units_parallel(
     chunk_info = calc_chunks(n, verbose=dataset.parameters.verbose)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunks = get_chunks(keys, chunk_length)
-    print_parallel_info(n, 'vocalisations', n_chunks, chunk_length)
+    if dataset.parameters.verbose:
+        print_parallel_info(n, 'vocalisations', n_chunks, chunk_length)
 
     # Copy dataset to local object store
     dataset_ref = ray.put(dataset)
 
     # Distribute with ray
+    @ray.remote(num_cpus=dataset.parameters.num_cpus)
+    def _segment_song_into_units_r(dataset, keys, **kwargs):
+        return [segment_song_into_units(dataset, key, **kwargs) for key in keys]
+
     obj_ids = [_segment_song_into_units_r.remote(
         dataset_ref, i, **kwargs) for i in chunks]
     pbar = {'desc': "Finding units in vocalisations", 'total': n_chunks}
