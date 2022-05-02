@@ -66,4 +66,4 @@ git clone https://github.com/nilomr/pykanto.git
 cd pykanto
 pip install -e .'[dev]'
 ```
-This will install extra dependencies, such as `pytest`, `nox` or `sphinx`.
+This will install extra dependencies, such as `pytest`, `nox` or `sphinx`, necessary for testing and generating the documentation.
