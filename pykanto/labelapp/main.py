@@ -48,7 +48,7 @@ def get_markers(marker_types: List[str], mapping: np.ndarray):
 
 def prepare_legend(
         source: ColumnDataSource, palette: List[str],
-        labs: List[str], grouping_labels: str = 'auto_cluster_label'):
+        labs: List[str], grouping_labels: str = 'auto_type_label'):
 
     # Build marker shapes
     marker_types = [
@@ -73,8 +73,8 @@ def build_legend(source, html_markers, span_mk_sizes, mk_colours):
     pre = '<div class="legend_wrapper">'
     img_htmls = [pre]
 
-    for label in sorted(set(source.data['auto_cluster_label']), key=float):
-        idx = np.where(source.data['auto_cluster_label'] == label)[0][0]
+    for label in sorted(set(source.data['auto_type_label']), key=float):
+        idx = np.where(source.data['auto_type_label'] == label)[0][0]
         spec = source.data['spectrogram'][idx]
         marker = html_markers[source.data['markers'][idx]]
         span = span_mk_sizes[source.data['markers'][idx]]
@@ -100,7 +100,7 @@ def build_legend(source, html_markers, span_mk_sizes, mk_colours):
 def update_feedback_text(indv_list, remaining_indvs):
     text = (
         f"// <b>{len(indv_list) - len(remaining_indvs)} out of {len(indv_list)} done</b> // "
-        "Use the 'Label' button to change the label of the selected points."
+        "Use the 'Label' button to change the label of the selected points. "
         "Label data are automatically saved when you click 'Next'.<br>"
         "Points labelled '-1' (red asterisks) are considered noise.")
     return text
@@ -183,7 +183,7 @@ else:
     # :func:`~pykanto.signal.cluster.dim_reduction_and_cluster`
     # because len < min_sample)
     indv_list = np.unique(getattr(dataset, dataset_type).dropna(
-        subset=['auto_cluster_label'])['ID'])
+        subset=['auto_type_label'])['ID'])
 
     # Where to store labelling information?
     if 'already_checked' not in getattr(dataset.DIRS, dataset_labels):
@@ -218,8 +218,10 @@ else:
         active_scroll='wheel_zoom',
         height_policy='max',
         width_policy='max',
-        max_height=650,
-        min_height=500,
+        max_height=550,
+        min_height=300,
+        max_width=930,
+        min_width=650,
         toolbar_location="above",
         x_axis_location=None,
         y_axis_location=None,
@@ -260,7 +262,7 @@ else:
         <div class="hover_container">
             <img class='hover_img' src='@spectrogram' style='float: top; width:120px;height:120px;'/>
             <div class="image_label">
-                <span style='font-size: 16px; '>@auto_cluster_label</span>
+                <span style='font-size: 16px; '>@auto_type_label</span>
             </div>
         </div>
     </div>
@@ -294,7 +296,7 @@ else:
     )
 
     def get_legend_items():
-        dummy_labels = list(dict.fromkeys(source.data['auto_cluster_label']))
+        dummy_labels = list(dict.fromkeys(source.data['auto_type_label']))
         legend_items = [
             LegendItem(
                 label=label, renderers=[dummy_scatter],
@@ -304,16 +306,18 @@ else:
 
     legend_items = get_legend_items()
 
-    plot_legend = Legend(
-        items=legend_items,
-        location=(0, 0),
-        border_line_alpha=0,
-        background_fill_alpha=0,
-        label_text_font_size='15px',
-        label_text_color='white',
-        spacing=5)
+    # Inactive legend
 
-    splot.add_layout(plot_legend, place='right')
+    # plot_legend = Legend(
+    #     items=legend_items,
+    #     location=(0, 0),
+    #     border_line_alpha=0,
+    #     background_fill_alpha=0,
+    #     label_text_font_size='15px',
+    #     label_text_color='white',
+    #     spacing=5)
+
+    # splot.add_layout(plot_legend, place='right')
 
     # Style tools and toolbar
     hover = splot.select_one(HoverTool)
@@ -353,7 +357,7 @@ else:
     feedback_text = Div(text=text, css_classes=["help_text"])
 
     def update_class_examples_div():
-        spec = source.data[source.data['auto_cluster_label']
+        spec = source.data[source.data['auto_type_label']
                            == '0'][0]['spectrogram'][0]
 
     # Panel with class examples
@@ -396,13 +400,14 @@ else:
 
         # Save labels from last individual to dataset
         label_dict = {key: label for key, label in zip(
-            source.data['index'], source.data['auto_cluster_label'])}
+            source.data['index'], source.data['auto_type_label'])}
 
-        if 'label' not in getattr(dataset, dataset_type).columns:
-            getattr(dataset, dataset_type)['label'] = pd.Series(label_dict)
+        if 'type_label' not in getattr(dataset, dataset_type).columns:
+            getattr(dataset, dataset_type).insert(
+                1, 'type_label', pd.Series(label_dict))
         else:
             getattr(
-                dataset, dataset_type)['label'].update(
+                dataset, dataset_type)['type_label'].update(
                 pd.Series(label_dict))
 
         dataset.save_to_disk(verbose=True)
@@ -420,11 +425,11 @@ else:
 
         indv = remaining_indvs[0]
         source.data = dict(load_bk_data(dataset, dataset_labels, indv).data)
-        labels = source.data['auto_cluster_label']
+        labels = source.data['auto_type_label']
         source.data["markers"] = get_markers(marker_types, labels)
 
         # Update legend
-        splot.legend.items = get_legend_items()
+        # splot.legend.items = get_legend_items()
         splot.title.text = f"{indv}'s song repertoire"
         class_examples_div.text = build_legend(
             source, html_markers, span_mk_sizes, mk_colours)
@@ -445,13 +450,13 @@ else:
     def update_labels(event):
         if 'indices' not in globals():
             return
-        labels = source.data['auto_cluster_label']
+        labels = source.data['auto_type_label']
         labels[indices] = event.item
-        source.data['auto_cluster_label'] = labels
+        source.data['auto_type_label'] = labels
         source.data["markers"] = get_markers(marker_types, labels)
 
         # Update legend
-        splot.legend.items = get_legend_items()
+        # splot.legend.items = get_legend_items()
         class_examples_div.text = build_legend(
             source, html_markers, span_mk_sizes, mk_colours)
 
@@ -466,9 +471,10 @@ else:
     close_button.on_click(close_app)
 
     # Build app
-    curdoc().add_root(row(close_button, next_button,
-                          label_button, width=250, css_classes=['button_div']))
-    curdoc().add_root(row(splot, class_examples_div))
+    curdoc().add_root(row(close_button, next_button, label_button, width=250,
+                          css_classes=['button_div']))
+    curdoc().add_root(row(splot, class_examples_div, css_classes=[
+        'main_div']))
     curdoc().add_root(feedback_text)
     curdoc().title = "Pykanto: interactive song labelling"
 
