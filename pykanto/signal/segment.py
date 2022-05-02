@@ -463,8 +463,10 @@ def segment_files_parallel(
     print_parallel_info(n, 'files', n_chunks, chunk_length)
 
     # Distribute with ray
-    segment_files_r = ray.remote(
-        segment_files, num_cpus=num_cpus)
+
+    @ray.remote(num_cpus=num_cpus)
+    def segment_files_r(*args, **kwargs):
+        return segment_files(*args, **kwargs)
 
     obj_ids = [
         segment_files_r.remote(
