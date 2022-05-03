@@ -186,3 +186,5 @@ source/pykanto.rst
 source/pykanto.signal.rst
 source/pykanto.utils.rst
 source/pykanto.utils.slurm.rst
+docs/doctrees/*
+docs/jupyter_execute/*

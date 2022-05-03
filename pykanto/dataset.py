@@ -563,9 +563,10 @@ class KantoData:
         frequency distribution.
 
         Note:
-            Durations and frequencies come from bounding boxes, not vocalisations.
-            This function, along with :func:`~pykanto.dataset.summary_plot`,
-            is useful to spot any outliers, and to quickly explore the full range of data.
+            Durations and frequencies come from bounding boxes,
+            not vocalisations. This function, along with
+            :func:`~pykanto.dataset.summary_plot`, is useful to spot any
+            outliers, and to quickly explore the full range of data.
 
         Args:
             n_songs (int, optional): Number of songs to return. Defaults to 1.
@@ -864,6 +865,9 @@ class KantoData:
             limit the number of cpus to be used at once by setting the
             `num_cpus` parameter to a smaller number.
         """
+        # TODO: #7 Prepare data for interactive app using custom grouping
+        # factor (current default: ID), or allow user to to choose something
+        # other than individual ID as grouping factor. @nilomr
         song_level = self.parameters.song_level
         dic_locs = get_indv_units_parallel(
             self,
