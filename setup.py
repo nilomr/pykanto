@@ -34,43 +34,54 @@ else:
         "ujson",
         "psutil",
         "attrs",
-        "gitpython"
+        "gitpython",
     ]
 
     EXTRAS_REQUIRES = {
-        'dev': [
-            'sphinx',
-            'sphinx-copybutton',
-            'sphinx_book_theme',
-            'pytest',
-            'myst_nb',
-            'autopep8',
-            'ipywidgets',
-            'nox'
+        "dev": [
+            "sphinx",
+            "sphinx-copybutton",
+            "sphinx_book_theme",
+            "myst_nb",
+            "ipywidgets",
+            "ipykernel",
+            "pytest",
+            "nox",
+            "black",
         ]
     }
 
 setup(
-    name="pykanto", version="0.1.3",
+    name="pykanto",
+    version="0.1.3",
     description="Management and analysis of animal vocalisation data",
-    license="MIT", author='Nilo M. Recalde',
+    license="MIT",
+    author="Nilo M. Recalde",
     author_email="nilomerinorecalde@gmail.com",
     url="https://github.com/nilomr/pykanto",
     long_description=LONG_DESCRIPTION,
-    packages=["pykanto", "pykanto.signal", "pykanto.utils", "pykanto.labelapp",
-              "pykanto.utils"],
+    packages=[
+        "pykanto",
+        "pykanto.signal",
+        "pykanto.utils",
+        "pykanto.labelapp",
+        "pykanto.utils",
+    ],
     package_data={
-        'pykanto':
-        ["data/segmented/great_tit/*/*.wav",
-         "data/segmented/great_tit/*/*.JSON",
-         "data/raw/*.wav",
-         "data/raw/*.xml"]},
+        "pykanto": [
+            "data/segmented/great_tit/*/*.wav",
+            "data/segmented/great_tit/*/*.JSON",
+            "data/raw/*.wav",
+            "data/raw/*.xml",
+        ]
+    },
     python_requires=">=3.8",
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRES,
     include_package_data=True,
     entry_points={
-        'console_scripts': [
-            'pykanto-slaunch = pykanto.utils.slurm.launch:submit_job',
+        "console_scripts": [
+            "pykanto-slaunch = pykanto.utils.slurm.launch:submit_job",
         ],
-    },)
+    },
+)

@@ -1,4 +1,3 @@
-
 # ─── DESCRIPTION ──────────────────────────────────────────────────────────────
 
 """
@@ -42,7 +41,7 @@ def to_iterator(obj_ids, breaks: bool = True):
             try:
                 yield ray.get(done[0])
             except Exception as e:
-                print(f'{done[0]} failed: {e}')
+                print(f"{done[0]} failed: {e}")
         del done[0]
         gc.collect()
 
@@ -59,7 +58,8 @@ def tqdmm(iterable: Iterable[Any], desc: str | None = None, **kwargs) -> tqdm:
         tqdm: progress bar.
     """
     return tqdm(
-        iterable, desc=desc, leave=True, position=0, file=sys.stdout, **kwargs)
+        iterable, desc=desc, leave=True, position=0, file=sys.stdout, **kwargs
+    )
 
 
 def print_dict(dictionary: Dict) -> str:
@@ -79,18 +79,17 @@ def print_dict(dictionary: Dict) -> str:
             v1 = dict([list(v.items())[0]])
             if isinstance([list(v1.items())[0][1]][0], dict):
                 v1 = {
-                    k:
-                    f'{dict([list(v.items())[0]])} + {len(v)-1} other entries'
-                    for k, v in v1.items()}
-            items.append(f'{k}: {v1} + {len(v)-1} other entries.')
+                    k: f"{dict([list(v.items())[0]])} + {len(v)-1} other entries"
+                    for k, v in v1.items()
+                }
+            items.append(f"{k}: {v1} + {len(v)-1} other entries.")
         elif isinstance(v, pd.DataFrame):
-            items.append(
-                f'{k}: pd.DataFrame with {len(v)} entries')
+            items.append(f"{k}: pd.DataFrame with {len(v)} entries")
         elif isinstance(v, (list, np.ndarray)):
-            items.append(f'{k}: {v[:1]} + {len(v)-1} other entries.')
+            items.append(f"{k}: {v[:1]} + {len(v)-1} other entries.")
         else:
-            items.append(f'{k}: {v}')
-    nl = '\n'
+            items.append(f"{k}: {v}")
+    nl = "\n"
     return f"{nl}{nl}Items held:{nl}{nl}{nl.join(items)}"
 
 
@@ -99,24 +98,32 @@ def timing(f):
     Custom timer decorator. Prints time info unless used within a KantoData
     where parameters.verbose = False.
     """
+
     @wraps(f)
     def wrap(*args, **kwargs):
         start = time()
         output = f(*args, **kwargs)
         end = time()
         from pykanto.dataset import KantoData
-        verbose = args[0].parameters.verbose if isinstance(
-            args[0], KantoData) else True
+
+        verbose = (
+            args[0].parameters.verbose
+            if isinstance(args[0], KantoData)
+            else True
+        )
         if verbose:
-            print(
-                f"Function '{f.__name__}' took {end-start:2.4f} sec.")
+            print(f"Function '{f.__name__}' took {end-start:2.4f} sec.")
         return output
+
     return wrap
 
 
 def calc_chunks(
-        len_iterable: int, factor: int = 2, n_workers: float | None = None,
-        verbose: bool = False) -> Chunkinfo:
+    len_iterable: int,
+    factor: int = 2,
+    n_workers: float | None = None,
+    verbose: bool = False,
+) -> Chunkinfo:
     """
     Calculate chunk size to optimise parallel computing.
     Adapted from https://stackoverflow.com/a/54032744.
@@ -136,9 +143,7 @@ def calc_chunks(
     # exploit `0 == False`
     last_chunk = len_iterable % chunksize or chunksize
 
-    chunks = Chunkinfo(
-        n_workers, len_iterable, n_chunks, chunksize, last_chunk
-    )
+    chunks = Chunkinfo(n_workers, len_iterable, n_chunks, chunksize, last_chunk)
     if verbose:
         print(chunks)
     return chunks
@@ -157,7 +162,7 @@ def get_chunks(lst: List[Any], n: int) -> Iterator[Any]:
         Iterator[Any]: n-sized chunks.
     """
     for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+        yield lst[i : i + n]
 
 
 def flatten_list(lst: List[Any]) -> List[Any]:
@@ -180,8 +185,8 @@ def dictlist_to_dict(dictlist: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 def print_parallel_info(
-        n: int, iterable_name: str, n_chunks: int,
-        chunk_length: int) -> None:
+    n: int, iterable_name: str, n_chunks: int, chunk_length: int
+) -> None:
     """
     Prints information about a parallel process for the user.
 
@@ -192,6 +197,7 @@ def print_parallel_info(
         chunk_length (int): Length of each chunk.
     """
     print(
-        f'Found {n} {iterable_name}. '
-        f'They will be processed in {n_chunks} '
-        f'chunks of length {chunk_length}.')
+        f"Found {n} {iterable_name}. "
+        f"They will be processed in {n_chunks} "
+        f"chunks of length {chunk_length}."
+    )

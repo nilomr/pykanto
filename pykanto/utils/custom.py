@@ -39,15 +39,14 @@ def parse_sonic_visualiser_xml(xml_filepath: Path) -> SegmentAnnotation:
     root = ElementTree.parse(xml_filepath).getroot()
 
     # Data to extract from xml
-    fields = ['frame', 'duration', 'value', 'extent']
+    fields = ["frame", "duration", "value", "extent"]
 
     # Retrieve segment information
     seq_list = []
-    for _, segment in enumerate(root.findall('data/dataset/point')):
+    for _, segment in enumerate(root.findall("data/dataset/point")):
         # Extract relevant information from xml file
-        seg_info = [
-            int(float(segment.get(value))) for value in fields]
-        label: List[str] = [str(segment.get('label'))]
+        seg_info = [int(float(segment.get(value))) for value in fields]
+        label: List[str] = [str(segment.get("label"))]
         seq_list.append(seg_info + label)
 
     # Organise in a dictionary
@@ -61,9 +60,11 @@ def parse_sonic_visualiser_xml(xml_filepath: Path) -> SegmentAnnotation:
         end_times=(np.asarray(starts) + np.asarray(durations)).tolist(),
         lower_freq=list(lower_freqs),
         upper_freq=(
-            np.asarray(lower_freqs) + np.asarray(freq_extents)).tolist(),
+            np.asarray(lower_freqs) + np.asarray(freq_extents)
+        ).tolist(),
         label=list(labels),
-        annotation_file=xml_filepath)
+        annotation_file=xml_filepath,
+    )
 
     return sa
 
@@ -71,11 +72,7 @@ def parse_sonic_visualiser_xml(xml_filepath: Path) -> SegmentAnnotation:
 # ──── OTHERS ───────────────────────────────────────────────────────────────────
 
 
-def open_gzip(file: Path) -> Tuple[
-    Dict[str, Any],
-    Dict[str, List[int]],
-    float
-]:
+def open_gzip(file: Path) -> Tuple[Dict[str, Any], Dict[str, List[int]], float]:
     """
     Reads syllable segmentation generated
     with `Chipper <https://github.com/CreanzaLab/chipper>`_.
@@ -92,18 +89,19 @@ def open_gzip(file: Path) -> Tuple[
         data = f.read()
     song_data = pickle.loads(data, encoding="utf-8")
 
-    return song_data[0], song_data[1], song_data[3]['timeAxisConversion']
+    return song_data[0], song_data[1], song_data[3]["timeAxisConversion"]
 
 
 @timing
 def chipper_units_to_json(
-        directory: Path,
-        n_fft: int = 1024,
-        overlap: int = 1010,
-        pad: int = 150,
-        window_offset: bool = True,
-        overwrite_json: bool = False,
-        pbar: bool = True):
+    directory: Path,
+    n_fft: int = 1024,
+    overlap: int = 1010,
+    pad: int = 150,
+    window_offset: bool = True,
+    overwrite_json: bool = False,
+    pbar: bool = True,
+):
     """
     Reads audio unit segmentation metadata from .gzip files output by Chipper and appends them to pykanto .JSON metadata files.
 
@@ -124,41 +122,42 @@ def chipper_units_to_json(
 
     jsons, gzips = [
         get_file_paths(directory, ext)
-        for ext in (['.json', '.JSON'],
-                    [".gzip", ".GZIP"])]
+        for ext in ([".json", ".JSON"], [".gzip", ".GZIP"])
+    ]
 
     jsons = {path.stem: path for path in jsons}
-    gzips = {path.stem.replace(
-        'SegSyllsOutput_', ''): path for path in gzips}
+    gzips = {path.stem.replace("SegSyllsOutput_", ""): path for path in gzips}
 
     if len([gzip for gzip in gzips if gzip in jsons]) == 0:
-        raise KeyError('No JSON and GZIP file names match')
+        raise KeyError("No JSON and GZIP file names match")
 
     for gz_name, gz_path in tqdmm(
-            gzips.items(),
-            desc='Adding unit onset/offset information '
-            'from .gzip to .json files',
-            disable=False if pbar else True
+        gzips.items(),
+        desc="Adding unit onset/offset information "
+        "from .gzip to .json files",
+        disable=False if pbar else True,
     ):
 
         if gz_name in jsons:
 
             jsondict = read_json(jsons[gz_name])
-            if 'onsets' in jsondict and not overwrite_json:
+            if "onsets" in jsondict and not overwrite_json:
                 raise FileExistsError(
-                    'Json files already contain unit onset/offset times.'
-                    'Set `overwrite_json = True` if you want '
-                    'to overwrite them.')
+                    "Json files already contain unit onset/offset times."
+                    "Set `overwrite_json = True` if you want "
+                    "to overwrite them."
+                )
 
-            sr = jsondict['sample_rate']
+            sr = jsondict["sample_rate"]
             gzip_onoff = open_gzip(gz_path)[1]
-            on, off = np.array(
-                gzip_onoff['Onsets']), np.array(
-                gzip_onoff['Offsets'])
+            on, off = np.array(gzip_onoff["Onsets"]), np.array(
+                gzip_onoff["Offsets"]
+            )
 
-            jsondict['onsets'], jsondict['offsets'] = [(
-                ((arr - pad) * (n_fft - overlap) + woffset) / sr).tolist()
-                for arr in (on, off)]
+            jsondict["onsets"], jsondict["offsets"] = [
+                (((arr - pad) * (n_fft - overlap) + woffset) / sr).tolist()
+                for arr in (on, off)
+            ]
 
             with open(jsons[gz_name].as_posix(), "w") as f:
                 json.dump(jsondict, f, indent=2)

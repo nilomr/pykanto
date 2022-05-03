@@ -180,3 +180,9 @@ docs/jupyter_execute/jupyter_execute/*
 # manifest
 MANIFEST.in
 
+source/modules.rst
+source/pykanto.labelapp.rst
+source/pykanto.rst
+source/pykanto.signal.rst
+source/pykanto.utils.rst
+source/pykanto.utils.slurm.rst

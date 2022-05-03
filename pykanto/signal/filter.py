@@ -21,9 +21,13 @@ if TYPE_CHECKING:
 # ──── FUNCTIONS ───────────────────────────────────────────────────────────────
 
 
-def dereverberate(spectrogram: np.ndarray, echo_range: int = 100,
-                  echo_reduction: float = 0.5,
-                  hop_length: int = 128, sr: int = 22050) -> np.ndarray:
+def dereverberate(
+    spectrogram: np.ndarray,
+    echo_range: int = 100,
+    echo_reduction: float = 0.5,
+    hop_length: int = 128,
+    sr: int = 22050,
+) -> np.ndarray:
 
     hop_length_ms = int(hop_length / sr * 1000)
     echo_range = int(echo_range / hop_length_ms)
@@ -39,15 +43,17 @@ def dereverberate(spectrogram: np.ndarray, echo_range: int = 100,
     for row in spectrogram:
         newrow = []
         for colindex, amplitude in enumerate(row):
-            anterior = row[(colindex - echo_range): colindex]
+            anterior = row[(colindex - echo_range) : colindex]
             if colindex < echo_range:
-                posterior = row[colindex: (colindex + echo_range)]
-                newval = amplitude - echo_reduction * \
-                    (max(posterior) - amplitude)
+                posterior = row[colindex : (colindex + echo_range)]
+                newval = amplitude - echo_reduction * (
+                    max(posterior) - amplitude
+                )
                 newrow.append(newval if newval > mindb else mindb)
             elif (len(anterior) > 0) and (max(anterior) > amplitude):
-                newval = amplitude - echo_reduction * \
-                    (max(anterior) - amplitude)
+                newval = amplitude - echo_reduction * (
+                    max(anterior) - amplitude
+                )
                 newrow.append(newval if newval > mindb else mindb)
             else:
                 newrow.append(amplitude)
@@ -60,10 +66,10 @@ dereverberate_jit = njit(dereverberate)
 
 
 def get_norm_spectral_envelope(
-        mel_spectrogram: np.ndarray,
-        mindb: int, kernel_size: int = 5) -> np.ndarray:
+    mel_spectrogram: np.ndarray, mindb: int, kernel_size: int = 5
+) -> np.ndarray:
     """
-    Returns a spectral envelope of sorts - useful to quickly characterise a 
+    Returns a spectral envelope of sorts - useful to quickly characterise a
     song's frequency distribution. Minmax rescaled to [0,1]
 
     Args:
@@ -75,13 +81,13 @@ def get_norm_spectral_envelope(
         np.ndarray: [description]
     """
 
-    spec = norm(normalise(mel_spectrogram, min_level_db=- mindb))
+    spec = norm(normalise(mel_spectrogram, min_level_db=-mindb))
     spec = spec - np.median(spec, axis=1).reshape((len(spec), 1))
     spec[spec < 0] = 0
     amp_envelope = np.max(spec, axis=1) * np.sqrt(np.mean(spec, axis=1))
 
     kernel = np.ones(kernel_size) / kernel_size
-    data_convolved = np.convolve(amp_envelope, kernel, mode='same')
+    data_convolved = np.convolve(amp_envelope, kernel, mode="same")
 
     return norm(data_convolved)
 
@@ -107,18 +113,13 @@ def gaussian_blur(array: np.ndarray, gauss_sigma: int = 3, max: int = 0):
 
 # Minor helper functions here
 
-class kernels():
-    erosion_kern = np.array(
-        [[0, 0, 0],
-         [1, 1, 1],
-         [0, 0, 0]])
+
+class kernels:
+    erosion_kern = np.array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
 
     dilation_kern = np.array(
-        [[0, 1, 0],
-         [0, 1, 0],
-         [0, 1, 0],
-         [0, 1, 0],
-         [0, 1, 0]])
+        [[0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0]]
+    )
 
 
 @njit
@@ -141,9 +142,9 @@ def hz_to_mel_lib(hz: int, minmax_freq: Tuple[int, int], parameters):
     Returns:
         [type]: [description]
     """
-    freqs = librosa.core.mel_frequencies(fmin=minmax_freq[0],
-                                         fmax=minmax_freq[1],
-                                         n_mels=parameters.num_mel_bins)
+    freqs = librosa.core.mel_frequencies(
+        fmin=minmax_freq[0], fmax=minmax_freq[1], n_mels=parameters.num_mel_bins
+    )
     return np.argmin(abs(freqs - hz))
 
 
@@ -159,9 +160,11 @@ def mel_to_hz(mel_bin: int, dataset: KantoData) -> int:
     Returns:
         int: Approximate original frequency in hertzs
     """
-    freqs = librosa.core.mel_frequencies(fmin=dataset.parameters.lowcut,
-                                         fmax=dataset.parameters.highcut,
-                                         n_mels=dataset.parameters.num_mel_bins)
+    freqs = librosa.core.mel_frequencies(
+        fmin=dataset.parameters.lowcut,
+        fmax=dataset.parameters.highcut,
+        n_mels=dataset.parameters.num_mel_bins,
+    )
     return int(freqs[mel_bin])
 
 
@@ -176,7 +179,9 @@ def mels_to_hzs(dataset: KantoData) -> np.ndarray[int]:
     Returns:
         np.ndarray[int]: Approximate original frequencies in hertzs
     """
-    freqs = librosa.core.mel_frequencies(fmin=dataset.parameters.lowcut,
-                                         fmax=dataset.parameters.highcut,
-                                         n_mels=dataset.parameters.num_mel_bins)
+    freqs = librosa.core.mel_frequencies(
+        fmin=dataset.parameters.lowcut,
+        fmax=dataset.parameters.highcut,
+        n_mels=dataset.parameters.num_mel_bins,
+    )
     return freqs.astype(int)

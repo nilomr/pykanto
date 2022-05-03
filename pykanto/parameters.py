@@ -14,9 +14,9 @@ from pykanto.utils.compute import print_dict
 # ──── CLASSES AND METHODS ─────────────────────────────────────────────────────
 
 
-class Parameters():
+class Parameters:
     """
-    General parameters class - stores parameters to be passed to 
+    General parameters class - stores parameters to be passed to
     a :meth:`~pykanto.dataset.KantoData` object.
     """
 
@@ -100,7 +100,8 @@ class Parameters():
             if key not in self.__dict__:
                 raise KeyError(
                     f"'{key}'' is not an existing parameter."
-                    f"Use `.add({key} = {val})` instead f you want to add a new parameter.")
+                    f"Use `.add({key} = {val})` instead f you want to add a new parameter."
+                )
         self.__dict__.update(kwargs)
 
     def add(self, **kwargs: Any) -> None:

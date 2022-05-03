@@ -1,4 +1,3 @@
-
 # ─── DESCRIPTION ──────────────────────────────────────────────────────────────
 
 """
@@ -16,8 +15,14 @@ import ujson as json
 if TYPE_CHECKING:
     from pykanto.dataset import KantoData
 
-from pykanto.utils.compute import (calc_chunks, flatten_list, get_chunks,
-                                   print_parallel_info, to_iterator, tqdmm)
+from pykanto.utils.compute import (
+    calc_chunks,
+    flatten_list,
+    get_chunks,
+    print_parallel_info,
+    to_iterator,
+    tqdmm,
+)
 
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
 
@@ -48,10 +53,9 @@ def _get_json(file):
     """
     jf = read_json(file)
     try:
-        jf["label"] = (jf["label"] if jf["label"] ==
-                       'NOISE' else 'VOCALISATION')
+        jf["label"] = jf["label"] if jf["label"] == "NOISE" else "VOCALISATION"
     except:
-        jf["label"] = 'VOCALISATION'
+        jf["label"] = "VOCALISATION"
     return jf
 
 
@@ -60,11 +64,11 @@ def _get_json_r(files: List[Path]) -> List[Dict[str, Any]]:
     return [_get_json(file) for file in files]
 
 
-def _get_json_parallel(lst: List[Path],
-                       verbose: bool = False
-                       ) -> List[Dict[str, Any]]:
+def _get_json_parallel(
+    lst: List[Path], verbose: bool = False
+) -> List[Dict[str, Any]]:
     """
-    Parallel implementation of 
+    Parallel implementation of
     :func:`~pykanto.utils.read._get_json`.
     """
     # Calculate and make chunks
@@ -72,11 +76,11 @@ def _get_json_parallel(lst: List[Path],
     chunk_info = calc_chunks(n, verbose=verbose)
     chunk_length, n_chunks = chunk_info[3], chunk_info[2]
     chunks = get_chunks(lst, chunk_length)
-    print_parallel_info(n, 'JSON files', n_chunks, chunk_length)
+    print_parallel_info(n, "JSON files", n_chunks, chunk_length)
 
     # Distribute with ray
     obj_ids = [_get_json_r.remote(i) for i in chunks]
-    pbar = {'desc': "Loading JSON files", 'total': n_chunks}
+    pbar = {"desc": "Loading JSON files", "total": n_chunks}
     jsons = [obj_id for obj_id in tqdmm(to_iterator(obj_ids), **pbar)]
 
     # Flatten and return

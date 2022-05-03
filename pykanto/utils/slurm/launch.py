@@ -52,49 +52,69 @@ def submit_job():
     """
 
     # Locate bash template file
-    template_file = Path(__file__).parent / 'sbatch_template.sh'
+    template_file = Path(__file__).parent / "sbatch_template.sh"
 
     # Path to output folder
-    out_dir = Path(os.getcwd()) / 'logs'
+    out_dir = Path(os.getcwd()) / "logs"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # Define and parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--exp-name", "-exp", type=str, required=True,
-        help="The job name and path to logging file (exp_name.log)."
+        "--exp-name",
+        "-exp",
+        type=str,
+        required=True,
+        help="The job name and path to logging file (exp_name.log).",
     )
     parser.add_argument(
-        "--num-nodes", "-n", type=int, default=1,
-        help="Number of nodes to use."
+        "--num-nodes", "-n", type=int, default=1, help="Number of nodes to use."
     )
     parser.add_argument(
-        "--node", "-w", type=str, default="",
-        help="The specified nodes to use. Same format as the return of 'sinfo'. Default: ''."
+        "--node",
+        "-w",
+        type=str,
+        default="",
+        help="The specified nodes to use. Same format as the return of 'sinfo'. Default: ''.",
     )
     parser.add_argument(
-        "--gpu", type=str, default=0,
-        help="Number and constraints on GPUs to use. (Default: 0)"
+        "--gpu",
+        type=str,
+        default=0,
+        help="Number and constraints on GPUs to use. (Default: 0)",
     )
     parser.add_argument(
-        "--time", type=str, default='00:10:00',
-        help="Time allocated to job. (Default: '00:10:00')"
+        "--time",
+        type=str,
+        default="00:10:00",
+        help="Time allocated to job. (Default: '00:10:00')",
     )
     parser.add_argument(
-        "--memory", type=int, default=20000,
-        help="Memory allocated to job. (Default: 20000)"
+        "--memory",
+        type=int,
+        default=20000,
+        help="Memory allocated to job. (Default: 20000)",
     )
     parser.add_argument(
-        "--partition", "-p", type=str, default="short",
+        "--partition",
+        "-p",
+        type=str,
+        default="short",
     )
     parser.add_argument(
-        "--load-env", "-env", type=str, default="",
-        help="The script to load your environment, e.g. 'module load cuda/10.1'"
+        "--load-env",
+        "-env",
+        type=str,
+        default="",
+        help="The script to load your environment, e.g. 'module load cuda/10.1'",
     )
     parser.add_argument(
-        "--command", "-c", type=str, required=True,
+        "--command",
+        "-c",
+        type=str,
+        required=True,
         help="The command you wish to execute. For example: --command 'python "
-             "test.py' Note that the command must be a string."
+        "test.py' Note that the command must be a string.",
     )
     args = parser.parse_args()
 
@@ -105,8 +125,7 @@ def submit_job():
         node_info = ""
 
     job_name = "{}_{}".format(
-        args.exp_name,
-        time.strftime("%m%d-%H%M", time.localtime())
+        args.exp_name, time.strftime("%m%d-%H%M", time.localtime())
     )
 
     # ===== Modified the template script =====

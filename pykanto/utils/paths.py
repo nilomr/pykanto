@@ -12,8 +12,14 @@ from typing import List, Tuple
 
 import pkg_resources
 import ray
-from pykanto.utils.compute import (calc_chunks, get_chunks, print_dict,
-                                   print_parallel_info, to_iterator, tqdmm)
+from pykanto.utils.compute import (
+    calc_chunks,
+    get_chunks,
+    print_dict,
+    print_parallel_info,
+    to_iterator,
+    tqdmm,
+)
 from pykanto.utils.read import read_json
 from pykanto.utils.types import ValidDirs
 from pykanto.utils.write import makedir, save_json
@@ -21,18 +27,18 @@ from pykanto.utils.write import makedir, save_json
 # ──── CLASSES ─────────────────────────────────────────────────────────────────
 
 
-class ProjDirs():
+class ProjDirs:
     """
-    Initialises a ProjDirs class, which is used to store a 
-    project's file structure. This is required when constructing 
-    a :class:`~pykanto.dataset.KantoData` object and generally 
+    Initialises a ProjDirs class, which is used to store a
+    project's file structure. This is required when constructing
+    a :class:`~pykanto.dataset.KantoData` object and generally
     useful to keep paths tidy and in the same location.
 
     Args:
         PROJECT (Path): Root directory of the project.
-        RAW_DATA (Path): (Immutable) location of the raw data to be used in 
+        RAW_DATA (Path): (Immutable) location of the raw data to be used in
             this project.
-        mkdir (bool, optional): Wether to create directories if they 
+        mkdir (bool, optional): Wether to create directories if they
             don't already exist. Defaults to False.
 
     Examples:
@@ -86,10 +92,7 @@ class ProjDirs():
         return print_dict(self.__dict__)
 
     def append(
-        self,
-        new_attr: str,
-        new_value: Path,
-        mkdir: bool = False
+        self, new_attr: str, new_value: Path, mkdir: bool = False
     ) -> None:
         """
         Appends a new attribute to the class instance.
@@ -104,7 +107,8 @@ class ProjDirs():
             raise TypeError(f"{new_attr} must be uppercase")
         elif not isinstance(new_value, Path):
             raise TypeError(
-                f"{new_value} must be an instance of (pathlib) Path")
+                f"{new_value} must be an instance of (pathlib) Path"
+            )
         else:
             setattr(self, new_attr, new_value)
             if mkdir:
@@ -113,37 +117,41 @@ class ProjDirs():
     def _deep_update_paths(self, OLD_PROJECT, NEW_PROJECT) -> None:
         for k, v in self.__dict__.items():
             if isinstance(v, Path):
-                self.__dict__[k] = change_data_loc(
-                    v, OLD_PROJECT,  NEW_PROJECT)
+                self.__dict__[k] = change_data_loc(v, OLD_PROJECT, NEW_PROJECT)
             elif isinstance(v, list):
                 self.__dict__[k] = [
                     change_data_loc(path, OLD_PROJECT, NEW_PROJECT)
-                    for path in v]
+                    for path in v
+                ]
             elif isinstance(v, dict):
                 for k1, v1 in v.items():  # Level 1
                     if isinstance(v1, Path):
                         self.__dict__[k][k1] = change_data_loc(
-                            v1, OLD_PROJECT, NEW_PROJECT)
+                            v1, OLD_PROJECT, NEW_PROJECT
+                        )
                     elif isinstance(v1, dict):
                         for k2, v2 in v1.items():
                             self.__dict__[k][k1][k2] = change_data_loc(
-                                v2, OLD_PROJECT, NEW_PROJECT)
-                    elif k1 == 'already_checked':
+                                v2, OLD_PROJECT, NEW_PROJECT
+                            )
+                    elif k1 == "already_checked":
                         continue
                     else:
                         print(k1, v1)
                         raise TypeError(
-                            'Dictionary values must be either '
-                            'of type Path or a second dictionary '
-                            'with values of type Path')
+                            "Dictionary values must be either "
+                            "of type Path or a second dictionary "
+                            "with values of type Path"
+                        )
             else:
                 print(k, v)
                 raise TypeError(
-                    'Dictionary values must be of types Path | List | Dict')
+                    "Dictionary values must be of types Path | List | Dict"
+                )
 
     def update_json_locs(
-            self, overwrite: bool = False,
-            ignore_checks: bool = False) -> None:
+        self, overwrite: bool = False, ignore_checks: bool = False
+    ) -> None:
         """
         Updates the `wav_file` field in JSON metadata files for a given project.
         This is useful if you have moved your data to a new location. It will
@@ -153,19 +161,20 @@ class ProjDirs():
         subdirectories.
 
         Args:
-            overwrite (bool, optional): Whether to force change paths 
+            overwrite (bool, optional): Whether to force change paths
                 even if the current ones work. Defaults to False.
-            ignore_checks (bool, optional): Wether to check that wav and 
+            ignore_checks (bool, optional): Wether to check that wav and
                 JSON files coincide. Useful if you just want to change JSONS in
                 a different location to where the rest of the data are.
                 Defaults to False.
         """
 
-        if not hasattr(self, 'SEGMENTED'):
+        if not hasattr(self, "SEGMENTED"):
             raise KeyError(
                 "This ProjDirs object does not have a SEGMENTED attribute. "
                 "You can append it like so: "
-                "`DIRS.append('SEGMENTED', Path(...))`")
+                "`DIRS.append('SEGMENTED', Path(...))`"
+            )
 
         if not self.SEGMENTED.is_dir():
             raise FileNotFoundError(f"{self.SEGMENTED} does not exist.")
@@ -176,26 +185,30 @@ class ProjDirs():
         if not len(WAV_LIST) and not ignore_checks:
             raise FileNotFoundError(
                 f'There are no .wav files in {self.SEGMENTED / "WAV"}'
-                ' will not look for JSON files.')
+                " will not look for JSON files."
+            )
         if len(WAV_LIST) != len(JSON_LIST) and not ignore_checks:
             raise KeyError(
                 "There is an unequal number of .wav and .json "
-                f"files in {self.SEGMENTED}")
+                f"files in {self.SEGMENTED}"
+            )
 
         # Check that file can be read & wav_file needs to be changed
         try:
             jf = read_json(JSON_LIST[0])
         except:
             raise FileNotFoundError(
-                f"{JSON_LIST[0]} does not exist or is empty.")
+                f"{JSON_LIST[0]} does not exist or is empty."
+            )
 
-        wavloc = Path(jf['wav_file'])
+        wavloc = Path(jf["wav_file"])
         print(wavloc)
 
         if wavloc.exists() and overwrite is False:
             raise FileExistsError(
-                f'{wavloc} exists: no need to update paths. '
-                'You can force update by setting `overwrite = True`.')
+                f"{wavloc} exists: no need to update paths. "
+                "You can force update by setting `overwrite = True`."
+            )
 
         def change_wav_file_field(file):
             try:
@@ -203,12 +216,12 @@ class ProjDirs():
             except:
                 raise FileNotFoundError(f"{file} does not exist or is empty.")
 
-            newloc = self.SEGMENTED / "WAV" / Path(jf['wav_file']).name
-            if Path(jf['wav_file']) == newloc:
+            newloc = self.SEGMENTED / "WAV" / Path(jf["wav_file"]).name
+            if Path(jf["wav_file"]) == newloc:
                 return
             else:
                 try:
-                    jf['wav_file'] = str(newloc)
+                    jf["wav_file"] = str(newloc)
                     save_json(jf, file)
                 except:
                     raise IndexError(f"Could not save {file}")
@@ -228,25 +241,27 @@ class ProjDirs():
         chunk_length, n_chunks = chunk_info[3], chunk_info[2]
         chunks = get_chunks(JSON_LIST, chunk_length)
         print_parallel_info(
-            len(JSON_LIST),
-            'individual IDs', n_chunks, chunk_length)
+            len(JSON_LIST), "individual IDs", n_chunks, chunk_length
+        )
 
         # Distribute with ray
         obj_ids = [b_change_wav_file_r.remote(i) for i in chunks]
-        pbar = {'desc': "Updating the `wav_file` field in JSON metadata files.",
-                'total': n_chunks}
+        pbar = {
+            "desc": "Updating the `wav_file` field in JSON metadata files.",
+            "total": n_chunks,
+        }
         for obj_id in tqdmm(to_iterator(obj_ids), **pbar):
             pass
 
-        print('Done')
+        print("Done")
 
 
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
 
 
 def get_wavs_w_annotation(
-        wav_filepaths: List[Path],
-        annotation_paths: List[Path]) -> List[Tuple[Path, Path]]:
+    wav_filepaths: List[Path], annotation_paths: List[Path]
+) -> List[Tuple[Path, Path]]:
     """
     Returns a list of tuples containing [0] paths to wavfiles for which there is
     an annotation file and [1] paths to its annotation file. Assumes that wav
@@ -254,7 +269,7 @@ def get_wavs_w_annotation(
     file extension changes.
 
     Args:
-        wav_filepaths (List[Path]): List of paths to wav files. 
+        wav_filepaths (List[Path]): List of paths to wav files.
         annotation_paths (List[Path]): List of paths to annotation files.
 
     Returns:
@@ -264,15 +279,15 @@ def get_wavs_w_annotation(
     wavcase = wav_filepaths[0].suffix
 
     filtered_wavpaths = [
-        (file.parent / f'{file.stem}{wavcase}', file)
+        (file.parent / f"{file.stem}{wavcase}", file)
         for file in annotation_paths
-        if file.parent / f'{file.stem}{wavcase}' in wav_filepaths]
+        if file.parent / f"{file.stem}{wavcase}" in wav_filepaths
+    ]
 
     return filtered_wavpaths
 
 
-def change_data_loc(
-        DIR: Path, PROJECT: Path, NEW_PROJECT: Path) -> Path:
+def change_data_loc(DIR: Path, PROJECT: Path, NEW_PROJECT: Path) -> Path:
     """
     Updates the location of the parent directories of a project, including the
     project name, for a given path. Used when the location of a dataset changes
@@ -287,13 +302,13 @@ def change_data_loc(
         Path: Updated path.
     """
     index = DIR.parts.index(PROJECT.name)
-    new_path = NEW_PROJECT.joinpath(*DIR.parts[index+1:])
+    new_path = NEW_PROJECT.joinpath(*DIR.parts[index + 1 :])
     return new_path
 
 
 def get_file_paths(
-        root_dir: Path, extensions: List[str],
-        verbose: bool = False) -> List[Path]:
+    root_dir: Path, extensions: List[str], verbose: bool = False
+) -> List[Path]:
     """
     Returns paths to files with given extension found recursively within a
     directory.
@@ -309,9 +324,14 @@ def get_file_paths(
         List[Path]: List with path to files.
     """
     file_list: List[Path] = []
-    ext = "".join([f"{x} and/or "
-                   if i != len(extensions)-1 and len(extensions) > 1 else f"{x}"
-                   for i, x in enumerate(extensions)])
+    ext = "".join(
+        [
+            f"{x} and/or "
+            if i != len(extensions) - 1 and len(extensions) > 1
+            else f"{x}"
+            for i, x in enumerate(extensions)
+        ]
+    )
 
     for root, _, files in os.walk(str(root_dir)):
         for file in files:
@@ -319,7 +339,8 @@ def get_file_paths(
                 file_list.append(Path(root) / file)
     if len(file_list) == 0:
         raise FileNotFoundError(
-            f"There are no {ext} files in directory {root_dir}.")
+            f"There are no {ext} files in directory {root_dir}."
+        )
     else:
         if verbose:
             print(f"Found {len(file_list)} {ext} files in {root_dir}")
@@ -336,12 +357,12 @@ def link_project_data(origin: os.PathLike, project_data_dir: Path) -> None:
 
     Note:
         This will work in unix-like systems but might cause problems in Windows.
-        See `how to enable symlinks in 
+        See `how to enable symlinks in
         Windows <https://csatlas.com/python-create-symlink/#windows>`_
 
-    Raises: 
+    Raises:
         ValueError: The 'project_data_dir' already contains data or is a
-        symlink.
+            symlink.
         FileExistsError: File exists; your target folder already exists.
     """
 
@@ -353,8 +374,10 @@ def link_project_data(origin: os.PathLike, project_data_dir: Path) -> None:
         os.symlink(origin, project_data_dir, target_is_directory=True)
         print("Symbolic link created successfully.")
     else:
-        warnings.warn('link_project_data() failed: '
-                      'the destination directory is not empty.')
+        warnings.warn(
+            "link_project_data() failed: "
+            "the destination directory is not empty."
+        )
 
 
 def pykanto_data(dataset: str = "GREAT_TIT") -> ProjDirs:
@@ -363,17 +386,20 @@ def pykanto_data(dataset: str = "GREAT_TIT") -> ProjDirs:
     for testing and tutorials.
 
     Args:
-        dataset (str, optional): Dataset name, one of ["STORM-PETREL", 
+        dataset (str, optional): Dataset name, one of ["STORM-PETREL",
             "BENGALESE_FINCH", "GREAT_TIT", "AM"]. Defaults to "GREAT_TIT".
 
     Returns:
         ProjDirs: An object with paths to data directories that can then be used
             to create a dataset.
     """
-    dfolder = 'segmented' if dataset == "GREAT_TIT" else 'raw'
-    DATA_PATH = Path(pkg_resources.resource_filename('pykanto', 'data'))
+    dfolder = "segmented" if dataset == "GREAT_TIT" else "raw"
+    DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
     PROJECT = Path(DATA_PATH).parent
-    RAW_DATA = (DATA_PATH / dfolder / (dataset.lower()
-                if dataset == "GREAT_TIT" else dataset))
+    RAW_DATA = (
+        DATA_PATH
+        / dfolder
+        / (dataset.lower() if dataset == "GREAT_TIT" else dataset)
+    )
     DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True if dataset != "AM" else False)
     return DIRS

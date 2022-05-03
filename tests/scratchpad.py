@@ -1,4 +1,3 @@
-
 # ─── DESCRIPTION ──────────────────────────────────────────────────────────────
 
 # This script does the following:
@@ -40,13 +39,15 @@ from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import get_segment_info, segment_files_parallel
 from pykanto.utils.compute import flatten_list, to_iterator, tqdmm
-from pykanto.utils.custom import chipper_units_to_json, parse_sonic_visualiser_xml
-from pykanto.utils.paths import (ProjDirs, get_file_paths,
-                                 get_wavs_w_annotation)
+from pykanto.utils.custom import (
+    chipper_units_to_json,
+    parse_sonic_visualiser_xml,
+)
+from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
 from pykanto.utils.paths import pykanto_data
 from pykanto.utils.write import makedir
 
-warnings.simplefilter('always', ImportWarning)
+warnings.simplefilter("always", ImportWarning)
 os.environ["RAY_DISABLE_IMPORT_WARNING"] = "1"
 
 # REVIEW - remove when complete
@@ -69,22 +70,28 @@ print(DIRS)
 
 # %%
 params = Parameters(dereverb=True, verbose=False)
-dataset = KantoData(DATASET_ID, DIRS, parameters=params,
-                    overwrite_dataset=True, overwrite_data=True)
+dataset = KantoData(
+    DATASET_ID,
+    DIRS,
+    parameters=params,
+    overwrite_dataset=True,
+    overwrite_data=True,
+)
 
 dataset.vocs.head()
 # %%
 
 # storm petrel
 DATASET_ID = "STORM-PETREL"
-DATA_PATH = Path(pkg_resources.resource_filename('pykanto', 'data'))
+DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
 PROJECT = Path(DATA_PATH).parent
-RAW_DATA = DATA_PATH / 'raw' / DATASET_ID
+RAW_DATA = DATA_PATH / "raw" / DATASET_ID
 
 DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
 
-wav_filepaths, xml_filepaths = [get_file_paths(
-    DIRS.RAW_DATA, [ext]) for ext in ['.wav', '.xml']]
+wav_filepaths, xml_filepaths = [
+    get_file_paths(DIRS.RAW_DATA, [ext]) for ext in [".wav", ".xml"]
+]
 files_to_segment = get_wavs_w_annotation(wav_filepaths, xml_filepaths)
 
 
@@ -93,13 +100,12 @@ segment_files_parallel(
     DIRS,
     resample=22050,
     parser_func=parse_sonic_visualiser_xml,
-    min_duration=.1,
+    min_duration=0.1,
     min_freqrange=100,
-    labels_to_ignore=["NOISE"]
+    labels_to_ignore=["NOISE"],
 )
 
-outfiles = [get_file_paths(DIRS.SEGMENTED, [ext])
-            for ext in ['.wav', '.JSON']]
+outfiles = [get_file_paths(DIRS.SEGMENTED, [ext]) for ext in [".wav", ".JSON"]]
 
 
 # 2. Chipper outputs segmentation information to a gzip file. Let's add this to
@@ -121,7 +127,7 @@ params = Parameters(
     n_fft=2048,
     num_mel_bins=240,
     sr=22050,
-    top_dB=65,                  # top dB to keep
+    top_dB=65,  # top dB to keep
     lowcut=300,
     highcut=10000,
     dereverb=True,
@@ -134,8 +140,12 @@ params = Parameters(
 # np.random.seed(123)
 # random.seed(123)
 dataset = KantoData(
-    DATASET_ID, DIRS, parameters=params, overwrite_dataset=True,
-    overwrite_data=False)
+    DATASET_ID,
+    DIRS,
+    parameters=params,
+    overwrite_dataset=True,
+    overwrite_data=False,
+)
 
 # Segmente into individual units using information from chipper,
 # then check a few.
@@ -147,8 +157,11 @@ for voc in dataset.vocs.index:
 
 # %%
 
-to_rm = [dataset.DIRS.DATASET.parent,
-         dataset.DIRS.SEGMENTED/'WAV', dataset.DIRS.SEGMENTED/'JSON']
+to_rm = [
+    dataset.DIRS.DATASET.parent,
+    dataset.DIRS.SEGMENTED / "WAV",
+    dataset.DIRS.SEGMENTED / "JSON",
+]
 for path in to_rm:
     if path.exists():
         shutil.rmtree(str(path))
@@ -157,15 +170,16 @@ assert all([f.exists() for f in to_rm]) == False
 
 # ──── INTERACTIVE APP DEMO ────────────────────────────────────────────────────
 
-DATASET_ID = 'LABEL_APP_DEMO'
-PROJECT_ROOT = Path('/home/nilomr/projects/great-tit-song')
-RAW_DATA = PROJECT_ROOT / 'data' / 'raw' / 'LABEL_APP_DEMO_DATA'
+DATASET_ID = "LABEL_APP_DEMO"
+PROJECT_ROOT = Path("/home/nilomr/projects/great-tit-song")
+RAW_DATA = PROJECT_ROOT / "data" / "raw" / "LABEL_APP_DEMO_DATA"
 DIRS = ProjDirs(PROJECT_ROOT, RAW_DATA, mkdir=True)
 print(DIRS)
 
 
-wav_filepaths, xml_filepaths = [get_file_paths(
-    DIRS.RAW_DATA, [ext]) for ext in ['.WAV', '.xml']]
+wav_filepaths, xml_filepaths = [
+    get_file_paths(DIRS.RAW_DATA, [ext]) for ext in [".WAV", ".xml"]
+]
 files_to_segment = get_wavs_w_annotation(wav_filepaths, xml_filepaths)
 
 
@@ -174,9 +188,9 @@ segment_files_parallel(
     DIRS,
     resample=22050,
     parser_func=parse_sonic_visualiser_xml,
-    min_duration=.1,
+    min_duration=0.1,
     min_freqrange=100,
-    labels_to_ignore=["NOISE"]
+    labels_to_ignore=["NOISE"],
 )
 
 
@@ -188,17 +202,17 @@ params = Parameters(
     n_fft=1024,
     num_mel_bins=224,
     sr=22050,
-    top_dB=65,                  # top dB to keep
+    top_dB=65,  # top dB to keep
     lowcut=2000,
     highcut=10000,
     # Segmentation,
-    max_dB=-30,                 # Max threshold for segmentation
-    dB_delta=5,                 # n thresholding steps, in dB
-    silence_threshold=0.1,      # Between 0.1 and 0.3 tends to work
-    max_unit_length=0.4,        # Maximum unit length allowed
-    min_unit_length=0.02,       # Minimum unit length allowed
-    min_silence_length=0.001,   # Minimum silence length allowed
-    gauss_sigma=3,              # Sigma for gaussian kernel
+    max_dB=-30,  # Max threshold for segmentation
+    dB_delta=5,  # n thresholding steps, in dB
+    silence_threshold=0.1,  # Between 0.1 and 0.3 tends to work
+    max_unit_length=0.4,  # Maximum unit length allowed
+    min_unit_length=0.02,  # Minimum unit length allowed
+    min_silence_length=0.001,  # Minimum silence length allowed
+    gauss_sigma=3,  # Sigma for gaussian kernel
     # general settings
     song_level=True,
     subset=None,
@@ -209,12 +223,17 @@ params = Parameters(
 # np.random.seed(123)
 # random.seed(123)
 dataset = KantoData(
-    DATASET_ID, DIRS, parameters=params, overwrite_dataset=True,
-    random_subset=None, overwrite_data=False)
+    DATASET_ID,
+    DIRS,
+    parameters=params,
+    overwrite_dataset=True,
+    random_subset=None,
+    overwrite_data=False,
+)
 
 
 dataset.segment_into_units()
-dataset.vocs['ID'] = 'TR43633'
+dataset.vocs["ID"] = "TR43633"
 
 dataset.get_units()
 dataset.cluster_ids(min_sample=20)
@@ -242,6 +261,6 @@ for song_level in [True, False]:
 dataset.parameters.update(song_level=True)
 
 pal = list(Set3_12)
-pal.append('#ffed6f')
+pal.append("#ffed6f")
 
 dataset.open_label_app()

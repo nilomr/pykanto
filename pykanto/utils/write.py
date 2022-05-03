@@ -63,12 +63,13 @@ def copy_xml_files(file_list: List[Path], dest_dir: Path) -> None:
 
     Args:
         file_list (List[Path]): List of files to be copied.
-        dest_dir (Path): Path to destination folder, will create it 
+        dest_dir (Path): Path to destination folder, will create it
             if doesn't exist.
     """
     file: Path
-    for file in tqdm(file_list, desc="Copying files", leave=True,
-                     file=sys.stdout):
+    for file in tqdm(
+        file_list, desc="Copying files", leave=True, file=sys.stdout
+    ):
         dest_file: Path = dest_dir / file.parent.name / file.name
         makedir(dest_file)
         shutil.copyfile(file, dest_file, follow_symlinks=True)
@@ -85,7 +86,7 @@ def save_json(json_object: Dict, json_loc: Path) -> None:
     Returns:
         Dict: Json file as a dictionary.
     """
-    with open(json_loc, 'w', encoding='utf-8') as f:
+    with open(json_loc, "w", encoding="utf-8") as f:
         ujson.dump(json_object, f, ensure_ascii=False, indent=4)
 
 
@@ -105,12 +106,12 @@ class NumpyEncoder(json.JSONEncoder):
 
 def make_tarfile(source_dir: Path, output_filename: Path) -> None:
     """
-    Makes a tarfile from a given directory. 
-    Source: George V. Reilly on  
-    `Stack Overflow <https://stackoverflow.com/a/17081026>`_.
+    Makes a tarfile from a given directory.
+    Source: George V. Reilly on
+    `stack overflow <https://stackoverflow.com/a/17081026>`_.
 
     Args:
-        source_dir (Path): Directory to tar 
+        source_dir (Path): Directory to tar
         output_filename (Path): Name of output file (e.g. file.tar.gz).
     """
     with tarfile.open(output_filename, "w:gz") as tar:

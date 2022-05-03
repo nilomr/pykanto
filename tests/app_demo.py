@@ -1,4 +1,3 @@
-
 # ─── DESCRIPTION ──────────────────────────────────────────────────────────────
 
 # This script does the following:
@@ -14,15 +13,14 @@
 # %%──── LIBRARIES ─────────────────────────────────────────────────────────────
 
 from __future__ import annotations
-from bokeh.palettes import Set3_12
 
 import json
 import os
 import pickle
 import shutil
-from tabnanny import verbose
 import warnings
 from pathlib import Path
+from tabnanny import verbose
 from typing import Any, Dict, List
 from xml.etree import ElementTree
 
@@ -36,17 +34,24 @@ import pytest
 import ray
 import seaborn as sns
 import soundfile as sf
+from bokeh.palettes import Set3_12
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import get_segment_info, segment_files_parallel
 from pykanto.utils.compute import flatten_list, to_iterator, tqdmm
-from pykanto.utils.custom import chipper_units_to_json, parse_sonic_visualiser_xml
-from pykanto.utils.paths import (ProjDirs, get_file_paths,
-                                 get_wavs_w_annotation)
-from pykanto.utils.paths import pykanto_data
+from pykanto.utils.custom import (
+    chipper_units_to_json,
+    parse_sonic_visualiser_xml,
+)
+from pykanto.utils.paths import (
+    ProjDirs,
+    get_file_paths,
+    get_wavs_w_annotation,
+    pykanto_data,
+)
 from pykanto.utils.write import makedir
 
-warnings.simplefilter('always', ImportWarning)
+warnings.simplefilter("always", ImportWarning)
 os.environ["RAY_DISABLE_IMPORT_WARNING"] = "1"
 
 # REVIEW - remove when complete
@@ -56,9 +61,9 @@ os.environ["RAY_DISABLE_IMPORT_WARNING"] = "1"
 # %%
 # ──── INTERACTIVE APP DEMO ────────────────────────────────────────────────────
 
-DATASET_ID = 'LABEL_APP_DEMO'
-PROJECT_ROOT = Path('/home/nilomr/projects/great-tit-song')
-RAW_DATA = PROJECT_ROOT / 'data' / 'raw' / 'LABEL_APP_DEMO_DATA'
+DATASET_ID = "LABEL_APP_DEMO"
+PROJECT_ROOT = Path("/home/nilomr/projects/great-tit-song")
+RAW_DATA = PROJECT_ROOT / "data" / "raw" / "LABEL_APP_DEMO_DATA"
 DIRS = ProjDirs(PROJECT_ROOT, RAW_DATA, mkdir=True)
 print(DIRS)
 
@@ -117,12 +122,13 @@ print(DIRS)
 
 # dataset.get_units()
 # dataset.cluster_ids(min_sample=20)
-dataset.prepare_interactive_data()
 
 
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
 dataset = pickle.load(open(out_dir, "rb"))
 
+
+dataset.prepare_interactive_data()
 dataset.open_label_app()
 
 dataset.save_to_disk()

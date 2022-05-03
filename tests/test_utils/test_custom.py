@@ -13,17 +13,18 @@ from pykanto.utils.types import SegmentAnnotation
 
 @pytest.fixture()
 def DIRS():
-    DATA_PATH = Path(pkg_resources.resource_filename('pykanto', 'data'))
+    DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
     PROJECT = Path(DATA_PATH).parent
-    RAW_DATA = DATA_PATH / 'raw'
+    RAW_DATA = DATA_PATH / "raw"
     DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
     return DIRS
 
 
 @pytest.fixture()
 def xml_file(DIRS):
-    xml_file = get_file_paths(DIRS.RAW_DATA, ['.xml'])[0]
+    xml_file = get_file_paths(DIRS.RAW_DATA, [".xml"])[0]
     return xml_file
+
 
 # ──── TESTS ────────────────────────────────────────────────────────────────────
 
