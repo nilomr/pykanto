@@ -251,7 +251,7 @@ def get_wavs_w_annotation(
     Returns a list of tuples containing [0] paths to wavfiles for which there is
     an annotation file and [1] paths to its annotation file. Assumes that wav
     and paths to the annotation files share the same file name and only their
-    file extension changes, and that the wavfiles are '*.wav' and not '*.WAV'.
+    file extension changes.
 
     Args:
         wav_filepaths (List[Path]): List of paths to wav files. 
