@@ -7,6 +7,7 @@
 </a>
 
 <br>
+<br>
 
 ![version](https://img.shields.io/badge/package_version-0.1.0-orange)
 ![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)
