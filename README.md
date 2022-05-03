@@ -1,15 +1,16 @@
+
+<img src="docs/custom/pykanto-logo-grey-04.svg" alt="pykanto-logo" width="300"/>
+
+<br>
+
 ![version](https://img.shields.io/badge/package_version-0.1.0-orange)
 ![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![Open Source Love](https://img.shields.io/badge/open%20source%3F-yes!-lightgrey)
 ![Python 3.8](https://img.shields.io/badge/python->=3.8-blue.svg)
 
-***
-
 A python library to help manage and analyse bird vocalisations.
 
-
-![labelapp](docs/custom/labelapp.gif)
 
 #### Table of contents
   - [Installation](#installation)
