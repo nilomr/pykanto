@@ -52,7 +52,7 @@ doc = [
 Source = "https://github.com/nilomr/pykanto"
 Documentation = "https://nilomr.github.io/pykanto"
 
-[project.entry-points."pykanto.utils.slurm"]
+[project.scripts]
 pykanto-slaunch = 'pykanto.utils.slurm.launch:submit_job'
 
 [tool.black]
