@@ -135,12 +135,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/hpc.html">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pykanto
-    </span>
-   </code>
-   &amp; HPC
+   High Performance Computing
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,7 +150,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/FAQs.html">
-   FAQs
+   FAQs &amp; known issues
   </a>
  </li>
 </ul>
@@ -406,8 +401,7 @@ title="Source repository"
               <div>
                 
   <h1>Source code for pykanto.utils.read</h1><div class="highlight"><pre>
-<span></span>
-<span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
+<span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Functions to read external files -e.g. JSON- efficiently.</span>
@@ -424,8 +418,14 @@ title="Source repository"
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pykanto.dataset</span> <span class="kn">import</span> <span class="n">KantoData</span>
 
-<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="p">(</span><span class="n">calc_chunks</span><span class="p">,</span> <span class="n">flatten_list</span><span class="p">,</span> <span class="n">get_chunks</span><span class="p">,</span>
-                                   <span class="n">print_parallel_info</span><span class="p">,</span> <span class="n">to_iterator</span><span class="p">,</span> <span class="n">tqdmm</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">calc_chunks</span><span class="p">,</span>
+    <span class="n">flatten_list</span><span class="p">,</span>
+    <span class="n">get_chunks</span><span class="p">,</span>
+    <span class="n">print_parallel_info</span><span class="p">,</span>
+    <span class="n">to_iterator</span><span class="p">,</span>
+    <span class="n">tqdmm</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="c1"># ─── FUNCTIONS ────────────────────────────────────────────────────────────────</span>
 
@@ -456,10 +456,9 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">jf</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">==</span>
-                       <span class="s1">&#39;NOISE&#39;</span> <span class="k">else</span> <span class="s1">&#39;VOCALISATION&#39;</span><span class="p">)</span>
+        <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;NOISE&quot;</span> <span class="k">else</span> <span class="s2">&quot;VOCALISATION&quot;</span>
     <span class="k">except</span><span class="p">:</span>
-        <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;VOCALISATION&#39;</span>
+        <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;VOCALISATION&quot;</span>
     <span class="k">return</span> <span class="n">jf</span></div>
 
 
@@ -468,11 +467,11 @@ title="Source repository"
     <span class="k">return</span> <span class="p">[</span><span class="n">_get_json</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="_get_json_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.read.html#pykanto.utils.read._get_json_parallel">[docs]</a><span class="k">def</span> <span class="nf">_get_json_parallel</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span>
-                       <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<div class="viewcode-block" id="_get_json_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.read.html#pykanto.utils.read._get_json_parallel">[docs]</a><span class="k">def</span> <span class="nf">_get_json_parallel</span><span class="p">(</span>
+    <span class="n">lst</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parallel implementation of </span>
+<span class="sd">    Parallel implementation of</span>
 <span class="sd">    :func:`~pykanto.utils.read._get_json`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Calculate and make chunks</span>
@@ -480,11 +479,11 @@ title="Source repository"
     <span class="n">chunk_info</span> <span class="o">=</span> <span class="n">calc_chunks</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
     <span class="n">chunk_length</span><span class="p">,</span> <span class="n">n_chunks</span> <span class="o">=</span> <span class="n">chunk_info</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">chunk_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">chunks</span> <span class="o">=</span> <span class="n">get_chunks</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
-    <span class="n">print_parallel_info</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;JSON files&#39;</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
+    <span class="n">print_parallel_info</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s2">&quot;JSON files&quot;</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
 
     <span class="c1"># Distribute with ray</span>
     <span class="n">obj_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_json_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">]</span>
-    <span class="n">pbar</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;desc&#39;</span><span class="p">:</span> <span class="s2">&quot;Loading JSON files&quot;</span><span class="p">,</span> <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="n">n_chunks</span><span class="p">}</span>
+    <span class="n">pbar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Loading JSON files&quot;</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">n_chunks</span><span class="p">}</span>
     <span class="n">jsons</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
 
     <span class="c1"># Flatten and return</span>

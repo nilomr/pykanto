@@ -135,12 +135,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/hpc.html">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pykanto
-    </span>
-   </code>
-   &amp; HPC
+   High Performance Computing
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,7 +150,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/FAQs.html">
-   FAQs
+   FAQs &amp; known issues
   </a>
  </li>
 </ul>
@@ -426,8 +421,10 @@ title="Source repository"
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">bokeh.models.sources</span> <span class="kn">import</span> <span class="n">ColumnDataSource</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageEnhance</span><span class="p">,</span> <span class="n">ImageOps</span>
-<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span><span class="n">cut_or_pad_spectrogram</span><span class="p">,</span>
-                                        <span class="n">retrieve_spectrogram</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cut_or_pad_spectrogram</span><span class="p">,</span>
+    <span class="n">retrieve_spectrogram</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -437,12 +434,11 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="embeddable_image"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.data.html#pykanto.labelapp.data.embeddable_image">[docs]</a><span class="k">def</span> <span class="nf">embeddable_image</span><span class="p">(</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">invert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">background</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">41</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">invert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">background</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">41</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save a base 64 png from a np.ndarray.</span>
-<span class="sd">    Source: `Leland McInnes, 2018 </span>
+<span class="sd">    Source: `Leland McInnes, 2018</span>
 <span class="sd">    &lt;https://umap-learn.readthedocs.io/en/latest/basic_usage.html&gt;`_.</span>
 
 <span class="sd">    Args:</span>
@@ -453,36 +449,38 @@ title="Source repository"
 <span class="sd">    Returns:</span>
 <span class="sd">        str: A decoded png image.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">img_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span>
-        <span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
-               <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
-    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">BICUBIC</span><span class="p">)</span>
+    <span class="n">img_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;L&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">BICUBIC</span><span class="p">)</span>
     <span class="n">enhancer</span> <span class="o">=</span> <span class="n">ImageEnhance</span><span class="o">.</span><span class="n">Contrast</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
     <span class="n">image</span> <span class="o">=</span> <span class="n">enhancer</span><span class="o">.</span><span class="n">enhance</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">background</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)))</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">background</span><span class="p">,</span> <span class="n">background</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">))</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
         <span class="n">image</span> <span class="o">=</span> <span class="n">ImageOps</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
     <span class="n">buffer</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
-    <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">)</span>
+    <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;png&quot;</span><span class="p">)</span>
     <span class="n">for_encoding</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
-    <span class="k">return</span> <span class="s1">&#39;data:image/png;base64,&#39;</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">for_encoding</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="s2">&quot;data:image/png;base64,&quot;</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">for_encoding</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="prepare_datasource"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.data.html#pykanto.labelapp.data.prepare_datasource">[docs]</a><span class="k">def</span> <span class="nf">prepare_datasource</span><span class="p">(</span>
-        <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
-        <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
+    <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">spec_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prepare and save data source for the interactibe labelling application.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        dataset (KantoData): Source dataset.</span>
 <span class="sd">        individual (str): ID to process.</span>
-<span class="sd">        spec_length (int, optional): Desired spectrogram lenght, in frames. </span>
+<span class="sd">        spec_length (int, optional): Desired spectrogram lenght, in frames.</span>
 <span class="sd">            Defaults to 500.</span>
-<span class="sd">        song_level (bool, optional): Whether to use all units per </span>
+<span class="sd">        song_level (bool, optional): Whether to use all units per</span>
 <span class="sd">            vocalisation or their average. Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
@@ -491,47 +489,59 @@ title="Source repository"
 
     <span class="c1"># Get a subset of the main dataset for this individual</span>
     <span class="k">if</span> <span class="n">song_level</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">individual</span><span class="p">][[</span>
-            <span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;auto_type_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">,</span> <span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">spectrograms</span> <span class="o">=</span> <span class="p">[</span><span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">spec_loc</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">spec_loc</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">]]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">individual</span><span class="p">][</span>
+            <span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;auto_type_label&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_x&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_y&quot;</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">]</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">spectrograms</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">spec_loc</span><span class="p">)</span> <span class="k">for</span> <span class="n">spec_loc</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">individual</span><span class="p">][[</span>
-            <span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;auto_type_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">individual</span><span class="p">][</span>
+            <span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;auto_type_label&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_x&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_y&quot;</span><span class="p">]</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">units</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">UNITS</span><span class="p">[</span><span class="n">individual</span><span class="p">],</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
         <span class="n">spectrograms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
 
     <span class="c1"># Preprocess spectrograms</span>
-    <span class="n">spectrograms</span> <span class="o">=</span> <span class="p">[</span><span class="n">cut_or_pad_spectrogram</span><span class="p">(</span>
-        <span class="n">spec</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">)</span> <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">spectrograms</span><span class="p">]</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;spectrogram&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">embeddable_image</span><span class="p">,</span> <span class="n">spectrograms</span><span class="p">))</span>
+    <span class="n">spectrograms</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">cut_or_pad_spectrogram</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">)</span> <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">spectrograms</span>
+    <span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;spectrogram&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">embeddable_image</span><span class="p">,</span> <span class="n">spectrograms</span><span class="p">))</span>
 
-    <span class="n">out_dir</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">/</span> <span class="s1">&#39;bk_data&#39;</span> <span class="o">/</span> <span class="p">(</span>
-        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">individual</span><span class="si">}</span><span class="s1">_bk_data.p&#39;</span>
-        <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">individual</span><span class="si">}</span><span class="s1">_bk_unit_data.p&#39;</span><span class="p">)</span>
+    <span class="n">out_dir</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span>
+        <span class="o">/</span> <span class="s2">&quot;bk_data&quot;</span>
+        <span class="o">/</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">individual</span><span class="si">}</span><span class="s2">_bk_data.p&quot;</span>
+            <span class="k">if</span> <span class="n">song_level</span>
+            <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">individual</span><span class="si">}</span><span class="s2">_bk_unit_data.p&quot;</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
     <span class="n">makedir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
     <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">individual</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="load_bk_data"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.data.html#pykanto.labelapp.data.load_bk_data">[docs]</a><span class="k">def</span> <span class="nf">load_bk_data</span><span class="p">(</span>
-        <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">dataloc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColumnDataSource</span><span class="p">:</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">dataloc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ColumnDataSource</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load saved data source to use in interctive labelling app.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        dataset (KantoData): Source dataset.</span>
-<span class="sd">        dataloc (str): Type of data to use (one of &#39;vocalisation_labels&#39;, </span>
+<span class="sd">        dataloc (str): Type of data to use (one of &#39;vocalisation_labels&#39;,</span>
 <span class="sd">            &#39;unit_labels&#39;)</span>
 <span class="sd">        individual (str): ID to process.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        ColumnDataSource: Data ready to plot.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">df_loc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataloc</span><span class="o">.</span><span class="n">upper</span><span class="p">())[</span><span class="s1">&#39;predatasource&#39;</span><span class="p">][</span><span class="n">individual</span><span class="p">]</span>
+    <span class="n">df_loc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataloc</span><span class="o">.</span><span class="n">upper</span><span class="p">())[</span><span class="s2">&quot;predatasource&quot;</span><span class="p">][</span><span class="n">individual</span><span class="p">]</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">df_loc</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
     <span class="n">source</span> <span class="o">=</span> <span class="n">ColumnDataSource</span><span class="p">(</span>
-        <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;auto_type_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">,</span> <span class="s1">&#39;spectrogram&#39;</span><span class="p">]])</span>
+        <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;auto_type_label&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_x&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_y&quot;</span><span class="p">,</span> <span class="s2">&quot;spectrogram&quot;</span><span class="p">]]</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">source</span></div>
 </pre></div>
 

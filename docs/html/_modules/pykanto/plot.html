@@ -135,12 +135,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/hpc.html">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pykanto
-    </span>
-   </code>
-   &amp; HPC
+   High Performance Computing
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,7 +150,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/FAQs.html">
-   FAQs
+   FAQs &amp; known issues
   </a>
  </li>
 </ul>
@@ -406,8 +401,7 @@ title="Source repository"
               <div>
                 
   <h1>Source code for pykanto.plot</h1><div class="highlight"><pre>
-<span></span>
-<span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
+<span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Classes and methods to store and modify pykanto parameters.</span>
@@ -434,7 +428,10 @@ title="Source repository"
 <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">FormatStrFormatter</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.inset_locator</span> <span class="kn">import</span> <span class="n">inset_axes</span>
 <span class="kn">from</span> <span class="nn">numba.core.decorators</span> <span class="kn">import</span> <span class="n">njit</span>
-<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="n">cut_or_pad_spectrogram</span><span class="p">,</span> <span class="n">retrieve_spectrogram</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cut_or_pad_spectrogram</span><span class="p">,</span>
+    <span class="n">retrieve_spectrogram</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -442,6 +439,7 @@ title="Source repository"
 
 
 <span class="c1"># ──── FUNCTIONS ───────────────────────────────────────────────────────────────</span>
+
 
 <div class="viewcode-block" id="sns_histoplot"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.sns_histoplot">[docs]</a><span class="k">def</span> <span class="nf">sns_histoplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -451,83 +449,113 @@ title="Source repository"
     <span class="n">ticks</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">]</span>
     <span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;dark&quot;</span><span class="p">)</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">displot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">yscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">yscale</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">yticks</span><span class="o">=</span><span class="n">ticks</span><span class="p">,</span> <span class="n">yticklabels</span><span class="o">=</span><span class="n">ticks</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="melspectrogram"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.melspectrogram">[docs]</a><span class="k">def</span> <span class="nf">melspectrogram</span><span class="p">(</span>
-        <span class="n">nparray_or_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">parameters</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">title</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;bone&#39;</span><span class="p">,</span>
-        <span class="n">max_lenght</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">colour_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">nparray_or_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bone&quot;</span><span class="p">,</span>
+    <span class="n">max_lenght</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">colour_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nparray_or_dir</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">nparray_or_dir</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nparray_or_dir</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
         <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">nparray_or_dir</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;nparray_or_dir must be of type Path or np.ndarray&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;nparray_or_dir must be of type Path or np.ndarray&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;You need to provide a Parameters object; &#39;</span>
-                      <span class="s1">&#39;setting defaults which will likely be inadequate.&#39;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;You need to provide a Parameters object; &quot;</span>
+            <span class="s2">&quot;setting defaults which will likely be inadequate.&quot;</span>
+        <span class="p">)</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">Parameters</span><span class="p">()</span>
 
     <span class="c1"># Shorten spectrogram if needed</span>
     <span class="k">if</span> <span class="n">max_lenght</span><span class="p">:</span>
         <span class="n">max_len_frames</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span>
-            <span class="n">max_lenght</span> <span class="o">*</span> <span class="n">parameters</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span><span class="p">)</span>
+            <span class="n">max_lenght</span> <span class="o">*</span> <span class="n">parameters</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">max_len_frames</span> <span class="o">&gt;</span> <span class="n">mel_spectrogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="n">max_len_frames</span> <span class="o">=</span> <span class="n">mel_spectrogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_lenght</span><span class="si">=}</span><span class="s2"> is longer than the spectrogram, &quot;</span>
-                          <span class="s2">&quot;setting max_lenght to the length of the spectrogram&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_lenght</span><span class="si">=}</span><span class="s2"> is longer than the spectrogram, &quot;</span>
+                <span class="s2">&quot;setting max_lenght to the length of the spectrogram&quot;</span>
+            <span class="p">)</span>
         <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">cut_or_pad_spectrogram</span><span class="p">(</span>
-            <span class="n">mel_spectrogram</span><span class="p">,</span> <span class="n">max_len_frames</span><span class="p">)</span>
+            <span class="n">mel_spectrogram</span><span class="p">,</span> <span class="n">max_len_frames</span>
+        <span class="p">)</span>
 
     <span class="c1"># Fig settings</span>
-    <span class="n">back_colour</span> <span class="o">=</span> <span class="s1">&#39;#2F2F2F&#39;</span>
-    <span class="n">text_colour</span> <span class="o">=</span> <span class="s1">&#39;#c2c2c2&#39;</span>
+    <span class="n">back_colour</span> <span class="o">=</span> <span class="s2">&quot;#2F2F2F&quot;</span>
+    <span class="n">text_colour</span> <span class="o">=</span> <span class="s2">&quot;#c2c2c2&quot;</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="n">mel_spectrogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">figsize</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">x</span><span class="o">/</span><span class="mi">50</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">])</span>
+    <span class="n">figsize</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">x</span> <span class="o">/</span> <span class="mi">50</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">])</span>
 
     <span class="c1"># Plot spectrogram proper</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">back_colour</span><span class="p">)</span>
     <span class="n">spec_im</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">specshow</span><span class="p">(</span>
-        <span class="n">mel_spectrogram</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s2">&quot;mel&quot;</span><span class="p">,</span>
-        <span class="n">hop_length</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">lowcut</span><span class="p">,</span>
-        <span class="n">fmax</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">highcut</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">mel_spectrogram</span><span class="p">,</span>
+        <span class="n">x_axis</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span>
+        <span class="n">y_axis</span><span class="o">=</span><span class="s2">&quot;mel&quot;</span><span class="p">,</span>
+        <span class="n">hop_length</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span><span class="p">,</span>
+        <span class="n">fmin</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">lowcut</span><span class="p">,</span>
+        <span class="n">fmax</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">highcut</span><span class="p">,</span>
+        <span class="n">sr</span><span class="o">=</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># Set background in case spectrogram doesnt reach 0</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)(</span><span class="mi">0</span><span class="p">))</span>
 
     <span class="c1"># Ticks and labels</span>
     <span class="n">xlims</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">xlims</span><span class="p">),</span>  <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span><span class="o">*</span><span class="mf">0.25</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span>
-                  <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span><span class="o">*</span><span class="mf">0.75</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)])</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%1.1f</span><span class="s1">&#39;</span><span class="p">))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span>
-                    <span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Frequency (Hz)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">spine</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">]:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="nb">min</span><span class="p">(</span><span class="n">xlims</span><span class="p">),</span>
+            <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">,</span>
+            <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.75</span><span class="p">,</span>
+            <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%1.1f</span><span class="s2">&quot;</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span>
+        <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">text_colour</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time (s)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Frequency (Hz)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">spine</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">]:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="n">spine</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># Colour bar</span>
     <span class="k">if</span> <span class="n">colour_bar</span><span class="p">:</span>
         <span class="n">cbaxes</span> <span class="o">=</span> <span class="n">inset_axes</span><span class="p">(</span>
-            <span class="n">ax</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span>
+            <span class="n">ax</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span>
+            <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span>
             <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="n">bbox_transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">borderpad</span><span class="o">=</span><span class="mi">0</span><span class="p">,)</span>
-        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">mappable</span><span class="o">=</span><span class="n">spec_im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cbaxes</span><span class="p">,</span>
-                            <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">bbox_transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+            <span class="n">borderpad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span>
+            <span class="n">mappable</span><span class="o">=</span><span class="n">spec_im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cbaxes</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
         <span class="n">clims</span> <span class="o">=</span> <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
-        <span class="n">cbar</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span>
-                        <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">clims</span><span class="p">),</span>
-                        <span class="nb">min</span><span class="p">(</span><span class="n">clims</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">clims</span><span class="p">))]])</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">clims</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">clims</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">clims</span><span class="p">))]</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
         <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
         <span class="n">cbar</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
@@ -535,40 +563,45 @@ title="Source repository"
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">text_colour</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Title must be of type str or None&#39;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Title must be of type str or None&quot;</span><span class="p">)</span>
     <span class="c1"># plt.show() #REVIEW</span>
     <span class="k">return</span> <span class="n">ax</span></div>
 
 
 <div class="viewcode-block" id="segmentation"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.segmentation">[docs]</a><span class="k">def</span> <span class="nf">segmentation</span><span class="p">(</span>
-        <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">spectrogram</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">onsets_offsets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">spectrogram</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">onsets_offsets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Plots a vocalisation and overlays the results </span>
+<span class="sd">    Plots a vocalisation and overlays the results</span>
 <span class="sd">    of the segmentation process.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        dataset (KantoData): A KantoData object.</span>
 <span class="sd">        key (str, optional): Vocalisation key. Defaults to None.</span>
-<span class="sd">        spectrogram (bool | np.ndarray, optional): [description]. </span>
+<span class="sd">        spectrogram (bool | np.ndarray, optional): [description].</span>
 <span class="sd">            Defaults to False.</span>
-<span class="sd">        onsets_offsets (bool | Tuple[np.ndarray, np.ndarray], optional): </span>
+<span class="sd">        onsets_offsets (bool | Tuple[np.ndarray, np.ndarray], optional):</span>
 <span class="sd">            Tuple containing arrays with unit onsets and offsets. Defaults to False.</span>
-<span class="sd">        kwargs: Keyword arguments to be passed to </span>
+<span class="sd">        kwargs: Keyword arguments to be passed to</span>
 <span class="sd">                :func:`~pykanto.plot.melspectrogram`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">params</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span>
-                                           <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">])</span>
-        <span class="n">onsets_offsets</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
-                          <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">,</span> <span class="s1">&#39;offsets&#39;</span><span class="p">]]</span>
+        <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">onsets_offsets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
 
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">melspectrogram</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-                        <span class="n">title</span><span class="o">=</span><span class="n">key</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">melspectrogram</span><span class="p">(</span>
+        <span class="n">spectrogram</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">key</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span>
 
     <span class="c1"># Add unit onsets and offsets</span>
     <span class="n">ylmin</span><span class="p">,</span> <span class="n">ylmax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
@@ -578,8 +611,11 @@ title="Source repository"
     <span class="k">for</span> <span class="n">onset</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">onsets_offsets</span><span class="p">):</span>
         <span class="c1"># ax.axvline(onset, color=&quot;#FFFFFF&quot;, ls=&quot;-&quot;, lw=0.5, alpha=0.3)</span>
         <span class="c1"># ax.axvline(offset, color=&quot;#FFFFFF&quot;, ls=&quot;-&quot;, lw=0.5, alpha=0.3)</span>
-        <span class="n">patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">onset</span><span class="p">,</span> <span class="n">ylmin</span><span class="p">),</span>
-                                 <span class="n">width</span><span class="o">=</span><span class="n">offset</span> <span class="o">-</span> <span class="n">onset</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="p">(</span><span class="n">ylmax</span> <span class="o">-</span> <span class="n">ylmin</span><span class="p">)))</span>
+        <span class="n">patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">Rectangle</span><span class="p">(</span>
+                <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">onset</span><span class="p">,</span> <span class="n">ylmin</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">offset</span> <span class="o">-</span> <span class="n">onset</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="p">(</span><span class="n">ylmax</span> <span class="o">-</span> <span class="n">ylmin</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
     <span class="n">collection</span> <span class="o">=</span> <span class="n">PatchCollection</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
@@ -587,7 +623,7 @@ title="Source repository"
 
 <div class="viewcode-block" id="mspaced_mask"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.mspaced_mask">[docs]</a><span class="k">def</span> <span class="nf">mspaced_mask</span><span class="p">(</span><span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns a mask of length N to select M </span>
+<span class="sd">    Returns a mask of length N to select M</span>
 <span class="sd">    indices as regularly spaced as possible.</span>
 
 <span class="sd">    Args:</span>
@@ -597,28 +633,32 @@ title="Source repository"
 <span class="sd">    Returns:</span>
 <span class="sd">        List[int]: A binary mask</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">M</span> <span class="o">&gt;</span> <span class="n">N</span><span class="o">/</span><span class="mi">2</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">M</span> <span class="o">&gt;</span> <span class="n">N</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">cut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-        <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="n">M</span><span class="p">)</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="o">*</span><span class="n">i</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="n">M</span><span class="p">)]</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span> <span class="o">-</span> <span class="n">M</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">M</span><span class="p">)]</span>
         <span class="n">cut</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">cut</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="o">*</span><span class="n">i</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">)]</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">)]</span>
         <span class="n">cut</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="n">cut</span></div>
 
 
 <div class="viewcode-block" id="rand_jitter"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.rand_jitter">[docs]</a><span class="nd">@njit</span>
-<span class="k">def</span> <span class="nf">rand_jitter</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">jitter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">.001</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">rand_jitter</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">jitter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">):</span>
     <span class="n">stdev</span> <span class="o">=</span> <span class="n">jitter</span> <span class="o">*</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">arr</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span> <span class="o">*</span> <span class="n">stdev</span></div>
 
 
 <div class="viewcode-block" id="show_spec_centroid_bandwidth"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.show_spec_centroid_bandwidth">[docs]</a><span class="k">def</span> <span class="nf">show_spec_centroid_bandwidth</span><span class="p">(</span>
-        <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">centroid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spec_bw</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
+    <span class="n">centroid</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">spec_bw</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots spectral centroids and bandwiths over a mel spectrogram.</span>
 <span class="sd">    You can either provide a key string for a vocalisation or its</span>
@@ -633,29 +673,37 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;You need to provide either a key or a spectrogram&#39;</span><span class="p">)</span>
+        <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;You need to provide either a key or a spectrogram&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span>
-                                    <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">])</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">])</span>
 
-    <span class="n">times</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-             <span class="o">*</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span> <span class="o">/</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="o">*</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span>
+        <span class="o">/</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span>
+    <span class="p">)</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">melspectrogram</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span>
-        <span class="n">times</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">centroid</span> <span class="o">-</span> <span class="n">spec_bw</span><span class="p">),</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">centroid</span> <span class="o">+</span> <span class="n">spec_bw</span><span class="p">,</span>
-                   <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Bandwidth&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spectral centroid&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">times</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">centroid</span> <span class="o">-</span> <span class="n">spec_bw</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">centroid</span> <span class="o">+</span> <span class="n">spec_bw</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Bandwidth&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Spectral centroid&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="show_minmax_frequency"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.show_minmax_frequency">[docs]</a><span class="k">def</span> <span class="nf">show_minmax_frequency</span><span class="p">(</span>
-        <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">minfreqs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">maxfreqs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
+    <span class="n">minfreqs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">maxfreqs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots approximate minimum and maximum frequencies over a mel spectrogram.</span>
 <span class="sd">    You can either provide a key string for a vocalisation or its</span>
@@ -670,19 +718,21 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;You need to provide either a key or a spectrogram&#39;</span><span class="p">)</span>
+        <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;You need to provide either a key or a spectrogram&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span>
-                                    <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">])</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">])</span>
 
-    <span class="n">times</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-             <span class="o">*</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span> <span class="o">/</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="o">*</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length</span>
+        <span class="o">/</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span>
+    <span class="p">)</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">melspectrogram</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">maxfreqs</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Max frequency (roll = 0.95)&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">minfreqs</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Min frequency (roll = 0.1)&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">maxfreqs</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Max frequency (roll = 0.95)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">minfreqs</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Min frequency (roll = 0.1)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 </pre></div>
 

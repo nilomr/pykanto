@@ -63,7 +63,7 @@ Next, tell `pykanto` where the raw data for your project live,
 RAW_DATA = PROJECT_ROOT / 'data' / 'raw' / 'BIGBIRD_2021'
 ```
 
-and build the project's directory tree. See the [`ProjDirs`](../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs) docs for more information.
+and build the project's directory tree. See the [`ProjDirs`](../_autosummary/pykanto.utils.paths.rst#pykanto.utils.paths.ProjDirs) docs for more information.
 
 
 ```{code-block} python

@@ -135,12 +135,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/hpc.html">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pykanto
-    </span>
-   </code>
-   &amp; HPC
+   High Performance Computing
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,7 +150,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/FAQs.html">
-   FAQs
+   FAQs &amp; known issues
   </a>
  </li>
 </ul>
@@ -406,8 +401,7 @@ title="Source repository"
               <div>
                 
   <h1>Source code for pykanto.signal.analysis</h1><div class="highlight"><pre>
-<span></span>
-<span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
+<span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Basic audio feature calculations (spectral centroids, peak frequencies, etc.)</span>
@@ -425,39 +419,49 @@ title="Source repository"
 <span class="kn">from</span> <span class="nn">pykanto.plot</span> <span class="kn">import</span> <span class="n">show_minmax_frequency</span><span class="p">,</span> <span class="n">show_spec_centroid_bandwidth</span>
 <span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="n">retrieve_spectrogram</span>
 <span class="kn">from</span> <span class="nn">pykanto.signal.filter</span> <span class="kn">import</span> <span class="n">mels_to_hzs</span>
+
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pykanto.dataset</span> <span class="kn">import</span> <span class="n">KantoData</span>
 
 <span class="c1"># ──── FUNCTIONS ───────────────────────────────────────────────────────────────</span>
 
 
-<div class="viewcode-block" id="get_peak_freqs"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.analysis.html#pykanto.signal.analysis.get_peak_freqs">[docs]</a><span class="k">def</span> <span class="nf">get_peak_freqs</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
-                   <span class="n">spectrograms</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                   <span class="n">melscale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                   <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">):</span>
+<div class="viewcode-block" id="get_peak_freqs"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.analysis.html#pykanto.signal.analysis.get_peak_freqs">[docs]</a><span class="k">def</span> <span class="nf">get_peak_freqs</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
+    <span class="n">spectrograms</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">melscale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+<span class="p">):</span>
 
     <span class="n">minfreq</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">lowcut</span>
-    <span class="n">min_db</span> <span class="o">=</span> <span class="o">-</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">top_dB</span>
+    <span class="n">min_db</span> <span class="o">=</span> <span class="o">-</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">top_dB</span>
 
     <span class="k">if</span> <span class="n">melscale</span><span class="p">:</span>
         <span class="n">hz_freq</span> <span class="o">=</span> <span class="n">mels_to_hzs</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">hz_freq</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))]</span>
-             <span class="k">if</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">min_db</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">threshold</span><span class="p">))</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
-             <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">spectrograms</span><span class="p">])</span>
+            <span class="p">[</span>
+                <span class="n">hz_freq</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))]</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">min_db</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">threshold</span><span class="p">))</span>
+                <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">spectrograms</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">minfreq</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-                         <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">spectrograms</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">minfreq</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">spectrograms</span><span class="p">]</span>
+        <span class="p">)</span></div>
         <span class="c1"># REVIEW did not test for melscale = False</span>
 
 
-<div class="viewcode-block" id="spec_centroid_bandwidth"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.analysis.html#pykanto.signal.analysis.spec_centroid_bandwidth">[docs]</a><span class="k">def</span> <span class="nf">spec_centroid_bandwidth</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
-                            <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<div class="viewcode-block" id="spec_centroid_bandwidth"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.analysis.html#pykanto.signal.analysis.spec_centroid_bandwidth">[docs]</a><span class="k">def</span> <span class="nf">spec_centroid_bandwidth</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate a vocalisation&#39;s spectral centroid and bandwidth from a mel</span>
 <span class="sd">    spectrogram. You can either provide a key string for a vocalisation or its</span>
@@ -470,35 +474,36 @@ title="Source repository"
 <span class="sd">        plot (bool, optional): Whether to show the result. Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[np.ndarray, np.ndarray]: A tuple with the centroids </span>
+<span class="sd">        Tuple[np.ndarray, np.ndarray]: A tuple with the centroids</span>
 <span class="sd">            and bandwidths.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;You need to provide either a key or a spectrogram&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;You need to provide either a key or a spectrogram&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span>
-                                    <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">])</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">])</span>
 
     <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">spec</span><span class="p">))</span>
     <span class="n">centroid</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_centroid</span><span class="p">(</span>
-        <span class="n">S</span><span class="o">=</span><span class="n">spec</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">mels_to_hzs</span><span class="p">(</span><span class="n">dataset</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">S</span><span class="o">=</span><span class="n">spec</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">mels_to_hzs</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">spec_bw</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_bandwidth</span><span class="p">(</span>
-        <span class="n">S</span><span class="o">=</span><span class="n">spec</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">mels_to_hzs</span><span class="p">(</span><span class="n">dataset</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">S</span><span class="o">=</span><span class="n">spec</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">mels_to_hzs</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+    <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">centroid</span><span class="p">[</span><span class="n">centroid</span> <span class="o">&lt;=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">lowcut</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">spec_bw</span><span class="p">[</span><span class="n">spec_bw</span> <span class="o">&lt;=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">lowcut</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
     <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
         <span class="n">show_spec_centroid_bandwidth</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="p">,</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">spec_bw</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">dataset</span><span class="p">,</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">spec_bw</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">spec</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">centroid</span><span class="p">,</span> <span class="n">spec_bw</span></div>
 
 
-<div class="viewcode-block" id="get_mean_sd_mfcc"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.analysis.html#pykanto.signal.analysis.get_mean_sd_mfcc">[docs]</a><span class="k">def</span> <span class="nf">get_mean_sd_mfcc</span><span class="p">(</span>
-        <span class="n">S</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="get_mean_sd_mfcc"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.analysis.html#pykanto.signal.analysis.get_mean_sd_mfcc">[docs]</a><span class="k">def</span> <span class="nf">get_mean_sd_mfcc</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract the mean and SD of n Mel-frequency cepstral coefficients (MFCCs)</span>
 <span class="sd">    calculated ffrom a log-power Mel spectrogram.</span>
@@ -512,16 +517,16 @@ title="Source repository"
 <span class="sd">        n_mfcc*2).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mfcc</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">mfcc</span><span class="p">(</span><span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">n_mfcc</span><span class="o">=</span><span class="n">n_mfcc</span><span class="p">)</span>
-    <span class="n">mean_sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mfcc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-         <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">mfcc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">mean_sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mfcc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">mfcc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
     <span class="k">return</span> <span class="n">mean_sd</span></div>
 
 
-<div class="viewcode-block" id="approximate_minmax_frequency"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.analysis.html#pykanto.signal.analysis.approximate_minmax_frequency">[docs]</a><span class="k">def</span> <span class="nf">approximate_minmax_frequency</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
-                                 <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                 <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                 <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<div class="viewcode-block" id="approximate_minmax_frequency"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.analysis.html#pykanto.signal.analysis.approximate_minmax_frequency">[docs]</a><span class="k">def</span> <span class="nf">approximate_minmax_frequency</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate approximate minimum and maximum frequencies from a mel</span>
 <span class="sd">    spectrogram. You can either provide a key string for a vocalisation or its</span>
@@ -539,25 +544,29 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;You need to provide either a key or a spectrogram&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;You need to provide either a key or a spectrogram&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span>
-                                    <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">])</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">])</span>
 
     <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">spec</span><span class="p">))</span>
 
-    <span class="n">maxfreqs</span><span class="p">,</span> <span class="n">minfreqs</span> <span class="o">=</span> <span class="p">[</span><span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_rolloff</span><span class="p">(</span>
-        <span class="n">S</span><span class="o">=</span><span class="n">spec</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span> <span class="n">roll_percent</span><span class="o">=</span><span class="n">p</span><span class="p">,</span>
-        <span class="n">freq</span><span class="o">=</span><span class="n">mels_to_hzs</span><span class="p">(</span><span class="n">dataset</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]]</span>
+    <span class="n">maxfreqs</span><span class="p">,</span> <span class="n">minfreqs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">librosa</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">spectral_rolloff</span><span class="p">(</span>
+            <span class="n">S</span><span class="o">=</span><span class="n">spec</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="n">sr</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span>
+            <span class="n">roll_percent</span><span class="o">=</span><span class="n">p</span><span class="p">,</span>
+            <span class="n">freq</span><span class="o">=</span><span class="n">mels_to_hzs</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+    <span class="p">]</span>
 
     <span class="n">maxfreqs</span><span class="p">[</span><span class="n">maxfreqs</span> <span class="o">&lt;=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">lowcut</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="n">minfreqs</span><span class="p">[</span><span class="n">minfreqs</span> <span class="o">&lt;=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">lowcut</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
     <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
-        <span class="n">show_minmax_frequency</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="p">,</span> <span class="n">maxfreqs</span><span class="p">,</span> <span class="n">minfreqs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
+        <span class="n">show_minmax_frequency</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">maxfreqs</span><span class="p">,</span> <span class="n">minfreqs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">spec</span><span class="o">=</span><span class="n">spec</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">minfreqs</span><span class="p">,</span> <span class="n">maxfreqs</span></div>
 </pre></div>

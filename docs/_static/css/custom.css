@@ -48,6 +48,11 @@ a.reference.internal span.doc.std.std-doc:hover {
     color: #da6900
 }
 
+
+.content-container ol p, .content-container ul p {
+    margin-bottom: 1em;
+}
+
 /* LOGO ───────────────────────────────────────────────────────────────────── */
 
 div.navbar-brand-box a.navbar-brand img {

@@ -135,12 +135,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/hpc.html">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pykanto
-    </span>
-   </code>
-   &amp; HPC
+   High Performance Computing
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,7 +150,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/FAQs.html">
-   FAQs
+   FAQs &amp; known issues
   </a>
  </li>
 </ul>
@@ -499,7 +494,9 @@ title="Source repository"
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">print_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ProjDirs.append"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_value</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ProjDirs.append"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">new_attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_value</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Appends a new attribute to the class instance.</span>
 
@@ -512,7 +509,9 @@ title="Source repository"
         <span class="k">if</span> <span class="ow">not</span> <span class="n">new_attr</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_attr</span><span class="si">}</span><span class="s2"> must be uppercase&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_value</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_value</span><span class="si">}</span><span class="s2"> must be an instance of (pathlib) Path&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_value</span><span class="si">}</span><span class="s2"> must be an instance of (pathlib) Path&quot;</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_attr</span><span class="p">,</span> <span class="n">new_value</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">mkdir</span><span class="p">:</span>
@@ -524,7 +523,8 @@ title="Source repository"
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">change_data_loc</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">change_data_loc</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">v</span>
+                    <span class="n">change_data_loc</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">v</span>
                 <span class="p">]</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">k1</span><span class="p">,</span> <span class="n">v1</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>  <span class="c1"># Level 1</span>
@@ -548,7 +548,9 @@ title="Source repository"
                         <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Dictionary values must be of types Path | List | Dict&quot;</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Dictionary values must be of types Path | List | Dict&quot;</span>
+                <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProjDirs.update_json_locs"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.update_json_locs">[docs]</a>    <span class="k">def</span> <span class="nf">update_json_locs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_checks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -598,7 +600,9 @@ title="Source repository"
         <span class="k">try</span><span class="p">:</span>
             <span class="n">jf</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">JSON_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> does not exist or is empty.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">JSON_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> does not exist or is empty.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">wavloc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">jf</span><span class="p">[</span><span class="s2">&quot;wav_file&quot;</span><span class="p">])</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">wavloc</span><span class="p">)</span>
@@ -639,7 +643,9 @@ title="Source repository"
         <span class="n">chunk_info</span> <span class="o">=</span> <span class="n">calc_chunks</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">chunk_length</span><span class="p">,</span> <span class="n">n_chunks</span> <span class="o">=</span> <span class="n">chunk_info</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">chunk_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">chunks</span> <span class="o">=</span> <span class="n">get_chunks</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
-        <span class="n">print_parallel_info</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">),</span> <span class="s2">&quot;individual IDs&quot;</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
+        <span class="n">print_parallel_info</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">),</span> <span class="s2">&quot;individual IDs&quot;</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">,</span> <span class="n">chunk_length</span>
+        <span class="p">)</span>
 
         <span class="c1"># Distribute with ray</span>
         <span class="n">obj_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">b_change_wav_file_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">]</span>
@@ -735,7 +741,9 @@ title="Source repository"
             <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">extensions</span><span class="p">)):</span>
                 <span class="n">file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">/</span> <span class="n">file</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are no </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> files in directory </span><span class="si">{</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;There are no </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> files in directory </span><span class="si">{</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> files in </span><span class="si">{</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -770,7 +778,8 @@ title="Source repository"
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Symbolic link created successfully.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;link_project_data() failed: &quot;</span> <span class="s2">&quot;the destination directory is not empty.&quot;</span>
+            <span class="s2">&quot;link_project_data() failed: &quot;</span>
+            <span class="s2">&quot;the destination directory is not empty.&quot;</span>
         <span class="p">)</span></div>
 
 
@@ -791,7 +800,9 @@ title="Source repository"
     <span class="n">DATA_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;pykanto&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">))</span>
     <span class="n">PROJECT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">DATA_PATH</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
     <span class="n">RAW_DATA</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">DATA_PATH</span> <span class="o">/</span> <span class="n">dfolder</span> <span class="o">/</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s2">&quot;GREAT_TIT&quot;</span> <span class="k">else</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="n">DATA_PATH</span>
+        <span class="o">/</span> <span class="n">dfolder</span>
+        <span class="o">/</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s2">&quot;GREAT_TIT&quot;</span> <span class="k">else</span> <span class="n">dataset</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="n">dataset</span> <span class="o">!=</span> <span class="s2">&quot;AM&quot;</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">DIRS</span></div>

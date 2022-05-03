@@ -135,12 +135,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/hpc.html">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pykanto
-    </span>
-   </code>
-   &amp; HPC
+   High Performance Computing
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,7 +150,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/FAQs.html">
-   FAQs
+   FAQs &amp; known issues
   </a>
  </li>
 </ul>
@@ -447,15 +442,14 @@ title="Source repository"
     <span class="n">root</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xml_filepath</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
 
     <span class="c1"># Data to extract from xml</span>
-    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;extent&#39;</span><span class="p">]</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;extent&quot;</span><span class="p">]</span>
 
     <span class="c1"># Retrieve segment information</span>
     <span class="n">seq_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">segment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;data/dataset/point&#39;</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">segment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;data/dataset/point&quot;</span><span class="p">)):</span>
         <span class="c1"># Extract relevant information from xml file</span>
-        <span class="n">seg_info</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
-        <span class="n">label</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">))]</span>
+        <span class="n">seg_info</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
+        <span class="n">label</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">))]</span>
         <span class="n">seq_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seg_info</span> <span class="o">+</span> <span class="n">label</span><span class="p">)</span>
 
     <span class="c1"># Organise in a dictionary</span>
@@ -469,9 +463,11 @@ title="Source repository"
         <span class="n">end_times</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">starts</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">durations</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
         <span class="n">lower_freq</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">lower_freqs</span><span class="p">),</span>
         <span class="n">upper_freq</span><span class="o">=</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">lower_freqs</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">freq_extents</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">lower_freqs</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">freq_extents</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
         <span class="n">label</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span>
-        <span class="n">annotation_file</span><span class="o">=</span><span class="n">xml_filepath</span><span class="p">)</span>
+        <span class="n">annotation_file</span><span class="o">=</span><span class="n">xml_filepath</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">sa</span></div>
 
@@ -479,11 +475,7 @@ title="Source repository"
 <span class="c1"># ──── OTHERS ───────────────────────────────────────────────────────────────────</span>
 
 
-<div class="viewcode-block" id="open_gzip"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.open_gzip">[docs]</a><span class="k">def</span> <span class="nf">open_gzip</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
-    <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-    <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="nb">float</span>
-<span class="p">]:</span>
+<div class="viewcode-block" id="open_gzip"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.open_gzip">[docs]</a><span class="k">def</span> <span class="nf">open_gzip</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads syllable segmentation generated</span>
 <span class="sd">    with `Chipper &lt;https://github.com/CreanzaLab/chipper&gt;`_.</span>
@@ -500,18 +492,19 @@ title="Source repository"
         <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="n">song_data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">song_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">song_data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">song_data</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s1">&#39;timeAxisConversion&#39;</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">song_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">song_data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">song_data</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="s2">&quot;timeAxisConversion&quot;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="chipper_units_to_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.custom.html#pykanto.utils.custom.chipper_units_to_json">[docs]</a><span class="nd">@timing</span>
 <span class="k">def</span> <span class="nf">chipper_units_to_json</span><span class="p">(</span>
-        <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-        <span class="n">n_fft</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
-        <span class="n">overlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1010</span><span class="p">,</span>
-        <span class="n">pad</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span>
-        <span class="n">window_offset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">overwrite_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">pbar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="n">directory</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">n_fft</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
+    <span class="n">overlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1010</span><span class="p">,</span>
+    <span class="n">pad</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span>
+    <span class="n">window_offset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">overwrite_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">pbar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads audio unit segmentation metadata from .gzip files output by Chipper and appends them to pykanto .JSON metadata files.</span>
 
@@ -532,41 +525,42 @@ title="Source repository"
 
     <span class="n">jsons</span><span class="p">,</span> <span class="n">gzips</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">get_file_paths</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">([</span><span class="s1">&#39;.json&#39;</span><span class="p">,</span> <span class="s1">&#39;.JSON&#39;</span><span class="p">],</span>
-                    <span class="p">[</span><span class="s2">&quot;.gzip&quot;</span><span class="p">,</span> <span class="s2">&quot;.GZIP&quot;</span><span class="p">])]</span>
+        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">([</span><span class="s2">&quot;.json&quot;</span><span class="p">,</span> <span class="s2">&quot;.JSON&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;.gzip&quot;</span><span class="p">,</span> <span class="s2">&quot;.GZIP&quot;</span><span class="p">])</span>
+    <span class="p">]</span>
 
     <span class="n">jsons</span> <span class="o">=</span> <span class="p">{</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">}</span>
-    <span class="n">gzips</span> <span class="o">=</span> <span class="p">{</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-        <span class="s1">&#39;SegSyllsOutput_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span> <span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">gzips</span><span class="p">}</span>
+    <span class="n">gzips</span> <span class="o">=</span> <span class="p">{</span><span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;SegSyllsOutput_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span> <span class="n">path</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">gzips</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">gzip</span> <span class="k">for</span> <span class="n">gzip</span> <span class="ow">in</span> <span class="n">gzips</span> <span class="k">if</span> <span class="n">gzip</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;No JSON and GZIP file names match&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No JSON and GZIP file names match&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">gz_name</span><span class="p">,</span> <span class="n">gz_path</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
-            <span class="n">gzips</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Adding unit onset/offset information &#39;</span>
-            <span class="s1">&#39;from .gzip to .json files&#39;</span><span class="p">,</span>
-            <span class="n">disable</span><span class="o">=</span><span class="kc">False</span> <span class="k">if</span> <span class="n">pbar</span> <span class="k">else</span> <span class="kc">True</span>
+        <span class="n">gzips</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Adding unit onset/offset information &quot;</span>
+        <span class="s2">&quot;from .gzip to .json files&quot;</span><span class="p">,</span>
+        <span class="n">disable</span><span class="o">=</span><span class="kc">False</span> <span class="k">if</span> <span class="n">pbar</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 
         <span class="k">if</span> <span class="n">gz_name</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">:</span>
 
             <span class="n">jsondict</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">jsons</span><span class="p">[</span><span class="n">gz_name</span><span class="p">])</span>
-            <span class="k">if</span> <span class="s1">&#39;onsets&#39;</span> <span class="ow">in</span> <span class="n">jsondict</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_json</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;onsets&quot;</span> <span class="ow">in</span> <span class="n">jsondict</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_json</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
-                    <span class="s1">&#39;Json files already contain unit onset/offset times.&#39;</span>
-                    <span class="s1">&#39;Set `overwrite_json = True` if you want &#39;</span>
-                    <span class="s1">&#39;to overwrite them.&#39;</span><span class="p">)</span>
+                    <span class="s2">&quot;Json files already contain unit onset/offset times.&quot;</span>
+                    <span class="s2">&quot;Set `overwrite_json = True` if you want &quot;</span>
+                    <span class="s2">&quot;to overwrite them.&quot;</span>
+                <span class="p">)</span>
 
-            <span class="n">sr</span> <span class="o">=</span> <span class="n">jsondict</span><span class="p">[</span><span class="s1">&#39;sample_rate&#39;</span><span class="p">]</span>
+            <span class="n">sr</span> <span class="o">=</span> <span class="n">jsondict</span><span class="p">[</span><span class="s2">&quot;sample_rate&quot;</span><span class="p">]</span>
             <span class="n">gzip_onoff</span> <span class="o">=</span> <span class="n">open_gzip</span><span class="p">(</span><span class="n">gz_path</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">on</span><span class="p">,</span> <span class="n">off</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="n">gzip_onoff</span><span class="p">[</span><span class="s1">&#39;Onsets&#39;</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="n">gzip_onoff</span><span class="p">[</span><span class="s1">&#39;Offsets&#39;</span><span class="p">])</span>
+            <span class="n">on</span><span class="p">,</span> <span class="n">off</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gzip_onoff</span><span class="p">[</span><span class="s2">&quot;Onsets&quot;</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">gzip_onoff</span><span class="p">[</span><span class="s2">&quot;Offsets&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
 
-            <span class="n">jsondict</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">],</span> <span class="n">jsondict</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span>
-                <span class="p">((</span><span class="n">arr</span> <span class="o">-</span> <span class="n">pad</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_fft</span> <span class="o">-</span> <span class="n">overlap</span><span class="p">)</span> <span class="o">+</span> <span class="n">woffset</span><span class="p">)</span> <span class="o">/</span> <span class="n">sr</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-                <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="p">(</span><span class="n">on</span><span class="p">,</span> <span class="n">off</span><span class="p">)]</span>
+            <span class="n">jsondict</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">],</span> <span class="n">jsondict</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(((</span><span class="n">arr</span> <span class="o">-</span> <span class="n">pad</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_fft</span> <span class="o">-</span> <span class="n">overlap</span><span class="p">)</span> <span class="o">+</span> <span class="n">woffset</span><span class="p">)</span> <span class="o">/</span> <span class="n">sr</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="p">(</span><span class="n">on</span><span class="p">,</span> <span class="n">off</span><span class="p">)</span>
+            <span class="p">]</span>
 
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">jsons</span><span class="p">[</span><span class="n">gz_name</span><span class="p">]</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">jsondict</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>

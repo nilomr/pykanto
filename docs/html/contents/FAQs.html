@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>FAQs &#8212; pykanto 0.1 documentation</title>
+    <title>FAQs &amp; known issues &#8212; pykanto 0.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -138,12 +138,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="hpc.html">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pykanto
-    </span>
-   </code>
-   &amp; HPC
+   High Performance Computing
   </a>
  </li>
  <li class="toctree-l1">
@@ -158,7 +153,7 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   FAQs
+   FAQs &amp; known issues
   </a>
  </li>
 </ul>
@@ -393,7 +388,7 @@ title="Source repository"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="../_sources/contents/FAQs.rst.txt"
+        <a href="../_sources/contents/FAQs.md.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -404,7 +399,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.rst</span>
+<span class="headerbtn__text-container">.md</span>
 </a>
 
       </li>
@@ -452,9 +447,14 @@ title="Print to PDF"
     </div>
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#ray-workers-crash">
-   Ray workers crash
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   FAQs &amp; known issues
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#known-issues">
+   Known issues:
   </a>
  </li>
 </ul>
@@ -466,7 +466,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>FAQs</h1>
+                <h1>FAQs & known issues</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -476,9 +476,14 @@ title="Print to PDF"
                         </div>
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#ray-workers-crash">
-   Ray workers crash
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   FAQs &amp; known issues
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#known-issues">
+   Known issues:
   </a>
  </li>
 </ul>
@@ -491,18 +496,22 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="faqs">
-<h1>FAQs<a class="headerlink" href="#faqs" title="Permalink to this headline">#</a></h1>
-<section id="ray-workers-crash">
-<h2>Ray workers crash<a class="headerlink" href="#ray-workers-crash" title="Permalink to this headline">#</a></h2>
-<p>If your workers crash and/or your machine freezes it is likely that you have run
-out of RAM. Try using fewer cpus when running in parallel. You can do this by,
-for example, setting <code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters.num_cpus</span></code> to a number lower than your available
-CPUS. Example: If your KantoData object is called dataset, then:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">num_cpus</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
+  <section id="faqs-known-issues">
+<h1>FAQs &amp; known issues<a class="headerlink" href="#faqs-known-issues" title="Permalink to this headline">#</a></h1>
 </section>
+<section id="known-issues">
+<h1>Known issues:<a class="headerlink" href="#known-issues" title="Permalink to this headline">#</a></h1>
+<ul class="simple">
+<li><p>If using the autoreload ipython magic, might get the following error:
+<code class="docutils literal notranslate"><span class="pre">Can't</span> <span class="pre">pickle</span> <span class="pre">&lt;class</span> <span class="pre">'pykanto.dataset.KantoData'&gt;:</span> <span class="pre">it's</span> <span class="pre">not</span> <span class="pre">the</span> <span class="pre">same</span> <span class="pre">object</span> <span class="pre">as</span> <span class="pre">pykanto.dataset.KantoData</span></code>
+Fix: restart your kernel without the autoreload extension.</p></li>
+<li><p>Ray throws a fork support INFO message <code class="docutils literal notranslate"><span class="pre">Fork</span> <span class="pre">support</span> <span class="pre">is</span> <span class="pre">only</span> <span class="pre">compatible</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">epoll1</span> <span class="pre">and</span> <span class="pre">poll</span> <span class="pre">polling</span> <span class="pre">strategies</span></code> with grpcio==1.44.0. See ray issue <a class="reference external" href="https://github.com/ray-project/ray/issues/22518">#22518</a></p></li>
+<li><p>Ray workers crash:<br />
+If your workers crash and/or your machine freezes it is likely that you have run
+out of RAM. Try using fewer cpus when running in parallel. You can do this by,
+for example, setting <code class="docutils literal notranslate"><span class="pre">parameters.num_cpus</span></code> to a number lower than your available
+CPUS. Example: If your KantoData object is called dataset, then run <code class="docutils literal notranslate"><span class="pre">dataset.parameters.update(num_cpus=1)</span></code></p></li>
+</ul>
 </section>
 
 

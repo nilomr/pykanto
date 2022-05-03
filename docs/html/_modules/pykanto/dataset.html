@@ -135,12 +135,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/hpc.html">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pykanto
-    </span>
-   </code>
-   &amp; HPC
+   High Performance Computing
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,7 +150,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/FAQs.html">
-   FAQs
+   FAQs &amp; known issues
   </a>
  </li>
 </ul>
@@ -439,11 +434,21 @@ title="Source repository"
 <span class="kn">from</span> <span class="nn">pykanto.labelapp.data</span> <span class="kn">import</span> <span class="n">prepare_datasource</span>
 <span class="kn">from</span> <span class="nn">pykanto.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
 <span class="kn">from</span> <span class="nn">pykanto.signal.cluster</span> <span class="kn">import</span> <span class="n">reduce_and_cluster_parallel</span>
-<span class="kn">from</span> <span class="nn">pykanto.signal.segment</span> <span class="kn">import</span> <span class="n">drop_zero_len_units</span><span class="p">,</span> <span class="n">segment_song_into_units_parallel</span>
-<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_save_melspectrogram_parallel</span><span class="p">,</span>
-                                        <span class="n">get_indv_units_parallel</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="p">(</span><span class="n">dictlist_to_dict</span><span class="p">,</span> <span class="n">print_dict</span><span class="p">,</span> <span class="n">timing</span><span class="p">,</span>
-                                   <span class="n">to_iterator</span><span class="p">,</span> <span class="n">tqdmm</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.segment</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">drop_zero_len_units</span><span class="p">,</span>
+    <span class="n">segment_song_into_units_parallel</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_save_melspectrogram_parallel</span><span class="p">,</span>
+    <span class="n">get_indv_units_parallel</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">dictlist_to_dict</span><span class="p">,</span>
+    <span class="n">print_dict</span><span class="p">,</span>
+    <span class="n">timing</span><span class="p">,</span>
+    <span class="n">to_iterator</span><span class="p">,</span>
+    <span class="n">tqdmm</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.read</span> <span class="kn">import</span> <span class="n">_get_json</span><span class="p">,</span> <span class="n">_get_json_parallel</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span>
@@ -451,7 +456,7 @@ title="Source repository"
 <span class="c1"># ─── CLASSES ──────────────────────────────────────────────────────────────────</span>
 
 
-<div class="viewcode-block" id="KantoData"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData">[docs]</a><span class="k">class</span> <span class="nc">KantoData</span><span class="p">():</span>
+<div class="viewcode-block" id="KantoData"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData">[docs]</a><span class="k">class</span> <span class="nc">KantoData</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main dataset class. See __init__ documentation.</span>
 
@@ -465,11 +470,13 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="KantoData.__init__"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">DATASET_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">DIRS</span><span class="p">:</span> <span class="n">ProjDirs</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">DATASET_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">DIRS</span><span class="p">:</span> <span class="n">ProjDirs</span><span class="p">,</span>
         <span class="n">parameters</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">random_subset</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite_dataset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">overwrite_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">overwrite_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Instantiates the main dataset class.</span>
@@ -479,22 +486,22 @@ title="Source repository"
 <span class="sd">            neural network), these should be labelled as &#39;NOISE&#39; in the</span>
 <span class="sd">            corresponding json file.</span>
 <span class="sd">            I.e., `json_file[&quot;label&quot;] == &#39;NOISE&#39;`.</span>
-<span class="sd">            Files where `json_file[&quot;label&quot;] == []` or &quot;label&quot; is not a key in </span>
+<span class="sd">            Files where `json_file[&quot;label&quot;] == []` or &quot;label&quot; is not a key in</span>
 <span class="sd">            `json_file` will be automatically given the label &#39;VOCALISATION&#39;.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            DATASET_ID (str): Name of new dataset.</span>
-<span class="sd">            DIRS (ProjDirs): Project directory structure. Must contain </span>
-<span class="sd">                a &#39;SEGMENTED&#39; attribute pointing to a directory that contains </span>
-<span class="sd">                the segmented data organised in two folders: &#39;WAV&#39; and </span>
+<span class="sd">            DIRS (ProjDirs): Project directory structure. Must contain</span>
+<span class="sd">                a &#39;SEGMENTED&#39; attribute pointing to a directory that contains</span>
+<span class="sd">                the segmented data organised in two folders: &#39;WAV&#39; and</span>
 <span class="sd">                &#39;JSON&#39; for audio and metadata, respectively.</span>
 <span class="sd">            parameters (Parameters, optional): Parameters for dataset.</span>
 <span class="sd">                Defaults to None. See :class:`~pykanto.parameters.Parameters`.</span>
 <span class="sd">            random_subset (None, optional): Size of random subset for</span>
 <span class="sd">                testing. Defaults to None.</span>
-<span class="sd">            overwrite_dataset (bool, optional): Whether to overwrite dataset if </span>
+<span class="sd">            overwrite_dataset (bool, optional): Whether to overwrite dataset if</span>
 <span class="sd">                it already exists. Defaults to False.</span>
-<span class="sd">            overwrite_data (bool, optional): Whether to overwrite spectrogram </span>
+<span class="sd">            overwrite_data (bool, optional): Whether to overwrite spectrogram</span>
 <span class="sd">                files if they already exist. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
@@ -505,9 +512,10 @@ title="Source repository"
         <span class="c1"># Get or set parameters</span>
         <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;You have not provided parameters for this dataset.&#39;</span>
-                <span class="s1">&#39;Setting default parameters - these will almost certainly be &#39;</span>
-                <span class="s1">&#39;inadequate for your dataset.&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;You have not provided parameters for this dataset.&quot;</span>
+                <span class="s2">&quot;Setting default parameters - these will almost certainly be &quot;</span>
+                <span class="s2">&quot;inadequate for your dataset.&quot;</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">Parameters</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
@@ -515,16 +523,19 @@ title="Source repository"
         <span class="c1"># Get dataset identifier and location</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">DIRS</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DATASET_ID</span> <span class="o">=</span> <span class="n">DATASET_ID</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> \
-            <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATASET_ID</span> <span class="o">/</span> <span class="s2">&quot;spectrograms&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATASET_ID</span> <span class="o">/</span> <span class="s2">&quot;spectrograms&quot;</span>
+        <span class="p">)</span>
 
         <span class="c1"># Throw error if dataset already exists</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="n">overwrite_dataset</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s1"> already exists. You can overwrite &#39;</span>
-                <span class="s1">&#39;it by setting `overwrite_dataset=True`&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2"> already exists. You can overwrite &quot;</span>
+                <span class="s2">&quot;it by setting `overwrite_dataset=True`&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Build dataset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_wav_json_filedirs</span><span class="p">(</span><span class="n">random_subset</span><span class="o">=</span><span class="n">random_subset</span><span class="p">)</span>
@@ -534,11 +545,12 @@ title="Source repository"
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_unique_ids</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_sound_info</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compute_melspectrograms</span><span class="p">(</span>
-            <span class="n">dereverb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">dereverb</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="o">=</span><span class="n">overwrite_data</span><span class="p">)</span>
+            <span class="n">dereverb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">dereverb</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="o">=</span><span class="n">overwrite_data</span>
+        <span class="p">)</span>
 
         <span class="c1"># Save current state of dataset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -570,35 +582,42 @@ title="Source repository"
 <span class="sd">            Will drop any .wav for which there is no .json!</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="s1">&#39;SEGMENTED&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="s2">&quot;SEGMENTED&quot;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                <span class="s1">&#39;The ProjDirs object you used to initialise &#39;</span>
-                <span class="s1">&#39;this KantoData object does not have a SEGMENTED attribute. &#39;</span>
-                <span class="s1">&#39;Search the docs for KantoData for more information.&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;The ProjDirs object you used to initialise &quot;</span>
+                <span class="s2">&quot;this KantoData object does not have a SEGMENTED attribute. &quot;</span>
+                <span class="s2">&quot;Search the docs for KantoData for more information.&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># TODO: read both lower and uppercase wav and json extensions.</span>
         <span class="c1"># Load and check file paths:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wav&quot;</span><span class="p">)))</span>
+            <span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.wav&quot;</span><span class="p">))</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;There are no .wav files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;There are no .wav files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-            <span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;JSON&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.JSON&quot;</span><span class="p">)))</span>
+            <span class="nb">list</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;JSON&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.JSON&quot;</span><span class="p">))</span>
+        <span class="p">)</span>
 
         <span class="n">wavnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">wav</span><span class="o">.</span><span class="n">stem</span> <span class="k">for</span> <span class="n">wav</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">]</span>
-        <span class="n">matching_jsons</span> <span class="o">=</span> <span class="p">[</span><span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span>
-                          <span class="k">if</span> <span class="n">json</span><span class="o">.</span><span class="n">stem</span> <span class="ow">in</span> <span class="n">wavnames</span><span class="p">]</span>
+        <span class="n">matching_jsons</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="k">if</span> <span class="n">json</span><span class="o">.</span><span class="n">stem</span> <span class="ow">in</span> <span class="n">wavnames</span>
+        <span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">matching_jsons</span><span class="p">):</span>
             <span class="n">ndrop</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">matching_jsons</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;There is an unequal number of matching .wav and .json &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="si">}</span><span class="s2">. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Keeping only those that match: dropped </span><span class="si">{</span><span class="n">ndrop</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;Keeping only those that match: dropped </span><span class="si">{</span><span class="n">ndrop</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
             <span class="n">keepnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">json</span><span class="o">.</span><span class="n">stem</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">matching_jsons</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="n">wav</span> <span class="k">for</span> <span class="n">wav</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span>
-                                  <span class="k">if</span> <span class="n">wav</span><span class="o">.</span><span class="n">stem</span> <span class="ow">in</span> <span class="n">keepnames</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">wav</span> <span class="k">for</span> <span class="n">wav</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="k">if</span> <span class="n">wav</span><span class="o">.</span><span class="n">stem</span> <span class="ow">in</span> <span class="n">keepnames</span>
+            <span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="n">matching_jsons</span>
 
         <span class="c1"># Subset as per parameters if possible</span>
@@ -610,30 +629,35 @@ title="Source repository"
                     <span class="k">pass</span>
 
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span>
+            <span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="p">]</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
                     <span class="s2">&quot;List index out of range: the provided &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;&#39;subset&#39; parameter </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="si">}</span><span class="s2"> is ouside &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;the range of the dataset (0, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">)</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;the range of the dataset (0, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">)</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">random_subset</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">random_subset</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">):</span>
                 <span class="n">random_subset</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                     <span class="s2">&quot;The &#39;random_subset&#39; you specified is larger &quot;</span>
-                    <span class="s2">&quot;than the dataset: setting to the length of the dataset.&quot;</span><span class="p">)</span>
+                    <span class="s2">&quot;than the dataset: setting to the length of the dataset.&quot;</span>
+                <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">sample</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span>
-                <span class="p">)),</span> <span class="n">random_subset</span><span class="p">))</span>
+                <span class="o">*</span><span class="n">sample</span><span class="p">(</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)),</span>
+                    <span class="n">random_subset</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span></div>
 
@@ -650,25 +674,25 @@ title="Source repository"
             <span class="n">jsons</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">_get_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading JSON files&quot;</span><span class="p">,</span>
-                    <span class="n">total</span><span class="o">=</span><span class="n">n_jsonfiles</span><span class="p">)]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">,</span>
+                    <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading JSON files&quot;</span><span class="p">,</span>
+                    <span class="n">total</span><span class="o">=</span><span class="n">n_jsonfiles</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">jsons</span> <span class="o">=</span> <span class="n">_get_json_parallel</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span>
+            <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">Path</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;wav_file&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">jsons</span>
-        <span class="p">}</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;wav_file&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="KantoData._get_unique_ids"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_unique_ids">[docs]</a>    <span class="k">def</span> <span class="nf">_get_unique_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a &#39;unique_ID&#39; attribute holding an array with unique IDs in the</span>
 <span class="sd">        dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unique_ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KantoData._get_sound_info"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_sound_info">[docs]</a>    <span class="k">def</span> <span class="nf">_get_sound_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -688,93 +712,113 @@ title="Source repository"
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">file</span>
 
-            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">e</span> <span class="ow">in</span> <span class="n">file</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">,</span> <span class="s1">&#39;offsets&#39;</span><span class="p">]):</span>
-                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">drop_zero_len_units</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">e</span> <span class="ow">in</span> <span class="n">file</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]):</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">drop_zero_len_units</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">])</span>
+                <span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;VOCALISATION&#39;</span><span class="p">:</span>  <span class="c1"># FIXME: remove this label and give option to use any</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">file</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;VOCALISATION&quot;</span>
+            <span class="p">):</span>  <span class="c1"># FIXME: remove this label and give option to use any</span>
                 <span class="n">vocalisations_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-            <span class="k">elif</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;NOISE&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;NOISE&quot;</span><span class="p">:</span>
                 <span class="n">noise_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> has an incorrect label: </span><span class="si">{</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> has an incorrect label: </span><span class="si">{</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
 
         <span class="c1"># Add to a dataframe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
-            <span class="n">vocalisations_dict</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">noise_dict</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">vocalisations_dict</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">noise_dict</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
 
         <span class="c1"># Get minimum and maximum frequencies and durations in song dataset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">minmax_values</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;max_freq&#39;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;upper_freq&#39;</span><span class="p">]),</span>
-            <span class="s1">&#39;min_freq&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;lower_freq&#39;</span><span class="p">]),</span>
-            <span class="s1">&#39;max_duration&#39;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;length_s&#39;</span><span class="p">]),</span>
-            <span class="s1">&#39;min_duration&#39;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;length_s&#39;</span><span class="p">])</span>
+            <span class="s2">&quot;max_freq&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;upper_freq&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;min_freq&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;lower_freq&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;max_duration&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;length_s&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;min_duration&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;length_s&quot;</span><span class="p">]),</span>
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="KantoData._compute_melspectrograms"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._compute_melspectrograms">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">_compute_melspectrograms</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute melspectrograms and add their location to the KantoData object.</span>
 <span class="sd">        It applies both dereverberation and bandpasses vocalisation data by</span>
 <span class="sd">        default, and neither of these to noise data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            overwrite_data (bool): Whether to overwrite any spectrogram files </span>
+<span class="sd">            overwrite_data (bool): Whether to overwrite any spectrogram files</span>
 <span class="sd">            that already exist for this dataset.</span>
-<span class="sd">            **kwargs: Passed to </span>
+<span class="sd">            **kwargs: Passed to</span>
 <span class="sd">                :func:`~pykanto.signal.spectrogram.save_melspectrogram`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">_spec_exists</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>  <span class="c1"># TODO: refactor</span>
-            <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;wav_file&#39;</span><span class="p">]</span>
-            <span class="n">ID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">/</span> <span class="n">ID</span> <span class="o">/</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;.npy&#39;</span><span class="p">)</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;wav_file&quot;</span><span class="p">]</span>
+            <span class="n">ID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">/</span> <span class="n">ID</span> <span class="o">/</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s2">&quot;.npy&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="k">return</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">path</span><span class="p">}</span>
 
         <span class="c1"># Check if spectrograms already exist for any keys:</span>
         <span class="n">existing_voc</span> <span class="o">=</span> <span class="p">[</span><span class="n">_spec_exists</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
         <span class="n">existing_voc</span> <span class="o">=</span> <span class="n">dictlist_to_dict</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">existing_voc</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span>
+            <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">existing_voc</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="p">)</span>
         <span class="n">existing_noise</span> <span class="o">=</span> <span class="p">[</span><span class="n">_spec_exists</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
         <span class="n">existing_noise</span> <span class="o">=</span> <span class="n">dictlist_to_dict</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">existing_noise</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span>
+            <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">existing_noise</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="p">)</span>
 
         <span class="c1"># Get new keys (all keys if overwrite_data=True)</span>
         <span class="k">if</span> <span class="n">overwrite_data</span><span class="p">:</span>
             <span class="n">new_voc_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="n">new_noise_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">new_voc_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">index</span>
-                            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_voc</span><span class="p">]</span>
+            <span class="n">new_voc_keys</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">index</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_voc</span>
+            <span class="p">]</span>
             <span class="n">new_noise_keys</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="o">.</span><span class="n">index</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_noise</span><span class="p">]</span>
+                <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="o">.</span><span class="n">index</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_noise</span>
+            <span class="p">]</span>
 
         <span class="c1"># Compute vocalisation melspectrograms</span>
-        <span class="n">specs</span> <span class="o">=</span> <span class="n">_save_melspectrogram_parallel</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">new_voc_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">if</span> <span class="n">new_voc_keys</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">specs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_save_melspectrogram_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_voc_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_voc_keys</span>
+            <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
         <span class="n">specs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="o">**</span><span class="n">specs</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">existing_voc</span> <span class="k">if</span> <span class="p">(</span><span class="n">existing_voc</span> <span class="ow">and</span>
-                                         <span class="ow">not</span> <span class="n">overwrite_data</span><span class="p">)</span> <span class="k">else</span><span class="p">{})}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">specs</span><span class="p">)</span>
+            <span class="o">**</span><span class="n">specs</span><span class="p">,</span>
+            <span class="o">**</span><span class="p">(</span><span class="n">existing_voc</span> <span class="k">if</span> <span class="p">(</span><span class="n">existing_voc</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_data</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}),</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">specs</span><span class="p">)</span>
 
         <span class="c1"># Now compute noise melspectrograms if present</span>
-        <span class="n">n_specs</span> <span class="o">=</span> <span class="n">_save_melspectrogram_parallel</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">new_noise_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">if</span> <span class="n">new_noise_keys</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">n_specs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_save_melspectrogram_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_noise_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_noise_keys</span>
+            <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
         <span class="n">n_specs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="o">**</span><span class="n">n_specs</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">existing_noise</span> <span class="k">if</span> <span class="p">(</span><span class="n">existing_noise</span> <span class="ow">and</span>
-                                             <span class="ow">not</span> <span class="n">overwrite_data</span><span class="p">)</span> <span class="k">else</span> <span class="p">{})}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">n_specs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
+            <span class="o">**</span><span class="n">n_specs</span><span class="p">,</span>
+            <span class="o">**</span><span class="p">(</span>
+                <span class="n">existing_noise</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">existing_noise</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_data</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">{}</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">n_specs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
     <span class="c1"># ──────────────────────────────────────────────────────────────────────────</span>
     <span class="c1"># KantoData: Public methods</span>
 
-<div class="viewcode-block" id="KantoData.summary_plot"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.summary_plot">[docs]</a>    <span class="k">def</span> <span class="nf">summary_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nbins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
-                     <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;frequency&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData.summary_plot"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.summary_plot">[docs]</a>    <span class="k">def</span> <span class="nf">summary_plot</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">nbins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;frequency&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots a histogram + kernel densiyy estimate of the frequency</span>
 <span class="sd">        distribution of vocalisation duration and frequencies.</span>
@@ -795,72 +839,97 @@ title="Source repository"
 <span class="sd">                [&#39;frequency&#39;, &#39;duration&#39;, &#39;sample_size&#39;, &#39;all&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="s1">&#39;sample_size&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;sample_size&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;`variable` must be one of [&#39;frequency&#39;, &#39;duration&#39;, &#39;sample_size&#39;, &#39;all&#39;]&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;`variable` must be one of [&#39;frequency&#39;, &#39;duration&#39;, &#39;sample_size&#39;, &#39;all&#39;]&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Plot size and general aesthetics</span>
-        <span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">font_scale</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;axes.facecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;#ededed&#39;</span><span class="p">},</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;dark&quot;</span><span class="p">)</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">font_scale</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;axes.facecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;#ededed&quot;</span><span class="p">},</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;dark&quot;</span><span class="p">)</span>
         <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span>
-            <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
-            <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+            <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># Build frequency or duration plots</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;duration&#39;</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="n">var</span> <span class="o">!=</span> <span class="n">variable</span> <span class="ow">and</span> <span class="n">variable</span> <span class="o">!=</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="o">!=</span> <span class="n">variable</span> <span class="ow">and</span> <span class="n">variable</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s1">&#39;frequency&#39;</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upper_freq&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;upper_freq&#39;</span><span class="p">],</span>
-                        <span class="s1">&#39;lower_freq&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;lower_freq&#39;</span><span class="p">]}</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;upper_freq&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;upper_freq&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;lower_freq&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;lower_freq&quot;</span><span class="p">],</span>
+                <span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;song_duration&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;length_s&#39;</span><span class="p">]}</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;song_duration&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;length_s&quot;</span><span class="p">]}</span>
 
-            <span class="n">nax</span> <span class="o">=</span> <span class="n">i</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="mi">0</span>
-            <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                         <span class="n">palette</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#107794&#39;</span><span class="p">,</span> <span class="s1">&#39;#d97102&#39;</span><span class="p">]</span>
-                         <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s1">&#39;frequency&#39;</span> <span class="k">else</span><span class="p">[</span><span class="s1">&#39;#107794&#39;</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                         <span class="n">ax</span><span class="o">=</span><span class="n">axes</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">!=</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                         <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span>
-                         <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s1">&#39;duration&#39;</span> <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
-                         <span class="n">line_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">))</span>
+            <span class="n">nax</span> <span class="o">=</span> <span class="n">i</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">,</span>
+                <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span>
+                <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">palette</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;#107794&quot;</span><span class="p">,</span> <span class="s2">&quot;#d97102&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span>
+                <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;#107794&quot;</span><span class="p">],</span>
+                <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">ax</span><span class="o">=</span><span class="n">axes</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+                <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;duration&quot;</span> <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="n">line_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">),</span>
+            <span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s1">&#39;duration&#39;</span><span class="p">:</span>
-                <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span>
-                    <span class="n">mpl</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;duration&quot;</span><span class="p">:</span>
+                <span class="p">(</span>
+                    <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">())</span>
 
-            <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s1">&#39;frequency&#39;</span><span class="p">:</span>
-                <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
-                    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Min&#39;</span><span class="p">,</span> <span class="s1">&#39;Max&#39;</span><span class="p">],</span>
-                    <span class="n">loc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.70</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-                    <span class="n">borderaxespad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="p">((</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-                <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Frequency (Hz)&#39;</span>
-                <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s1">&#39;frequency&#39;</span> <span class="k">else</span> <span class="s1">&#39;Duration (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Count&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span><span class="p">:</span>
+                <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+                    <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Min&quot;</span><span class="p">,</span> <span class="s2">&quot;Max&quot;</span><span class="p">],</span>
+                    <span class="n">loc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.70</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="n">borderaxespad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Frequency (Hz)&quot;</span>
+                    <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span>
+                    <span class="k">else</span> <span class="s2">&quot;Duration (s)&quot;</span><span class="p">,</span>
+                    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Count&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># Build sample size plot</span>
-        <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;sample_size&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">]:</span>
-            <span class="n">individual_ss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">individual_ss</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ID&#39;</span><span class="p">:</span> <span class="s1">&#39;n&#39;</span><span class="p">})</span>
-            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">individual_ss</span><span class="o">.</span><span class="n">index</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sample_size&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+            <span class="n">individual_ss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">individual_ss</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="s2">&quot;n&quot;</span><span class="p">})</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">individual_ss</span><span class="o">.</span><span class="n">index</span>
             <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span>
-                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#107794&#39;</span><span class="p">],</span>
-                <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">!=</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-                <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-                <span class="n">xlabel</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Sample size (total: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
-                <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">palette</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;#107794&quot;</span><span class="p">],</span>
+                <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span>
+                <span class="n">ax</span><span class="o">=</span><span class="n">axes</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+                <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="n">xlabel</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Sample size (total: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Count&quot;</span>
+            <span class="p">)</span>
             <span class="c1"># Reduce xtick density</span>
             <span class="n">nlabs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">())</span>
-            <span class="n">mid</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">nlabs</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="n">mid</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">nlabs</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()):</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">nlabs</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">nlabs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
                     <span class="n">label</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># Common axes</span>
-        <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="mi">15</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="mi">15</span>
@@ -875,20 +944,23 @@ title="Source repository"
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prints the length of the KantoData and other information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        Total length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">        Vocalisations: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
 <span class="s2">        Noise: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">        Unique IDs: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_ID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="s2">        Unique IDs: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_ID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+        <span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KantoData.show_extreme_samples"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.show_extreme_samples">[docs]</a>    <span class="k">def</span> <span class="nf">show_extreme_samples</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">n_songs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;maxfreq&#39;</span><span class="p">,</span>
-            <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;descending&#39;</span><span class="p">,</span>
-            <span class="n">return_keys</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_songs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;maxfreq&quot;</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;descending&quot;</span><span class="p">,</span>
+        <span class="n">return_keys</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show mel spectrograms for songs at the ends of the time or</span>
 <span class="sd">        frequency distribution.</span>
@@ -915,26 +987,35 @@ title="Source repository"
 <span class="sd">            **kwargs: Keyword arguments to be passed to</span>
 <span class="sd">                :func:`~pykanto.plot.melspectrogram`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">query</span> <span class="o">==</span> <span class="s1">&#39;duration&#39;</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="s1">&#39;length_s&#39;</span>
-        <span class="k">elif</span> <span class="n">query</span> <span class="o">==</span> <span class="s1">&#39;maxfreq&#39;</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="s1">&#39;upper_freq&#39;</span>
-        <span class="k">elif</span> <span class="n">query</span> <span class="o">==</span> <span class="s1">&#39;minfreq&#39;</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="s1">&#39;lower_freq&#39;</span>
+        <span class="k">if</span> <span class="n">query</span> <span class="o">==</span> <span class="s2">&quot;duration&quot;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="s2">&quot;length_s&quot;</span>
+        <span class="k">elif</span> <span class="n">query</span> <span class="o">==</span> <span class="s2">&quot;maxfreq&quot;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="s2">&quot;upper_freq&quot;</span>
+        <span class="k">elif</span> <span class="n">query</span> <span class="o">==</span> <span class="s2">&quot;minfreq&quot;</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="s2">&quot;lower_freq&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;show_extreme_songs: query must be one of &quot;</span>
-                <span class="s2">&quot;[&#39;duration&#39;, &#39;maxfreq&#39;, &#39;minfreq&#39;]&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;[&#39;duration&#39;, &#39;maxfreq&#39;, &#39;minfreq&#39;]&quot;</span>
+            <span class="p">)</span>
 
-        <span class="n">testkeys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
-            <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">&#39;ascending&#39;</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)[:</span><span class="n">n_songs</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">testkeys</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;ascending&quot;</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)[</span>
+                <span class="p">:</span><span class="n">n_songs</span>
+            <span class="p">]</span>
+            <span class="o">.</span><span class="n">index</span>
+        <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">testkeys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">return_keys</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="n">kplot</span><span class="o">.</span><span class="n">melspectrogram</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;spectrogram_loc&#39;</span><span class="p">],</span>
-                <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">],</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">return_keys</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">testkeys</span><span class="p">)</span></div>
@@ -962,19 +1043,18 @@ title="Source repository"
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">df_tomove</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">keys</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">,</span> <span class="n">df_tomove</span><span class="p">],</span> <span class="n">join</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">,</span> <span class="n">df_tomove</span><span class="p">],</span> <span class="n">join</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># Change label in json metadata - TODO: also in original json file</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;NOISE&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;NOISE&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">keys</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The entries were moved successfully.&#39;</span><span class="p">)</span>
-            <span class="n">tx</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Do you want to save the dataset to disk now?&#39;</span>
-                  <span class="s1">&#39; (Enter y/n)&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The entries were moved successfully.&quot;</span><span class="p">)</span>
+            <span class="n">tx</span> <span class="o">=</span> <span class="s2">&quot;Do you want to save the dataset to disk now?&quot;</span> <span class="s2">&quot; (Enter y/n)&quot;</span>
             <span class="k">while</span> <span class="p">(</span><span class="n">res</span> <span class="o">:=</span> <span class="nb">input</span><span class="p">(</span><span class="n">tx</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">}:</span>
                 <span class="k">pass</span>
-            <span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done.&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KantoData.segment_into_units"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.segment_into_units">[docs]</a>    <span class="nd">@timing</span>
@@ -998,60 +1078,65 @@ title="Source repository"
         <span class="c1"># First check that you are not running this by mistake:</span>
 
         <span class="c1"># Throw segmentation already exists</span>
-        <span class="k">if</span> <span class="s1">&#39;unit_durations&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;unit_durations&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
-                <span class="s1">&#39;The vocalisations in this dataset have already been segmented. &#39;</span>
-                <span class="s1">&#39;If you want to do it again, you can overwrite the existing &#39;</span>
-                <span class="s1">&#39;segmentation information by it by setting `overwrite=True`&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;The vocalisations in this dataset have already been segmented. &quot;</span>
+                <span class="s2">&quot;If you want to do it again, you can overwrite the existing &quot;</span>
+                <span class="s2">&quot;segmentation information by it by setting `overwrite=True`&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Find song units iff onset/offset metadata not present</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;onsets&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="n">units</span> <span class="o">=</span> <span class="n">segment_song_into_units_parallel</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;onsets&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="n">segment_song_into_units_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
             <span class="n">onoff_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-                <span class="n">units</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;onsets&#39;</span><span class="p">,</span> <span class="s1">&#39;offsets&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-            <span class="n">onoff_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">units</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+            <span class="n">onoff_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Otherwise just use that</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using existing unit onset/offset information.&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using existing unit onset/offset information.&quot;</span><span class="p">)</span>
             <span class="n">onoff_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-            <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">index</span>
+            <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">index</span>
 
         <span class="c1"># Calculate durations and add to dataset</span>
-        <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;unit_durations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">]</span>
-        <span class="n">onoff_df</span><span class="p">[</span><span class="s1">&#39;silence_durations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="p">[</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;onsets&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span>
-                                               <span class="n">row</span><span class="p">[</span><span class="s1">&#39;offsets&#39;</span><span class="p">])],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;unit_durations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">]</span>
+        <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;silence_durations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">])</span>
+            <span class="p">],</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
-            <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;onsets&#39;</span><span class="p">,</span> <span class="s1">&#39;offsets&#39;</span><span class="p">],</span>
-            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-            <span class="n">onoff_df</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
-            <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span>
-            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">],</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">onoff_df</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;index&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Save</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="n">n_units</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;unit_durations&#39;</span><span class="p">])</span>
-                       <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found and segmented </span><span class="si">{</span><span class="n">n_units</span><span class="si">}</span><span class="s1"> units.&#39;</span><span class="p">)</span></div>
+        <span class="n">n_units</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;unit_durations&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found and segmented </span><span class="si">{</span><span class="n">n_units</span><span class="si">}</span><span class="s2"> units.&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KantoData.subset"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.subset">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">new_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KantoData</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new dataset containing a subset of the IDs present</span>
-<span class="sd">        in the original dataset (e.g., different individual birds). </span>
+<span class="sd">        in the original dataset (e.g., different individual birds).</span>
 
-<span class="sd">        Note: </span>
-<span class="sd">            - Existing files common to both datasets </span>
-<span class="sd">              (vocalisation spectrograms, unit spectrograms, </span>
-<span class="sd">              wav files) will not be copied or moved from their </span>
+<span class="sd">        Note:</span>
+<span class="sd">            - Existing files common to both datasets</span>
+<span class="sd">              (vocalisation spectrograms, unit spectrograms,</span>
+<span class="sd">              wav files) will not be copied or moved from their</span>
 <span class="sd">              original location.</span>
 
-<span class="sd">            - Any newly generated files (e.g., by running a function </span>
-<span class="sd">              that saves spectrograms to disk) will be exclusive to </span>
+<span class="sd">            - Any newly generated files (e.g., by running a function</span>
+<span class="sd">              that saves spectrograms to disk) will be exclusive to</span>
 <span class="sd">              the new dataset.</span>
 
 <span class="sd">        Args:</span>
@@ -1066,26 +1151,29 @@ title="Source repository"
         <span class="n">subself</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># Remove unwanted data</span>
-        <span class="n">subself</span><span class="o">.</span><span class="n">vocs</span> <span class="o">=</span> <span class="n">subself</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
-            <span class="n">ids</span><span class="p">)]</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;average_units&#39;</span><span class="p">):</span>
+        <span class="n">subself</span><span class="o">.</span><span class="n">vocs</span> <span class="o">=</span> <span class="n">subself</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;average_units&quot;</span><span class="p">):</span>
             <span class="n">rm_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">subself</span><span class="o">.</span><span class="n">average_units</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
             <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">average_units</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">rm_keys</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">):</span>
-            <span class="n">subself</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">subself</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;noise&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
+            <span class="n">subself</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">subself</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;noise&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">subself</span><span class="o">.</span><span class="n">noise</span><span class="p">):</span>
-                <span class="n">subself</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">subself</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span>
-        <span class="n">popkeys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">subself</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                   <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
+                <span class="n">subself</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">subself</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span>
+        <span class="n">popkeys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">key</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">subself</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids</span>
+        <span class="p">]</span>
         <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">popkeys</span><span class="p">]</span>
         <span class="n">subself</span><span class="o">.</span><span class="n">_get_unique_ids</span><span class="p">()</span>
 
         <span class="c1"># Change pointers / paths</span>
         <span class="n">subself</span><span class="o">.</span><span class="n">DATASET_ID</span> <span class="o">=</span> <span class="n">new_dataset</span>
         <span class="n">subself</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">k</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DATASET_ID</span><span class="p">,</span> <span class="n">new_dataset</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span>
-            <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DATASET_ID</span><span class="p">,</span> <span class="n">new_dataset</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
 
         <span class="c1"># Save</span>
         <span class="n">makedir</span><span class="p">(</span><span class="n">subself</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">)</span>
@@ -1106,19 +1194,19 @@ title="Source repository"
 
 <div class="viewcode-block" id="KantoData.to_csv"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.to_csv">[docs]</a>    <span class="k">def</span> <span class="nf">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Output vocalisation (and, if present, unit) metadata in the dataset as </span>
+<span class="sd">        Output vocalisation (and, if present, unit) metadata in the dataset as</span>
 <span class="sd">        a .csv file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path (Path): Directory where to save the file(s).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">_VOCS.csv&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s1">_UNITS.csv&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">_VOCS.csv&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">_UNITS.csv&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KantoData.reload"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.reload">[docs]</a>    <span class="k">def</span> <span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KantoData</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load the current dataset from disk. Remember to assign the output to </span>
+<span class="sd">        Load the current dataset from disk. Remember to assign the output to</span>
 <span class="sd">        a variable!</span>
 
 <span class="sd">        Warning:</span>
@@ -1143,10 +1231,12 @@ title="Source repository"
 <span class="sd">            **kwargs: Keyword arguments to be passed to</span>
 <span class="sd">                :func:`~pykanto.plot.melspectrogram`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s1">&#39;onsets&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;This method requires that you have &quot;</span>
-                           <span class="s2">&quot;run `.segment_into_units()` or provided unit &quot;</span>
-                           <span class="s2">&quot;segmentation information.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;onsets&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="s2">&quot;This method requires that you have &quot;</span>
+                <span class="s2">&quot;run `.segment_into_units()` or provided unit &quot;</span>
+                <span class="s2">&quot;segmentation information.&quot;</span>
+            <span class="p">)</span>
         <span class="n">kplot</span><span class="o">.</span><span class="n">segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KantoData.get_units"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.get_units">[docs]</a>    <span class="nd">@timing</span>
@@ -1157,16 +1247,16 @@ title="Source repository"
 <span class="sd">        the units present in the vocalisations of each individual ID</span>
 <span class="sd">        in the dataset. The dictionary&#39;s location can be found</span>
 <span class="sd">        at `self.DIRS.UNITS` if `song_level = False`, and</span>
-<span class="sd">        at `self.DIRS.AVG_UNITS` if `song_level = True` in </span>
+<span class="sd">        at `self.DIRS.AVG_UNITS` if `song_level = True` in</span>
 <span class="sd">        :attr:`~.KantoData.parameters`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            pad (bool, optional): Whether to pad spectrograms </span>
+<span class="sd">            pad (bool, optional): Whether to pad spectrograms</span>
 <span class="sd">                to the maximum lenght (per ID). Defaults to False.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            If `pad = True`, unit spectrograms are padded to the maximum</span>
-<span class="sd">            duration found among units that belong to the same ID, </span>
+<span class="sd">            duration found among units that belong to the same ID,</span>
 <span class="sd">            not the global maximum.</span>
 
 <span class="sd">        Note:</span>
@@ -1179,8 +1269,11 @@ title="Source repository"
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">song_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span>
         <span class="n">dic_locs</span> <span class="o">=</span> <span class="n">get_indv_units_parallel</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span> <span class="n">song_level</span><span class="o">=</span><span class="n">song_level</span><span class="p">,</span>
-            <span class="n">num_cpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span>
+            <span class="n">song_level</span><span class="o">=</span><span class="n">song_level</span><span class="p">,</span>
+            <span class="n">num_cpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">song_level</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">AVG_UNITS</span> <span class="o">=</span> <span class="n">dic_locs</span>
@@ -1195,8 +1288,8 @@ title="Source repository"
 <span class="sd">        HDBSCAN. This will fail if the sample size for an ID (grouping factor,</span>
 <span class="sd">        such as individual or population) is too small.</span>
 
-<span class="sd">        Adds cluster membership information and 2D UMAP coordinates to </span>
-<span class="sd">        :attr:`~.KantoData.vocs` if `song_level=True` </span>
+<span class="sd">        Adds cluster membership information and 2D UMAP coordinates to</span>
+<span class="sd">        :attr:`~.KantoData.vocs` if `song_level=True`</span>
 <span class="sd">        in :attr:`~.KantoData.parameters`, else to :attr:`~.KantoData.units`.</span>
 
 <span class="sd">        Args:</span>
@@ -1205,8 +1298,9 @@ title="Source repository"
 <span class="sd">                good automatic results above ~100.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">reduce_and_cluster_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_sample</span><span class="o">=</span><span class="n">min_sample</span><span class="p">,</span>
-                                         <span class="n">num_cpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">reduce_and_cluster_parallel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">min_sample</span><span class="o">=</span><span class="n">min_sample</span><span class="p">,</span> <span class="n">num_cpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">combine_first</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
@@ -1217,82 +1311,98 @@ title="Source repository"
 
 <div class="viewcode-block" id="KantoData.prepare_interactive_data"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.prepare_interactive_data">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">prepare_interactive_data</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare lightweigth representations of each vocalization</span>
-<span class="sd">        or unit (if song_level=False in :attr:`~.KantoData.parameters`) </span>
-<span class="sd">        for each individual in the dataset. These are linked from </span>
+<span class="sd">        or unit (if song_level=False in :attr:`~.KantoData.parameters`)</span>
+<span class="sd">        for each individual in the dataset. These are linked from</span>
 <span class="sd">        VOCALISATION_LABELS or UNIT_LABELS in :attr:`~.KantoData.DIRS`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            spec_length (float, optional): In seconds, duration of </span>
-<span class="sd">            spectrogram that will be produced. Shorter segments </span>
-<span class="sd">            will be padded, longer segments trimmed. Defaults to maximum note </span>
+<span class="sd">            spec_length (float, optional): In seconds, duration of</span>
+<span class="sd">            spectrogram that will be produced. Shorter segments</span>
+<span class="sd">            will be padded, longer segments trimmed. Defaults to maximum note</span>
 <span class="sd">            duration in the dataset.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">song_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span>
 
         <span class="c1"># Check that we have the relevant data to proceed</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">song_level</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">song_level</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;This function requires the output of &quot;</span>
                 <span class="s2">&quot;`self.cluster_ids()`. &quot;</span>
-                <span class="s2">&quot;Make sure you that have run it, then try again&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;Make sure you that have run it, then try again&quot;</span>
+            <span class="p">)</span>
 
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span>
-                <span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_x&#39;</span><span class="p">,</span> <span class="s1">&#39;umap_y&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">song_level</span>
-                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_x&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_y&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;This function requires the output of &quot;</span>
                 <span class="s2">&quot;`self.cluster_ids()`. &quot;</span>
-                <span class="s2">&quot;Make sure you that have run it, then try again&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;Make sure you that have run it, then try again&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Prepare dataframes with spectrogram pngs</span>
         <span class="n">prepare_datasource_r</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">prepare_datasource</span><span class="p">)</span>
-        <span class="n">indvs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">])</span>
+        <span class="n">indvs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">])</span>
 
         <span class="c1"># Set or get spectrogram length (affects width of unit/voc preview)</span>
         <span class="c1"># NOTE: this is set to maxlen=50%len if using units, 4*maxlen if using</span>
         <span class="c1"># entire vocalisations. This might not be adequate in all cases.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">spec_length</span><span class="p">:</span>
             <span class="n">max_l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">i</span>
-                 <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">unit_durations</span><span class="o">.</span><span class="n">values</span>
-                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">array</span><span class="p">])</span>
-            <span class="n">spec_length</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_l</span> <span class="o">+</span> <span class="mf">0.7</span><span class="o">*</span><span class="n">max_l</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">song_level</span> <span class="k">else</span> <span class="mi">6</span><span class="o">*</span><span class="n">max_l</span>
+                <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">unit_durations</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">array</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">spec_length</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_l</span> <span class="o">+</span> <span class="mf">0.7</span> <span class="o">*</span> <span class="n">max_l</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">song_level</span> <span class="k">else</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">max_l</span>
 
-        <span class="n">spec_length_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span>
-            <span class="n">spec_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length_ms</span><span class="p">))</span>
+        <span class="n">spec_length_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span>
+                <span class="n">spec_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">hop_length_ms</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
         <span class="c1"># Distribute with Ray</span>
         <span class="n">obj_ids</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">prepare_datasource_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="n">individual</span><span class="p">,</span> <span class="n">spec_length</span><span class="o">=</span><span class="n">spec_length_frames</span><span class="p">,</span>
-                <span class="n">song_level</span><span class="o">=</span><span class="n">song_level</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">individual</span><span class="p">,</span>
+                <span class="n">spec_length</span><span class="o">=</span><span class="n">spec_length_frames</span><span class="p">,</span>
+                <span class="n">song_level</span><span class="o">=</span><span class="n">song_level</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="k">for</span> <span class="n">individual</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
-                <span class="n">indvs</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Initiate: Prepare interactive visualisation&#39;</span><span class="p">)]</span>
+                <span class="n">indvs</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Initiate: Prepare interactive visualisation&quot;</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
 
-        <span class="n">dt</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
-            <span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Prepare interactive visualisation&#39;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">indvs</span><span class="p">))]</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">obj</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
+                <span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span>
+                <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Prepare interactive visualisation&quot;</span><span class="p">,</span>
+                <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">indvs</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
 
         <span class="c1"># Add their locations to the DIRS object, then save</span>
         <span class="k">if</span> <span class="n">song_level</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">VOCALISATION_LABELS</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;predatasource&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span>
-                <span class="s1">&#39;already_checked&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+                <span class="s2">&quot;predatasource&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span>
+                <span class="s2">&quot;already_checked&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">UNIT_LABELS</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;predatasource&#39;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span>
-                <span class="s1">&#39;already_checked&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+                <span class="s2">&quot;predatasource&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span>
+                <span class="s2">&quot;already_checked&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KantoData.open_label_app"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.open_label_app">[docs]</a>    <span class="k">def</span> <span class="nf">open_label_app</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Set3_12</span><span class="p">,</span> <span class="n">max_n_labs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Set3_12</span><span class="p">,</span> <span class="n">max_n_labs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Opens a new web browser tab with an interactive app that can be used to</span>
 <span class="sd">        check the accuracy of the automaticaly assigned labels. Uses average</span>
@@ -1331,11 +1441,11 @@ title="Source repository"
         <span class="n">song_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span>
 
         <span class="k">if</span> <span class="n">song_level</span><span class="p">:</span>
-            <span class="n">dataset_type</span> <span class="o">=</span> <span class="s1">&#39;vocs&#39;</span>
-            <span class="n">dataset_labels</span> <span class="o">=</span> <span class="s1">&#39;VOCALISATION_LABELS&#39;</span>
+            <span class="n">dataset_type</span> <span class="o">=</span> <span class="s2">&quot;vocs&quot;</span>
+            <span class="n">dataset_labels</span> <span class="o">=</span> <span class="s2">&quot;VOCALISATION_LABELS&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">dataset_type</span> <span class="o">=</span> <span class="s1">&#39;units&#39;</span>
-            <span class="n">dataset_labels</span> <span class="o">=</span> <span class="s1">&#39;UNIT_LABELS&#39;</span>
+            <span class="n">dataset_type</span> <span class="o">=</span> <span class="s2">&quot;units&quot;</span>
+            <span class="n">dataset_labels</span> <span class="o">=</span> <span class="s2">&quot;UNIT_LABELS&quot;</span>
 
         <span class="c1"># Can this be run?</span>
         <span class="c1"># Save and reload dataset:</span>
@@ -1344,43 +1454,50 @@ title="Source repository"
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">):</span>
             <span class="n">tx</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s1">&#39;This app requires the output of &#39;</span>
-                <span class="s1">&#39;`self.prepare_interactive_data()`. Do you want to run it now?&#39;</span>
-                <span class="s1">&#39; (Enter y/n)&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;This app requires the output of &quot;</span>
+                <span class="s2">&quot;`self.prepare_interactive_data()`. Do you want to run it now?&quot;</span>
+                <span class="s2">&quot; (Enter y/n)&quot;</span>
+            <span class="p">)</span>
             <span class="k">while</span> <span class="p">(</span><span class="n">res</span> <span class="o">:=</span> <span class="nb">input</span><span class="p">(</span><span class="n">tx</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">}:</span>
                 <span class="k">pass</span>
 
-            <span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">res</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">prepare_interactive_data</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Stopped.&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stopped.&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="s1">&#39;auto_type_label&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to run `self.cluster_ids`&#39;</span>
-                             <span class="s1">&#39; before you can check its results.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;auto_type_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;You need to run `self.cluster_ids`&quot;</span>
+                <span class="s2">&quot; before you can check its results.&quot;</span>
+            <span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s1">&#39;already_checked&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span>
-                <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">])[</span><span class="s1">&#39;ID&#39;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s2">&quot;already_checked&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">])[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;You have already checked all the labels in this dataset. &quot;</span>
                 <span class="s2">&quot;If you want to re-check any/all, remove individuals from the &quot;</span>
                 <span class="s2">&quot;&#39;already checked&#39; list &quot;</span>
                 <span class="s2">&quot;(@ self.DIRS.VOCALISATION_LABELS[&#39;already_checked&#39;]), &quot;</span>
-                <span class="s2">&quot;then run again.&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;then run again.&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Check that we are where we should</span>
         <span class="c1"># REVIEW: easy to break!</span>
-        <span class="n">app_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;labelapp&#39;</span><span class="p">)</span>
+        <span class="n">app_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;labelapp&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">app_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">app_path</span><span class="p">))</span>
 
         <span class="c1"># Check palette validity</span>
-        <span class="n">max_labs_data</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span>
-            <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;auto_type_label&#39;</span><span class="p">])[</span>
-            <span class="s1">&#39;auto_type_label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">max_labs_data</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">])[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="o">+</span> <span class="mi">1</span>
+        <span class="p">)</span>
 
         <span class="n">max_labs</span> <span class="o">=</span> <span class="n">max_n_labs</span> <span class="k">if</span> <span class="n">max_n_labs</span> <span class="o">&gt;</span> <span class="n">max_labs_data</span> <span class="k">else</span> <span class="n">max_labs_data</span>
 
@@ -1388,23 +1505,31 @@ title="Source repository"
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;The chosen palette does not have enough values. &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Palette lenght : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span><span class="si">}</span><span class="s2">, needed: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_labs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_labs</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Run app</span>
         <span class="n">command</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;bokeh serve --show </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">app_path</span><span class="p">)</span><span class="si">}</span><span class="s1"> --args &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">max_labs</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">song_level</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">palette</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                              <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+            <span class="sa">f</span><span class="s2">&quot;bokeh serve --show </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">app_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> --args &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">max_labs</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">song_level</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">palette</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+            <span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+            <span class="n">bufsize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># process line here</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># process line here</span>
 
         <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">()</span>
             <span class="k">raise</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span>
-                <span class="n">p</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
                 <span class="s2">&quot;Troubleshooting: the port may already be in use. Check &quot;</span>
-                <span class="s2">&quot;that the port is free and try again.&quot;</span><span class="p">)</span></div></div>
+                <span class="s2">&quot;that the port is free and try again.&quot;</span><span class="p">,</span>
+            <span class="p">)</span></div></div>
 </pre></div>
 
               </div>

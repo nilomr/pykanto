@@ -135,12 +135,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/hpc.html">
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pykanto
-    </span>
-   </code>
-   &amp; HPC
+   High Performance Computing
   </a>
  </li>
  <li class="toctree-l1">
@@ -155,7 +150,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/FAQs.html">
-   FAQs
+   FAQs &amp; known issues
   </a>
  </li>
 </ul>
@@ -424,13 +419,15 @@ title="Source repository"
 
 <span class="c1"># ──── DEFINITIONS ──────────────────────────────────────────────────────────────</span>
 
+
 <div class="viewcode-block" id="is_list_of_int"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.types.html#pykanto.utils.types.is_list_of_int">[docs]</a><span class="k">def</span> <span class="nf">is_list_of_int</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validator for attr.s decorator.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Attrtibute &#39;</span><span class="si">{</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; must be of type: List[int]&quot;</span><span class="p">)</span></div>
+            <span class="sa">f</span><span class="s2">&quot;Attrtibute &#39;</span><span class="si">{</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; must be of type: List[int]&quot;</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="is_list_of_str"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.types.html#pykanto.utils.types.is_list_of_str">[docs]</a><span class="k">def</span> <span class="nf">is_list_of_str</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
@@ -439,7 +436,8 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Attrtibute &#39;</span><span class="si">{</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; must be of type: List[str]&quot;</span><span class="p">)</span></div>
+            <span class="sa">f</span><span class="s2">&quot;Attrtibute &#39;</span><span class="si">{</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; must be of type: List[str]&quot;</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="f_exists"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.types.html#pykanto.utils.types.f_exists">[docs]</a><span class="k">def</span> <span class="nf">f_exists</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
@@ -453,7 +451,8 @@ title="Source repository"
 <div class="viewcode-block" id="AttrProto"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.types.html#pykanto.utils.types.AttrProto">[docs]</a><span class="k">class</span> <span class="nc">AttrProto</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Inherit to silence attr related errors in Pyrigh&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="o">...</span></div>
 
 
 <div class="viewcode-block" id="ValidDirs"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.types.html#pykanto.utils.types.ValidDirs">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
@@ -461,9 +460,9 @@ title="Source repository"
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Type check user input before instantiating main ProjDirs class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">PROJECT</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="n">Path</span><span class="p">),</span> <span class="n">f_exists</span><span class="p">])</span>
-    <span class="n">RAW_DATA</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span>
-        <span class="n">validator</span><span class="o">=</span><span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="n">Path</span><span class="p">),</span> <span class="n">f_exists</span><span class="p">])</span></div>
+    <span class="n">RAW_DATA</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="p">[</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="n">Path</span><span class="p">),</span> <span class="n">f_exists</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="SegmentAnnotation"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
@@ -472,6 +471,7 @@ title="Source repository"
 <span class="sd">    Type-checks and stores annotations necessary to segment regions of interest</span>
 <span class="sd">    present in an audio file (e.g. songs or song bouts).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
     <span class="n">start_times</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">is_list_of_int</span><span class="p">)</span>
     <span class="n">durations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">is_list_of_int</span><span class="p">)</span>
@@ -487,6 +487,7 @@ title="Source repository"
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Type-checks and stores audio metadata.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
     <span class="n">bit_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
     <span class="n">length_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
@@ -498,16 +499,18 @@ title="Source repository"
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Combines segment annotations and audio metadata.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="Metadata"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.types.html#pykanto.utils.types.Metadata">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">s</span>
 <span class="k">class</span> <span class="nc">Metadata</span><span class="p">(</span><span class="n">AudioAnnotation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Type-checks and stores metadata for ONE audio segment </span>
-<span class="sd">    (e.g. a song or song bout). Type checks ensure that </span>
+<span class="sd">    Type-checks and stores metadata for ONE audio segment</span>
+<span class="sd">    (e.g. a song or song bout). Type checks ensure that</span>
 <span class="sd">    instances of this class are JSON-serializable as a dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
     <span class="n">lower_freq</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
@@ -520,8 +523,8 @@ title="Source repository"
 
 
 <span class="n">Chunkinfo</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
-    <span class="s1">&#39;Chunkinfo&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;n_workers&#39;</span><span class="p">,</span> <span class="s1">&#39;len_iterable&#39;</span><span class="p">,</span> <span class="s1">&#39;n_chunks&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;chunksize&#39;</span><span class="p">,</span> <span class="s1">&#39;last_chunk&#39;</span><span class="p">]</span>
+    <span class="s2">&quot;Chunkinfo&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;n_workers&quot;</span><span class="p">,</span> <span class="s2">&quot;len_iterable&quot;</span><span class="p">,</span> <span class="s2">&quot;n_chunks&quot;</span><span class="p">,</span> <span class="s2">&quot;chunksize&quot;</span><span class="p">,</span> <span class="s2">&quot;last_chunk&quot;</span><span class="p">],</span>
 <span class="p">)</span>
 </pre></div>
 
