@@ -1,9 +1,11 @@
 <br>
-<img src="docs/custom/pykanto-logo-grey-04.svg" alt="pykanto-logo" width="300"/>
-<br>
+<div align='center'>
 
-### A python library to help manage and analyse bird vocalisations.
-***
+<a href="https://nilomr.github.io/pykanto">
+    <img src="docs/custom/pykanto-logo-grey-04.svg" alt="pykanto logo" title="Aimeos" height="80" />
+</a>
+
+<br>
 
 ![version](https://img.shields.io/badge/package_version-0.1.0-orange)
 ![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)
@@ -11,13 +13,16 @@
 ![Open Source Love](https://img.shields.io/badge/open%20source%3F-yes!-lightgrey)
 ![Python 3.8](https://img.shields.io/badge/python->=3.8-blue.svg)
 
+**pykanto** is a python library to manage and analyse bird vocalisations
 
+[Installation](#installation) •
+[Getting started](#getting-started) •
+[Acknowledgements](#acknowledgements)
+
+# ㅤ
+
+</div>
 <br>
-
-### Table of contents
-  - [Installation](#installation)
-  - [Acknowledgements](#acknowledgements)
-
 
 ### Installation
 
@@ -27,7 +32,13 @@ To install pykanto using pip, simply run:
 ```
 pip install pykanto
 ```
+<br>
 
+### Getting started
+
+See docs
+
+<br>
 
 ### Acknowledgements
 
