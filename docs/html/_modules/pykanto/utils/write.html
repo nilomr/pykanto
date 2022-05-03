@@ -471,12 +471,13 @@ title="Source repository"
 
 <span class="sd">    Args:</span>
 <span class="sd">        file_list (List[Path]): List of files to be copied.</span>
-<span class="sd">        dest_dir (Path): Path to destination folder, will create it </span>
+<span class="sd">        dest_dir (Path): Path to destination folder, will create it</span>
 <span class="sd">            if doesn&#39;t exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file</span><span class="p">:</span> <span class="n">Path</span>
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">file_list</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Copying files&quot;</span><span class="p">,</span> <span class="n">leave</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+        <span class="n">file_list</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Copying files&quot;</span><span class="p">,</span> <span class="n">leave</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="p">):</span>
         <span class="n">dest_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">dest_dir</span> <span class="o">/</span> <span class="n">file</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span>
         <span class="n">makedir</span><span class="p">(</span><span class="n">dest_file</span><span class="p">)</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">,</span> <span class="n">follow_symlinks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -493,7 +494,7 @@ title="Source repository"
 <span class="sd">    Returns:</span>
 <span class="sd">        Dict: Json file as a dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_loc</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_loc</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">ujson</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_object</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 
@@ -513,12 +514,12 @@ title="Source repository"
 
 <div class="viewcode-block" id="make_tarfile"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.write.html#pykanto.utils.write.make_tarfile">[docs]</a><span class="k">def</span> <span class="nf">make_tarfile</span><span class="p">(</span><span class="n">source_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Makes a tarfile from a given directory. </span>
-<span class="sd">    Source: George V. Reilly on  </span>
-<span class="sd">    `Stack Overflow &lt;https://stackoverflow.com/a/17081026&gt;`_.</span>
+<span class="sd">    Makes a tarfile from a given directory.</span>
+<span class="sd">    Source: George V. Reilly on</span>
+<span class="sd">    `stack overflow &lt;https://stackoverflow.com/a/17081026&gt;`_.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        source_dir (Path): Directory to tar </span>
+<span class="sd">        source_dir (Path): Directory to tar</span>
 <span class="sd">        output_filename (Path): Name of output file (e.g. file.tar.gz).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s2">&quot;w:gz&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>

@@ -458,7 +458,7 @@ title="Print to PDF"
 <span id="pykanto-signal-segment"></span><h1>pykanto.signal.segment<a class="headerlink" href="#module-pykanto.signal.segment" title="Permalink to this headline">#</a></h1>
 <p>Segment audio files and find vocalisation units in spectrograms.</p>
 <p class="rubric">Functions</p>
-<table class="longtable table autosummary">
+<table class="autosummary longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -500,7 +500,7 @@ title="Print to PDF"
 </tbody>
 </table>
 <p class="rubric">Classes</p>
-<table class="longtable table autosummary">
+<table class="autosummary longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -787,7 +787,7 @@ Defaults to parse_sonic_visualiser_xml.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.signal.segment.segment_files_parallel">
-<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">segment_files_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">datapaths:</span> <span class="pre">List[Tuple[Path,</span> <span class="pre">Path]],</span> <span class="pre">dirs:</span> <span class="pre">ProjDirs,</span> <span class="pre">resample:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">22050,</span> <span class="pre">parser_func:</span> <span class="pre">Callable[[Path],</span> <span class="pre">SegmentAnnotation]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">parse_sonic_visualiser_xml&gt;,</span> <span class="pre">num_cpus:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#segment_files_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.segment_files_parallel" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">segment_files_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">datapaths:</span> <span class="pre">List[Tuple[Path,</span> <span class="pre">Path]],</span> <span class="pre">dirs:</span> <span class="pre">ProjDirs,</span> <span class="pre">resample:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">22050,</span> <span class="pre">parser_func:</span> <span class="pre">Callable[[Path],</span> <span class="pre">SegmentAnnotation]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">parse_sonic_visualiser_xml&gt;,</span> <span class="pre">num_cpus:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">**kwargs</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#segment_files_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.segment_files_parallel" title="Permalink to this definition">#</a></dt>
 <dd><p>Finds and saves audio segments and their metadata.
 Parallel version of <a class="reference internal" href="#pykanto.signal.segment.segment_files" title="pykanto.signal.segment.segment_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">segment_files()</span></code></a>.
 Works well with large files (only reads one chunk at a time).</p>
@@ -803,8 +803,11 @@ to raw data files and their annotation metadata files.</p></li>
 <li><p><strong>dirs</strong> (<a class="reference internal" href="pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><em>ProjDirs</em></a>) – Project directory structure.</p></li>
 <li><p><strong>resample</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Whether to resample audio.
 Defaults to 22050.</p></li>
-<li><p><strong>parser_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Path</em><em>]</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Function to parse your metadata format.
+<li><p><strong>parser_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Path</em><em>]</em><em>, </em><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation" title="pykanto.utils.types.SegmentAnnotation"><em>SegmentAnnotation</em></a><em>]</em><em>, </em><em>optional</em>) – Function to parse your metadata format.
 Defaults to parse_sonic_visualiser_xml.</p></li>
+<li><p><strong>num_cpus</strong> (<em>float</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Number of cpus to use for parallel
+computing. Defaults to None (all available).</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Defaults to True</p></li>
 <li><p><strong>**kwargs</strong> – Keyword arguments passed to
 <a class="reference internal" href="#pykanto.signal.segment.segment_is_valid" title="pykanto.signal.segment.segment_is_valid"><code class="xref py py-func docutils literal notranslate"><span class="pre">segment_is_valid()</span></code></a></p></li>
 </ul>

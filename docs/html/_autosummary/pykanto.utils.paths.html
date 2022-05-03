@@ -459,7 +459,7 @@ title="Print to PDF"
 <p>Create project directory trees, assign path variables, and get paths for
 different types of files</p>
 <p class="rubric">Functions</p>
-<table class="longtable table autosummary">
+<table class="autosummary longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -483,7 +483,7 @@ different types of files</p>
 </tbody>
 </table>
 <p class="rubric">Classes</p>
-<table class="longtable table autosummary">
+<table class="autosummary longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -584,7 +584,7 @@ Defaults to False.</p></li>
 <dd><p>Returns a list of tuples containing [0] paths to wavfiles for which there is
 an annotation file and [1] paths to its annotation file. Assumes that wav
 and paths to the annotation files share the same file name and only their
-file extension changes, and that the wavfiles are ‘<em>.wav’ and not ‘</em>.WAV’.</p>
+file extension changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -666,8 +666,8 @@ Windows</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ValueError</strong> – The ‘project_data_dir’ already contains data or is a</p></li>
-<li><p><strong>symlink.</strong> – </p></li>
+<li><p><strong>ValueError</strong> – The ‘project_data_dir’ already contains data or is a
+    symlink.</p></li>
 <li><p><strong>FileExistsError</strong> – File exists; your target folder already exists.</p></li>
 </ul>
 </dd>

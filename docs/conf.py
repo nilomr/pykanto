@@ -18,19 +18,20 @@ from sphinx.ext.autosummary import get_documenter
 from sphinx.ext.autosummary import Autosummary
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
+
+sys.path.insert(0, os.path.abspath("."))
 # Reference
 # https://samnicholls.net/2016/06/15/how-to-sphinx-readthedocs/
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'pykanto'
-copyright = '2021, Nilo M. Recalde'
-author = 'Nilo M. Recalde'
+project = "pykanto"
+copyright = "2021, Nilo M. Recalde"
+author = "Nilo M. Recalde"
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = "0.1"
 
 
 # -- General configuration ---------------------------------------------------
@@ -40,32 +41,33 @@ release = '0.1'
 # ones.
 extensions = [
     "myst_nb",
-    'sphinx.ext.napoleon',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.coverage',
-    'sphinx_copybutton',
-
+    "sphinx.ext.napoleon",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.coverage",
+    "sphinx_copybutton",
 ]
 
 coverage_show_missing_items = True
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
-templates_path = ['_templates']
-autodoc_member_order = 'bysource'
+templates_path = ["_templates"]
+autodoc_member_order = "bysource"
 
 # Strip input prompts from copied code
 copybutton_prompt_text = ">>> "
-copybutton_prompt_text = r">>> |^\d+|\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_text = (
+    r">>> |^\d+|\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+)
 copybutton_prompt_is_regexp = True
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '_templates']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "_templates"]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -74,7 +76,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '_templates']
 # a list of builtin themes.
 #
 
-html_theme = 'sphinx_book_theme'
+html_theme = "sphinx_book_theme"
 
 html_theme_options = {
     "repository_url": "https://github.com/nilomr/pykanto",
@@ -83,15 +85,16 @@ html_theme_options = {
     "extra_navbar": False,
 }
 
-jupyter_execute_notebooks = "cache"
+# nb_execution_mode = "cache"
+nb_execution_mode = "force"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 html_css_files = [
-    'css/custom.css',
+    "css/custom.css",
 ]
 
 html_logo = str(Path("custom") / "pykanto-logo-grey-04.svg")
@@ -99,9 +102,9 @@ html_logo = str(Path("custom") / "pykanto-logo-grey-04.svg")
 autodoc_default_options = {
     "members": True,
     "undoc-members": True,
-    'special-members': '__init__',
+    "special-members": "__init__",
     "private-members": True,
-    'member-order': 'bysource'
+    "member-order": "bysource",
 }
 
-default_role = 'py:obj'
+default_role = "py:obj"
