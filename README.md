@@ -1,8 +1,9 @@
 <br>
+<br>
 <div align='center'>
 
 <a href="https://nilomr.github.io/pykanto">
-    <img src="docs/custom/pykanto-logo-grey-04.svg" alt="pykanto logo" title="Aimeos" height="80" style="padding-bottom:1em;" />
+    <img src="docs/custom/pykanto-logo-grey-04.svg" alt="pykanto logo" title="pykanto" height="80" style="padding-bottom:1em !important;" />
 </a>
 
 <br>
