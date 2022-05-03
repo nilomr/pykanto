@@ -407,7 +407,7 @@ def get_indv_units_parallel(
     pad: bool = True,
     song_level: bool = False,
     num_cpus: float | None = None,
-) -> Dict[Dict[str, Path]]:
+) -> Dict[str, Dict[str, Path]]:
     """
     Parallel implementation of
     :func:`~pykanto.signal.spectrogram.get_indv_units`.
