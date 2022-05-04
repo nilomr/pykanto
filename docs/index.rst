@@ -11,12 +11,11 @@ Documentation
    :caption: User guides
    :maxdepth: 1
    
-   contents/1_getting-started
-   contents/2_basic-workflow
-   contents/3_project-structure
-   contents/4_segmenting-files
-   contents/intro
-   contents/dataset
+   contents/installation
+   contents/basic-workflow
+   contents/project-setup
+   contents/segmenting-files
+   contents/kantodata-dataset
    contents/hpc
    contents/segmentation
    contents/analysis

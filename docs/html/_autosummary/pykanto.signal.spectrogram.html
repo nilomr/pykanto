@@ -102,7 +102,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/1_getting-started.html">
+  <a class="reference internal" href="../contents/installation.html">
    Installing
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -112,27 +112,22 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/2_basic-workflow.html">
+  <a class="reference internal" href="../contents/basic-workflow.html">
    Basic workflow
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/3_project-structure.html">
-   Project structure
+  <a class="reference internal" href="../contents/project-setup.html">
+   Setting up a project
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/4_segmenting-files.html">
+  <a class="reference internal" href="../contents/segmenting-files.html">
    File segmentation
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/intro.html">
-   IDE example
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contents/dataset.html">
+  <a class="reference internal" href="../contents/kantodata-dataset.html">
    Creating a KantoData object
   </a>
  </li>
@@ -711,7 +706,7 @@ Defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.signal.spectrogram.get_indv_units_parallel">
-<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">get_indv_units_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cpus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#get_indv_units_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.get_indv_units_parallel" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">get_indv_units_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cpus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#get_indv_units_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.get_indv_units_parallel" title="Permalink to this definition">#</a></dt>
 <dd><p>Parallel implementation of
 <a class="reference internal" href="#pykanto.signal.spectrogram.get_indv_units" title="pykanto.signal.spectrogram.get_indv_units"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_indv_units()</span></code></a>.</p>
 </dd></dl>

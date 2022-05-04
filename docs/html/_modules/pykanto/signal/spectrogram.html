@@ -99,7 +99,7 @@
 </p>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/1_getting-started.html">
+  <a class="reference internal" href="../../../contents/installation.html">
    Installing
    <code class="docutils literal notranslate">
     <span class="pre">
@@ -109,27 +109,22 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/2_basic-workflow.html">
+  <a class="reference internal" href="../../../contents/basic-workflow.html">
    Basic workflow
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/3_project-structure.html">
-   Project structure
+  <a class="reference internal" href="../../../contents/project-setup.html">
+   Setting up a project
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/4_segmenting-files.html">
+  <a class="reference internal" href="../../../contents/segmenting-files.html">
    File segmentation
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/intro.html">
-   IDE example
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/dataset.html">
+  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
    Creating a KantoData object
   </a>
  </li>
@@ -810,7 +805,7 @@ title="Source repository"
     <span class="n">pad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">num_cpus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parallel implementation of</span>
 <span class="sd">    :func:`~pykanto.signal.spectrogram.get_indv_units`.</span>
