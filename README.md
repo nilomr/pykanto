@@ -26,7 +26,7 @@
 
 ### Installation
 
-See [installing pykanto](https://nilomr.github.io/pykanto/contents/1_getting-started.html) in the docs for a complete guide.
+See [installing pykanto](https://nilomr.github.io/pykanto/contents/1_getting-started.html) for a complete installation guide.
 
 To install pykanto using pip, simply run:
 ```
@@ -34,7 +34,8 @@ pip install pykanto
 ```
 ### Getting started
 
-See docs
+[Sample pipeline](https://nilomr.github.io/pykanto/contents/2_basic-workflow.html)
+
 ### Acknowledgements
 
 - Some of the methods in pykanto are directly inspired by or use code from Sainburg T, Thielk M, Gentner TQ (2020) Finding, visualizing, and quantifying latent structure across diverse animal vocal repertoires. PLOS Computational Biology 16(10): e1008228. [DOI](https://doi.org/10.1371/journal.pcbi.1008228). I have indicated this in the relevant method's docstring.
