@@ -45,7 +45,7 @@ link_project_data(DATA_LOCATION, PROJECT_ROOT / 'data')
 
 ```
 
-```{admonition} Tip: only work on derivates of your raw data
+```{admonition} Tip: freeze your raw data and only worked on programmatically derived datasets
 :class: tip
 
 You wil likely create different derived datasets from the same raw data, and that is why pykanto lets your (raw) data live wherever you want.
@@ -53,7 +53,7 @@ I **strongly** recommend that you make its directory read-only and
 never ever touch it.
 ```
 
-## 2. Set up the project directories
+## 2. Set up project directories
 
 Next, tell `pykanto` where the raw data for your project live, 
 
@@ -81,3 +81,5 @@ you can use the following method:
 DIRS.update_json_locs(PROJECT)
 
 ```
+
+**Now you are ready to read and segment your raw data (see next section).**

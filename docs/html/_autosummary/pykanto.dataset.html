@@ -128,7 +128,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -536,69 +536,6 @@ files if they already exist. Defaults to False.</p></li>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><strong>FileExistsError</strong> – DATASET_ID already exists. You can overwrite it
     by setting <code class="xref py py-obj docutils literal notranslate"><span class="pre">overwrite_dataset=True</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.KantoData._get_wav_json_filedirs">
-<span class="sig-name descname"><span class="pre">_get_wav_json_filedirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._get_wav_json_filedirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._get_wav_json_filedirs" title="Permalink to this definition">#</a></dt>
-<dd><p>Get paths of wav and json files for this dataset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>random_subset</strong> (<em>int</em><em>, </em><em>optional</em>) – Get a random subset without
-repetition. Defaults to None.</p>
-</dd>
-</dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Will drop any .wav for which there is no .json!</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.KantoData._load_metadata">
-<span class="sig-name descname"><span class="pre">_load_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._load_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._load_metadata" title="Permalink to this definition">#</a></dt>
-<dd><p>Loads json metadata in sequence if there are &lt; 100 items, in parallel
-chunks of length chunk_len if there are &gt; 1000 items.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.KantoData._get_unique_ids">
-<span class="sig-name descname"><span class="pre">_get_unique_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._get_unique_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._get_unique_ids" title="Permalink to this definition">#</a></dt>
-<dd><p>Adds a ‘unique_ID’ attribute holding an array with unique IDs in the
-dataset.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.KantoData._get_sound_info">
-<span class="sig-name descname"><span class="pre">_get_sound_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._get_sound_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._get_sound_info" title="Permalink to this definition">#</a></dt>
-<dd><p>Adds pandas DataFrames with vocalisation and noise information to
-dataset (‘vocs’ and ‘noise’ attributes, respectively). Also
-adds information about mim/max bounding box frequencies and durations in
-the dataset (‘minmax_values’ attribute), and unit onsets/offsets if
-present.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Removes onset/offset pairs which (under current spectrogram
-parameter combinations) would result in a unit of length zero.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pykanto.dataset.KantoData._compute_melspectrograms">
-<span class="sig-name descname"><span class="pre">_compute_melspectrograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">overwrite_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/dataset.html#KantoData._compute_melspectrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.dataset.KantoData._compute_melspectrograms" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute melspectrograms and add their location to the KantoData object.
-It applies both dereverberation and bandpasses vocalisation data by
-default, and neither of these to noise data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>overwrite_data</strong> (<em>bool</em>) – Whether to overwrite any spectrogram files</p></li>
-<li><p><strong>dataset.</strong> (<em>that already exist for this</em>) – </p></li>
-<li><p><strong>**kwargs</strong> – Passed to
-<a class="reference internal" href="pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.save_melspectrogram" title="pykanto.signal.spectrogram.save_melspectrogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_melspectrogram()</span></code></a>.</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>

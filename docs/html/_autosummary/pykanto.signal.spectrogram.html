@@ -128,7 +128,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -519,13 +519,6 @@ bounding box. Defaults to True.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykanto.signal.spectrogram._save_melspectrogram_parallel">
-<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">_save_melspectrogram_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#_save_melspectrogram_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram._save_melspectrogram_parallel" title="Permalink to this definition">#</a></dt>
-<dd><p>Parallel implementation of
-<a class="reference internal" href="#pykanto.signal.spectrogram.save_melspectrogram" title="pykanto.signal.spectrogram.save_melspectrogram"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_melspectrogram()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="pykanto.signal.spectrogram.retrieve_spectrogram">
 <span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">retrieve_spectrogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nparray_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#retrieve_spectrogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.retrieve_spectrogram" title="Permalink to this definition">#</a></dt>
 <dd><p>Loads an spectrogram that was saved as a numpy array.</p>
@@ -535,28 +528,6 @@ bounding box. Defaults to True.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Spectrogram.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pykanto.signal.spectrogram._mask_melspec">
-<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">_mask_melspec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mel_spectrogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#_mask_melspec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram._mask_melspec" title="Permalink to this definition">#</a></dt>
-<dd><p>Private method. Frequency-mask ‘bandpass’ a melspectrogram using
-frequency bounds contained in a vocalisation’s metadata.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> (<a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><em>KantoData</em></a>) – Dataset with parameters object.</p></li>
-<li><p><strong>d_dict</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Vocalisation metadata as a dictionary.</p></li>
-<li><p><strong>mel_spectrogram</strong> (<em>np.ndarray</em>) – Melspectrogram to mask.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Masked spectrogram.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray</p>

@@ -128,7 +128,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -453,8 +453,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#set-up-the-project-directories">
-   2. Set up the project directories
+  <a class="reference internal nav-link" href="#set-up-project-directories">
+   2. Set up project directories
   </a>
  </li>
 </ul>
@@ -487,8 +487,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#set-up-the-project-directories">
-   2. Set up the project directories
+  <a class="reference internal nav-link" href="#set-up-project-directories">
+   2. Set up project directories
   </a>
  </li>
 </ul>
@@ -535,14 +535,14 @@ function to do just that:</p>
 </pre></div>
 </div>
 <div class="tip admonition">
-<p class="admonition-title">Tip: only work on derivates of your raw data</p>
+<p class="admonition-title">Tip: freeze your raw data and only worked on programmatically derived datasets</p>
 <p>You wil likely create different derived datasets from the same raw data, and that is why pykanto lets your (raw) data live wherever you want.
 I <strong>strongly</strong> recommend that you make its directory read-only and
 never ever touch it.</p>
 </div>
 </section>
-<section id="set-up-the-project-directories">
-<h2>2. Set up the project directories<a class="headerlink" href="#set-up-the-project-directories" title="Permalink to this headline">#</a></h2>
+<section id="set-up-project-directories">
+<h2>2. Set up project directories<a class="headerlink" href="#set-up-project-directories" title="Permalink to this headline">#</a></h2>
 <p>Next, tell <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> where the raw data for your project live,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RAW_DATA</span> <span class="o">=</span> <span class="n">PROJECT_ROOT</span> <span class="o">/</span> <span class="s1">&#39;data&#39;</span> <span class="o">/</span> <span class="s1">&#39;raw&#39;</span> <span class="o">/</span> <span class="s1">&#39;BIGBIRD_2021&#39;</span>
 </pre></div>
@@ -557,6 +557,7 @@ you can use the following method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DIRS</span><span class="o">.</span><span class="n">update_json_locs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Now you are ready to read and segment your raw data (see next section).</strong></p>
 </section>
 </section>
 

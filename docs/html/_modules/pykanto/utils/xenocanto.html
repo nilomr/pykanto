@@ -125,7 +125,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -483,7 +483,7 @@ title="Source repository"
     <span class="k">return</span> <span class="n">path</span></div>
 
 
-<div class="viewcode-block" id="_download_files"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto._download_files">[docs]</a><span class="k">def</span> <span class="nf">_download_files</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">_download_files</span><span class="p">(</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">redown</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 
@@ -513,7 +513,7 @@ title="Source repository"
             <span class="k">continue</span>
 
         <span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;filepath&quot;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">existing_files</span><span class="p">,</span> <span class="n">redownload_files</span></div>
+    <span class="k">return</span> <span class="n">existing_files</span><span class="p">,</span> <span class="n">redownload_files</span>
 
 
 <div class="viewcode-block" id="download"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.download">[docs]</a><span class="k">def</span> <span class="nf">download</span><span class="p">(</span>
@@ -598,7 +598,7 @@ title="Source repository"
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="_listdir_nohidden"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto._listdir_nohidden">[docs]</a><span class="k">def</span> <span class="nf">_listdir_nohidden</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_listdir_nohidden</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve all files while ignoring those that are hidden.</span>
 
@@ -610,7 +610,7 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
-            <span class="k">yield</span> <span class="n">f</span></div>
+            <span class="k">yield</span> <span class="n">f</span>
 
 
 <div class="viewcode-block" id="purge"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.xenocanto.html#pykanto.utils.xenocanto.purge">[docs]</a><span class="k">def</span> <span class="nf">purge</span><span class="p">(</span>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Creating a KantoData object &#8212; pykanto 0.1 documentation</title>
+    <title>The KantoData class &#8212; pykanto 0.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -128,7 +128,7 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -383,7 +383,7 @@ title="Source repository"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="../_sources/contents/kantodata-dataset.rst.txt"
+        <a href="../_sources/contents/kantodata-dataset.ipynb.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -394,7 +394,7 @@ title="Download source file"
 <span class="headerbtn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="headerbtn__text-container">.rst</span>
+<span class="headerbtn__text-container">.ipynb</span>
 </a>
 
       </li>
@@ -456,7 +456,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Creating a KantoData object</h1>
+                <h1>The KantoData class</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -481,8 +481,8 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="creating-a-kantodata-object">
-<h1>Creating a KantoData object<a class="headerlink" href="#creating-a-kantodata-object" title="Permalink to this headline">#</a></h1>
+  <section id="the-kantodata-class">
+<h1>The KantoData class<a class="headerlink" href="#the-kantodata-class" title="Permalink to this headline">#</a></h1>
 <section id="parameters">
 <h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">#</a></h2>
 <p>The print function will return the contents of the dataset. can also do with
@@ -491,14 +491,19 @@ parameters or directories</p>
 <code class="docutils literal notranslate"><span class="pre">method</span></code> (single)
 <code class="docutils literal notranslate"><span class="pre">method_r</span></code> (n elements), remote
 <code class="docutils literal notranslate"><span class="pre">method_parallel</span></code>, parallelised/distributed w/ a ray cluster</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nb">print</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+<p>.. code-block:: python
+:linenos:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>print(dataset.parameters)
 </pre></div>
 </div>
 <p>To get some basic info on the data in the dataset:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># Check dataset length</span>
-<span class="linenos">2</span><span class="n">dataset</span><span class="o">.</span><span class="n">sample_info</span><span class="p">()</span>
+<p>.. code-block:: python
+:linenos:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Check dataset length
+dataset.sample_info()
 </pre></div>
 </div>
+<p>.. code-block:: none</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Total length: 800
 Vocalisations: 740
 Noise: 60
@@ -506,14 +511,19 @@ Unique IDs: 3
 </pre></div>
 </div>
 <p>Plot some info</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># Plot some information about the dataset</span>
-<span class="linenos">2</span><span class="n">dataset</span><span class="o">.</span><span class="n">summary_plot</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<p>.. code-block:: python
+:linenos:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Plot some information about the dataset
+dataset.summary_plot(variable=&#39;all&#39;)
 </pre></div>
 </div>
 <p>Check sample size per individual ID in the dataset:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<p>.. code-block:: python
+:linenos:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>dataset.vocs[&#39;ID&#39;].value_counts()
 </pre></div>
 </div>
+<p>.. code-block:: none</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>B119    159
 B108    157
 B163    134
@@ -522,24 +532,47 @@ B216    117
 </pre></div>
 </div>
 <p>Loading an existing dataset</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">DATASET_ID</span> <span class="o">=</span> <span class="s2">&quot;WYTHAM_GRETIS_2021_TEST&quot;</span>
-<span class="linenos">2</span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
-<span class="linenos">3</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+<p>.. code-block:: python
+:linenos:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DATASET_ID = &quot;WYTHAM_GRETIS_2021_TEST&quot;
+out_dir = DIRS.DATA / &quot;datasets&quot; / DATASET_ID / f&quot;{DATASET_ID}.db&quot;
+dataset = pickle.load(open(out_dir, &quot;rb&quot;))
 </pre></div>
 </div>
 <p>Creating a dataset for which there is already derived data (e.g. spectrograms).
 This is something that might happen if, say, creating a dataset fails but
 at least some spectrogram files were saved succesfully.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">DATASET_ID</span> <span class="o">=</span> <span class="s2">&quot;BIGBIRD&quot;</span>
-<span class="linenos">2</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">KantoData</span><span class="p">(</span><span class="n">DATASET_ID</span><span class="p">,</span> <span class="n">DIRS</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-<span class="linenos">3</span>                    <span class="n">overwrite_dataset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<p>.. code-block:: python
+:linenos:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DATASET_ID = &quot;BIGBIRD&quot;
+dataset = KantoData(DATASET_ID, DIRS, parameters=params,
+                    overwrite_dataset=True, overwrite_data=False)
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>You can use any matplotlib palette here using the ‘cmap’ argument.
-See <a class="reference external" href="https://matplotlib.org/stable/tutorials/colors/colormaps.html">colourmaps</a>.</p>
-</dd>
-</dl>
+<p>Note:
+You can use any matplotlib palette here using the ‘cmap’ argument.
+See <code class="docutils literal notranslate"><span class="pre">colourmaps</span></code>_.</p>
+<p>.. _colourmaps: https://matplotlib.org/stable/tutorials/colors/colormaps.html</p>
+<p>Load an existing dataset:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset_loc</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">open_dataset</span><span class="p">(</span><span class="n">dataset_loc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">Input In [1],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">dataset_loc</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">dataset</span> <span class="o">=</span> <span class="n">open_dataset</span><span class="p">(</span><span class="n">dataset_loc</span><span class="p">)</span>
+
+<span class="ne">NameError</span>: name &#39;DIRS&#39; is not defined
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 </section>
 

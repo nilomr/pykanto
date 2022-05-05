@@ -128,7 +128,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -528,23 +528,6 @@ information.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.signal.segment.ReadWav._load_wav">
-<span class="sig-name descname"><span class="pre">_load_wav</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#ReadWav._load_wav"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.ReadWav._load_wav" title="Permalink to this definition">#</a></dt>
-<dd><p>Opens a wav sound file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – The file is not ‘seekable’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pykanto.signal.segment.ReadWav._load_metadata">
-<span class="sig-name descname"><span class="pre">_load_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#ReadWav._load_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.ReadWav._load_metadata" title="Permalink to this definition">#</a></dt>
-<dd><p>Loads available metadata from wavfile; builds a AudioAnnotation object.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pykanto.signal.segment.ReadWav.get_wav">
 <span class="sig-name descname"><span class="pre">get_wav</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">soundfile.SoundFile</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#ReadWav.get_wav"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.ReadWav.get_wav" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns the wavfile.</p>
@@ -628,26 +611,6 @@ which can then be saved as a standard .JSON file.</p>
 <dt class="sig sig-object py" id="pykanto.signal.segment.SegmentMetadata.index">
 <span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pykanto.signal.segment.SegmentMetadata.index" title="Permalink to this definition">#</a></dt>
 <dd><p>Index of ‘focal’ segment</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pykanto.signal.segment.SegmentMetadata._build_metadata">
-<span class="sig-name descname"><span class="pre">_build_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Annotation" title="pykanto.utils.types.Annotation"><span class="pre">pykanto.utils.types.Annotation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio_section</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wav_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#SegmentMetadata._build_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.SegmentMetadata._build_metadata" title="Permalink to this definition">#</a></dt>
-<dd><p>Consolidates segment metadata in a single dictionary,
-which can then be saved as a standard .JSON file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>metadata</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – A dictionary containing pertinent metadata.</p></li>
-<li><p><strong>audio_section</strong> (<em>np.ndarray</em>) – Array containing segment audio data
-(to extract min/max amplitude).</p></li>
-<li><p><strong>i</strong> (<em>int</em>) – Segment index.</p></li>
-<li><p><strong>sr</strong> (<em>int</em>) – Sample rate.</p></li>
-<li><p><strong>wav_out</strong> (<em>Path</em>) – Path to segment wav file.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Returns: None</p>
 </dd></dl>
 
 <dl class="py method">

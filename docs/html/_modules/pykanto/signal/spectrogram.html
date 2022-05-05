@@ -125,7 +125,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -515,7 +515,7 @@ title="Source repository"
     <span class="k">return</span> <span class="p">[</span><span class="n">save_melspectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="_save_melspectrogram_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram._save_melspectrogram_parallel">[docs]</a><span class="k">def</span> <span class="nf">_save_melspectrogram_parallel</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">_save_melspectrogram_parallel</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -546,7 +546,7 @@ title="Source repository"
     <span class="n">spec_locs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
 
     <span class="c1"># Flatten and return</span>
-    <span class="k">return</span> <span class="n">dictlist_to_dict</span><span class="p">(</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">spec_locs</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">dictlist_to_dict</span><span class="p">(</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">spec_locs</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="retrieve_spectrogram"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.retrieve_spectrogram">[docs]</a><span class="k">def</span> <span class="nf">retrieve_spectrogram</span><span class="p">(</span><span class="n">nparray_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -562,7 +562,7 @@ title="Source repository"
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">nparray_dir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="_mask_melspec"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram._mask_melspec">[docs]</a><span class="k">def</span> <span class="nf">_mask_melspec</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">_mask_melspec</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">d_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">mel_spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -590,7 +590,7 @@ title="Source repository"
     <span class="n">mel_spectrogram</span><span class="p">[:</span> <span class="n">freq_lims_mel</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">top_dB</span>
     <span class="n">mel_spectrogram</span><span class="p">[</span><span class="n">freq_lims_mel</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">top_dB</span>
 
-    <span class="k">return</span> <span class="n">mel_spectrogram</span></div>
+    <span class="k">return</span> <span class="n">mel_spectrogram</span>
 
 
 <div class="viewcode-block" id="pad_spectrogram"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.pad_spectrogram">[docs]</a><span class="nd">@njit</span>

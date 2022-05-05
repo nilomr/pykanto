@@ -370,6 +370,29 @@ main.bd-content #main-content dl.module .viewcode-link, main.bd-content #main-co
     padding-top: 2px;
 }
 
+.viewcode-link{
+    display: inline-block;
+    color: #78adcc;
+    font-size: 80%;
+    padding-left: 24px;
+    padding-top: 1em;
+}
+
+
+dl.py.method{
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-top: 1px solid #d3d3d3;
+}
+
+dt  {line-height: 1.1em;
+
+}
+
+nav.bd-links p.caption {color: #444444;
+border-bottom: 1px solid #d3d3d3;}
+
+
 
 
 /* quote boxes */
@@ -608,6 +631,8 @@ span.linenos {
 }
 
 
+
+
 /* FOOTER ─────────────────────────────────────────────────────────────────── */
 
 hr {
@@ -650,8 +675,6 @@ footer {
     padding-bottom: 2em;
     border-top: 1px solid #ccc;
 }
-
-
 
 
 

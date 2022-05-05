@@ -125,7 +125,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -481,7 +481,7 @@ title="Source repository"
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_wav</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_metadata</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ReadWav._load_wav"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav._load_wav">[docs]</a>    <span class="k">def</span> <span class="nf">_load_wav</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_load_wav</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Opens a wav sound file.</span>
 
@@ -494,9 +494,9 @@ title="Source repository"
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot seek through this file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wav_dir</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">wavfile</span> <span class="o">=</span> <span class="n">wavfile</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nframes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">SEEK_END</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nframes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">SEEK_END</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ReadWav._load_metadata"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav._load_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">_load_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_load_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Loads available metadata from wavfile; builds a AudioAnnotation object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -510,7 +510,7 @@ title="Source repository"
             <span class="n">length_s</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nframes</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavfile</span><span class="o">.</span><span class="n">samplerate</span><span class="p">,</span>
             <span class="n">source_wav</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wav_dir</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;Selected metadata to be used later&quot;&quot;&quot;</span></div>
+        <span class="sd">&quot;&quot;&quot;Selected metadata to be used later&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ReadWav.get_wav"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.get_wav">[docs]</a>    <span class="k">def</span> <span class="nf">get_wav</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sf</span><span class="o">.</span><span class="n">SoundFile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -591,7 +591,7 @@ title="Source repository"
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">audio_section</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">wav_out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SegmentMetadata._build_metadata"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata._build_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">_build_metadata</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_build_metadata</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">metadata</span><span class="p">:</span> <span class="n">Annotation</span><span class="p">,</span>
         <span class="n">audio_section</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -630,7 +630,7 @@ title="Source repository"
             <span class="n">wav_file</span><span class="o">=</span><span class="n">wav_out</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">i</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">i</span>
 
 <div class="viewcode-block" id="SegmentMetadata.get_metadata"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata.get_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>

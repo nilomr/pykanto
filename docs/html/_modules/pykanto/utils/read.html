@@ -125,7 +125,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -443,7 +443,7 @@ title="Source repository"
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="_get_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.read.html#pykanto.utils.read._get_json">[docs]</a><span class="k">def</span> <span class="nf">_get_json</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_json</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a json file with a &#39;label&#39; field,</span>
 <span class="sd">    with value &#39;NOISE&#39; if this field was present and</span>
@@ -454,7 +454,7 @@ title="Source repository"
         <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;NOISE&quot;</span> <span class="k">else</span> <span class="s2">&quot;VOCALISATION&quot;</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;VOCALISATION&quot;</span>
-    <span class="k">return</span> <span class="n">jf</span></div>
+    <span class="k">return</span> <span class="n">jf</span>
 
 
 <span class="nd">@ray</span><span class="o">.</span><span class="n">remote</span>
@@ -462,7 +462,7 @@ title="Source repository"
     <span class="k">return</span> <span class="p">[</span><span class="n">_get_json</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="_get_json_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.read.html#pykanto.utils.read._get_json_parallel">[docs]</a><span class="k">def</span> <span class="nf">_get_json_parallel</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">_get_json_parallel</span><span class="p">(</span>
     <span class="n">lst</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -482,7 +482,7 @@ title="Source repository"
     <span class="n">jsons</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
 
     <span class="c1"># Flatten and return</span>
-    <span class="k">return</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">jsons</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">jsons</span><span class="p">)</span>
 </pre></div>
 
               </div>

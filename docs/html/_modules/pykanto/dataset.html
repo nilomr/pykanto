@@ -125,7 +125,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -564,7 +564,7 @@ title="Source repository"
     <span class="c1"># ──────────────────────────────────────────────────────────────────────────</span>
     <span class="c1"># KantoData: Private methods</span>
 
-<div class="viewcode-block" id="KantoData._get_wav_json_filedirs"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_wav_json_filedirs">[docs]</a>    <span class="nd">@timing</span>
+    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">_get_wav_json_filedirs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">random_subset</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get paths of wav and json files for this dataset.</span>
@@ -654,9 +654,9 @@ title="Source repository"
                 <span class="p">)</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">)</span>
 
-<div class="viewcode-block" id="KantoData._load_metadata"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._load_metadata">[docs]</a>    <span class="nd">@timing</span>
+    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">_load_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Loads json metadata in sequence if there are &lt; 100 items, in parallel</span>
@@ -680,17 +680,17 @@ title="Source repository"
                 <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;wav_file&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">}</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;wav_file&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">}</span>
 
-<div class="viewcode-block" id="KantoData._get_unique_ids"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_unique_ids">[docs]</a>    <span class="k">def</span> <span class="nf">_get_unique_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_unique_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a &#39;unique_ID&#39; attribute holding an array with unique IDs in the</span>
 <span class="sd">        dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unique_ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
 
-<div class="viewcode-block" id="KantoData._get_sound_info"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._get_sound_info">[docs]</a>    <span class="k">def</span> <span class="nf">_get_sound_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_sound_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds pandas DataFrames with vocalisation and noise information to</span>
 <span class="sd">        dataset (&#39;vocs&#39; and &#39;noise&#39; attributes, respectively). Also</span>
@@ -733,9 +733,9 @@ title="Source repository"
             <span class="s2">&quot;min_freq&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;lower_freq&quot;</span><span class="p">]),</span>
             <span class="s2">&quot;max_duration&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;length_s&quot;</span><span class="p">]),</span>
             <span class="s2">&quot;min_duration&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;length_s&quot;</span><span class="p">]),</span>
-        <span class="p">}</span></div>
+        <span class="p">}</span>
 
-<div class="viewcode-block" id="KantoData._compute_melspectrograms"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData._compute_melspectrograms">[docs]</a>    <span class="nd">@timing</span>
+    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">_compute_melspectrograms</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -806,7 +806,7 @@ title="Source repository"
                 <span class="k">else</span> <span class="p">{}</span>
             <span class="p">),</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">n_specs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">[</span><span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">n_specs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="c1"># ──────────────────────────────────────────────────────────────────────────</span>
     <span class="c1"># KantoData: Public methods</span>

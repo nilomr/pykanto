@@ -103,7 +103,6 @@ autodoc_default_options = {
     "members": True,
     "undoc-members": True,
     "special-members": "__init__",
-    "private-members": True,
     "member-order": "bysource",
 }
 

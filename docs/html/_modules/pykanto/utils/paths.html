@@ -125,7 +125,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -512,7 +512,7 @@ title="Source repository"
             <span class="k">if</span> <span class="n">mkdir</span><span class="p">:</span>
                 <span class="n">makedir</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProjDirs._deep_update_paths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs._deep_update_paths">[docs]</a>    <span class="k">def</span> <span class="nf">_deep_update_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_deep_update_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">change_data_loc</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">OLD_PROJECT</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">)</span>
@@ -545,7 +545,7 @@ title="Source repository"
                 <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="s2">&quot;Dictionary values must be of types Path | List | Dict&quot;</span>
-                <span class="p">)</span></div>
+                <span class="p">)</span>
 
 <div class="viewcode-block" id="ProjDirs.update_json_locs"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.update_json_locs">[docs]</a>    <span class="k">def</span> <span class="nf">update_json_locs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_checks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>

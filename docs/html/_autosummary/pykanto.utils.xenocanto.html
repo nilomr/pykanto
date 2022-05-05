@@ -128,7 +128,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../contents/kantodata-dataset.html">
-   Creating a KantoData object
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
@@ -508,11 +508,6 @@ directory.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykanto.utils.xenocanto._download_files">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">_download_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#_download_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto._download_files" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="pykanto.utils.xenocanto.download">
 <span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">os.PathLike</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dataset'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto.download" title="Permalink to this definition">#</a></dt>
 <dd><p>Download recording metadata and audio files for a given query.</p>
@@ -530,20 +525,6 @@ If os.PathLike: metadata and audio folders will be created
 in the provided directory.
 Defauls to ‘dataset’ to maintain compatibility.</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pykanto.utils.xenocanto._listdir_nohidden">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.xenocanto.</span></span><span class="sig-name descname"><span class="pre">_listdir_nohidden</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/xenocanto.html#_listdir_nohidden"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.xenocanto._listdir_nohidden" title="Permalink to this definition">#</a></dt>
-<dd><p>Retrieve all files while ignoring those that are hidden.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – Directory to search.</p>
-</dd>
-<dt class="field-even">Yields</dt>
-<dd class="field-even"><p><em>str</em> – Directory</p>
 </dd>
 </dl>
 </dd></dl>
