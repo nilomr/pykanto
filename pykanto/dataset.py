@@ -16,7 +16,7 @@ import subprocess
 import warnings
 from pathlib import Path
 from random import sample
-from typing import Any, Dict, List, Tuple
+from typing import List, Literal, Tuple
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -27,7 +27,6 @@ import seaborn as sns
 from bokeh.palettes import Set3_12
 
 import pykanto.plot as kplot
-from pykanto import __name__ as modname
 from pykanto.labelapp.data import prepare_datasource
 from pykanto.parameters import Parameters
 from pykanto.signal.cluster import reduce_and_cluster_parallel
@@ -436,106 +435,7 @@ class KantoData:
                 ['frequency', 'duration', 'sample_size', 'all']
         """
 
-        if variable not in ["frequency", "duration", "sample_size", "all"]:
-            raise ValueError(
-                "`variable` must be one of ['frequency', 'duration', 'sample_size', 'all']"
-            )
-
-        # Plot size and general aesthetics
-        sns.set(font_scale=1.5, rc={"axes.facecolor": "#ededed"}, style="dark")
-        fig, axes = plt.subplots(
-            figsize=(18 if variable == "all" else 6, 6),
-            ncols=3 if variable == "all" else 1,
-        )
-
-        # Build frequency or duration plots
-        for i, var in enumerate(["frequency", "duration"]):
-            if var != variable and variable != "all":
-                continue
-
-            if var == "frequency":
-                data = {
-                    "upper_freq": self.vocs["upper_freq"],
-                    "lower_freq": self.vocs["lower_freq"],
-                }
-            else:
-                data = {"song_duration": self.vocs["length_s"]}
-
-            nax = i if variable == "all" else 0
-            sns.histplot(
-                data,
-                bins=nbins,
-                kde=True,
-                palette=["#107794", "#d97102"]
-                if var == "frequency"
-                else ["#107794"],
-                legend=False,
-                ax=axes if variable != "all" else axes[i],
-                linewidth=0.2,
-                log_scale=True if var == "duration" else False,
-                line_kws=dict(linewidth=5, alpha=0.7),
-            )
-
-            if var == "duration":
-                (
-                    axes[i] if variable == "all" else axes
-                ).xaxis.set_major_formatter(mpl.ticker.ScalarFormatter())
-
-            if var == "frequency":
-                (axes[i] if variable == "all" else axes).legend(
-                    labels=["Min", "Max"],
-                    loc=2,
-                    bbox_to_anchor=(0.70, 1),
-                    borderaxespad=0,
-                    frameon=False,
-                )
-            (
-                (axes[i] if variable == "all" else axes).set(
-                    xlabel="Frequency (Hz)"
-                    if var == "frequency"
-                    else "Duration (s)",
-                    ylabel="Count",
-                )
-            )
-
-        # Build sample size plot
-        if variable in ["sample_size", "all"]:
-            individual_ss = self.vocs["ID"].value_counts()
-            data = pd.DataFrame(individual_ss).rename(columns={"ID": "n"})
-            data["ID"] = individual_ss.index
-            sns.histplot(
-                data=data,
-                palette=["#107794"],
-                bins=nbins,
-                ax=axes if variable != "all" else axes[2],
-                alpha=0.6,
-                legend=False,
-            )
-            (axes[2] if variable == "all" else axes).set(
-                xlabel=f"Sample size (total: {len(self.vocs)})", ylabel="Count"
-            )
-            # Reduce xtick density
-            nlabs = len(
-                (axes[2] if variable == "all" else axes).get_xticklabels()
-            )
-            mid = math.trunc(nlabs / 2)
-            for i, label in enumerate(
-                (axes[2] if variable == "all" else axes).get_xticklabels()
-            ):
-                if i not in [0, mid, nlabs - 1]:
-                    label.set_visible(False)
-
-        # Common axes
-        if variable == "all":
-            for ax in axes:
-                ax.yaxis.labelpad = 15
-                ax.xaxis.labelpad = 15
-        else:
-            axes.yaxis.labelpad = 15
-            axes.xaxis.labelpad = 15
-
-        fig.tight_layout()
-        plt.show()
+        kplot.build_summary_plot(self, nbins=nbins, variable=variable)
 
     def sample_info(self) -> None:
         """
@@ -1002,7 +902,7 @@ class KantoData:
         self.save_to_disk(verbose=self.parameters.verbose)
 
     def open_label_app(
-        self, palette: List[str] = Set3_12, max_n_labs: int = 10
+        self, palette: Tuple[Literal[str], ...] = Set3_12, max_n_labs: int = 10
     ) -> None:
         """
         Opens a new web browser tab with an interactive app that can be used to

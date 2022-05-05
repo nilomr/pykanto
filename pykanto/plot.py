@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, Dict, List, Tuple
 import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import seaborn as sns
 from matplotlib.cm import get_cmap
 from matplotlib import gridspec
@@ -330,4 +331,128 @@ def show_minmax_frequency(
     ax.plot(times, maxfreqs, label="Max frequency (roll = 0.95)")
     ax.plot(times, minfreqs, label="Min frequency (roll = 0.1)")
     ax.legend(loc="upper right", frameon=False, labelcolor="w")
+    plt.show()
+
+
+def build_summary_plot(
+    dataset: KantoData, nbins: int = 50, variable: str = "frequency"
+) -> None:
+    """
+    Plots a histogram + kernel densiyy estimate of the frequency
+    distribution of vocalisation duration and frequencies.
+
+    Note:
+        Durations and frequencies come from bounding boxes,
+        not vocalisations. This function, along with
+        :func:`~pykanto.dataset.show_extreme_songs`, is useful to spot
+        any outliers, and to quickly explore the full range of data.
+
+    Args:
+        dataset (KantoData): Dataset to use.
+        nbins (int, optional): Number of bins in histogram. Defaults to 50.
+        variable (str, optional): One of 'frequency', 'duration',
+            'sample_size', 'all'. Defaults to 'frequency'.
+
+    Raises:
+        ValueError: `variable` must be one of
+            ['frequency', 'duration', 'sample_size', 'all']
+    """
+
+    if variable not in ["frequency", "duration", "sample_size", "all"]:
+        raise ValueError(
+            "`variable` must be one of ['frequency', 'duration', 'sample_size', 'all']"
+        )
+
+    # Plot size and general aesthetics
+    sns.set(font_scale=1.5, rc={"axes.facecolor": "#ededed"}, style="dark")
+    fig, axes = plt.subplots(
+        figsize=(18 if variable == "all" else 6, 6),
+        ncols=3 if variable == "all" else 1,
+    )
+
+    # Build frequency or duration plots
+    for i, var in enumerate(["frequency", "duration"]):
+        if var != variable and variable != "all":
+            continue
+
+        if var == "frequency":
+            data = {
+                "upper_freq": dataset.vocs["upper_freq"],
+                "lower_freq": dataset.vocs["lower_freq"],
+            }
+        else:
+            data = {"song_duration": dataset.vocs["length_s"]}
+
+        sns.histplot(
+            data,
+            bins=nbins,
+            kde=True,
+            palette=["#107794", "#d97102"]
+            if var == "frequency"
+            else ["#107794"],
+            legend=False,
+            ax=axes if variable != "all" else axes[i],
+            linewidth=0.2,
+            log_scale=True if var == "duration" else False,
+            line_kws=dict(linewidth=5, alpha=0.7),
+        )
+
+        if var == "duration":
+            (axes[i] if variable == "all" else axes).xaxis.set_major_formatter(
+                mpl.ticker.ScalarFormatter()
+            )
+
+        if var == "frequency":
+            (axes[i] if variable == "all" else axes).legend(
+                labels=["Min", "Max"],
+                loc=2,
+                bbox_to_anchor=(0.70, 1),
+                borderaxespad=0,
+                frameon=False,
+            )
+        (
+            (axes[i] if variable == "all" else axes).set(
+                xlabel="Frequency (Hz)"
+                if var == "frequency"
+                else "Duration (s)",
+                ylabel="Count",
+            )
+        )
+
+    # Build sample size plot
+    if variable in ["sample_size", "all"]:
+        individual_ss = dataset.vocs["ID"].value_counts()
+        data = pd.DataFrame(individual_ss).rename(columns={"ID": "n"})
+        data["ID"] = individual_ss.index
+        sns.histplot(
+            data=data,
+            palette=["#107794"],
+            bins=nbins,
+            ax=axes if variable != "all" else axes[2],
+            alpha=0.6,
+            legend=False,
+        )
+        (axes[2] if variable == "all" else axes).set(
+            xlabel=f"Sample size (total: {len(dataset.vocs)})",
+            ylabel="Count",
+        )
+        # Reduce xtick density
+        nlabs = len((axes[2] if variable == "all" else axes).get_xticklabels())
+        mid = math.trunc(nlabs / 2)
+        for i, label in enumerate(
+            (axes[2] if variable == "all" else axes).get_xticklabels()
+        ):
+            if i not in [0, mid, nlabs - 1]:
+                label.set_visible(False)
+
+    # Common axes
+    if variable == "all":
+        for ax in axes:
+            ax.yaxis.labelpad = 15
+            ax.xaxis.labelpad = 15
+    else:
+        axes.yaxis.labelpad = 15
+        axes.xaxis.labelpad = 15
+
+    fig.tight_layout()
     plt.show()
