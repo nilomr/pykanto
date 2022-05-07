@@ -123,7 +123,7 @@ def load_bk_data(
     dataset: KantoData, dataloc: str, individual: str
 ) -> ColumnDataSource:
     """
-    Load saved data source to use in interctive labelling app.
+    Load saved data source to use in interactive labelling app.
 
     Args:
         dataset (KantoData): Source dataset.
