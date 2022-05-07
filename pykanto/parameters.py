@@ -15,6 +15,7 @@ from pykanto.utils.compute import print_dict
 
 
 class Parameters:
+    # TODO: #8 Parameters should be an attrs class with validation @nilomr
     """
     General parameters class - stores parameters to be passed to
     a :meth:`~pykanto.dataset.KantoData` object.
@@ -33,7 +34,7 @@ class Parameters:
         self.hop_length: int = 128
         """Number of samples between successive frames. Defaults to 128."""
         self.fft_size: int = 2048
-        """Number of bins used to divide the window. Defaults to 1024."""
+        """Number of bins used to divide the window. Defaults to 2048."""
         self.num_mel_bins: int = 224
         """Number of Mel frequency bins to use 
         (n of 'rows' in mel-spectrogram). Defaults to 224."""
