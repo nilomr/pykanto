@@ -334,7 +334,7 @@ def show_minmax_frequency(
     plt.show()
 
 
-def build_summary_plot(
+def build_plot_summary(
     dataset: KantoData, nbins: int = 50, variable: str = "frequency"
 ) -> None:
     """
