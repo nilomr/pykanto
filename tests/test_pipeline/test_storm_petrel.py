@@ -208,4 +208,4 @@ def bf_data_test_manual():
     dataset.open_label_app()
 
     for voc in dataset.vocs.index[:2]:
-        dataset.plot_voc_seg(voc)
+        dataset.plot_segments(voc)

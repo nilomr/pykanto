@@ -48,7 +48,15 @@ def files_to_segment(DIRS):
 @pytest.fixture()
 def new_dataset(DIRS):
     params = Parameters(
-        sr=32000, top_dB=125, lowcut=200, highcut=11000, dereverb=True
+        sr=32000,
+        window_length=256,
+        hop_length=128,
+        fft_size=2048,
+        top_dB=110,
+        num_mel_bins=224,
+        lowcut=0,
+        highcut=11000,
+        dereverb=False,
     )
     new_dataset = KantoData(
         DATASET_ID,
@@ -150,7 +158,15 @@ def bf_data_test_manual():
     )
 
     params = Parameters(
-        sr=32000, top_dB=130, lowcut=200, highcut=11000, dereverb=True
+        sr=32000,
+        window_length=256,
+        hop_length=128,
+        fft_size=2048,
+        top_dB=110,
+        num_mel_bins=224,
+        lowcut=0,
+        highcut=11000,
+        dereverb=False,
     )
     dataset = KantoData(
         DATASET_ID,
@@ -163,14 +179,8 @@ def bf_data_test_manual():
     out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
     dataset = pickle.load(open(out_dir, "rb"))
     dataset.segment_into_units()
-
     dataset.parameters.update(song_level=False)
     dataset.get_units()
-
-    dataset.reload()
-    dataset.parameters.update(song_level=False)
     dataset.cluster_ids(min_sample=5)
-
-    dataset.parameters.update(song_level=False)
     dataset.prepare_interactive_data()
     dataset.open_label_app()

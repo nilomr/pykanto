@@ -307,7 +307,7 @@ dataset = KantoData(
 dataset.segment_into_units()
 
 for voc in dataset.vocs.index:
-    dataset.plot_voc_seg(voc)
+    dataset.plot_segments(voc)
 
 
 # %%
