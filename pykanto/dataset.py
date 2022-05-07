@@ -54,7 +54,7 @@ from pykanto.utils.write import makedir
 
 class KantoData:
     """
-    Main dataset class. See __init__ documentation.
+    Main dataset class. See `__init__` docstring.
 
     Attributes:
         DIRS (:class:`~pykanto.utils.paths.ProjDirs`):
@@ -412,7 +412,7 @@ class KantoData:
     # ──────────────────────────────────────────────────────────────────────────
     # KantoData: Public methods
 
-    def summary_plot(
+    def plot_summary(
         self, nbins: int = 50, variable: str = "frequency"
     ) -> None:
         """
@@ -435,7 +435,7 @@ class KantoData:
                 ['frequency', 'duration', 'sample_size', 'all']
         """
 
-        kplot.build_summary_plot(self, nbins=nbins, variable=variable)
+        kplot.build_plot_summary(self, nbins=nbins, variable=variable)
 
     def sample_info(self) -> None:
         """
@@ -450,7 +450,7 @@ class KantoData:
         )
         print(out)
 
-    def show_extreme_samples(
+    def plot_example(
         self,
         n_songs: int = 1,
         query: str = "maxfreq",
@@ -465,7 +465,7 @@ class KantoData:
         Note:
             Durations and frequencies come from bounding boxes,
             not vocalisations. This function, along with
-            :func:`~pykanto.dataset.summary_plot`, is useful to spot any
+            :func:`~pykanto.dataset.plot_summary`, is useful to spot any
             outliers, and to quickly explore the full range of data.
 
         Args:
@@ -485,20 +485,19 @@ class KantoData:
             **kwargs: Keyword arguments to be passed to
                 :func:`~pykanto.plot.melspectrogram`
         """
-        if query == "duration":
-            idx = "length_s"
-        elif query == "maxfreq":
-            idx = "upper_freq"
-        elif query == "minfreq":
-            idx = "lower_freq"
-        else:
+        argdict = {
+            "duration": "length_s",
+            "maxfreq": "upper_freq",
+            "minfreq": "lower_freq",
+        }
+        if query not in argdict:
             raise ValueError(
                 "show_extreme_songs: query must be one of "
                 "['duration', 'maxfreq', 'minfreq']"
             )
 
         testkeys = (
-            self.vocs[idx]
+            self.vocs[argdict[query]]
             .sort_values(ascending=True if order == "ascending" else False)[
                 :n_songs
             ]
@@ -506,15 +505,12 @@ class KantoData:
         )
 
         for key in testkeys:
-            if return_keys:
-                print(key)
             kplot.melspectrogram(
                 self.vocs.at[key, "spectrogram_loc"],
                 parameters=self.parameters,
                 title=Path(key).stem,
                 **kwargs,
             )
-
         if return_keys:
             return list(testkeys)
 
@@ -719,7 +715,7 @@ class KantoData:
         """
         return pickle.load(open(self.DIRS.DATASET, "rb"))
 
-    def plot_voc_seg(self, key: str, **kwargs) -> None:
+    def plot_segments(self, key: str, **kwargs) -> None:
         """
         Plots a vocalisation and overlays the results
         of the segmentation process.
