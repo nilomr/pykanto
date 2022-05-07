@@ -352,7 +352,7 @@
                 "\n",
                 "# Plot an example:\n",
                 "for vocalisation in dataset.vocs.index[:1]:\n",
-                "    dataset.plot_voc_seg(vocalisation)"
+                "    dataset.plot_segments(vocalisation)"
             ]
         },
         {
