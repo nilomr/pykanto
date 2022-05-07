@@ -110,6 +110,8 @@ class Metadata(AudioAnnotation):
 
     ID: str = attr.ib(validator=validators.instance_of(str))
     label: str = attr.ib(validator=validators.instance_of(str))
+    start: int = attr.ib(validator=validators.instance_of(int))
+    end: int = attr.ib(validator=validators.instance_of(int))
     lower_freq: int = attr.ib(validator=validators.instance_of(int))
     upper_freq: int = attr.ib(validator=validators.instance_of(int))
     max_amplitude: float = attr.ib(validator=validators.instance_of(float))
