@@ -152,11 +152,7 @@ class SegmentMetadata:
     which can then be saved as a standard .JSON file.
 
     You can extend this class to incorporate other metadata fields
-    specific to your research (see Example).
-
-    Examples:
-
-        TODO
+    specific to your research (see the docs).
 
     """
 
@@ -221,6 +217,8 @@ class SegmentMetadata:
             ID=metadata.ID,
             label=metadata.label[i],
             sample_rate=sr,
+            start=metadata.start_times[i],
+            end=metadata.end_times[i],
             length_s=len(audio_section) / sr,
             lower_freq=metadata.lower_freq[i],
             upper_freq=metadata.upper_freq[i],
