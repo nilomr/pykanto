@@ -71,22 +71,41 @@ def test_SegmentMetadata(metadata, audio_section):
 
 
 @pytest.mark.parametrize(
-    "i, min_duration, min_freqrange, labels_to_ignore, expected",
+    (
+        "max_amplitude, i, integer_format, min_duration, min_freqrange, "
+        "min_amplitude, labels_to_ignore, expected"
+    ),
     [
-        (0, 1, 500, ["A"], False),
-        (1, 1, 500, ["A"], False),
-        (1, 1, 500, ["B"], True),
-        (1, 2, 500, ["B"], False),
-        (2, 1, 500, [" "], True),
-        (2, 1, 4000, [" "], False),
+        (6000.0, 0, "PCM_16", 1, 500, 5000, ["A"], False),
+        (6000.0, 1, "PCM_16", 1, 500, 5000, ["A"], False),
+        (6000.0, 1, "PCM_16", 1, 500, 5000, ["B"], True),
+        (6000.0, 1, "PCM_16", 2, 500, 5000, ["B"], False),
+        (6000.0, 2, "PCM_16", 1, 500, 5000, [" "], True),
+        (6000.0, 2, "PCM_16", 1, 4000, 5000, [" "], False),
+        (3000.0, 1, "PCM_16", 1, 500, 5000, ["B"], True),
     ],
 )
 def test_segment_is_valid(
-    metadata, i, min_duration, min_freqrange, labels_to_ignore, expected
+    metadata,
+    max_amplitude,
+    i,
+    integer_format,
+    min_duration,
+    min_freqrange,
+    min_amplitude,
+    labels_to_ignore,
+    expected,
 ):
     assert (
         segment_is_valid(
-            metadata, i, min_duration, min_freqrange, labels_to_ignore
+            metadata,
+            max_amplitude,
+            i,
+            integer_format,
+            min_duration,
+            min_freqrange,
+            min_amplitude,
+            labels_to_ignore,
         )
         == expected
     )
