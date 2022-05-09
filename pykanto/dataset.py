@@ -62,9 +62,9 @@ class KantoData:
         noise: Placeholder
         units: Placeholder
         parameters (:class:`~pykanto.parameters.Parameters`)
-
     """
 
+    # TODO@nilomr #10 Refactor private methods in KantoData class
     def __init__(
         self,
         DATASET_ID: str,
@@ -600,7 +600,7 @@ class KantoData:
                 a - b for a, b in zip(row["onsets"][1:], row["offsets"])
             ],
             axis=1,
-        )
+        ).to_numpy()
         self.vocs.drop(
             ["index", "onsets", "offsets"],
             axis=1,
