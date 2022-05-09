@@ -82,7 +82,7 @@ class Parameters:
         self.subset: Tuple[int, int] | None = None
         """Indices of the first and last items to include in the dataset. 
         Optional, defaults to None."""
-        self.num_cpus: None | float = None
+        self.num_cpus: None | int = None
         """How many cpus to use for parallel computing. Default is available
         number of cpus"""
         self.verbose: bool = False
