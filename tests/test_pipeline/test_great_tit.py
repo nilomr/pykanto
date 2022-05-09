@@ -5,14 +5,16 @@
 
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
 
-import pkg_resources
-from pathlib import Path
 import pickle
+import shutil
+from pathlib import Path
+
+import pkg_resources
+import pytest
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.utils.paths import ProjDirs
-import pytest
-import shutil
+from pykanto.utils.read import load_dataset
 
 # ──── SETTINGS ─────────────────────────────────────────────────────────────────
 
@@ -126,7 +128,7 @@ def greti_data_test_manual():
         overwrite_data=True,
     )
     out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-    dataset = pickle.load(open(out_dir, "rb"))
+    dataset = load_dataset(out_dir)
     dataset.segment_into_units()
 
     for song_level in [True, False]:

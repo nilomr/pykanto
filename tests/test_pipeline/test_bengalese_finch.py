@@ -49,14 +49,15 @@ def files_to_segment(DIRS):
 def new_dataset(DIRS):
     params = Parameters(
         sr=32000,
-        window_length=256,
+        window_length=512,
         hop_length=128,
         fft_size=2048,
-        top_dB=110,
+        top_dB=120,
         num_mel_bins=224,
-        lowcut=0,
+        lowcut=500,
         highcut=11000,
         dereverb=False,
+        silence_threshold=0.1,
     )
     new_dataset = KantoData(
         DATASET_ID,
@@ -159,14 +160,15 @@ def bf_data_test_manual():
 
     params = Parameters(
         sr=32000,
-        window_length=256,
+        window_length=512,
         hop_length=128,
         fft_size=2048,
-        top_dB=110,
+        top_dB=120,
         num_mel_bins=224,
-        lowcut=0,
+        lowcut=500,
         highcut=11000,
         dereverb=False,
+        silence_threshold=0.1,
     )
     dataset = KantoData(
         DATASET_ID,
