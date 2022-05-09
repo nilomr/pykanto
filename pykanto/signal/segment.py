@@ -20,7 +20,7 @@ import numpy as np
 import psutil
 import ray
 import soundfile as sf
-from numba import njit
+import numba
 from pykanto.signal.filter import (
     dereverberate,
     dereverberate_jit,
@@ -325,9 +325,6 @@ def save_segments(
     n_segments = len(metadata.start_times)
 
     for i in range(n_segments):
-        # Filter segments not matching inclusion criteria
-        if not segment_is_valid(metadata, i, **kwargs):
-            continue
 
         # Get segment frames
         wavfile.seek(metadata.start_times[i])
@@ -338,6 +335,16 @@ def save_segments(
             audio_section: np.ndarray = librosa.to_mono(
                 np.swapaxes(audio_section, 0, 1)
             )
+
+        # Filter segments not matching inclusion criteria
+        if not segment_is_valid(
+            metadata,
+            float(max(audio_section)),
+            i,
+            integer_format=str(wavfile.subtype),
+            **kwargs,
+        ):
+            continue
 
         # Resample if necessary
         sr = metadata.sample_rate
@@ -369,9 +376,12 @@ def save_segments(
 
 def segment_is_valid(
     metadata: Annotation,
+    max_amplitude: float,
     i: int,
+    integer_format: str = "PCM_16",
     min_duration: float = 0.01,
-    min_freqrange: int = 1,
+    min_freqrange: int = 10,
+    min_amplitude: int = 0,
     labels_to_ignore: List[str] = ["NO", "NOISE"],
 ) -> bool:
     """
@@ -383,7 +393,7 @@ def segment_is_valid(
         min_duration (float, optional): Minimum duration of segment to
             consider valid, in seconds. Defaults to 0.01.
         min_freqrange (int, optional): Minimum frequency range of segment to
-            consider valid, in Hertzs. Defaults to 1.
+            consider valid, in Hertzs. Defaults to 10.
         labels_to_ignore (List[str], optional): Exclude any segments with these
             labels. Defaults to ["NO", "NOISE"].
 
@@ -392,11 +402,22 @@ def segment_is_valid(
     """
 
     min_frames = min_duration * metadata.sample_rate
+    if integer_format == "PCM_16":
+        scale = 32767
+    elif integer_format == "PCM_25":
+        scale = 8388607
+    else:
+        raise NotImplementedError(
+            f"Integer format '{integer_format}'' not supported"
+        )
+
+    max_amplitude = max_amplitude * scale
 
     if (
         (metadata.durations[i] < min_frames)
         or (metadata.upper_freq[i] - metadata.lower_freq[i] < min_freqrange)
         or (metadata.label[i] in labels_to_ignore)
+        or (max_amplitude < min_amplitude)
     ):
         return False
     else:
@@ -701,8 +722,8 @@ def segment_song_into_units(
         dataset.vocs.at[key, "spectrogram_loc"]
     )
 
-    # NOTE: numba version (dereverberate_jit) more likely to crash when running
-    # this in parallel in low memory situations for obvious reasons.
+    # TODO@nilomr #9 Jitted version of dereverberate() now causes ray workers to crash
+    # dereverberate_jit = numba.njit(dereverberate)
 
     mel_spectrogram_d = dereverberate(
         mel_spectrogram,
@@ -728,7 +749,7 @@ def segment_song_into_units(
     )
     img_gauss = gaussian_blur(img_inv.astype(float), 3)
 
-    img_gauss_d = dereverberate_jit(
+    img_gauss_d = dereverberate(
         img_gauss,
         echo_range=100,
         echo_reduction=1,
@@ -763,13 +784,13 @@ def segment_song_into_units_parallel(
     if dataset.parameters.verbose:
         print_parallel_info(n, "vocalisations", n_chunks, chunk_length)
 
-    # Copy dataset to local object store
-    dataset_ref = ray.put(dataset)
-
     # Distribute with ray
-    @ray.remote(num_cpus=dataset.parameters.num_cpus)
+    @ray.remote(num_cpus=dataset.parameters.num_cpus, num_gpus=0)
     def _segment_song_into_units_r(dataset, keys, **kwargs):
         return [segment_song_into_units(dataset, key, **kwargs) for key in keys]
+
+    # Copy dataset to local object store
+    dataset_ref = ray.put(dataset)
 
     obj_ids = [
         _segment_song_into_units_r.remote(dataset_ref, i, **kwargs)
