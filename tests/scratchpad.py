@@ -59,9 +59,6 @@ from pykanto.utils.write import makedir
 warnings.simplefilter("always", ImportWarning)
 os.environ["RAY_DISABLE_IMPORT_WARNING"] = "1"
 
-# REVIEW - remove when complete
-%load_ext autoreload
-%autoreload 2
 
 # %%──── SETTINGS ──────────────────────────────────────────────────────────────
 
@@ -430,7 +427,6 @@ params = Parameters(
     verbose=False,
     num_cpus=None,
 )
-#%%
 # np.random.seed(123)
 # random.seed(123)
 dataset = KantoData(
@@ -444,6 +440,21 @@ dataset = KantoData(
 
 #%%
 dataset.segment_into_units()
+
+
+def plot()
+
+dataset.vocs.at[key, "spectrogram_loc"]
+
+        for key in testkeys:
+            kplot.melspectrogram(
+                dataset.vocs.at[key, "spectrogram_loc"],
+                parameters=self.parameters,
+                title=Path(key).stem,
+                **kwargs,
+            )
+
+
 
 for voc in dataset.vocs.index:
     print(voc)
