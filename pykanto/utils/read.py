@@ -27,7 +27,7 @@ from pykanto.utils.compute import (
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
 
 
-def open_dataset(dataset: Path) -> KantoData:
+def load_dataset(dataset: Path) -> KantoData:
     return pickle.load(open(dataset, "rb"))
 
 
