@@ -18,14 +18,15 @@ import json
 import os
 import pickle
 import shutil
+import uuid
 import warnings
+from copy import deepcopy
 from pathlib import Path
 from tabnanny import verbose
 from typing import Any, Dict, List
 from xml.etree import ElementTree
 
 import git
-from importlib_resources import files
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
@@ -36,6 +37,7 @@ import ray
 import seaborn as sns
 import soundfile as sf
 from bokeh.palettes import Set3_12
+from importlib_resources import files
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import (
@@ -43,7 +45,7 @@ from pykanto.signal.segment import (
     segment_files,
     segment_files_parallel,
 )
-from pykanto.utils.compute import flatten_list, to_iterator, tqdmm
+from pykanto.utils.compute import flatten_list, to_iterator, with_pbar
 from pykanto.utils.custom import (
     chipper_units_to_json,
     parse_sonic_visualiser_xml,
@@ -54,6 +56,7 @@ from pykanto.utils.paths import (
     get_wavs_w_annotation,
     pykanto_data,
 )
+from pykanto.utils.read import load_dataset
 from pykanto.utils.write import makedir
 
 warnings.simplefilter("always", ImportWarning)
@@ -277,7 +280,8 @@ dataset.open_label_app()
 
 import json
 from typing import List
-from pykanto.utils.compute import tqdmm
+
+from pykanto.utils.compute import with_pbar
 
 sr = 48000
 
@@ -340,7 +344,7 @@ def convert_data_to_xml(datfile: Path) -> None:
 
 rootdir = Path("/media/nilomr/SONGDATA/raw/2020")
 to_convert = list(rootdir.rglob("*.data"))
-for file in tqdmm(to_convert):
+for file in with_pbar(to_convert):
     convert_data_to_xml(file)
 
 #%%
@@ -360,32 +364,16 @@ files_to_segment = get_wavs_w_annotation(wav_filepaths, xml_filepaths)
 
 #%%
 
-wav_outdir, json_outdir = [
-    makedir(DIRS.SEGMENTED / ext) for ext in ["WAV", "JSON"]
-]
-
-segment_files(
-    files_to_segment[:2],
-    wav_outdir,
-    json_outdir,
-    resample=22050,
-    parser_func=parse_sonic_visualiser_xml,
-    min_duration=1.5,
-    min_freqrange=100,
-    min_amplitude=6000,
-    labels_to_ignore=["NOISE"],
-)
-
 segment_files_parallel(
-    files_to_segment[:20],
+    files_to_segment[:5],
     DIRS,
     resample=22050,
     parser_func=parse_sonic_visualiser_xml,
     min_duration=1.5,
     min_freqrange=100,
     min_amplitude=5000,
-    labels_to_ignore=["NOISE"],
 )
+
 #%%
 
 
@@ -439,41 +427,69 @@ dataset = KantoData(
 )
 
 #%%
+out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
+dataset = load_dataset(out_dir)
+
 dataset.segment_into_units()
+dataset.get_units()
+dataset.cluster_ids(min_sample=15)
+dataset.prepare_interactive_data()
 
 
-def plot()
-
-dataset.vocs.at[key, "spectrogram_loc"]
-
-        for key in testkeys:
-            kplot.melspectrogram(
-                dataset.vocs.at[key, "spectrogram_loc"],
-                parameters=self.parameters,
-                title=Path(key).stem,
-                **kwargs,
-            )
+dataset.open_label_app()
+dataset.vocs.query("ID=='B11'")
 
 
+dataset.metadata
 
-for voc in dataset.vocs.index:
-    print(voc)
-    dataset.plot_segments(voc)
+for col in df.columns:
+    print(type(df[col][0]))
+
+df.to_json()
+
+df.loc[df.index[0]].to_dict()
+
+type(df.loc[df.index[0]])
+
+
+for i in dataset.vocs.index:
+    dataset.vocs.loc[i].to_json("row{}.json".format(i))
+
+
+for spec in dataset.vocs.index[:10]:
+    dataset.plot(spec)
 
 
 # %%
 dataset.get_units()
-dataset.cluster_ids(min_sample=2)
+dataset.cluster_ids(min_sample=10)
 dataset.prepare_interactive_data()
 
 
 from pykanto.utils.read import load_dataset
+from pykanto.utils.write import save_to_jsons
 
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
 dataset = load_dataset(out_dir)
 
 
+# If you want to save the dataset as a .csv file,
+# which I recommend you do as backup,
+csv_dir = dataset.DIRS.DATASET.parent
+dataset.to_csv(csv_dir)
+
+
+# If you want to save the new metadata you have generated
+# (vocalisation type labels and onset/offsets, for example)
+# to the original .json files (as a backup or to use with other software):
+from pykanto.utils.write import save_to_jsons
+
+save_to_jsons(dataset)
+
+
 dataset.open_label_app()
+dataset = dataset.reload()
+dataset.vocs
 
 dataset.vocs.head()
 dataset.to_csv(dataset.DIRS.DATASET.parent)
@@ -484,8 +500,13 @@ recover_csv = pd.read_csv(
 np_str = recover_csv["silence_durations"]
 dataset.vocs["unit_durations"][0]
 
+
+# recover dataframe with correct column types from saved csv file:
+
 import ast
+
 import numpy as np
+import pandas as pd
 
 
 def from_np_array(array_string):
@@ -496,8 +517,13 @@ def from_np_array(array_string):
 df2 = pd.read_csv(
     dataset.DIRS.DATASET.parent / "TEST_VOCS.csv",
     index_col=0,
-    converters={"images": from_np_array},
+    converters={"unit_durations": from_np_array},
 )
+
+df2["unit_durations"]
+
+######
+
 dataset.vocs.info()
 
 for col in dataset.vocs.columns:
