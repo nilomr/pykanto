@@ -43,7 +43,7 @@ from pykanto.utils.compute import (
     print_dict,
     timing,
     to_iterator,
-    tqdmm,
+    with_pbar,
 )
 from pykanto.utils.paths import ProjDirs
 from pykanto.utils.read import _get_json, _get_json_parallel
@@ -269,7 +269,7 @@ class KantoData:
         if n_jsonfiles < 100:
             jsons = [
                 _get_json(json)
-                for json in tqdmm(
+                for json in with_pbar(
                     self.DIRS.JSON_LIST,
                     desc="Loading JSON files",
                     total=n_jsonfiles,
@@ -436,6 +436,27 @@ class KantoData:
         """
 
         kplot.build_plot_summary(self, nbins=nbins, variable=variable)
+
+    def plot(self, key: str, **kwargs) -> None:
+        """
+        Plot an spectrogram present in the KantoData instance.
+
+        Args:
+            key (str): Key of the spectrogram.
+            kwargs: passed to :func:`~pykanto.plot.melspectrogram`
+
+        Examples:
+            Plot the first 10 specrograms in the vocalisations dataframe:
+            >>> for spec in dataset.vocs.index[:10]:
+            ...     dataset.plot(spec)
+
+        """
+        kplot.melspectrogram(
+            self.vocs.at[key, "spectrogram_loc"],
+            parameters=self.parameters,
+            title=Path(key).stem,
+            **kwargs,
+        )
 
     def sample_info(self) -> None:
         """
@@ -869,14 +890,14 @@ class KantoData:
                 spec_length=spec_length_frames,
                 song_level=song_level,
             )
-            for individual in tqdmm(
+            for individual in with_pbar(
                 indvs, desc="Initiate: Prepare interactive visualisation"
             )
         ]
 
         dt = [
             obj
-            for obj in tqdmm(
+            for obj in with_pbar(
                 to_iterator(obj_ids),
                 desc="Prepare interactive visualisation",
                 total=len(indvs),
