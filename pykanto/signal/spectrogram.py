@@ -25,7 +25,7 @@ from pykanto.utils.compute import (
     get_chunks,
     print_parallel_info,
     to_iterator,
-    tqdmm,
+    with_pbar,
 )
 from pykanto.utils.write import makedir
 
@@ -145,7 +145,7 @@ def _save_melspectrogram_parallel(
         _save_melspectrogram_r.remote(dataset_ref, i, **kwargs) for i in chunks
     ]
     pbar = {"desc": "Preparing spectrograms", "total": n_chunks}
-    spec_locs = [obj_id for obj_id in tqdmm(to_iterator(obj_ids), **pbar)]
+    spec_locs = [obj_id for obj_id in with_pbar(to_iterator(obj_ids), **pbar)]
 
     # Flatten and return
     return dictlist_to_dict(flatten_list(spec_locs))
@@ -453,7 +453,7 @@ def get_indv_units_parallel(
         "desc": "Calculating and saving unit spectrograms",
         "total": n_chunks,
     }
-    dic_locs = [obj_id for obj_id in tqdmm(to_iterator(obj_ids), **pbar)]
+    dic_locs = [obj_id for obj_id in with_pbar(to_iterator(obj_ids), **pbar)]
 
     # Flatten and return as a dictionary
     return dictlist_to_dict(dic_locs)

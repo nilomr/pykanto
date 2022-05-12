@@ -37,7 +37,7 @@ from pykanto.utils.compute import (
     print_parallel_info,
     timing,
     to_iterator,
-    tqdmm,
+    with_pbar,
 )
 from pykanto.utils.custom import parse_sonic_visualiser_xml
 from pykanto.utils.types import (
@@ -459,7 +459,7 @@ def segment_files(
     elif isinstance(datapaths, tuple):
         datapaths = [datapaths]
 
-    for wav_dir, metadata_dir in tqdmm(
+    for wav_dir, metadata_dir in with_pbar(
         datapaths,
         desc="Finding and saving audio segments and their metadata",
         disable=False if pbar else True,
@@ -553,7 +553,7 @@ def segment_files_parallel(
         "desc": "Finding and saving audio segments and their metadata",
         "total": n_chunks,
     }
-    [obj_id for obj_id in tqdmm(to_iterator(obj_ids), **pbar)]
+    [obj_id for obj_id in with_pbar(to_iterator(obj_ids), **pbar)]
 
 
 def get_segment_info(
@@ -797,7 +797,7 @@ def segment_song_into_units_parallel(
         for i in chunks
     ]
     pbar = {"desc": "Finding units in vocalisations", "total": n_chunks}
-    units = [obj_id for obj_id in tqdmm(to_iterator(obj_ids), **pbar)]
+    units = [obj_id for obj_id in with_pbar(to_iterator(obj_ids), **pbar)]
 
     # Flatten and return
     return flatten_list(units)

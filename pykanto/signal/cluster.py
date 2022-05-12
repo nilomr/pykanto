@@ -25,7 +25,7 @@ from pykanto.utils.compute import (
     get_chunks,
     print_parallel_info,
     to_iterator,
-    tqdmm,
+    with_pbar,
 )
 from umap import UMAP
 
@@ -286,7 +286,7 @@ def reduce_and_cluster_parallel(
         "desc": "Projecting and clustering vocalisations",
         "total": n_chunks,
     }
-    dfls = [obj_id for obj_id in tqdmm(to_iterator(obj_ids), **pbar)]
+    dfls = [obj_id for obj_id in with_pbar(to_iterator(obj_ids), **pbar)]
 
     # Minimally check output
     try:
