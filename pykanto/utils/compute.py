@@ -46,9 +46,11 @@ def to_iterator(obj_ids, breaks: bool = True):
         gc.collect()
 
 
-def tqdmm(iterable: Iterable[Any], desc: str | None = None, **kwargs) -> tqdm:
+def with_pbar(
+    iterable: Iterable[Any], desc: str | None = None, **kwargs
+) -> tqdm:
     """
-    Returns a custom progress bar. This is just a wrapper around tqdmm.
+    Returns a custom progress bar. This is just a wrapper around with_pbar.
 
     Args:
         iterable (Iterable[Any]): Object to iterate on.

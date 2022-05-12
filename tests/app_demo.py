@@ -38,7 +38,7 @@ from bokeh.palettes import Set3_12
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import get_segment_info, segment_files_parallel
-from pykanto.utils.compute import flatten_list, to_iterator, tqdmm
+from pykanto.utils.compute import flatten_list, to_iterator, with_pbar
 from pykanto.utils.custom import (
     chipper_units_to_json,
     parse_sonic_visualiser_xml,

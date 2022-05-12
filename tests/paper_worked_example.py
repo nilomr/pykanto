@@ -46,7 +46,7 @@ from pykanto.signal.segment import (
     ReadWav,
     SegmentMetadata,
 )
-from pykanto.utils.compute import flatten_list, to_iterator, tqdmm
+from pykanto.utils.compute import flatten_list, to_iterator, with_pbar
 from pykanto.utils.custom import (
     chipper_units_to_json,
     parse_sonic_visualiser_xml,

@@ -18,7 +18,7 @@ from pykanto.utils.compute import (
     print_dict,
     print_parallel_info,
     to_iterator,
-    tqdmm,
+    with_pbar,
 )
 from pykanto.utils.read import read_json
 from pykanto.utils.types import ValidDirs
@@ -168,7 +168,7 @@ class ProjDirs:
                 a different location to where the rest of the data are.
                 Defaults to False.
         """
-
+        # TODO@nilomr: #11 Path to spectrogram .npy files breaks if dataset changes location
         if not hasattr(self, "SEGMENTED"):
             raise KeyError(
                 "This ProjDirs object does not have a SEGMENTED attribute. "
@@ -250,7 +250,7 @@ class ProjDirs:
             "desc": "Updating the `wav_file` field in JSON metadata files.",
             "total": n_chunks,
         }
-        for obj_id in tqdmm(to_iterator(obj_ids), **pbar):
+        for obj_id in with_pbar(to_iterator(obj_ids), **pbar):
             pass
 
         print("Done")

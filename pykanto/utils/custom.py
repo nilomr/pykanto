@@ -12,7 +12,7 @@ from xml.etree import ElementTree
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-from pykanto.utils.compute import timing, tqdmm
+from pykanto.utils.compute import timing, with_pbar
 from pykanto.utils.paths import get_file_paths
 from pykanto.utils.read import read_json
 
@@ -131,7 +131,7 @@ def chipper_units_to_json(
     if len([gzip for gzip in gzips if gzip in jsons]) == 0:
         raise KeyError("No JSON and GZIP file names match")
 
-    for gz_name, gz_path in tqdmm(
+    for gz_name, gz_path in with_pbar(
         gzips.items(),
         desc="Adding unit onset/offset information "
         "from .gzip to .json files",

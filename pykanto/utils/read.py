@@ -21,7 +21,7 @@ from pykanto.utils.compute import (
     get_chunks,
     print_parallel_info,
     to_iterator,
-    tqdmm,
+    with_pbar,
 )
 
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
@@ -81,7 +81,7 @@ def _get_json_parallel(
     # Distribute with ray
     obj_ids = [_get_json_r.remote(i) for i in chunks]
     pbar = {"desc": "Loading JSON files", "total": n_chunks}
-    jsons = [obj_id for obj_id in tqdmm(to_iterator(obj_ids), **pbar)]
+    jsons = [obj_id for obj_id in with_pbar(to_iterator(obj_ids), **pbar)]
 
     # Flatten and return
     return flatten_list(jsons)
