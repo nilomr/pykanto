@@ -419,7 +419,7 @@ title="Source repository"
     <span class="n">get_chunks</span><span class="p">,</span>
     <span class="n">print_parallel_info</span><span class="p">,</span>
     <span class="n">to_iterator</span><span class="p">,</span>
-    <span class="n">tqdmm</span><span class="p">,</span>
+    <span class="n">with_pbar</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># ─── FUNCTIONS ────────────────────────────────────────────────────────────────</span>
@@ -479,7 +479,7 @@ title="Source repository"
     <span class="c1"># Distribute with ray</span>
     <span class="n">obj_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_json_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">]</span>
     <span class="n">pbar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Loading JSON files&quot;</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">n_chunks</span><span class="p">}</span>
-    <span class="n">jsons</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
+    <span class="n">jsons</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
 
     <span class="c1"># Flatten and return</span>
     <span class="k">return</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">jsons</span><span class="p">)</span>

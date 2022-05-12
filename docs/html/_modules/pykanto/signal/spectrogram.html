@@ -423,7 +423,7 @@ title="Source repository"
     <span class="n">get_chunks</span><span class="p">,</span>
     <span class="n">print_parallel_info</span><span class="p">,</span>
     <span class="n">to_iterator</span><span class="p">,</span>
-    <span class="n">tqdmm</span><span class="p">,</span>
+    <span class="n">with_pbar</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span>
 
@@ -543,7 +543,7 @@ title="Source repository"
         <span class="n">_save_melspectrogram_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">dataset_ref</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunks</span>
     <span class="p">]</span>
     <span class="n">pbar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Preparing spectrograms&quot;</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">n_chunks</span><span class="p">}</span>
-    <span class="n">spec_locs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
+    <span class="n">spec_locs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
 
     <span class="c1"># Flatten and return</span>
     <span class="k">return</span> <span class="n">dictlist_to_dict</span><span class="p">(</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">spec_locs</span><span class="p">))</span>
@@ -851,7 +851,7 @@ title="Source repository"
         <span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Calculating and saving unit spectrograms&quot;</span><span class="p">,</span>
         <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">n_chunks</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">dic_locs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
+    <span class="n">dic_locs</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
 
     <span class="c1"># Flatten and return as a dictionary</span>
     <span class="k">return</span> <span class="n">dictlist_to_dict</span><span class="p">(</span><span class="n">dic_locs</span><span class="p">)</span></div>

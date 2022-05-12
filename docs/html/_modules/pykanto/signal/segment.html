@@ -435,7 +435,7 @@ title="Source repository"
     <span class="n">print_parallel_info</span><span class="p">,</span>
     <span class="n">timing</span><span class="p">,</span>
     <span class="n">to_iterator</span><span class="p">,</span>
-    <span class="n">tqdmm</span><span class="p">,</span>
+    <span class="n">with_pbar</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.custom</span> <span class="kn">import</span> <span class="n">parse_sonic_visualiser_xml</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.types</span> <span class="kn">import</span> <span class="p">(</span>
@@ -838,7 +838,7 @@ title="Source repository"
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datapaths</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">datapaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">datapaths</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">wav_dir</span><span class="p">,</span> <span class="n">metadata_dir</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
+    <span class="k">for</span> <span class="n">wav_dir</span><span class="p">,</span> <span class="n">metadata_dir</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span>
         <span class="n">datapaths</span><span class="p">,</span>
         <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Finding and saving audio segments and their metadata&quot;</span><span class="p">,</span>
         <span class="n">disable</span><span class="o">=</span><span class="kc">False</span> <span class="k">if</span> <span class="n">pbar</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
@@ -932,7 +932,7 @@ title="Source repository"
         <span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Finding and saving audio segments and their metadata&quot;</span><span class="p">,</span>
         <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">n_chunks</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span></div>
+    <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="get_segment_info"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.get_segment_info">[docs]</a><span class="k">def</span> <span class="nf">get_segment_info</span><span class="p">(</span>
@@ -1176,7 +1176,7 @@ title="Source repository"
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunks</span>
     <span class="p">]</span>
     <span class="n">pbar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Finding units in vocalisations&quot;</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">n_chunks</span><span class="p">}</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
 
     <span class="c1"># Flatten and return</span>
     <span class="k">return</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">units</span><span class="p">)</span></div>

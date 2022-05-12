@@ -413,7 +413,7 @@ title="Source repository"
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">ssl</span>
 
-<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">tqdmm</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">with_pbar</span>
 
 
 <span class="c1"># Disable certificate verification</span>
@@ -490,7 +490,7 @@ title="Source repository"
     <span class="c1"># Gather already downloaded files and redownload files</span>
     <span class="n">existing_files</span><span class="p">,</span> <span class="n">redownload_files</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
 
-    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Downloading files&quot;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">meta</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Downloading files&quot;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">meta</span><span class="p">)):</span>
 
         <span class="c1"># Keep track of the most recently downloaded file</span>
         <span class="n">recent</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;in_progress.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>

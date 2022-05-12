@@ -410,7 +410,7 @@ title="Source repository"
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">timing</span><span class="p">,</span> <span class="n">tqdmm</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">timing</span><span class="p">,</span> <span class="n">with_pbar</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">get_file_paths</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.read</span> <span class="kn">import</span> <span class="n">read_json</span>
 
@@ -529,7 +529,7 @@ title="Source repository"
     <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">gzip</span> <span class="k">for</span> <span class="n">gzip</span> <span class="ow">in</span> <span class="n">gzips</span> <span class="k">if</span> <span class="n">gzip</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No JSON and GZIP file names match&quot;</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">gz_name</span><span class="p">,</span> <span class="n">gz_path</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
+    <span class="k">for</span> <span class="n">gz_name</span><span class="p">,</span> <span class="n">gz_path</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span>
         <span class="n">gzips</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
         <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Adding unit onset/offset information &quot;</span>
         <span class="s2">&quot;from .gzip to .json files&quot;</span><span class="p">,</span>

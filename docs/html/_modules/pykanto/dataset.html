@@ -442,7 +442,7 @@ title="Source repository"
     <span class="n">print_dict</span><span class="p">,</span>
     <span class="n">timing</span><span class="p">,</span>
     <span class="n">to_iterator</span><span class="p">,</span>
-    <span class="n">tqdmm</span><span class="p">,</span>
+    <span class="n">with_pbar</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.read</span> <span class="kn">import</span> <span class="n">_get_json</span><span class="p">,</span> <span class="n">_get_json_parallel</span>
@@ -668,7 +668,7 @@ title="Source repository"
         <span class="k">if</span> <span class="n">n_jsonfiles</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
             <span class="n">jsons</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">_get_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
+                <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">,</span>
                     <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading JSON files&quot;</span><span class="p">,</span>
                     <span class="n">total</span><span class="o">=</span><span class="n">n_jsonfiles</span><span class="p">,</span>
@@ -1371,14 +1371,14 @@ title="Source repository"
                 <span class="n">spec_length</span><span class="o">=</span><span class="n">spec_length_frames</span><span class="p">,</span>
                 <span class="n">song_level</span><span class="o">=</span><span class="n">song_level</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">individual</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
+            <span class="k">for</span> <span class="n">individual</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span>
                 <span class="n">indvs</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Initiate: Prepare interactive visualisation&quot;</span>
             <span class="p">)</span>
         <span class="p">]</span>
 
         <span class="n">dt</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">obj</span>
-            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">tqdmm</span><span class="p">(</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span>
                 <span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span>
                 <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Prepare interactive visualisation&quot;</span><span class="p">,</span>
                 <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">indvs</span><span class="p">),</span>

@@ -21,7 +21,7 @@ pykanto.utils.compute
       print_parallel_info
       timing
       to_iterator
-      tqdmm
+      with_pbar
    
    
 
