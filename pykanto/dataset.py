@@ -283,6 +283,12 @@ class KantoData:
 
         self.metadata = {Path(json["wav_file"]).stem: json for json in jsons}
 
+        # Match wav_file field with actual wav_file location for this dataset:
+        # Partially fixes nilomr/pykanto#12
+
+        for wavfile in self.DIRS.WAV_LIST:
+            self.metadata[wavfile.stem]["wav_file"] = wavfile
+
     def _get_unique_ids(self) -> None:
         """
         Adds a 'unique_ID' attribute holding an array with unique IDs in the
