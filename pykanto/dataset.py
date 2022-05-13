@@ -287,7 +287,7 @@ class KantoData:
         # Partially fixes nilomr/pykanto#12
 
         for wavfile in self.DIRS.WAV_LIST:
-            self.metadata[wavfile.stem]["wav_file"] = wavfile
+            self.metadata[wavfile.stem]["wav_file"] = wavfile.as_posix()
 
     def _get_unique_ids(self) -> None:
         """
