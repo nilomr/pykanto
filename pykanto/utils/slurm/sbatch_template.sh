@@ -20,9 +20,12 @@
 # Load modules or your own conda environment here
 # module load pytorch/v1.4.0-gpu
 # conda activate {{CONDA_ENV}}
+# {{LOAD_ENV}}
+
 
 module load Anaconda3
-{{LOAD_ENV}}
+export CONPREFIX=$DATA/envs/{{LOAD_ENV}}
+source activate $CONPREFIX
 
 echo $CUDA_VISIBLE_DEVICES
 nvidia-smi

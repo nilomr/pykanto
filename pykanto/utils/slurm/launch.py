@@ -106,7 +106,8 @@ def submit_job():
         "-env",
         type=str,
         default="",
-        help="The script to load your environment, e.g. 'source activate $CONDAENV'",
+        help=("The name of your environment. Note: you have to provide "
+              "the location of your envs in the `sbatch_template.sh` file"),
     )
     parser.add_argument(
         "--command",
