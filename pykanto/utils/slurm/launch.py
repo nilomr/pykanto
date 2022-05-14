@@ -106,7 +106,7 @@ def submit_job():
         "-env",
         type=str,
         default="",
-        help="The script to load your environment, e.g. 'module load cuda/10.1'",
+        help="The script to load your environment, e.g. 'source activate $CONDAENV'",
     )
     parser.add_argument(
         "--command",
