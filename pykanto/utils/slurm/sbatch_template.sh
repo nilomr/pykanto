@@ -27,6 +27,10 @@ module load Anaconda3
 export CONPREFIX=$DATA/envs/greti-env
 source activate $CONPREFIX
 
+# module load Anaconda3
+# export CONPREFIX=$DATA/envs/greti-env
+# source activate $CONPREFIX
+
 echo $CUDA_VISIBLE_DEVICES
 nvidia-smi
 
