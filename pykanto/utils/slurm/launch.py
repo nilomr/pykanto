@@ -106,6 +106,7 @@ def submit_job():
         "-env",
         type=str,
         default="",
+        required=True,
         help=("The name of your environment. Note: you have to provide "
               "the location of your envs in the `sbatch_template.sh` file"),
     )
@@ -157,3 +158,7 @@ def submit_job():
         f"Log file is at: {str(out_dir / job_name)}.log"
     )
     sys.exit(0)
+
+
+if __name__ == "__main__":
+    submit_job()
