@@ -96,6 +96,6 @@ reduce overhead. `pykanto` has a simple wrapper function to do this:
 from pykanto.utils.write import make_tarfile 
 out_dir = DIRS.SEGMENTED / 'JSON.tar.gz'
 in_dir = DIRS.SEGMENTED / 'JSON'
-make_tarfile(out_dir, in_dir)
+make_tarfile(in_dir, out_dir)
 ```
 ````
