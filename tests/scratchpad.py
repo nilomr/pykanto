@@ -37,7 +37,6 @@ import ray
 import seaborn as sns
 import soundfile as sf
 from bokeh.palettes import Set3_12
-from importlib_resources import files
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import (
@@ -533,3 +532,40 @@ for col in dataset.vocs.columns:
 VIstring = ",".join(["%.5f" % num for num in np_str])
 
 np.fromstring(np_str, sep=" ")
+
+
+#Test moving dataset location
+
+
+DATASET_ID = "GREAT_TIT"
+DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
+PROJECT = Path(DATA_PATH).parent
+RAW_DATA = DATA_PATH / "segmented" / "great_tit"
+DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+
+params = Parameters(dereverb=True, verbose=False)
+dataset = KantoData(
+    DATASET_ID,
+    DIRS,
+    parameters=params,
+    overwrite_dataset=True,
+    overwrite_data=True,
+)
+out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
+dataset = load_dataset(out_dir)
+dataset.segment_into_units()
+dataset.get_units()
+dataset.cluster_ids(min_sample=5)
+dataset.prepare_interactive_data()
+
+
+import shutil
+move_to = out_dir.parents[1]/f'{out_dir.stem}_MOVED'
+shutil.move(out_dir.parent, move_to)
+
+moved_dataset = move_to /f"{DATASET_ID}.db"
+dataset = load_dataset(moved_dataset)
+
+dataset.plot(dataset.vocs.index[0])
+
+dataset.DIRS._deep_update_paths()
