@@ -534,7 +534,7 @@ VIstring = ",".join(["%.5f" % num for num in np_str])
 np.fromstring(np_str, sep=" ")
 
 
-#Test moving dataset location
+# ──── TEST MOVING DATASET LOCATION ─────────────────────────────────────────────
 
 
 DATASET_ID = "GREAT_TIT"
@@ -560,12 +560,31 @@ dataset.prepare_interactive_data()
 
 
 import shutil
-move_to = out_dir.parents[1]/f'{out_dir.stem}_MOVED'
+
+move_to = out_dir.parents[1] / f"{out_dir.stem}_MOVED"
 shutil.move(out_dir.parent, move_to)
 
-moved_dataset = move_to /f"{DATASET_ID}.db"
+moved_dataset = move_to / f"{DATASET_ID}.db"
 dataset = load_dataset(moved_dataset)
 
 dataset.plot(dataset.vocs.index[0])
 
-dataset.DIRS._deep_update_paths()
+testpath = dataset.vocs["spectrogram_loc"][0]
+
+
+def make_relpath(path: Path):
+    return path.relative_to(path.parents[3])
+
+
+make_relpath(testpath)
+dataset.vocs["spectrogram_loc"] = dataset.vocs["spectrogram_loc"].apply(
+    lambda x: make_relpath(x)
+)
+
+
+p = dataset.vocs["spectrogram_loc"][0].parts[0]
+
+p.relative_to(p.parents[3])
+
+
+dataset.DIRS._deep_update_paths(PROJECT, NEW_PROJECT)
