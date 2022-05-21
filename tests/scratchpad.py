@@ -550,6 +550,7 @@ dataset = KantoData(
     parameters=params,
     overwrite_dataset=True,
     overwrite_data=True,
+    random_subset=10,
 )
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
 dataset = load_dataset(out_dir)
@@ -565,7 +566,22 @@ move_to = out_dir.parents[1] / f"{out_dir.stem}_MOVED"
 shutil.move(out_dir.parent, move_to)
 
 moved_dataset = move_to / f"{DATASET_ID}.db"
+
+
+def relink_kantodata(dataset_location: Path, path: Path):
+    return Path(*dataset_location.parent.parts) / Path(*path.parts[-3:])
+
+
 dataset = load_dataset(moved_dataset)
+if not dataset.vocs["spectrogram_loc"][0].is_file():
+    dataset.vocs["spectrogram_loc"] = dataset.vocs["spectrogram_loc"].apply(
+        lambda x: relink_kantodata(moved_dataset, x)
+    )
+if not dataset.vocs["spectrogram_loc"][0].is_file():
+    raise FileNotFoundError("Failed to reconnect spectrogram data")
+
+print(dataset.DIRS)
+
 
 dataset.plot(dataset.vocs.index[0])
 
