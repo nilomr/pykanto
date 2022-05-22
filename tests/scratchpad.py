@@ -558,8 +558,9 @@ dataset.get_units()
 dataset.cluster_ids(min_sample=5)
 dataset.prepare_interactive_data()
 
-
+print(dataset.DIRS.UNIT_LABELS)
 import shutil
+dataset.vocs[['source_wav', 'wav_file', 'spectrogram_loc' ]]
 
 move_to = out_dir.parents[1] / f"{out_dir.stem}_MOVED"
 shutil.move(out_dir.parent, move_to)
