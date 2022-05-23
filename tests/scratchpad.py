@@ -550,6 +550,7 @@ dataset = KantoData(
     parameters=params,
     overwrite_dataset=True,
     overwrite_data=True,
+    random_subset=10,
 )
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
 dataset = load_dataset(out_dir)
@@ -558,34 +559,86 @@ dataset.get_units()
 dataset.cluster_ids(min_sample=5)
 dataset.prepare_interactive_data()
 
-print(dataset.DIRS.UNIT_LABELS)
+
 import shutil
-dataset.vocs[['source_wav', 'wav_file', 'spectrogram_loc' ]]
 
 move_to = out_dir.parents[1] / f"{out_dir.stem}_MOVED"
 shutil.move(out_dir.parent, move_to)
-
 moved_dataset = move_to / f"{DATASET_ID}.db"
-dataset = load_dataset(moved_dataset)
 
+
+def load_dataset(dataset_dir: Path, relink_data: bool = True) -> KantoData:
+    """
+    Load an existing dataset. NOTE: temporaty fix.
+
+    Args:
+        dataset_dir (Path): Path to the dataset file (*.db)
+        relink_data (bool, optional): Whether to make update dataset paths.
+            Defaults to True.
+
+    Raises:
+        FileNotFoundError: _description_
+
+    Returns:
+        KantoData: _description_
+    """
+
+    def relink_kantodata(dataset_location: Path, path: Path):
+        index = path.parts.index("spectrograms")
+        return dataset_location.parent.joinpath(*path.parts[index:])
+
+    dataset = pickle.load(open(dataset_dir, "rb"))
+    if relink_data:
+
+        if not dataset.vocs["spectrogram_loc"][0].is_file():
+            dataset.vocs["spectrogram_loc"] = dataset.vocs[
+                "spectrogram_loc"
+            ].apply(lambda x: relink_kantodata(moved_dataset, x))
+        if not dataset.vocs["spectrogram_loc"][0].is_file():
+            raise FileNotFoundError("Failed to reconnect spectrogram data")
+
+        for k, v in dataset.DIRS.__dict__.items():
+            if k in ["SPECTROGRAMS", "UNITS", "UNIT_LABELS"]:
+                if isinstance(v, Path):
+                    dataset.DIRS.__dict__[k] = relink_kantodata(
+                        moved_dataset, v
+                    )
+                elif isinstance(v, list):
+                    dataset.DIRS.__dict__[k] = [
+                        relink_kantodata(moved_dataset, path) for path in v
+                    ]
+                elif isinstance(v, dict):
+                    for k1, v1 in v.items():  # Level 1
+                        if isinstance(v1, Path):
+                            dataset.DIRS.__dict__[k][k1] = relink_kantodata(
+                                moved_dataset, v1
+                            )
+                        elif isinstance(v1, dict):
+                            for k2, v2 in v1.items():
+                                dataset.DIRS.__dict__[k][k1][
+                                    k2
+                                ] = relink_kantodata(moved_dataset, v2)
+                        elif k1 == "already_checked":
+                            continue
+    return dataset
+
+
+#%%
+
+dataset = load_dataset(moved_dataset)
 dataset.plot(dataset.vocs.index[0])
 
-testpath = dataset.vocs["spectrogram_loc"][0]
 
-
-def make_relpath(path: Path):
-    return path.relative_to(path.parents[3])
-
-
-make_relpath(testpath)
-dataset.vocs["spectrogram_loc"] = dataset.vocs["spectrogram_loc"].apply(
-    lambda x: make_relpath(x)
-)
-
-
-p = dataset.vocs["spectrogram_loc"][0].parts[0]
-
-p.relative_to(p.parents[3])
-
-
+# Fix #13 : all paths at same level and stored in dataframe
 dataset.DIRS._deep_update_paths(PROJECT, NEW_PROJECT)
+
+
+test_path = dataset.vocs["spectrogram_loc"][0]
+
+index = path.parts.index("spectrograms")
+new_path = moved_dataset.parent.joinpath(*path.parts[index:])
+
+
+pd.DataFrame.from_dict(
+    dataset.DIRS.UNITS, orient="index", columns=["path"]
+).loc["B32"][0]
