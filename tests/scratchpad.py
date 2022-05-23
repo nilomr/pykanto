@@ -553,7 +553,7 @@ dataset = KantoData(
     random_subset=10,
 )
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-dataset = load_dataset(out_dir)
+dataset = load_dataset(out_dir, DIRS)
 dataset.segment_into_units()
 dataset.get_units()
 dataset.cluster_ids(min_sample=5)
@@ -567,12 +567,15 @@ shutil.move(out_dir.parent, move_to)
 moved_dataset = move_to / f"{DATASET_ID}.db"
 
 
-def load_dataset(dataset_dir: Path, relink_data: bool = True) -> KantoData:
+def load_dataset(
+    dataset_dir: Path, DIRS: ProjDirs, relink_data: bool = True
+) -> KantoData:
     """
     Load an existing dataset. NOTE: temporaty fix.
 
     Args:
         dataset_dir (Path): Path to the dataset file (*.db)
+        DIRS (ProjDirs): New project directories
         relink_data (bool, optional): Whether to make update dataset paths.
             Defaults to True.
 
@@ -589,6 +592,14 @@ def load_dataset(dataset_dir: Path, relink_data: bool = True) -> KantoData:
 
     dataset = pickle.load(open(dataset_dir, "rb"))
     if relink_data:
+
+        # Update ProjDirs section
+        for k, v in dataset.DIRS.__dict__.items():
+            if k in DIRS.__dict__:
+                setattr(dataset.DIRS, k, getattr(DIRS, k))
+
+        # Update dataset location
+        setattr(kakaset.DIRS, "DATASET", dataset_dir)
 
         if not dataset.vocs["spectrogram_loc"][0].is_file():
             dataset.vocs["spectrogram_loc"] = dataset.vocs[
@@ -625,9 +636,32 @@ def load_dataset(dataset_dir: Path, relink_data: bool = True) -> KantoData:
 
 #%%
 
-dataset = load_dataset(moved_dataset)
-dataset.plot(dataset.vocs.index[0])
 
+kakaset = load_dataset(
+    Path("/home/nilomr/Downloads/GREAT_TITS/GREAT_TIT.db"), DIRS
+)
+kakaset.plot(dataset.vocs.index[0])
+
+kakaset.prepare_interactive_data()
+kakaset.open_label_app()
+
+
+print(DIRS)
+
+DATASET_ID = "GREAT_TIT"
+DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
+PROJECT = Path("/home/nilomr/Downloads/")
+RAW_DATA = PROJECT
+DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+
+
+for k, v in kakaset.DIRS.__dict__.items():
+    if k in DIRS.__dict__:
+        setattr(kakaset.DIRS, k, getattr(DIRS, k))
+
+kakaset.DIRS
+
+print(kakaset.DIRS)
 
 # Fix #13 : all paths at same level and stored in dataframe
 dataset.DIRS._deep_update_paths(PROJECT, NEW_PROJECT)

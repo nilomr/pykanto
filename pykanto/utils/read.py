@@ -6,14 +6,17 @@ Functions to read external files -e.g. JSON- efficiently.
 
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
 from __future__ import annotations
-from pathlib import Path
+
 import pickle
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List
+
 import ray
 import ujson as json
 
 if TYPE_CHECKING:
     from pykanto.dataset import KantoData
+    from pykanto.utils.paths import ProjDirs
 
 from pykanto.utils.compute import (
     calc_chunks,
@@ -27,12 +30,15 @@ from pykanto.utils.compute import (
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
 
 
-def load_dataset(dataset_dir: Path, relink_data: bool = True) -> KantoData:
+def load_dataset(
+    dataset_dir: Path, DIRS: ProjDirs, relink_data: bool = True
+) -> KantoData:
     """
     Load an existing dataset. NOTE: temporaty fix.
 
     Args:
         dataset_dir (Path): Path to the dataset file (*.db)
+        DIRS (ProjDirs): New project directories
         relink_data (bool, optional): Whether to make update dataset paths.
             Defaults to True.
 
@@ -49,6 +55,14 @@ def load_dataset(dataset_dir: Path, relink_data: bool = True) -> KantoData:
 
     dataset = pickle.load(open(dataset_dir, "rb"))
     if relink_data:
+
+        # Update ProjDirs section
+        for k, v in dataset.DIRS.__dict__.items():
+            if k in DIRS.__dict__:
+                setattr(dataset.DIRS, k, getattr(DIRS, k))
+
+        # Update dataset location
+        setattr(dataset.DIRS, "DATASET", dataset_dir)
 
         if not dataset.vocs["spectrogram_loc"][0].is_file():
             dataset.vocs["spectrogram_loc"] = dataset.vocs[
