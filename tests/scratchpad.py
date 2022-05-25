@@ -543,14 +543,14 @@ PROJECT = Path(DATA_PATH).parent
 RAW_DATA = DATA_PATH / "segmented" / "great_tit"
 DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
 
-params = Parameters(dereverb=True, verbose=False)
+params = Parameters(dereverb=True, verbose=False, song_level=True)
 dataset = KantoData(
     DATASET_ID,
     DIRS,
     parameters=params,
     overwrite_dataset=True,
     overwrite_data=True,
-    random_subset=10,
+    random_subset=100,
 )
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
 dataset = load_dataset(out_dir, DIRS)
@@ -565,6 +565,15 @@ import shutil
 move_to = out_dir.parents[1] / f"{out_dir.stem}_MOVED"
 shutil.move(out_dir.parent, move_to)
 moved_dataset = move_to / f"{DATASET_ID}.db"
+
+
+#%%
+
+DATASET_ID = "GREAT_TIT"
+DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
+PROJECT = Path("/home/nilomr/Downloads/")
+RAW_DATA = PROJECT
+DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
 
 
 def load_dataset(
@@ -599,48 +608,49 @@ def load_dataset(
                 setattr(dataset.DIRS, k, getattr(DIRS, k))
 
         # Update dataset location
-        setattr(kakaset.DIRS, "DATASET", dataset_dir)
+        setattr(dataset.DIRS, "DATASET", dataset_dir)
 
         if not dataset.vocs["spectrogram_loc"][0].is_file():
             dataset.vocs["spectrogram_loc"] = dataset.vocs[
                 "spectrogram_loc"
-            ].apply(lambda x: relink_kantodata(moved_dataset, x))
+            ].apply(lambda x: relink_kantodata(dataset_dir, x))
         if not dataset.vocs["spectrogram_loc"][0].is_file():
             raise FileNotFoundError("Failed to reconnect spectrogram data")
 
         for k, v in dataset.DIRS.__dict__.items():
-            if k in ["SPECTROGRAMS", "UNITS", "UNIT_LABELS"]:
+            if k in [
+                "SPECTROGRAMS",
+                "UNITS",
+                "UNIT_LABELS",
+                "AVG_UNITS",
+                "VOCALISATION_LABELS",
+            ]:
                 if isinstance(v, Path):
-                    dataset.DIRS.__dict__[k] = relink_kantodata(
-                        moved_dataset, v
-                    )
+                    dataset.DIRS.__dict__[k] = relink_kantodata(dataset_dir, v)
                 elif isinstance(v, list):
                     dataset.DIRS.__dict__[k] = [
-                        relink_kantodata(moved_dataset, path) for path in v
+                        relink_kantodata(dataset_dir, path) for path in v
                     ]
                 elif isinstance(v, dict):
                     for k1, v1 in v.items():  # Level 1
                         if isinstance(v1, Path):
                             dataset.DIRS.__dict__[k][k1] = relink_kantodata(
-                                moved_dataset, v1
+                                dataset_dir, v1
                             )
                         elif isinstance(v1, dict):
                             for k2, v2 in v1.items():
                                 dataset.DIRS.__dict__[k][k1][
                                     k2
-                                ] = relink_kantodata(moved_dataset, v2)
+                                ] = relink_kantodata(dataset_dir, v2)
                         elif k1 == "already_checked":
                             continue
     return dataset
 
 
-#%%
+kakaset = load_dataset(Path("/home/nilomr/Downloads/KKTEST/KKTEST.db"), DIRS)
+kakaset.plot(kakaset.vocs.index[0])
 
-
-kakaset = load_dataset(
-    Path("/home/nilomr/Downloads/GREAT_TITS/GREAT_TIT.db"), DIRS
-)
-kakaset.plot(dataset.vocs.index[0])
+print(kakaset.DIRS)
 
 kakaset.prepare_interactive_data()
 kakaset.open_label_app()
