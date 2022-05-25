@@ -72,7 +72,13 @@ def load_dataset(
             raise FileNotFoundError("Failed to reconnect spectrogram data")
 
         for k, v in dataset.DIRS.__dict__.items():
-            if k in ["SPECTROGRAMS", "UNITS", "UNIT_LABELS"]:
+            if k in [
+                "SPECTROGRAMS",
+                "UNITS",
+                "UNIT_LABELS",
+                "AVG_UNITS",
+                "VOCALISATION_LABELS",
+            ]:
                 if isinstance(v, Path):
                     dataset.DIRS.__dict__[k] = relink_kantodata(dataset_dir, v)
                 elif isinstance(v, list):
