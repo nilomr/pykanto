@@ -550,7 +550,7 @@ dataset = KantoData(
     parameters=params,
     overwrite_dataset=True,
     overwrite_data=True,
-    random_subset=100,
+    random_subset=10,
 )
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
 dataset = load_dataset(out_dir, DIRS)
