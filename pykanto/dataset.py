@@ -10,20 +10,17 @@ from __future__ import annotations
 
 import copy
 import inspect
-import math
 import pickle
 import subprocess
 import warnings
+from datetime import datetime
 from pathlib import Path
 from random import sample
 from typing import List, Literal, Tuple
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import ray
-import seaborn as sns
 from bokeh.palettes import Set3_12
 
 import pykanto.plot as kplot
@@ -713,15 +710,18 @@ class KantoData:
         if verbose:
             print(f"Saved dataset to {out_dir}")
 
-    def to_csv(self, path: Path) -> None:
+    def to_csv(self, path: Path, timestamp: bool = False) -> None:
         """
         Output vocalisation (and, if present, unit) metadata in the dataset as
         a .csv file.
 
         Args:
             path (Path): Directory where to save the file(s).
+            timestamp (bool, optional): Whether to add timestamp to file name.
+                Defaults to False.
         """
-        self.vocs.to_csv(path / f"{self.DIRS.DATASET.stem}_VOCS.csv")
+        t = f'_{datetime.now().strftime("%H%M%S")}' if timestamp else ""
+        self.vocs.to_csv(path / f"{self.DIRS.DATASET.stem}_VOCS{t}.csv")
         if hasattr(self, "units"):
             self.units.to_csv(path / f"{self.DIRS.DATASET.stem}_UNITS.csv")
 
