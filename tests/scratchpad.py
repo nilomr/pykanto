@@ -427,7 +427,7 @@ dataset = KantoData(
 
 #%%
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-dataset = load_dataset(out_dir)
+dataset = load_dataset(out_dir, DIRS)
 
 dataset.segment_into_units()
 dataset.get_units()
@@ -503,7 +503,6 @@ dataset.vocs["unit_durations"][0]
 # recover dataframe with correct column types from saved csv file:
 
 import ast
-
 import numpy as np
 import pandas as pd
 
@@ -518,8 +517,6 @@ df2 = pd.read_csv(
     index_col=0,
     converters={"unit_durations": from_np_array},
 )
-
-df2["unit_durations"]
 
 ######
 
