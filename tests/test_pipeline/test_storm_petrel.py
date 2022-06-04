@@ -22,7 +22,7 @@ from pykanto.utils.custom import (
     chipper_units_to_json,
 )
 from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
-from pykanto.utils.read import read_json
+from pykanto.utils.read import load_dataset, read_json
 
 # ──── SETTINGS ────────────────────────────────────────────────────────────────
 
@@ -77,7 +77,7 @@ def new_dataset(DIRS):
 def dataset(DIRS):
     # Load an existing dataset
     out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-    dataset = pickle.load(open(out_dir, "rb"))
+    dataset = load_dataset(out_dir, DIRS)
     return dataset
 
 
@@ -123,7 +123,6 @@ def test_get_units(dataset):
 
 
 def test_cluster_ids(dataset):
-    dataset.reload()
     dataset.parameters.update(song_level=False)
     dataset.cluster_ids(min_sample=5)
     assert hasattr(dataset, "units")
@@ -132,7 +131,6 @@ def test_cluster_ids(dataset):
 
 
 def test_prepare_interactive_data(dataset):
-    dataset.reload()
     dataset.parameters.update(song_level=False)
     dataset.prepare_interactive_data()
     assert isinstance(
@@ -198,7 +196,7 @@ def bf_data_test_manual():
     )
 
     out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-    dataset = pickle.load(open(out_dir, "rb"))
+    dataset = load_dataset(out_dir, DIRS)
     dataset.segment_into_units()
 
     dataset.get_units()

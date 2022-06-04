@@ -49,7 +49,7 @@ def new_dataset(DIRS):
 def dataset(DIRS):
     # Load an existing dataset
     out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-    dataset = pickle.load(open(out_dir, "rb"))
+    dataset = load_dataset(out_dir, DIRS)
     return dataset
 
 
@@ -69,7 +69,6 @@ def test_get_units(dataset):
 
 
 def test_cluster_ids(dataset):
-    dataset.reload()
     for song_level in [True, False]:
         dataset.parameters.update(song_level=song_level)
         dataset.cluster_ids(min_sample=5)
@@ -128,14 +127,13 @@ def greti_data_test_manual():
         overwrite_data=True,
     )
     out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-    dataset = load_dataset(out_dir)
+    dataset = load_dataset(out_dir, DIRS)
     dataset.segment_into_units()
 
     for song_level in [True, False]:
         dataset.parameters.update(song_level=song_level)
         dataset.get_units()
 
-    dataset.reload()
     for song_level in [True, False]:
         dataset.parameters.update(song_level=song_level)
         dataset.cluster_ids(min_sample=5)
