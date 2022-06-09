@@ -19,18 +19,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from matplotlib.cm import get_cmap
 from matplotlib import gridspec
+from matplotlib.cm import get_cmap
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from matplotlib.ticker import FormatStrFormatter
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from numba.core.decorators import njit
+
+from pykanto.parameters import Parameters
 from pykanto.signal.spectrogram import (
     cut_or_pad_spectrogram,
     retrieve_spectrogram,
 )
-from pykanto.parameters import Parameters
 
 if TYPE_CHECKING:
     from pykanto.dataset import KantoData
@@ -299,6 +300,7 @@ def show_minmax_frequency(
     dataset: KantoData,
     minfreqs: np.ndarray,
     maxfreqs: np.ndarray,
+    roll_percents: list[float, float],
     key: None | str = None,
     spec: None | np.ndarray = None,
 ) -> None:
@@ -309,8 +311,10 @@ def show_minmax_frequency(
 
     Args:
         dataset (KantoData): Dataset object with your data.
-        rolloff_max (np.ndarray): Array of maximum frequencies.
-        rolloff_min (np.ndarray): Array of minimum frequencies.
+        maxfreqs (np.ndarray): Array of maximum frequencies.
+        minfreqs (np.ndarray): Array of minimum frequencies.
+        roll_percents (list[float, float]): Percentage of energy
+            contained in bins.
         key (None | str = None): Key of a vocalisation. Defaults to None.
         spec (spec: None | np.ndarray): Mel spectrogram. Defaults to None.
     """
@@ -328,8 +332,8 @@ def show_minmax_frequency(
     )
 
     ax = melspectrogram(spec, parameters=dataset.parameters, title=key)
-    ax.plot(times, maxfreqs, label="Max frequency (roll = 0.95)")
-    ax.plot(times, minfreqs, label="Min frequency (roll = 0.1)")
+    ax.plot(times, maxfreqs, label=f"Max frequency (roll = {roll_percents[0]})")
+    ax.plot(times, minfreqs, label=f"Min frequency (roll ={roll_percents[1]})")
     ax.legend(loc="upper right", frameon=False, labelcolor="w")
     plt.show()
 

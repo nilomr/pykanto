@@ -19,6 +19,8 @@ from pykanto.utils.custom import parse_sonic_visualiser_xml
 from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
 import pytest
 
+from pykanto.utils.read import load_dataset
+
 # ──── SETTINGS ─────────────────────────────────────────────────────────────────
 
 DATASET_ID = "BENGALESE_FINCH"
@@ -73,7 +75,7 @@ def new_dataset(DIRS):
 def dataset(DIRS):
     # Load an existing dataset
     out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-    dataset = pickle.load(open(out_dir, "rb"))
+    dataset = load_dataset(out_dir, DIRS)
     return dataset
 
 
@@ -111,7 +113,6 @@ def test_get_units(dataset):
 
 
 def test_cluster_ids(dataset):
-    dataset.reload()
     dataset.parameters.update(song_level=False)
     dataset.cluster_ids(min_sample=5)
     assert hasattr(dataset, "units")
@@ -120,7 +121,6 @@ def test_cluster_ids(dataset):
 
 
 def test_prepare_interactive_data(dataset):
-    dataset.reload()
     dataset.parameters.update(song_level=False)
     dataset.prepare_interactive_data()
     assert isinstance(
