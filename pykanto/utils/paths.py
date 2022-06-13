@@ -352,7 +352,9 @@ def link_project_data(origin: os.PathLike, project_data_dir: Path) -> None:
     Creates a symlink from a project's data folder (not under version control)
     to the directory where the data lives (e.g. on an external HDD).
 
-    Args: origin (os.PathLike): Path to the directory containing your 'raw' data folder.
+    Args:
+        origin (os.PathLike): Path to the directory containing your 'raw'
+            data folder.
         project_data_dir (Path): A project's data folder to link with 'origin'.
 
     Note:
@@ -362,7 +364,7 @@ def link_project_data(origin: os.PathLike, project_data_dir: Path) -> None:
 
     Raises:
         ValueError: The 'project_data_dir' already contains data or is a
-            symlink.
+        symlink.
         FileExistsError: File exists; your target folder already exists.
     """
 
