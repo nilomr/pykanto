@@ -50,7 +50,7 @@ def with_pbar(
     iterable: Iterable[Any], desc: str | None = None, **kwargs
 ) -> tqdm:
     """
-    Returns a custom progress bar. This is just a wrapper around with_pbar.
+    Returns a custom progress bar. This is just a wrapper around tqdm.
 
     Args:
         iterable (Iterable[Any]): Object to iterate on.
