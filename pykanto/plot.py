@@ -19,18 +19,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from matplotlib.cm import get_cmap
 from matplotlib import gridspec
+from matplotlib.axes import Axes
+from matplotlib.cm import get_cmap
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from matplotlib.ticker import FormatStrFormatter
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from numba.core.decorators import njit
+
+from pykanto.parameters import Parameters
 from pykanto.signal.spectrogram import (
     cut_or_pad_spectrogram,
     retrieve_spectrogram,
 )
-from pykanto.parameters import Parameters
 
 if TYPE_CHECKING:
     from pykanto.dataset import KantoData
@@ -58,8 +60,28 @@ def melspectrogram(
     title: None | str = None,
     cmap: str = "bone",
     max_lenght: None | float = None,
-    colour_bar=False,
-) -> None:
+    colour_bar=True,
+) -> Axes:
+    """
+    Plots a melspectrogram from a numpy array or path to a numpy array.
+
+    Args:
+        nparray_or_dir (Path | np.ndarray): Spectrogram array or path to a
+            stored numpy array.
+        parameters (None | Parameters, optional): Parameters used to
+            calculate the spectrogram. Defaults to None.
+        title (None | str, optional): Title for plot. Defaults to None.
+        cmap (str, optional): Matplotlib colour palette to use.
+            Defaults to "bone".
+        max_lenght (None | float, optional): Maximum length of the
+            spectrogram beyond which it will be center-cropped for plotting.
+                Defaults to None.
+        colour_bar (bool, optional): Wheter to include a colour bar
+            legend for the amplitude. Defaults to True.
+
+    Returns:
+        Axes: A matplotlib.axes.Axes instance
+    """
 
     if isinstance(nparray_or_dir, np.ndarray):
         mel_spectrogram = nparray_or_dir
@@ -90,8 +112,8 @@ def melspectrogram(
         )
 
     # Fig settings
-    back_colour = "#2F2F2F"
-    text_colour = "#c2c2c2"
+    back_colour = "white"
+    text_colour = "#636363"
     shape = mel_spectrogram.shape[::-1]
     figsize = tuple([x / 50 for x in shape])
 
@@ -108,21 +130,15 @@ def melspectrogram(
         cmap=cmap,
         ax=ax,
     )
+    # Set limits
+    spec_im.set_clim(np.min(mel_spectrogram) - 10, np.max(mel_spectrogram))
 
     # Set background in case spectrogram doesnt reach 0
     ax.set_facecolor(get_cmap(cmap)(0))
 
     # Ticks and labels
-    xlims = ax.get_xlim()
-    ax.set_xticks(
-        [
-            min(xlims),
-            max(xlims) * 0.25,
-            max(xlims) * 0.5,
-            max(xlims) * 0.75,
-            max(xlims),
-        ]
-    )
+    ax0, ax1 = (0, ax.get_xlim()[1])
+    ax.set_xticks([l for l in np.arange(ax0, ax1, 0.4)])
     ax.xaxis.set_major_formatter(FormatStrFormatter("%1.1f"))
     ax.tick_params(axis="both", which="both", length=0, colors=text_colour)
     plt.tick_params(
@@ -135,27 +151,14 @@ def melspectrogram(
 
     # Colour bar
     if colour_bar:
-        cbaxes = inset_axes(
-            ax,
-            width=0.2,
-            height="100%",
-            loc="lower left",
-            bbox_to_anchor=(1, 0, 1, 1),
-            bbox_transform=ax.transAxes,
-            borderpad=0,
-        )
-        cbar = plt.colorbar(
-            mappable=spec_im, cax=cbaxes, orientation="vertical", pad=0
-        )
-        clims = cbar.ax.get_xlim()
-        cbar.set_ticks(
-            [
-                int(x)
-                for x in [max(clims), min(clims) / 2, math.floor(min(clims))]
-            ]
-        )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size=0.2, pad=0.05)
+        cbar = plt.colorbar(spec_im, cax=cax)
         cbar.ax.tick_params(size=0, labelsize=9, pad=10, colors=text_colour)
         cbar.outline.set_visible(False)
+        cax.set_title("# of contacts")
+        cbar.ax.set_ylabel("dB", color=text_colour, size=12, labelpad=12)
+        cbar.ax.yaxis.set_label_position("right")
 
     # Title
     if isinstance(title, str):
@@ -207,14 +210,14 @@ def segmentation(
     ymin = ylmax - ysize
     patches = []
     for onset, offset in zip(*onsets_offsets):
-        # ax.axvline(onset, color="#FFFFFF", ls="-", lw=0.5, alpha=0.3)
-        # ax.axvline(offset, color="#FFFFFF", ls="-", lw=0.5, alpha=0.3)
+        ax.axvline(onset, color="#FFFFFF", ls="-", lw=0.5, alpha=0.5)
+        ax.axvline(offset, color="#FFFFFF", ls="-", lw=0.5, alpha=0.5)
         patches.append(
             Rectangle(
                 xy=(onset, ylmin), width=offset - onset, height=(ylmax - ylmin)
             )
         )
-    collection = PatchCollection(patches, color="white", alpha=0.1)
+    collection = PatchCollection(patches, color="white", alpha=0.07)
     ax.add_collection(collection)
     plt.show()
 
