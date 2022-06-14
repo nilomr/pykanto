@@ -14,8 +14,9 @@ Documentation
    contents/installation
    contents/basic-workflow
    contents/project-setup
-   contents/segmenting-files
    contents/kantodata-dataset
+   contents/segmenting-files
+   contents/interactive-app
    contents/hpc
    contents/segmentation
    contents/analysis
