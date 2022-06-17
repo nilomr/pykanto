@@ -38,6 +38,7 @@ class ProjDirs:
         PROJECT (Path): Root directory of the project.
         RAW_DATA (Path): (Immutable) location of the raw data to be used in
             this project.
+        DATASET_ID (str): Name of the dataset.
         mkdir (bool, optional): Wether to create directories if they
             don't already exist. Defaults to False.
 
@@ -45,22 +46,18 @@ class ProjDirs:
         >>> PROJROOT = Path('home' / 'user' / 'projects' / 'myproject')
         >>> RAW_DATA= Path('bigexternaldrive' / 'fieldrecordings')
         >>> DIRS = ProjDirs(PROJROOT, RAW_DATA, mkdir=True)
-        >>> print(DIRS)
-
-        Items held:
-        PROJECT:   (/user/projects/myproject)
-        DATA:      (/user/projects/myproject/data)
-        RAW_DATA:  (/bigexternaldrive/fieldrecordings)
-        SEGMENTED: (/user/projects/myproject/data/segmented/bengalese_finch)
-        RESOURCES: (/user/projects/myproject/resources)
-        REPORTS:   (/user/projects/myproject/reports)
-        FIGURES:   (/user/projects/myproject/reports/figures)
     """
 
-    def __init__(self, PROJECT: Path, RAW_DATA: Path, mkdir: bool = False):
+    def __init__(
+        self,
+        PROJECT: Path,
+        RAW_DATA: Path,
+        DATASET_ID: str,
+        mkdir: bool = False,
+    ):
 
         # Type check input paths
-        d = ValidDirs(PROJECT, RAW_DATA)
+        d = ValidDirs(PROJECT, RAW_DATA, DATASET_ID)
 
         # Define project directories
         self.PROJECT = d.PROJECT
@@ -72,16 +69,15 @@ class ProjDirs:
         self.REPORTS = d.PROJECT / "reports"
         self.FIGURES = self.REPORTS / "figures"
 
-        # Type annotations for later use within KantoData objects
-        self.DATASET: Path
-        self.SPECTROGRAMS: Path
-        self.WAV_LIST: List[Path]
-        self.JSON_LIST: List[Path]
+        self.DATASET = self.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
+        self.DATASET_ID = DATASET_ID
+        self.SPECTROGRAMS = self.DATA / "datasets" / DATASET_ID / "spectrograms"
 
         # Create them if needed
         if mkdir:
-            for path in self.__dict__.values():
-                makedir(path)
+            for attr in self.__dict__.values():
+                if isinstance(attr, Path):
+                    makedir(attr)
 
     def __str__(self) -> str:
         """
@@ -278,13 +274,13 @@ def get_wavs_w_annotation(
 
     wavcase = wav_filepaths[0].suffix
 
-    filtered_wavpaths = [
-        (file.parent / f"{file.stem}{wavcase}", file)
+    matches = [
+        (wav_filepaths[0].parent / f"{file.stem}{wavcase}", file)
         for file in annotation_paths
-        if file.parent / f"{file.stem}{wavcase}" in wav_filepaths
+        if wav_filepaths[0].parent / f"{file.stem}{wavcase}" in wav_filepaths
     ]
 
-    return filtered_wavpaths
+    return matches
 
 
 def change_data_loc(DIR: Path, PROJECT: Path, NEW_PROJECT: Path) -> Path:
@@ -403,5 +399,7 @@ def pykanto_data(dataset: str = "GREAT_TIT") -> ProjDirs:
         / dfolder
         / (dataset.lower() if dataset == "GREAT_TIT" else dataset)
     )
-    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True if dataset != "AM" else False)
+    DIRS = ProjDirs(
+        PROJECT, RAW_DATA, dataset, mkdir=True if dataset != "AM" else False
+    )
     return DIRS

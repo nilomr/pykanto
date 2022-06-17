@@ -718,9 +718,7 @@ def segment_song_into_units(
     dataset: KantoData, key: str
 ) -> Tuple[str, np.ndarray, np.ndarray] | None:
 
-    mel_spectrogram = retrieve_spectrogram(
-        dataset.vocs.at[key, "spectrogram_loc"]
-    )
+    mel_spectrogram = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 
     # TODO@nilomr #9 Jitted version of dereverberate() now causes ray workers to crash
     # dereverberate_jit = numba.njit(dereverberate)

@@ -13,51 +13,55 @@
 # %%──── LIBRARIES ─────────────────────────────────────────────────────────────
 
 from __future__ import annotations
-from dateutil.parser import parse
 
+import datetime as dt
 import json
 import os
 import pickle
 import re
 import shutil
-from tabnanny import verbose
 import warnings
 from pathlib import Path
+from tabnanny import verbose
 from typing import Any, Dict, List
 from xml.etree import ElementTree
-import attr
 
+import attr
 import audio_metadata
 import git
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
 import pkg_resources
+import pykanto
 import pykanto.plot as kplot
 import pytest
 import ray
 import seaborn as sns
 import soundfile as sf
+from attr import validators
+from dateutil.parser import parse
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import (
-    segment_files,
-    segment_files_parallel,
     ReadWav,
     SegmentMetadata,
+    segment_files,
+    segment_files_parallel,
 )
 from pykanto.utils.compute import flatten_list, to_iterator, with_pbar
 from pykanto.utils.custom import (
     chipper_units_to_json,
     parse_sonic_visualiser_xml,
 )
-from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
-from pykanto.utils.paths import pykanto_data
+from pykanto.utils.paths import (
+    ProjDirs,
+    get_file_paths,
+    get_wavs_w_annotation,
+    pykanto_data,
+)
 from pykanto.utils.types import Annotation, AudioAnnotation
 from pykanto.utils.write import makedir
-from attr import validators
-import pykanto
-import datetime as dt
 
 warnings.simplefilter("always", ImportWarning)
 os.environ["RAY_DISABLE_IMPORT_WARNING"] = "1"
@@ -233,7 +237,7 @@ dataset = KantoData(
     random_subset=10,
 )
 
-dataset.vocs.head()
+dataset.data.head()
 # %%
 
 # storm petrel
@@ -295,7 +299,6 @@ params = Parameters(
 # np.random.seed(123)
 # random.seed(123)
 dataset = KantoData(
-    DATASET_ID,
     DIRS,
     parameters=params,
     overwrite_dataset=True,
@@ -306,8 +309,8 @@ dataset = KantoData(
 # then check a few.
 dataset.segment_into_units()
 
-for voc in dataset.vocs.index:
-    dataset.plot_segments(voc)
+for voc in dataset.data.index:
+    dataset.plot(voc, segmented=True)
 
 
 # %%

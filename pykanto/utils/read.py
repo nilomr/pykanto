@@ -64,11 +64,11 @@ def load_dataset(
         # Update dataset location
         setattr(dataset.DIRS, "DATASET", dataset_dir)
 
-        if not dataset.vocs["spectrogram_loc"][0].is_file():
-            dataset.vocs["spectrogram_loc"] = dataset.vocs[
-                "spectrogram_loc"
-            ].apply(lambda x: relink_kantodata(dataset_dir, x))
-        if not dataset.vocs["spectrogram_loc"][0].is_file():
+        if not dataset.files["spectrogram"][0].is_file():
+            dataset.files["spectrogram"] = dataset.files["spectrogram"].apply(
+                lambda x: relink_kantodata(dataset_dir, x)
+            )
+        if not dataset.files["spectrogram"][0].is_file():
             raise FileNotFoundError("Failed to reconnect spectrogram data")
 
         for k, v in dataset.DIRS.__dict__.items():
@@ -117,15 +117,14 @@ def read_json(json_loc: Path) -> Dict:
 
 def _get_json(file):
     """
-    Returns a json file with a 'label' field,
-    with value 'NOISE' if this field was present and
-    its value was 'NOISE' and 'VOCALISATION' in all other cases.
+    Reads and returns a .json file with a new 'noise' key with value True if the
+    json file has a 'label' key with value 'NOISE'.
     """
     jf = read_json(file)
     try:
-        jf["label"] = jf["label"] if jf["label"] == "NOISE" else "VOCALISATION"
+        jf["noise"] = True if jf["label"] == "NOISE" else False
     except:
-        jf["label"] = "VOCALISATION"
+        jf["label"] = False
     return jf
 
 

@@ -49,26 +49,26 @@ def str_to_path(path):
 recover_csv = pd.read_csv(
     dataset.DIRS.DATASET.parent / f"{DATASET_ID}_VOCS.csv",
     index_col=0,
-    dtype={"auto_type_label": object, "type_label": object},
+    dtype={"auto_class": object, "class_label": object},
     converters={
         "unit_durations": from_np_array,
         "onsets": from_np_array,
         "offsets": from_np_array,
         "silence_durations": eval,  # TODO why is this a list!
-        "spectrogram_loc": str_to_path,  # and all other paths!
+        spectrogram": str_to_path,  # and all other paths!
     },
 )
 
-if len(dataset.vocs) != len(recover_csv):
+if len(dataset.data) != len(recover_csv):
     raise IndexError(
         "The datasets are of unequal lengths "
-        f"{len(dataset.vocs)=},{len(recover_csv)=}"
+        f"{len(dataset.data)=},{len(recover_csv)=}"
     )
 
-[(n, type(c)) for c, n in zip(dataset.vocs.iloc[0], dataset.vocs.columns)]
+[(n, type(c)) for c, n in zip(dataset.data.iloc[0], dataset.data.columns)]
 
 # Overwrite dataset - careful!
-dataset.vocs = recover_csv
+dataset.data = recover_csv
 dataset.save_to_disk()
 dataset = load_dataset(dataset_path, DIRS)  # Fixes paths on load
 
@@ -79,24 +79,24 @@ min_sample = 10
 
 # Remove rows from song types with fewer than 10 songs
 ss_data = (
-    dataset.vocs.groupby(["ID", "type_label"])
+    dataset.data.groupby(["ID", "class_label"])
     .filter(lambda x: len(x) >= min_sample)
     .copy()
 )
 
 # Sample 10 songs per type and bird
 sbs_data = pd.concat(
-    [data.sample(n=10) for _, data in ss_data.groupby(["ID", "type_label"])]
+    [data.sample(n=10) for _, data in ss_data.groupby(["ID", "class_label"])]
 )
 
 # Remove songs labelled as noise (-1)
-sbs_data = sbs_data.loc[sbs_data["type_label"] != "-1"]
+sbs_data = sbs_data.loc[sbs_data["class_label"] != "-1"]
 
 # Add new unique song type ID
-sbs_data["song_class"] = sbs_data["ID"] + "_" + sbs_data["type_label"]
+sbs_data["song_class"] = sbs_data["ID"] + "_" + sbs_data["class_label"]
 
 # Print info
-n_rem = len(set(dataset.vocs["ID"])) - len(set(sbs_data["ID"]))
+n_rem = len(set(dataset.data["ID"])) - len(set(sbs_data["ID"]))
 print(f"Removed {n_rem} birds with no songs types with > {min_sample} examples")
 
 
@@ -116,9 +116,7 @@ train_folder, test_folder = out_folder / "train", out_folder / "test"
 
 for dset, dname in zip([train, test], ["train", "test"]):
     # Save spectrograms as images
-    to_export = (
-        dset.groupby("song_class")["spectrogram_loc"].apply(list).to_dict()
-    )
+    to_export = dset.groupby("song_class")["spectrogram"].apply(list).to_dict()
 
     for i, (song_class, specs) in with_pbar(
         enumerate(to_export.items()), total=len(to_export)

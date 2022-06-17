@@ -1,6 +1,7 @@
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
 from pathlib import Path
+
 import numpy as np
 import pkg_resources
 import pytest
@@ -17,7 +18,7 @@ def DIRS():
     DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
     PROJECT = Path(DATA_PATH).parent
     RAW_DATA = DATA_PATH / "raw"
-    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+    DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID="test", mkdir=True)
     return DIRS
 
 

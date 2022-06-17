@@ -193,11 +193,9 @@ def segmentation(
 
     params = dataset.parameters
     if not isinstance(spectrogram, np.ndarray):
-        spectrogram = retrieve_spectrogram(
-            dataset.vocs.at[key, "spectrogram_loc"]
-        )
+        spectrogram = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
         onsets_offsets = [
-            dataset.vocs.at[key, i] for i in ["onsets", "offsets"]
+            dataset.data.at[key, i] for i in ["onsets", "offsets"]
         ]
 
     ax = melspectrogram(
@@ -277,7 +275,7 @@ def show_spec_centroid_bandwidth(
         KeyError("You need to provide either a key or a spectrogram")
 
     if not isinstance(spec, np.ndarray):
-        spec = retrieve_spectrogram(dataset.vocs.at[key, "spectrogram_loc"])
+        spec = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 
     times = (
         np.array(range(spec.shape[1]))
@@ -325,7 +323,7 @@ def show_minmax_frequency(
         KeyError("You need to provide either a key or a spectrogram")
 
     if not isinstance(spec, np.ndarray):
-        spec = retrieve_spectrogram(dataset.vocs.at[key, "spectrogram_loc"])
+        spec = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 
     times = (
         np.array(range(spec.shape[1]))
@@ -383,11 +381,11 @@ def build_plot_summary(
 
         if var == "frequency":
             data = {
-                "upper_freq": dataset.vocs["upper_freq"],
-                "lower_freq": dataset.vocs["lower_freq"],
+                "upper_freq": dataset.data["upper_freq"],
+                "lower_freq": dataset.data["lower_freq"],
             }
         else:
-            data = {"song_duration": dataset.vocs["length_s"]}
+            data = {"song_duration": dataset.data["length_s"]}
 
         sns.histplot(
             data,
@@ -427,7 +425,7 @@ def build_plot_summary(
 
     # Build sample size plot
     if variable in ["sample_size", "all"]:
-        individual_ss = dataset.vocs["ID"].value_counts()
+        individual_ss = dataset.data["ID"].value_counts()
         data = pd.DataFrame(individual_ss).rename(columns={"ID": "n"})
         data["ID"] = individual_ss.index
         sns.histplot(
@@ -439,7 +437,7 @@ def build_plot_summary(
             legend=False,
         )
         (axes[2] if variable == "all" else axes).set(
-            xlabel=f"Sample size (total: {len(dataset.vocs)})",
+            xlabel=f"Sample size (total: {len(dataset.data)})",
             ylabel="Count",
         )
         # Reduce xtick density

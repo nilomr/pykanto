@@ -8,11 +8,11 @@ modules and b) classes whose main purpose is data storage and/or type checking.
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
 from collections import namedtuple
-import attr
-from attr import validators
 from pathlib import Path
 from typing import Any, List, Protocol, TypedDict
 
+import attr
+from attr import validators
 
 # ──── DEFINITIONS ──────────────────────────────────────────────────────────────
 
@@ -60,6 +60,7 @@ class ValidDirs(AttrProto):
 
     PROJECT: Path = attr.ib(validator=[validators.instance_of(Path), f_exists])
     RAW_DATA: Path = attr.ib(validator=[validators.instance_of(Path), f_exists])
+    DATASET_ID: str = attr.ib(validator=validators.instance_of(str))
 
 
 @attr.s

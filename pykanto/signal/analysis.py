@@ -78,7 +78,7 @@ def spec_centroid_bandwidth(
     if not key and not isinstance(spec, np.ndarray):
         raise KeyError("You need to provide either a key or a spectrogram")
     if not isinstance(spec, np.ndarray):
-        spec = retrieve_spectrogram(dataset.vocs.at[key, "spectrogram_loc"])
+        spec = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 
     offset = 0
     if np.min(spec) < 0:
@@ -146,7 +146,7 @@ def approximate_minmax_frequency(
     if not key and not isinstance(spec, np.ndarray):
         raise KeyError("You need to provide either a key or a spectrogram")
     if not isinstance(spec, np.ndarray):
-        spec = retrieve_spectrogram(dataset.vocs.at[key, "spectrogram_loc"])
+        spec = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 
     offset = 0
     if np.min(spec) < 0:

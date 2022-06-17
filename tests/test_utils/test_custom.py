@@ -1,22 +1,23 @@
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
 from pathlib import Path
+
 import pkg_resources
 import pytest
 from pykanto.utils.custom import parse_sonic_visualiser_xml
 from pykanto.utils.paths import ProjDirs, get_file_paths
 from pykanto.utils.types import SegmentAnnotation
 
-
 # ──── FIXTURES ─────────────────────────────────────────────────────────────────
 
 
 @pytest.fixture()
 def DIRS():
+    DATASET_ID = "test"
     DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
     PROJECT = Path(DATA_PATH).parent
     RAW_DATA = DATA_PATH / "raw"
-    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+    DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
     return DIRS
 
 

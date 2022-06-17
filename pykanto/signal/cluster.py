@@ -147,16 +147,16 @@ def reduce_and_cluster(
 
     Returns:
         pd.DataFrame | None: Dataframe with columns ['vocalisation_key', 'ID',
-            'idx', 'umap_x', 'umap_y', 'auto_type_label'] or None if sample size
+            'idx', 'umap_x', 'umap_y', 'auto_class'] or None if sample size
             is too small
     """
 
     # Retrieve units or averaged units for one individual
     units = pickle.load(
         open(
-            dataset.DIRS.AVG_UNITS[ID]
-            if song_level
-            else dataset.DIRS.UNITS[ID],
+            dataset.files.query("ID==@ID")[
+                "average_units" if song_level else "units"
+            ][0],
             "rb",
         )
     )
@@ -227,8 +227,8 @@ def reduce_and_cluster(
         cluster_df["idx"] = [idx[-1] for idx in cluster_df.index]
     cluster_df["umap_x"] = embedding[:, 0]
     cluster_df["umap_y"] = embedding[:, 1]
-    cluster_df["auto_type_label"] = list(clusterer.labels_)
-    cluster_df["auto_type_label"] = cluster_df["auto_type_label"].astype(str)
+    cluster_df["auto_class"] = list(clusterer.labels_)
+    cluster_df["auto_class"] = cluster_df["auto_class"].astype(str)
 
     return cluster_df
 
@@ -238,10 +238,11 @@ def reduce_and_cluster_parallel(
 ) -> pd.DataFrame | None:
     """
     Parallel implementation of
-    :func:`~pykanto.signal.spectrogram.save_melspectrogram`.
+    :func:`~pykanto.signal.cluster.reduce_and_cluster`.
     """
     song_level = dataset.parameters.song_level
-    IDS = dataset.DIRS.AVG_UNITS if song_level else dataset.DIRS.UNITS
+    IDS = set(dataset.files["ID"])
+    # IDS = dataset.DIRS.AVG_UNITS if song_level else dataset.DIRS.UNITS
 
     # Calculate and make chunks
     n = len(IDS)

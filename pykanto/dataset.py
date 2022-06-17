@@ -14,6 +14,7 @@ import pickle
 import subprocess
 import warnings
 from datetime import datetime
+from multiprocessing.spawn import prepare
 from pathlib import Path
 from random import sample
 from typing import List, Literal, Tuple
@@ -24,7 +25,10 @@ import ray
 from bokeh.palettes import Set3_12
 
 import pykanto.plot as kplot
-from pykanto.labelapp.data import prepare_datasource
+from pykanto.labelapp.data import (
+    prepare_datasource,
+    prepare_datasource_parallel,
+)
 from pykanto.parameters import Parameters
 from pykanto.signal.cluster import reduce_and_cluster_parallel
 from pykanto.signal.segment import (
@@ -37,12 +41,13 @@ from pykanto.signal.spectrogram import (
 )
 from pykanto.utils.compute import (
     dictlist_to_dict,
+    flatten_list,
     print_dict,
     timing,
     to_iterator,
     with_pbar,
 )
-from pykanto.utils.paths import ProjDirs
+from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
 from pykanto.utils.read import _get_json, _get_json_parallel
 from pykanto.utils.write import makedir
 
@@ -55,16 +60,13 @@ class KantoData:
 
     Attributes:
         DIRS (:class:`~pykanto.utils.paths.ProjDirs`):
-        vocalisations: Placeholder
-        noise: Placeholder
-        units: Placeholder
+        data: Placeholder
         parameters (:class:`~pykanto.parameters.Parameters`)
     """
 
     # TODO@nilomr #10 Refactor private methods in KantoData class
     def __init__(
         self,
-        DATASET_ID: str,
         DIRS: ProjDirs,
         parameters: None | Parameters = None,
         random_subset: None | int = None,
@@ -78,12 +80,9 @@ class KantoData:
             If your dataset contains noise samples (useful when training a
             neural network), these should be labelled as 'NOISE' in the
             corresponding json file.
-            I.e., `json_file["label"] == 'NOISE'`.
-            Files where `json_file["label"] == []` or "label" is not a key in
-            `json_file` will be automatically given the label 'VOCALISATION'.
+            i.e., `json_file["label"] == 'NOISE'`.
 
         Args:
-            DATASET_ID (str): Name of new dataset.
             DIRS (ProjDirs): Project directory structure. Must contain
                 a 'SEGMENTED' attribute pointing to a directory that contains
                 the segmented data organised in two folders: 'WAV' and
@@ -115,18 +114,12 @@ class KantoData:
 
         # Get dataset identifier and location
         self.DIRS = copy.deepcopy(DIRS)
-        self.DATASET_ID = DATASET_ID
-        self.DIRS.DATASET = (
-            DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-        )
-        self.DIRS.SPECTROGRAMS = (
-            self.DIRS.DATA / "datasets" / self.DATASET_ID / "spectrograms"
-        )
+        self.DATASET_ID = DIRS.DATASET_ID
 
         # Throw error if dataset already exists
         if self.DIRS.DATASET.is_file() and overwrite_dataset is False:
             raise FileExistsError(
-                f"{DATASET_ID} already exists. You can overwrite "
+                f"{self.DIRS.DATASET} already exists. You can overwrite "
                 "it by setting `overwrite_dataset=True`"
             )
 
@@ -136,7 +129,7 @@ class KantoData:
         # feedback on any missing/wrong fields, or their value types.
         self._load_metadata()
         self._get_unique_ids()
-        self._get_sound_info()
+        self._create_df()
         self._compute_melspectrograms(
             dereverb=self.parameters.dereverb, overwrite_data=overwrite_data
         )
@@ -184,50 +177,32 @@ class KantoData:
 
         # TODO: read both lower and uppercase wav and json extensions.
         # Load and check file paths:
-        self.DIRS.WAV_LIST = sorted(
-            list((self.DIRS.SEGMENTED / "WAV").glob("*.wav"))
-        )
-        if not len(self.DIRS.WAV_LIST):
-            raise FileNotFoundError(
-                f"There are no .wav files in {self.DIRS.WAV_LIST}"
-            )
-        self.DIRS.JSON_LIST = sorted(
-            list((self.DIRS.SEGMENTED / "JSON").glob("*.JSON"))
-        )
-
-        wavnames = [wav.stem for wav in self.DIRS.WAV_LIST]
-        matching_jsons = [
-            json for json in self.DIRS.JSON_LIST if json.stem in wavnames
+        wav_filepaths, json_filepaths = [
+            get_file_paths(self.DIRS.SEGMENTED, [ext])
+            for ext in [".wav", ".JSON"]
         ]
+        file_tuples = get_wavs_w_annotation(wav_filepaths, json_filepaths)
 
-        if len(self.DIRS.JSON_LIST) != len(matching_jsons):
-            ndrop = len(self.DIRS.JSON_LIST) - len(matching_jsons)
+        nfiles = len(file_tuples)
+        if nfiles < len(wav_filepaths):
+            ndrop = len(wav_filepaths) - nfiles
             warnings.warn(
                 "There is an unequal number of matching .wav and .json "
                 f"files in {self.DIRS.SEGMENTED}. "
                 f"Keeping only those that match: dropped {ndrop}"
             )
-            keepnames = [json.stem for json in matching_jsons]
-            self.DIRS.WAV_LIST = [
-                wav for wav in self.DIRS.WAV_LIST if wav.stem in keepnames
-            ]
-            self.DIRS.JSON_LIST = matching_jsons
 
         # Subset as per parameters if possible
         if self.parameters.subset:
+            if nfiles == 1 and self.parameters.subset != (0, nfiles):
+                warnings.warn("Cannot subset: there is only one file.")
+                pass
 
-            if len(self.DIRS.WAV_LIST) == 1:
-                if self.parameters.subset != (0, len(self.DIRS.WAV_LIST)):
-                    warnings.warn("Cannot subset: there is only one file.")
-                    pass
-
-            elif self.parameters.subset[0] < len(
-                self.DIRS.WAV_LIST
-            ) and self.parameters.subset[1] <= len(self.DIRS.WAV_LIST):
-                self.DIRS.WAV_LIST = self.DIRS.WAV_LIST[
-                    self.parameters.subset[0] : self.parameters.subset[1]
-                ]
-                self.DIRS.JSON_LIST = self.DIRS.JSON_LIST[
+            elif (
+                self.parameters.subset[0] < nfiles
+                and self.parameters.subset[1] <= nfiles
+            ):
+                file_tuples = file_tuples[
                     self.parameters.subset[0] : self.parameters.subset[1]
                 ]
 
@@ -235,24 +210,22 @@ class KantoData:
                 raise IndexError(
                     "List index out of range: the provided "
                     f"'subset' parameter {self.parameters.subset} is ouside "
-                    f"the range of the dataset (0, {len(self.DIRS.WAV_LIST)})."
+                    f"the range of the dataset (0, {nfiles})."
                 )
 
         if random_subset:
-            if random_subset > len(self.DIRS.JSON_LIST):
-                random_subset = len(self.DIRS.JSON_LIST)
+            if random_subset > nfiles:
+                random_subset = nfiles
                 warnings.warn(
                     "The 'random_subset' you specified is larger "
                     "than the dataset: setting to the length of the dataset."
                 )
-            self.DIRS.WAV_LIST, self.DIRS.JSON_LIST = zip(
-                *sample(
-                    list(zip(self.DIRS.WAV_LIST, self.DIRS.JSON_LIST)),
-                    random_subset,
-                )
-            )
-            self.DIRS.WAV_LIST = list(self.DIRS.WAV_LIST)
-            self.DIRS.JSON_LIST = list(self.DIRS.JSON_LIST)
+            file_tuples = sample(file_tuples, random_subset)
+
+        # Add paths to self
+        self._wavfiles, self._jsonfiles = [
+            sorted(list(i)) for i in zip(*file_tuples)
+        ]
 
     @timing
     def _load_metadata(self) -> None:
@@ -261,29 +234,25 @@ class KantoData:
         chunks of length chunk_len if there are > 1000 items.
         """
 
-        n_jsonfiles = len(self.DIRS.JSON_LIST)
-
+        n_jsonfiles = len(self._jsonfiles)
         if n_jsonfiles < 100:
             jsons = [
                 _get_json(json)
                 for json in with_pbar(
-                    self.DIRS.JSON_LIST,
+                    self._jsonfiles,
                     desc="Loading JSON files",
                     total=n_jsonfiles,
                 )
             ]
-
         else:
             jsons = _get_json_parallel(
-                self.DIRS.JSON_LIST, verbose=self.parameters.verbose
+                self._jsonfiles, verbose=self.parameters.verbose
             )
-
         self.metadata = {Path(json["wav_file"]).stem: json for json in jsons}
 
-        # Match wav_file field with actual wav_file location for this dataset:
+        # Match wav_file field with actual wav_file location for this dataset
         # Partially fixes nilomr/pykanto#12
-
-        for wavfile in self.DIRS.WAV_LIST:
+        for wavfile in self._wavfiles:
             self.metadata[wavfile.stem]["wav_file"] = wavfile.as_posix()
 
     def _get_unique_ids(self) -> None:
@@ -294,20 +263,16 @@ class KantoData:
         self.ID = np.array([value["ID"] for _, value in self.metadata.items()])
         self.unique_ID = np.unique(self.ID)
 
-    def _get_sound_info(self) -> None:
+    def _create_df(self) -> None:
         """
-        Adds pandas DataFrames with vocalisation and noise information to
-        dataset ('vocs' and 'noise' attributes, respectively). Also
-        adds information about mim/max bounding box frequencies and durations in
-        the dataset ('minmax_values' attribute), and unit onsets/offsets if
-        present.
+        Creates a pandas DataFrame from the metadata dictionary and adds it to
+            the KantoData instance.
 
         Warning:
             Removes onset/offset pairs which (under current spectrogram
             parameter combinations) would result in a unit of length zero.
         """
-        vocalisations_dict = {}
-        noise_dict = {}
+        data_dict = {}
         for key, file in self.metadata.items():
             data = file
 
@@ -315,28 +280,16 @@ class KantoData:
                 data["onsets"], data["offsets"] = drop_zero_len_units(
                     self, np.array(file["onsets"]), np.array(file["offsets"])
                 )
+            data_dict[key] = data
 
-            if (
-                file["label"] == "VOCALISATION"
-            ):  # FIXME: remove this label and give option to use any
-                vocalisations_dict[key] = data
-            elif file["label"] == "NOISE":
-                noise_dict[key] = data
-            else:
-                warnings.warn(
-                    f"Warning: {key} has an incorrect label: {file['label']}"
-                )
-
-        # Add to a dataframe
-        self.vocs = pd.DataFrame.from_dict(vocalisations_dict, orient="index")
-        self.noise = pd.DataFrame.from_dict(noise_dict, orient="index")
+        self.data = pd.DataFrame.from_dict(data_dict, orient="index")
 
         # Get minimum and maximum frequencies and durations in song dataset
         self.minmax_values = {
-            "max_freq": max(self.vocs["upper_freq"]),
-            "min_freq": min(self.vocs["lower_freq"]),
-            "max_duration": max(self.vocs["length_s"]),
-            "min_duration": min(self.vocs["length_s"]),
+            "max_freq": max(self.data["upper_freq"]),
+            "min_freq": min(self.data["lower_freq"]),
+            "max_duration": max(self.data["length_s"]),
+            "min_duration": min(self.data["length_s"]),
         }
 
     @timing
@@ -345,8 +298,8 @@ class KantoData:
     ) -> None:
         """
         Compute melspectrograms and add their location to the KantoData object.
-        It applies both dereverberation and bandpasses vocalisation data by
-        default, and neither of these to noise data.
+        It applies dereverberation to and bandpasses spectrogram data by
+        default.
 
         Args:
             overwrite_data (bool): Whether to overwrite any spectrogram files
@@ -363,54 +316,28 @@ class KantoData:
                 return {Path(file).stem: path}
 
         # Check if spectrograms already exist for any keys:
-        existing_voc = [_spec_exists(key) for key in self.vocs.index]
-        existing_voc = dictlist_to_dict(
-            [x for x in existing_voc if x is not None]
-        )
-        existing_noise = [_spec_exists(key) for key in self.noise.index]
-        existing_noise = dictlist_to_dict(
-            [x for x in existing_noise if x is not None]
-        )
+        existing = [_spec_exists(key) for key in self.data.index]
+        existing = dictlist_to_dict([x for x in existing if x is not None])
 
         # Get new keys (all keys if overwrite_data=True)
         if overwrite_data:
-            new_voc_keys = self.vocs.index.tolist()
-            new_noise_keys = self.noise.index.tolist()
+            new_keys = self.data.index.tolist()
         else:
-            new_voc_keys = [
-                key for key in self.vocs.index if key not in existing_voc
-            ]
-            new_noise_keys = [
-                key for key in self.noise.index if key not in existing_noise
-            ]
+            new_keys = [key for key in self.data.index if key not in existing]
 
-        # Compute vocalisation melspectrograms
+        # Compute melspectrograms
         specs = (
-            _save_melspectrogram_parallel(self, new_voc_keys, **kwargs)
-            if new_voc_keys
+            _save_melspectrogram_parallel(self, new_keys, **kwargs)
+            if new_keys
             else {}
         )
         specs = {
             **specs,
-            **(existing_voc if (existing_voc and not overwrite_data) else {}),
+            **(existing if (existing and not overwrite_data) else {}),
         }
-        self.vocs["spectrogram_loc"] = pd.Series(specs)
-
-        # Now compute noise melspectrograms if present
-        n_specs = (
-            _save_melspectrogram_parallel(self, new_noise_keys, **kwargs)
-            if new_noise_keys
-            else {}
+        self.files = pd.DataFrame(
+            pd.Series(specs, dtype=object), columns=["spectrogram"]
         )
-        n_specs = {
-            **n_specs,
-            **(
-                existing_noise
-                if (existing_noise and not overwrite_data)
-                else {}
-            ),
-        }
-        self.noise["spectrogram_loc"] = pd.Series(n_specs, dtype=object)
 
     # ──────────────────────────────────────────────────────────────────────────
     # KantoData: Public methods
@@ -440,26 +367,37 @@ class KantoData:
 
         kplot.build_plot_summary(self, nbins=nbins, variable=variable)
 
-    def plot(self, key: str, **kwargs) -> None:
+    def plot(self, key: str, segmented: bool = False, **kwargs) -> None:
         """
-        Plot an spectrogram present in the KantoData instance.
+        Plot an spectrogram from the dataset.
 
         Args:
             key (str): Key of the spectrogram.
+            segmented (bool, optional): Whether to overlay onset/offset
+                information. Defaults to False.
             kwargs: passed to :func:`~pykanto.plot.melspectrogram`
 
         Examples:
             Plot the first 10 specrograms in the vocalisations dataframe:
-            >>> for spec in dataset.vocs.index[:10]:
+            >>> for spec in dataset.data.index[:10]:
             ...     dataset.plot(spec)
 
         """
-        kplot.melspectrogram(
-            self.vocs.at[key, "spectrogram_loc"],
-            parameters=self.parameters,
-            title=Path(key).stem,
-            **kwargs,
-        )
+        if segmented:
+            if "onsets" not in self.data.columns:
+                raise KeyError(
+                    "Setting `segmented` to True requires that you have "
+                    "run `.segment_into_units()` or provided unit "
+                    "segmentation information."
+                )
+            kplot.segmentation(self, key, **kwargs)
+        else:
+            kplot.melspectrogram(
+                self.files.at[key, "spectrogram"],
+                parameters=self.parameters,
+                title=Path(key).stem,
+                **kwargs,
+            )
 
     def sample_info(self) -> None:
         """
@@ -468,8 +406,6 @@ class KantoData:
         out = inspect.cleandoc(
             f"""
         Total length: {len(self.metadata)}
-        Vocalisations: {len(self.vocs)}
-        Noise: {len(self.noise)}
         Unique IDs: {len(self.unique_ID)}"""
         )
         print(out)
@@ -521,7 +457,7 @@ class KantoData:
             )
 
         testkeys = (
-            self.vocs[argdict[query]]
+            self.data[argdict[query]]
             .sort_values(ascending=True if order == "ascending" else False)[
                 :n_songs
             ]
@@ -530,7 +466,7 @@ class KantoData:
 
         for key in testkeys:
             kplot.melspectrogram(
-                self.vocs.at[key, "spectrogram_loc"],
+                self.files.at[key, "spectrogram"],
                 parameters=self.parameters,
                 title=Path(key).stem,
                 **kwargs,
@@ -538,48 +474,49 @@ class KantoData:
         if return_keys:
             return list(testkeys)
 
-    def relabel_noise_segments(self, keys: List[str]) -> None:
-        """
-        Moves entries from the vocalisations subset to the noise subset.
-        You will be prompted to choose whether to save the dataset to disk.
+    # REVIEW: quarantine for now
+    # def relabel_noise_segments(self, keys: List[str]) -> None:
+    #     """
+    #     Moves entries from the vocalisations subset to the noise subset.
+    #     You will be prompted to choose whether to save the dataset to disk.
 
-        Warning:
-            Changes 'label' in the json metadata within the dataset to
-            'NOISE', but does not change the original json file from which
-            you created the entry.
-            Make sure you leave a trail when relabelling segments (i.e., do
-            it programmatically) or else your work will not be fully
-            reproducible!
+    #     Warning:
+    #         Changes 'label' in the json metadata within the dataset to
+    #         'NOISE', but does not change the original json file from which
+    #         you created the entry.
+    #         Make sure you leave a trail when relabelling segments (i.e., do
+    #         it programmatically) or else your work will not be fully
+    #         reproducible!
 
-        Args:
-            keys (List[str]): A list of the segments to move.
+    #     Args:
+    #         keys (List[str]): A list of the segments to move.
 
-        Examples:
-            >>> dataset = KantoData(...)
-            >>> keys_to_move = ['ABC.wav','CBA.wav']
-            >>> dataset.relabel_segments(keys_to_move)
+    #     Examples:
+    #         >>> dataset = KantoData(...)
+    #         >>> keys_to_move = ['ABC.wav','CBA.wav']
+    #         >>> dataset.relabel_segments(keys_to_move)
 
-        """
-        df_tomove = self.vocs.loc[keys]
-        self.noise = pd.concat([self.noise, df_tomove], join="inner")
-        self.vocs.drop(keys, inplace=True)
-        # Change label in json metadata - TODO: also in original json file
-        for key in keys:
-            self.metadata[key]["label"] = "NOISE"
-        if len(self.noise.loc[keys]) == len(keys):
-            print("The entries were moved successfully.")
-            tx = "Do you want to save the dataset to disk now?" " (Enter y/n)"
-            while (res := input(tx).lower()) not in {"y", "n"}:
-                pass
-            if res == "y":
-                print("Done.")
-                self.save_to_disk(verbose=self.parameters.verbose)
+    #     """
+    #     df_tomove = self.data.loc[keys]
+    #     self.noise = pd.concat([self.noise, df_tomove], join="inner")
+    #     self.data.drop(keys, inplace=True)
+    #     # Change label in json metadata - TODO: also in original json file
+    #     for key in keys:
+    #         self.metadata[key]["label"] = "NOISE"
+    #     if len(self.noise.loc[keys]) == len(keys):
+    #         print("The entries were moved successfully.")
+    #         tx = "Do you want to save the dataset to disk now?" " (Enter y/n)"
+    #         while (res := input(tx).lower()) not in {"y", "n"}:
+    #             pass
+    #         if res == "y":
+    #             print("Done.")
+    #             self.save_to_disk(verbose=self.parameters.verbose)
 
     @timing
-    def segment_into_units(self, overwrite: bool = False) -> None:  # ANCHOR
+    def segment_into_units(self, overwrite: bool = False) -> None:
         """
         Adds segment onsets, offsets, unit and silence durations
-        to :attr:`~.KantoData.vocs`.
+        to :attr:`~.KantoData.data`.
 
         Warning:
             If segmentation fails for a vocalisation it will be dropped from
@@ -593,10 +530,9 @@ class KantoData:
             FileExistsError: The vocalisations in this dataset have already
                 been segmented.
         """
-        # First check that you are not running this by mistake:
 
         # Throw segmentation already exists
-        if "unit_durations" in self.vocs.columns and overwrite is False:
+        if "unit_durations" in self.data.columns and overwrite is False:
             raise FileExistsError(
                 "The vocalisations in this dataset have already been segmented. "
                 "If you want to do it again, you can overwrite the existing "
@@ -604,8 +540,8 @@ class KantoData:
             )
 
         # Find song units iff onset/offset metadata not present
-        if not "onsets" in self.vocs.columns:
-            units = segment_song_into_units_parallel(self, self.vocs.index)
+        if not "onsets" in self.data.columns:
+            units = segment_song_into_units_parallel(self, self.data.index)
             onoff_df = pd.DataFrame(
                 units, columns=["index", "onsets", "offsets"]
             ).dropna()
@@ -614,7 +550,7 @@ class KantoData:
         # Otherwise just use that
         else:
             print("Using existing unit onset/offset information.")
-            onoff_df = self.vocs[["onsets", "offsets"]].dropna()
+            onoff_df = self.data[["onsets", "offsets"]].dropna()
             onoff_df["index"] = onoff_df.index
 
         # Calculate durations and add to dataset
@@ -625,19 +561,19 @@ class KantoData:
             ],
             axis=1,
         ).to_numpy()
-        self.vocs.drop(
+        self.data.drop(
             ["index", "onsets", "offsets"],
             axis=1,
             errors="ignore",
             inplace=True,
         )
-        self.vocs = self.vocs.merge(onoff_df, left_index=True, right_index=True)
-        self.vocs.drop(["index"], axis=1, errors="ignore", inplace=True)
+        self.data = self.data.merge(onoff_df, left_index=True, right_index=True)
+        self.data.drop(["index"], axis=1, errors="ignore", inplace=True)
 
         # Save
         self.save_to_disk(verbose=self.parameters.verbose)
         n_units = sum(
-            [len(self.vocs.at[i, "unit_durations"]) for i in self.vocs.index]
+            [len(self.data.at[i, "unit_durations"]) for i in self.data.index]
         )
         print(f"Found and segmented {n_units} units.")
 
@@ -669,15 +605,12 @@ class KantoData:
         subself = copy.deepcopy(self)
 
         # Remove unwanted data
-        subself.vocs = subself.vocs[subself.vocs["ID"].isin(ids)]
+        subself.data = subself.data[subself.data["ID"].isin(ids)]
         if hasattr(self, "average_units"):
             rm_keys = [key for key in subself.average_units if key not in ids]
             _ = [subself.average_units.pop(key) for key in rm_keys]
         if hasattr(self, "units"):
             subself.units = subself.units[subself.units["ID"].isin(ids)]
-        if hasattr(self, "noise"):
-            if len(subself.noise):
-                subself.noise = subself.noise[subself.noise["ID"].isin(ids)]
         popkeys = [
             key
             for key, value in subself.metadata.items()
@@ -710,7 +643,7 @@ class KantoData:
         if verbose:
             print(f"Saved dataset to {out_dir}")
 
-    def to_csv(self, path: Path, timestamp: bool = False) -> None:
+    def to_csv(self, path: Path, timestamp: bool = True) -> None:
         """
         Output vocalisation (and, if present, unit) metadata in the dataset as
         a .csv file.
@@ -718,12 +651,12 @@ class KantoData:
         Args:
             path (Path): Directory where to save the file(s).
             timestamp (bool, optional): Whether to add timestamp to file name.
-                Defaults to False.
+                Defaults to True.
         """
         t = f'_{datetime.now().strftime("%H%M%S")}' if timestamp else ""
-        self.vocs.to_csv(path / f"{self.DIRS.DATASET.stem}_VOCS{t}.csv")
+        self.data.to_csv(path / f"{self.DIRS.DATASET.stem}_{t}.csv")
         if hasattr(self, "units"):
-            self.units.to_csv(path / f"{self.DIRS.DATASET.stem}_UNITS.csv")
+            self.units.to_csv(path / f"{self.DIRS.DATASET.stem}_UNITS_{t}.csv")
 
     def reload(self) -> KantoData:
         """
@@ -742,34 +675,13 @@ class KantoData:
         """
         return pickle.load(open(self.DIRS.DATASET, "rb"))
 
-    def plot_segments(self, key: str, **kwargs) -> None:
-        """
-        Plots a vocalisation and overlays the results
-        of the segmentation process.
-
-        Args:
-            key (str): Vocalisation identificator.
-            **kwargs: Keyword arguments to be passed to
-                :func:`~pykanto.plot.melspectrogram`
-        """
-        if "onsets" not in self.vocs.columns:
-            raise KeyError(
-                "This method requires that you have "
-                "run `.segment_into_units()` or provided unit "
-                "segmentation information."
-            )
-        kplot.segmentation(self, key, **kwargs)
-
     @timing
     def get_units(self, pad: bool = False) -> None:
         """
         Creates and saves a dictionary containing spectrogram
         representations of the units or the average of
         the units present in the vocalisations of each individual ID
-        in the dataset. The dictionary's location can be found
-        at `self.DIRS.UNITS` if `song_level = False`, and
-        at `self.DIRS.AVG_UNITS` if `song_level = True` in
-        :attr:`~.KantoData.parameters`.
+        in the dataset.
 
         Args:
             pad (bool, optional): Whether to pad spectrograms
@@ -778,7 +690,7 @@ class KantoData:
         Note:
             If `pad = True`, unit spectrograms are padded to the maximum
             duration found among units that belong to the same ID,
-            not the global maximum.
+            not the dataset maximum.
 
         Note:
             If each of your IDs (grouping factor, such as individual or
@@ -798,11 +710,18 @@ class KantoData:
             song_level=song_level,
             num_cpus=self.parameters.num_cpus,
         )
-
-        if song_level:
-            self.DIRS.AVG_UNITS = dic_locs
-        else:
-            self.DIRS.UNITS = dic_locs
+        try:
+            self.files.insert(0, "ID", self.data["ID"])
+        except ValueError as e:
+            if str(e) == "cannot insert ID, already exists":
+                pass
+            else:
+                raise e
+        au = pd.DataFrame(
+            pd.Series(dic_locs),
+            columns=["average_units" if song_level else "units"],
+        )
+        self.files = pd.merge(self.files, au, right_index=True, left_on="ID")
         self.save_to_disk(verbose=self.parameters.verbose)
 
     @timing
@@ -813,7 +732,7 @@ class KantoData:
         such as individual or population) is too small.
 
         Adds cluster membership information and 2D UMAP coordinates to
-        :attr:`~.KantoData.vocs` if `song_level=True`
+        :attr:`~.KantoData.data` if `song_level=True`
         in :attr:`~.KantoData.parameters`, else to :attr:`~.KantoData.units`.
 
         Args:
@@ -827,9 +746,10 @@ class KantoData:
         )
 
         if self.parameters.song_level:
-            self.vocs = self.vocs.combine_first(df)
+            self.data = self.data.combine_first(df)
         else:
             self.units = df
+            # TODO #14@nilomr: Add individual element information to self.data?
 
         self.save_to_disk(verbose=self.parameters.verbose)
 
@@ -840,8 +760,7 @@ class KantoData:
         """
         Prepare lightweigth representations of each vocalization
         or unit (if song_level=False in :attr:`~.KantoData.parameters`)
-        for each individual in the dataset. These are linked from
-        VOCALISATION_LABELS or UNIT_LABELS in :attr:`~.KantoData.DIRS`.
+        for each individual in the dataset.
 
         Args:
             spec_length (float, optional): In seconds, duration of
@@ -860,8 +779,8 @@ class KantoData:
                 "Make sure you that have run it, then try again"
             )
 
-        elif not set(["auto_type_label", "umap_x", "umap_y"]).issubset(
-            self.vocs.columns if song_level else self.units.columns
+        if not set(["auto_class", "umap_x", "umap_y"]).issubset(
+            self.data.columns if song_level else self.units.columns
         ):
             raise KeyError(
                 "This function requires the output of "
@@ -869,59 +788,25 @@ class KantoData:
                 "Make sure you that have run it, then try again"
             )
 
-        # Prepare dataframes with spectrogram pngs
-        prepare_datasource_r = ray.remote(prepare_datasource)
-        indvs = np.unique(self.vocs["ID"] if song_level else self.units["ID"])
-
-        # Set or get spectrogram length (affects width of unit/voc preview)
-        # NOTE: this is set to maxlen=50%len if using units, 4*maxlen if using
-        # entire vocalisations. This might not be adequate in all cases.
-        if not spec_length:
-            max_l = max(
-                [i for array in self.vocs.unit_durations.values for i in array]
-            )
-            spec_length = (max_l + 0.7 * max_l) if not song_level else 6 * max_l
-
-        spec_length_frames = int(
-            np.floor(
-                spec_length * self.parameters.sr / self.parameters.hop_length_ms
-            )
+        dt = prepare_datasource_parallel(
+            self,
+            spec_length=spec_length,
+            song_level=song_level,
+            num_cpus=self.parameters.num_cpus,
         )
 
-        # Distribute with Ray
-        obj_ids = [
-            prepare_datasource_r.remote(
-                self,
-                individual,
-                spec_length=spec_length_frames,
-                song_level=song_level,
-            )
-            for individual in with_pbar(
-                indvs, desc="Initiate: Prepare interactive visualisation"
-            )
-        ]
+        # Add their locations to the files df, then save
+        int_df = pd.DataFrame(
+            flatten_list(dt),
+            columns=["ID", "voc_app_data" if song_level else "unit_app_data"],
+        )
+        int_df["voc_check" if song_level else "unit_check"] = False
 
-        dt = [
-            obj
-            for obj in with_pbar(
-                to_iterator(obj_ids),
-                desc="Prepare interactive visualisation",
-                total=len(indvs),
-            )
-        ]
-
-        # Add their locations to the DIRS object, then save
-        if song_level:
-            self.DIRS.VOCALISATION_LABELS = {
-                "predatasource": dict(dt),
-                "already_checked": [],
-            }
-        else:
-            self.DIRS.UNIT_LABELS = {
-                "predatasource": dict(dt),
-                "already_checked": [],
-            }
-
+        self.files = (
+            self.files.reset_index()
+            .merge(int_df, how="left", on="ID")
+            .set_index("index")
+        )
         self.save_to_disk(verbose=self.parameters.verbose)
 
     def open_label_app(
@@ -963,49 +848,29 @@ class KantoData:
 
         """
         song_level = self.parameters.song_level
-
-        if song_level:
-            dataset_type = "vocs"
-            dataset_labels = "VOCALISATION_LABELS"
-        else:
-            dataset_type = "units"
-            dataset_labels = "UNIT_LABELS"
+        datatype = "data" if song_level else "units"
+        labtype = "voc_app_data" if song_level else "unit_app_data"
 
         # Can this be run?
         # Save and reload dataset:
         self.save_to_disk(verbose=self.parameters.verbose)
         self = self.reload()
 
-        if not hasattr(self.DIRS, dataset_labels):
-            tx = (
-                "This app requires the output of "
-                "`self.prepare_interactive_data()`. Do you want to run it now?"
-                " (Enter y/n)"
-            )
-            while (res := input(tx).lower()) not in {"y", "n"}:
-                pass
-
-            if res == "y":
-                self.prepare_interactive_data()
-            else:
-                print("Stopped.")
-                return None
-
-        if "auto_type_label" not in getattr(self, dataset_type).columns:
-            raise ValueError(
-                "You need to run `self.cluster_ids`"
-                " before you can check its results."
-            )
-
-        if set(getattr(self.DIRS, dataset_labels)["already_checked"]) == set(
-            getattr(self, dataset_type).dropna(subset=["auto_type_label"])["ID"]
+        if not labtype in self.files or "auto_class" not in getattr(
+            self, datatype
         ):
+            raise IndexError(
+                "This function requires the output of "
+                " `self.cluster_ids()` and `self.prepare_interactive_data()` "
+                "Make sure you that have run this, then try again."
+            )
+
+        if all(self.files["voc_check" if song_level else "unit_check"]) is True:
             raise KeyError(
                 "You have already checked all the labels in this dataset. "
-                "If you want to re-check any/all, remove individuals from the "
-                "'already checked' list "
-                "(@ self.DIRS.VOCALISATION_LABELS['already_checked']), "
-                "then run again."
+                "If you want to re-check any/all, change the check status of "
+                "any ID from True to False in `self.files.voc_check` or "
+                "`self.files.unit_check`, then run again."
             )
 
         # Check that we are where we should
@@ -1016,15 +881,13 @@ class KantoData:
 
         # Check palette validity
         max_labs_data = (
-            getattr(self, dataset_type)
-            .dropna(subset=["auto_type_label"])["auto_type_label"]
+            getattr(self, datatype)
+            .dropna(subset=["auto_class"])["auto_class"]
             .astype(int)
             .max()
             + 1
         )
-
         max_labs = max_n_labs if max_n_labs > max_labs_data else max_labs_data
-
         if len(palette) < max_labs:
             raise ValueError(
                 "The chosen palette does not have enough values. "

@@ -5,7 +5,6 @@
 
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
 
-import pickle
 import shutil
 from pathlib import Path
 
@@ -28,7 +27,7 @@ def DIRS():
     DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
     PROJECT = Path(DATA_PATH).parent
     RAW_DATA = DATA_PATH / "segmented" / "great_tit"
-    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+    DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
     return DIRS
 
 
@@ -36,7 +35,6 @@ def DIRS():
 def new_dataset(DIRS):
     params = Parameters(dereverb=True)
     new_dataset = KantoData(
-        DATASET_ID,
         DIRS,
         parameters=params,
         overwrite_dataset=True,
@@ -55,7 +53,7 @@ def dataset(DIRS):
 
 def test_segment_into_units(new_dataset):
     new_dataset.segment_into_units()
-    assert "onsets" in new_dataset.vocs.columns
+    assert "onsets" in new_dataset.data.columns
 
 
 def test_get_units(dataset):
@@ -63,42 +61,42 @@ def test_get_units(dataset):
         dataset.parameters.update(song_level=song_level)
         dataset.get_units()
         if song_level:
-            assert isinstance(list(dataset.DIRS.AVG_UNITS.values())[0], Path)
+            assert "average_units" in dataset.files.columns
+            assert any(
+                isinstance(row, Path) for row in dataset.files.average_units
+            )
         else:
-            assert isinstance(list(dataset.DIRS.UNITS.values())[0], Path)
+            assert "units" in dataset.files.columns
+            assert any(isinstance(row, Path) for row in dataset.files.units)
 
 
 def test_cluster_ids(dataset):
     for song_level in [True, False]:
         dataset.parameters.update(song_level=song_level)
         dataset.cluster_ids(min_sample=5)
+        # TODO: test with min_sample > len of one of the IDs
 
         if song_level:
-            assert "umap_x" in dataset.vocs
-            assert "auto_type_label" in dataset.vocs
+            assert "umap_x" in dataset.data
+            assert "auto_class" in dataset.data
         else:
             assert hasattr(dataset, "units")
             assert "umap_x" in dataset.units
-            assert "auto_type_label" in dataset.units
+            assert "auto_class" in dataset.units
 
 
 def test_prepare_interactive_data(dataset):
-    dataset.reload()
     for song_level in [True, False]:
         dataset.parameters.update(song_level=song_level)
         dataset.prepare_interactive_data()
 
         if song_level:
-            assert isinstance(
-                list(
-                    dataset.DIRS.VOCALISATION_LABELS["predatasource"].values()
-                )[0],
-                Path,
+            assert any(
+                isinstance(row, Path) for row in dataset.files.voc_app_data
             )
         else:
-            assert isinstance(
-                list(dataset.DIRS.UNIT_LABELS["predatasource"].values())[0],
-                Path,
+            assert any(
+                isinstance(row, Path) for row in dataset.files.unit_app_data
             )
 
 
@@ -116,11 +114,10 @@ def greti_data_test_manual():
     DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
     PROJECT = Path(DATA_PATH).parent
     RAW_DATA = DATA_PATH / "segmented" / "great_tit"
-    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+    DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
 
     params = Parameters(dereverb=True, verbose=False)
     dataset = KantoData(
-        DATASET_ID,
         DIRS,
         parameters=params,
         overwrite_dataset=True,
@@ -136,11 +133,11 @@ def greti_data_test_manual():
 
     for song_level in [True, False]:
         dataset.parameters.update(song_level=song_level)
-        dataset.cluster_ids(min_sample=5)
+        dataset.cluster_ids(min_sample=10)
 
     for song_level in [True, False]:
         dataset.parameters.update(song_level=song_level)
         dataset.prepare_interactive_data()
 
-    dataset.parameters.update(song_level=True)
-    dataset.open_label_app()
+        dataset.parameters.update(song_level=True)
+        dataset.open_label_app()

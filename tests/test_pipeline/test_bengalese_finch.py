@@ -6,19 +6,20 @@
 # of units.
 
 
+import pickle
+
 # ──── IMPORTS ──────────────────────────────────────────────────────────────────
 import shutil
-import pkg_resources
 from pathlib import Path
-import pickle
+
+import pkg_resources
+import pytest
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.signal.segment import segment_files_parallel
 from pykanto.utils.compute import flatten_list
 from pykanto.utils.custom import parse_sonic_visualiser_xml
 from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
-import pytest
-
 from pykanto.utils.read import load_dataset
 
 # ──── SETTINGS ─────────────────────────────────────────────────────────────────
@@ -33,7 +34,7 @@ def DIRS():
     DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
     PROJECT = Path(DATA_PATH).parent
     RAW_DATA = DATA_PATH / "raw" / DATASET_ID
-    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+    DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
     return DIRS
 
 
@@ -62,7 +63,6 @@ def new_dataset(DIRS):
         silence_threshold=0.1,
     )
     new_dataset = KantoData(
-        DATASET_ID,
         DIRS,
         parameters=params,
         overwrite_dataset=True,
@@ -99,7 +99,7 @@ def test_segment_files_parallel(files_to_segment, DIRS):
 
 def test_segment_into_units(new_dataset):
     new_dataset.segment_into_units()
-    assert "onsets" in new_dataset.vocs.columns
+    assert "onsets" in new_dataset.data.columns
 
 
 def test_get_units(dataset):
@@ -107,9 +107,13 @@ def test_get_units(dataset):
         dataset.parameters.update(song_level=song_level)
         dataset.get_units()
         if song_level:
-            assert isinstance(list(dataset.DIRS.AVG_UNITS.values())[0], Path)
+            assert "average_units" in dataset.files.columns
+            assert any(
+                isinstance(row, Path) for row in dataset.files.average_units
+            )
         else:
-            assert isinstance(list(dataset.DIRS.UNITS.values())[0], Path)
+            assert "units" in dataset.files.columns
+            assert any(isinstance(row, Path) for row in dataset.files.units)
 
 
 def test_cluster_ids(dataset):
@@ -117,15 +121,13 @@ def test_cluster_ids(dataset):
     dataset.cluster_ids(min_sample=5)
     assert hasattr(dataset, "units")
     assert "umap_x" in dataset.units
-    assert "auto_type_label" in dataset.units
+    assert "auto_class" in dataset.units
 
 
 def test_prepare_interactive_data(dataset):
     dataset.parameters.update(song_level=False)
     dataset.prepare_interactive_data()
-    assert isinstance(
-        list(dataset.DIRS.UNIT_LABELS["predatasource"].values())[0], Path
-    )
+    assert any(isinstance(row, Path) for row in dataset.files.unit_app_data)
 
 
 def test_remove_output(dataset):
@@ -140,7 +142,7 @@ def bf_data_test_manual():
     DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
     PROJECT = Path(DATA_PATH).parent
     RAW_DATA = DATA_PATH / "raw" / DATASET_ID
-    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+    DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
 
     # Get files to segment and segment them
     wav_filepaths, xml_filepaths = [
@@ -171,7 +173,6 @@ def bf_data_test_manual():
         silence_threshold=0.1,
     )
     dataset = KantoData(
-        DATASET_ID,
         DIRS,
         parameters=params,
         overwrite_dataset=True,

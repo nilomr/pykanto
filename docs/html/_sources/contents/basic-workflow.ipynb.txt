@@ -264,7 +264,7 @@
                 "# ---------\n",
                 "params = Parameters() # Using default parameters for simplicity, which you should't!\n",
                 "dataset = KantoData(DATASET_ID, DIRS, parameters=params, overwrite_dataset=True)\n",
-                "dataset.vocs.head(3)"
+                "dataset.data.head(3)"
             ]
         },
         {
@@ -351,8 +351,8 @@
                 "dataset.segment_into_units()\n",
                 "\n",
                 "# Plot an example:\n",
-                "for vocalisation in dataset.vocs.index[:1]:\n",
-                "    dataset.plot_segments(vocalisation)"
+                "for vocalisation in dataset.data.index[:1]:\n",
+                "    dataset.plot(vocalisation)"
             ]
         },
         {
