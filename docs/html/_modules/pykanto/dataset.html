@@ -1057,7 +1057,7 @@ title="Source repository"
     <span class="k">def</span> <span class="nf">segment_into_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># ANCHOR</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds segment onsets, offsets, unit and silence durations</span>
-<span class="sd">        to :attr:`~.KantoData.vocs`.</span>
+<span class="sd">        to :attr:`~.KantoData.data`.</span>
 
 <span class="sd">        Warning:</span>
 <span class="sd">            If segmentation fails for a vocalisation it will be dropped from</span>
@@ -1217,7 +1217,7 @@ title="Source repository"
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="KantoData.plot_segments"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.plot_segments">[docs]</a>    <span class="k">def</span> <span class="nf">plot_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="KantoData.plot"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots a vocalisation and overlays the results</span>
 <span class="sd">        of the segmentation process.</span>
@@ -1288,7 +1288,7 @@ title="Source repository"
 <span class="sd">        such as individual or population) is too small.</span>
 
 <span class="sd">        Adds cluster membership information and 2D UMAP coordinates to</span>
-<span class="sd">        :attr:`~.KantoData.vocs` if `song_level=True`</span>
+<span class="sd">        :attr:`~.KantoData.data` if `song_level=True`</span>
 <span class="sd">        in :attr:`~.KantoData.parameters`, else to :attr:`~.KantoData.units`.</span>
 
 <span class="sd">        Args:</span>
@@ -1335,7 +1335,7 @@ title="Source repository"
                 <span class="s2">&quot;Make sure you that have run it, then try again&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_x&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_y&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;auto_class&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_x&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_y&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">columns</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
@@ -1388,12 +1388,12 @@ title="Source repository"
         <span class="c1"># Add their locations to the DIRS object, then save</span>
         <span class="k">if</span> <span class="n">song_level</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">VOCALISATION_LABELS</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;predatasource&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span>
+                <span class="s2">&quot;app_data&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span>
                 <span class="s2">&quot;already_checked&quot;</span><span class="p">:</span> <span class="p">[],</span>
             <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">UNIT_LABELS</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;predatasource&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span>
+                <span class="s2">&quot;app_data&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span>
                 <span class="s2">&quot;already_checked&quot;</span><span class="p">:</span> <span class="p">[],</span>
             <span class="p">}</span>
 
@@ -1466,14 +1466,14 @@ title="Source repository"
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stopped.&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="s2">&quot;auto_type_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;auto_class&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;You need to run `self.cluster_ids`&quot;</span>
                 <span class="s2">&quot; before you can check its results.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s2">&quot;already_checked&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">])[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">])[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;You have already checked all the labels in this dataset. &quot;</span>
@@ -1492,7 +1492,7 @@ title="Source repository"
         <span class="c1"># Check palette validity</span>
         <span class="n">max_labs_data</span> <span class="o">=</span> <span class="p">(</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">])[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">])[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span>
             <span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
             <span class="o">.</span><span class="n">max</span><span class="p">()</span>
             <span class="o">+</span> <span class="mi">1</span>

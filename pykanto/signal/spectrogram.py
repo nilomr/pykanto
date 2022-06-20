@@ -98,9 +98,7 @@ def save_melspectrogram(
     # Save spec
     file = Path(file)
     ID = dataset.metadata[key]["ID"]
-    spec_out_dir: Path = (
-        dataset.DIRS.SPECTROGRAMS / ID / (Path(file).stem + ".npy")
-    )
+    spec_out_dir: Path = dataset.DIRS.SPECTROGRAMS / (Path(file).stem + ".npy")
     makedir(spec_out_dir)
     np.save(spec_out_dir, spec)
 
@@ -312,12 +310,12 @@ def get_vocalisation_units(
     """
 
     # Get spectrogram and segmentation information
-    if "onsets" not in dataset.vocs.columns:
+    if "onsets" not in dataset.data.columns:
         raise KeyError(
             "'onsets':  This vocalisation has not yet been segmented."
         )
-    spectrogram = retrieve_spectrogram(dataset.vocs.at[key, "spectrogram_loc"])
-    onsets, offsets = [dataset.vocs.at[key, i] for i in ["onsets", "offsets"]]
+    spectrogram = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
+    onsets, offsets = [dataset.data.at[key, i] for i in ["onsets", "offsets"]]
 
     # Get spectrogram for each unit
     unit_spectrograms = get_unit_spectrograms(
@@ -343,25 +341,25 @@ def get_vocalisation_units(
 def get_indv_units(
     dataset: KantoData,
     keys: List[str],
-    individual: str,
+    ID: str,
     pad: bool = True,
     song_level: bool = False,
 ) -> Dict[str, Path]:
     """
     Returns a spectrogram representations of the units or the average of
-    the units present in the vocalisations of an individual in the dataset.
+    the units present in the vocalisations of an ID in the dataset.
     Saves the data as pickled dictionary, returns its location.
 
     Args:
         dataset (KantoData): Source dataset
-        keys (List[str]): List of keys belonging to an individual
-        individual (str): Individual ID
+        keys (List[str]): List of keys belonging to an ID
+        ID (str): ID ID
         pad (bool, optional): Whether to pad spectrograms to the maximum lenght.
             Defaults to True.
         song_level (bool, optional): Whether to return the average of all units.
             Defaults to False.
     Returns:
-        Dict[str, Path]: Individual and location of its pickled dictionary.
+        Dict[str, Path]: ID and location of its pickled dictionary.
     """
 
     units = [
@@ -387,19 +385,12 @@ def get_indv_units(
             }
 
     # Save dataset
-    out_dir = (
-        dataset.DIRS.SPECTROGRAMS
-        / ("average_units" if song_level else "units")
-        / individual
-        / (
-            f"{individual}_average_units.p"
-            if song_level
-            else f"{individual}_units.p"
-        )
+    out_dir = dataset.DIRS.SPECTROGRAMS / (
+        f"{ID}_avg_units.p" if song_level else f"{ID}_units.p"
     )
     makedir(out_dir)
     pickle.dump(units, open(out_dir, "wb"))
-    return {individual: out_dir}
+    return {ID: out_dir}
 
 
 def get_indv_units_parallel(
@@ -413,8 +404,8 @@ def get_indv_units_parallel(
     :func:`~pykanto.signal.spectrogram.get_indv_units`.
     """
     indv_dict = {
-        indv: dataset.vocs[dataset.vocs["ID"] == indv].index
-        for indv in set(dataset.vocs["ID"])
+        indv: dataset.data[dataset.data["ID"] == indv].index
+        for indv in set(dataset.data["ID"])
     }
 
     # Calculate and make chunks

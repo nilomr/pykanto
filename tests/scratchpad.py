@@ -86,7 +86,7 @@ dataset = KantoData(
     overwrite_data=True,
 )
 
-dataset.vocs.head()
+dataset.data.head()
 # %%
 
 # storm petrel
@@ -159,8 +159,8 @@ dataset = KantoData(
 # then check a few.
 dataset.segment_into_units()
 
-for voc in dataset.vocs.index:
-    dataset.plot_segments(voc)
+for voc in dataset.data.index:
+    dataset.plot(voc, segmented=True)
 
 
 # %%
@@ -241,7 +241,7 @@ dataset = KantoData(
 
 
 dataset.segment_into_units()
-dataset.vocs["ID"] = "TR43633"
+dataset.data["ID"] = "TR43633"
 
 dataset.get_units()
 dataset.cluster_ids(min_sample=20)
@@ -427,7 +427,7 @@ dataset = KantoData(
 
 #%%
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-dataset = load_dataset(out_dir)
+dataset = load_dataset(out_dir, DIRS)
 
 dataset.segment_into_units()
 dataset.get_units()
@@ -436,7 +436,7 @@ dataset.prepare_interactive_data()
 
 
 dataset.open_label_app()
-dataset.vocs.query("ID=='B11'")
+dataset.data.query("ID=='B11'")
 
 
 dataset.metadata
@@ -451,11 +451,11 @@ df.loc[df.index[0]].to_dict()
 type(df.loc[df.index[0]])
 
 
-for i in dataset.vocs.index:
-    dataset.vocs.loc[i].to_json("row{}.json".format(i))
+for i in dataset.data.index:
+    dataset.data.loc[i].to_json("row{}.json".format(i))
 
 
-for spec in dataset.vocs.index[:10]:
+for spec in dataset.data.index[:10]:
     dataset.plot(spec)
 
 
@@ -488,16 +488,16 @@ save_to_jsons(dataset)
 
 dataset.open_label_app()
 dataset = dataset.reload()
-dataset.vocs
+dataset.data
 
-dataset.vocs.head()
+dataset.data.head()
 dataset.to_csv(dataset.DIRS.DATASET.parent)
 
 recover_csv = pd.read_csv(
     dataset.DIRS.DATASET.parent / "TEST_VOCS.csv", index_col=0
 )
 np_str = recover_csv["silence_durations"]
-dataset.vocs["unit_durations"][0]
+dataset.data["unit_durations"][0]
 
 
 # recover dataframe with correct column types from saved csv file:
@@ -519,33 +519,31 @@ df2 = pd.read_csv(
     converters={"unit_durations": from_np_array},
 )
 
-df2["unit_durations"]
-
 ######
 
-dataset.vocs.info()
+dataset.data.info()
 
-for col in dataset.vocs.columns:
-    if isinstance(dataset.vocs[col][0], list):
+for col in dataset.data.columns:
+    if isinstance(dataset.data[col][0], list):
         print(col)
 
 VIstring = ",".join(["%.5f" % num for num in np_str])
 
 np.fromstring(np_str, sep=" ")
 
-
+#%%
 # ──── TEST MOVING DATASET LOCATION ─────────────────────────────────────────────
 
+# Create dataset
 
 DATASET_ID = "GREAT_TIT"
 DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
 PROJECT = Path(DATA_PATH).parent
 RAW_DATA = DATA_PATH / "segmented" / "great_tit"
-DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
 
-params = Parameters(dereverb=True, verbose=False)
+params = Parameters(dereverb=True, verbose=False, song_level=True)
 dataset = KantoData(
-    DATASET_ID,
     DIRS,
     parameters=params,
     overwrite_dataset=True,
@@ -553,54 +551,116 @@ dataset = KantoData(
     random_subset=10,
 )
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-dataset = load_dataset(out_dir)
+dataset = load_dataset(out_dir, DIRS)
+
 dataset.segment_into_units()
 dataset.get_units()
 dataset.cluster_ids(min_sample=5)
 dataset.prepare_interactive_data()
 
+# %%
+
+# Move dataset
+import shutil
+
+move_to = Path("/home/nilomr/Downloads/") / f"{dataset.DIRS.DATASET.stem}"
+shutil.move(str(dataset.DIRS.DATASET.parent), move_to)
+moved_dataset = move_to / f"{dataset.DIRS.DATASET.stem}.db"
+dataset_dir = moved_dataset
+#%%
+
+
+DATASET_ID = "GREAT_TIT"
+DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
+PROJECT = Path(DATA_PATH).parent
+RAW_DATA = DATA_PATH / "segmented" / "great_tit"
+DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
+
+new_dataset = load_dataset(moved_dataset, DIRS)
+new_dataset.plot(new_dataset.data.index[0], segmented=True)
+
+#%%
+# Save dataset as csv
+
+# If you want to save the dataset as a .csv file,
+# which I recommend you do as backup,
+csv_dir = dataset.DIRS.DATASET.parent
+dataset.to_csv(csv_dir)
+
+from datetime import datetime
+
+timestamp: bool = True
+# def to_csv(self, path: Path, timestamp: bool = True) -> None:
+# """
+# Output vocalisation (and, if present, unit) metadata in the dataset as
+# a .csv file.
+
+# Args:
+#     path (Path): Directory where to save the file(s).
+#     timestamp (bool, optional): Whether to add timestamp to file name.
+#         Defaults to True.
+# """
+t = f'{datetime.now().strftime("%H%M%S")}' if timestamp else ""
+dataset.data.to_csv(csv_dir / f"{dataset.DIRS.DATASET.stem}_{t}.csv")
+dataset.files.to_csv(csv_dir / f"{dataset.DIRS.DATASET.stem}_FILES_{t}.csv")
+if hasattr(dataset, "units"):
+    dataset.units.to_csv(csv_dir / f"{self.DIRS.DATASET.stem}_UNITS_{t}.csv")
+
+
+#%%
 
 import shutil
 
-move_to = out_dir.parents[1] / f"{out_dir.stem}_MOVED"
-shutil.move(out_dir.parent, move_to)
-
-moved_dataset = move_to / f"{DATASET_ID}.db"
-
-
-def relink_kantodata(dataset_location: Path, path: Path):
-    return Path(*dataset_location.parent.parts) / Path(*path.parts[-3:])
+move_to = Path("/home/nilomr/Downloads/") / f"{dataset.DIRS.DATASET.stem}"
+shutil.move(str(dataset.DIRS.DATASET.parent), move_to)
+moved_dataset = move_to / f"{dataset.DIRS.DATASET.stem}_moved.db"
 
 
-dataset = load_dataset(moved_dataset)
-if not dataset.vocs["spectrogram_loc"][0].is_file():
-    dataset.vocs["spectrogram_loc"] = dataset.vocs["spectrogram_loc"].apply(
-        lambda x: relink_kantodata(moved_dataset, x)
-    )
-if not dataset.vocs["spectrogram_loc"][0].is_file():
-    raise FileNotFoundError("Failed to reconnect spectrogram data")
+#%%
 
-print(dataset.DIRS)
+DATASET_ID = "GREAT_TIT"
+DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
+PROJECT = Path("/home/nilomr/Downloads/")
+RAW_DATA = PROJECT
+DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
 
 
-dataset.plot(dataset.vocs.index[0])
+kakaset = load_dataset(Path("/home/nilomr/Downloads/KKTEST/KKTEST.db"), DIRS)
+kakaset.plot(kakaset.data.index[0])
 
-testpath = dataset.vocs["spectrogram_loc"][0]
+print(kakaset.DIRS)
 
-
-def make_relpath(path: Path):
-    return path.relative_to(path.parents[3])
-
-
-make_relpath(testpath)
-dataset.vocs["spectrogram_loc"] = dataset.vocs["spectrogram_loc"].apply(
-    lambda x: make_relpath(x)
-)
+kakaset.prepare_interactive_data()
+kakaset.open_label_app()
 
 
-p = dataset.vocs["spectrogram_loc"][0].parts[0]
+print(DIRS)
 
-p.relative_to(p.parents[3])
+DATASET_ID = "GREAT_TIT"
+DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
+PROJECT = Path("/home/nilomr/Downloads/")
+RAW_DATA = PROJECT
+DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
 
 
+for k, v in kakaset.DIRS.__dict__.items():
+    if k in DIRS.__dict__:
+        setattr(kakaset.DIRS, k, getattr(DIRS, k))
+
+kakaset.DIRS
+
+print(kakaset.DIRS)
+
+# Fix #13 : all paths at same level and stored in dataframe
 dataset.DIRS._deep_update_paths(PROJECT, NEW_PROJECT)
+
+
+test_path = dataset.files["spectrogram"][0]
+
+index = path.parts.index("spectrograms")
+new_path = moved_dataset.parent.joinpath(*path.parts[index:])
+
+
+pd.DataFrame.from_dict(
+    dataset.DIRS.UNITS, orient="index", columns=["path"]
+).loc["B32"][0]

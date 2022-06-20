@@ -6,14 +6,18 @@ Functions to read external files -e.g. JSON- efficiently.
 
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
 from __future__ import annotations
-from pathlib import Path
+
 import pickle
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List
+import numpy as np
+
 import ray
 import ujson as json
 
 if TYPE_CHECKING:
     from pykanto.dataset import KantoData
+    from pykanto.utils.paths import ProjDirs
 
 from pykanto.utils.compute import (
     calc_chunks,
@@ -27,8 +31,83 @@ from pykanto.utils.compute import (
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
 
 
-def load_dataset(dataset: Path) -> KantoData:
-    return pickle.load(open(dataset, "rb"))
+def _relink_kantodata(dataset_dir: Path, path: Path) -> Path:
+    index = path.parts.index("spectrograms")
+    return dataset_dir.parent.joinpath(*path.parts[index:])
+
+
+def _relink_df(dataset_dir: Path, x: Any) -> None | Any:
+    if isinstance(x, Path):
+        return _relink_kantodata(dataset_dir, x)
+    else:
+        return x
+
+
+def _path_is_file(x) -> bool | None:
+    if isinstance(x, Path):
+        return x.is_file()
+
+
+def load_dataset(
+    dataset_dir: Path, DIRS: ProjDirs, relink_data: bool = True
+) -> KantoData:
+    """
+    Load an existing dataset, fixing any broken links to data using a new
+    ProjDirs object.
+
+    Args:
+        dataset_dir (Path): Path to the dataset file (*.db)
+        DIRS (ProjDirs): New project directories
+        relink_data (bool, optional): Whether to make update dataset paths.
+            Defaults to True.
+
+    Returns:
+        KantoData: The dataset
+    """
+    # Load
+    dataset = pickle.load(open(dataset_dir, "rb"))
+
+    if relink_data:
+
+        # Fix DIRS
+        dataset.DIRS = DIRS
+        setattr(dataset.DIRS, "DATASET", dataset_dir)
+        dataset.DIRS.SPECTROGRAMS = _relink_kantodata(
+            dataset_dir, dataset.DIRS.SPECTROGRAMS
+        )
+
+        # Update all paths
+        dataset.files
+        pathcols = [
+            col
+            for col in dataset.files.columns
+            if any(isinstance(x, Path) for x in dataset.files[col])
+        ]
+        for col in pathcols:
+            dataset.files[col] = dataset.files[col].apply(
+                lambda x: _relink_df(dataset_dir, x)
+            )
+
+        # Check data are reachable
+        exist = np.concatenate(
+            [
+                dataset.files[col].apply(lambda x: _path_is_file(x)).values
+                for col in pathcols
+            ]
+        )
+        n_noexist, n_none = [
+            np.count_nonzero(exist == v) for v in [False, None]
+        ]
+        if n_noexist > 0 and n_noexist != len(exist) - n_none:
+            raise FileNotFoundError(
+                "Could not reconnect all data in the dataset "
+                f"({n_noexist}/{len(exist)} failed)."
+            )
+        elif n_noexist == len(exist) - n_none:
+            raise FileNotFoundError(
+                "Could not reconnect any data in the dataset."
+            )
+    return dataset
 
 
 def read_json(json_loc: Path) -> Dict:
@@ -47,15 +126,14 @@ def read_json(json_loc: Path) -> Dict:
 
 def _get_json(file):
     """
-    Returns a json file with a 'label' field,
-    with value 'NOISE' if this field was present and
-    its value was 'NOISE' and 'VOCALISATION' in all other cases.
+    Reads and returns a .json file with a new 'noise' key with value True if the
+    json file has a 'label' key with value 'NOISE'.
     """
     jf = read_json(file)
     try:
-        jf["label"] = jf["label"] if jf["label"] == "NOISE" else "VOCALISATION"
+        jf["noise"] = True if jf["label"] == "NOISE" else False
     except:
-        jf["label"] = "VOCALISATION"
+        jf["label"] = False
     return jf
 
 

@@ -118,7 +118,7 @@ print(DIRS)
 
 
 # dataset.segment_into_units()
-# dataset.vocs['ID'] = 'TR43633'
+# dataset.data['ID'] = 'TR43633'
 
 # dataset.get_units()
 # dataset.cluster_ids(min_sample=20)

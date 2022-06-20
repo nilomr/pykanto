@@ -435,7 +435,7 @@ title="Source repository"
 <span class="kn">from</span> <span class="nn">bokeh.themes</span> <span class="kn">import</span> <span class="n">Theme</span>
 <span class="kn">from</span> <span class="nn">bokeh.transform</span> <span class="kn">import</span> <span class="n">factor_cmap</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="kn">from</span> <span class="nn">pykanto.labelapp.data</span> <span class="kn">import</span> <span class="n">load_bk_data</span>
+<span class="kn">from</span> <span class="nn">pykanto.labelapp.data</span> <span class="kn">import</span> <span class="n">load_app_data</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span>
 
 <span class="c1"># ──── FUNCTIONS ───────────────────────────────────────────────────────────────</span>
@@ -453,7 +453,7 @@ title="Source repository"
     <span class="n">source</span><span class="p">:</span> <span class="n">ColumnDataSource</span><span class="p">,</span>
     <span class="n">palette</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">labs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">grouping_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto_type_label&quot;</span><span class="p">,</span>
+    <span class="n">grouping_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto_class&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 
     <span class="c1"># Build marker shapes</span>
@@ -493,8 +493,8 @@ title="Source repository"
     <span class="n">pre</span> <span class="o">=</span> <span class="s1">&#39;&lt;div class=&quot;legend_wrapper&quot;&gt;&#39;</span>
     <span class="n">img_htmls</span> <span class="o">=</span> <span class="p">[</span><span class="n">pre</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]),</span> <span class="n">key</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]),</span> <span class="n">key</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;spectrogram&quot;</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
         <span class="n">marker</span> <span class="o">=</span> <span class="n">html_markers</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">][</span><span class="n">idx</span><span class="p">]]</span>
         <span class="n">span</span> <span class="o">=</span> <span class="n">span_mk_sizes</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">][</span><span class="n">idx</span><span class="p">]]</span>
@@ -607,7 +607,7 @@ title="Source repository"
     <span class="c1"># :func:`~pykanto.signal.cluster.dim_reduction_and_cluster`</span>
     <span class="c1"># because len &lt; min_sample)</span>
     <span class="n">indv_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
-        <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">])[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">])[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
     <span class="p">)</span>
 
     <span class="c1"># Where to store labelling information?</span>
@@ -627,7 +627,7 @@ title="Source repository"
             <span class="s2">&quot;Close the app.&quot;</span>
         <span class="p">)</span>
 
-    <span class="n">source</span> <span class="o">=</span> <span class="n">load_bk_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">load_app_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="c1"># Generate labels, markers and colours</span>
 
@@ -696,7 +696,7 @@ title="Source repository"
 <span class="sd">        &lt;div class=&quot;hover_container&quot;&gt;</span>
 <span class="sd">            &lt;img class=&#39;hover_img&#39; src=&#39;@spectrogram&#39; style=&#39;float: top; width:120px;height:120px;&#39;/&gt;</span>
 <span class="sd">            &lt;div class=&quot;image_label&quot;&gt;</span>
-<span class="sd">                &lt;span style=&#39;font-size: 16px; &#39;&gt;@auto_type_label&lt;/span&gt;</span>
+<span class="sd">                &lt;span style=&#39;font-size: 16px; &#39;&gt;@auto_class&lt;/span&gt;</span>
 <span class="sd">            &lt;/div&gt;</span>
 <span class="sd">        &lt;/div&gt;</span>
 <span class="sd">    &lt;/div&gt;</span>
@@ -735,7 +735,7 @@ title="Source repository"
     <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_legend_items</span><span class="p">():</span>
-        <span class="n">dummy_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]))</span>
+        <span class="n">dummy_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]))</span>
         <span class="n">legend_items</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">LegendItem</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">renderers</span><span class="o">=</span><span class="p">[</span><span class="n">dummy_scatter</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labs</span><span class="p">)</span>
@@ -797,7 +797,7 @@ title="Source repository"
     <span class="n">feedback_text</span> <span class="o">=</span> <span class="n">Div</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">css_classes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;help_text&quot;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">update_class_examples_div</span><span class="p">():</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span>
             <span class="s2">&quot;spectrogram&quot;</span>
         <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
@@ -847,16 +847,16 @@ title="Source repository"
         <span class="n">label_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">key</span><span class="p">:</span> <span class="n">label</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-                <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">],</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]</span>
+                <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">],</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span>
             <span class="p">)</span>
         <span class="p">}</span>
 
-        <span class="k">if</span> <span class="s2">&quot;type_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;class_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
-                <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;type_label&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_dict</span><span class="p">)</span>
+                <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;class_label&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_dict</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)[</span><span class="s2">&quot;type_label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)[</span><span class="s2">&quot;class_label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_dict</span><span class="p">)</span>
             <span class="p">)</span>
 
@@ -878,8 +878,8 @@ title="Source repository"
             <span class="k">return</span>
 
         <span class="n">indv</span> <span class="o">=</span> <span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">source</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">load_bk_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">indv</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">load_app_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">indv</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span>
         <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 
         <span class="c1"># Update legend</span>
@@ -905,9 +905,9 @@ title="Source repository"
     <span class="k">def</span> <span class="nf">update_labels</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;indices&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
             <span class="k">return</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span>
         <span class="n">labels</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">item</span>
-        <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_type_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
         <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 
         <span class="c1"># Update legend</span>

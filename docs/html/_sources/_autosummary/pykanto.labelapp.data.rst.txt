@@ -14,7 +14,7 @@ pykanto.labelapp.data
    .. autosummary::
    
       embeddable_image
-      load_bk_data
+      load_app_data
       prepare_datasource
    
    

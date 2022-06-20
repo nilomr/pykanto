@@ -12,13 +12,14 @@ Source code for pykanto's interactive labelling app.
 import pickle
 import re
 import sys
+import warnings
 from itertools import cycle
 from pathlib import Path
 from typing import List
-import warnings
 
 import numpy as np
 import pandas as pd
+import pkg_resources
 from bokeh.layouts import row
 from bokeh.models import (
     BoxSelectTool,
@@ -36,8 +37,7 @@ from bokeh.palettes import Set3_12
 from bokeh.plotting import curdoc, figure
 from bokeh.themes import Theme
 from bokeh.transform import factor_cmap
-import pkg_resources
-from pykanto.labelapp.data import load_bk_data
+from pykanto.labelapp.data import load_app_data
 from pykanto.utils.paths import ProjDirs
 
 # ──── FUNCTIONS ───────────────────────────────────────────────────────────────
@@ -55,7 +55,7 @@ def prepare_legend(
     source: ColumnDataSource,
     palette: List[str],
     labs: List[str],
-    grouping_labels: str = "auto_type_label",
+    grouping_labels: str = "auto_class",
 ):
 
     # Build marker shapes
@@ -95,8 +95,8 @@ def build_legend(source, html_markers, span_mk_sizes, mk_colours):
     pre = '<div class="legend_wrapper">'
     img_htmls = [pre]
 
-    for label in sorted(set(source.data["auto_type_label"]), key=float):
-        idx = np.where(source.data["auto_type_label"] == label)[0][0]
+    for label in sorted(set(source.data["auto_class"]), key=float):
+        idx = np.where(source.data["auto_class"] == label)[0][0]
         spec = source.data["spectrogram"][idx]
         marker = html_markers[source.data["markers"][idx]]
         span = span_mk_sizes[source.data["markers"][idx]]
@@ -192,12 +192,9 @@ else:
 
     # ──── MAIN ────────────────────────────────────────────────────────────────────
 
-    if song_level:
-        dataset_type = "vocs"
-        dataset_labels = "VOCALISATION_LABELS"
-    else:
-        dataset_type = "units"
-        dataset_labels = "UNIT_LABELS"
+    datatype = "data" if song_level else "units"
+    labtype = "voc_app_data" if song_level else "unit_app_data"
+    checktype = "voc_check" if song_level else "unit_check"
 
     # Load dataset
     if dataset_loc.is_file():
@@ -209,19 +206,19 @@ else:
     # :func:`~pykanto.signal.cluster.dim_reduction_and_cluster`
     # because len < min_sample)
     indv_list = np.unique(
-        getattr(dataset, dataset_type).dropna(subset=["auto_type_label"])["ID"]
+        getattr(dataset, datatype).dropna(subset=["auto_class"])["ID"]
     )
 
     # Where to store labelling information?
-    if "already_checked" not in getattr(dataset.DIRS, dataset_labels):
-        getattr(dataset.DIRS, dataset_labels)["already_checked"] = []
+    if checktype not in dataset.files:
+        dataset.files[checktype] = False
 
     # Get individuals to do
-    remaining_indvs = [
-        indv
-        for indv in indv_list
-        if indv not in getattr(dataset.DIRS, dataset_labels)["already_checked"]
-    ]
+    remaining_indvs = np.unique(
+        dataset.files.dropna(subset=[checktype]).query(f"{checktype} == False")[
+            "ID"
+        ]
+    )
 
     if len(remaining_indvs) == 0:
         raise KeyError(
@@ -229,7 +226,7 @@ else:
             "Close the app."
         )
 
-    source = load_bk_data(dataset, dataset_labels, remaining_indvs[0])
+    source = load_app_data(dataset, labtype, remaining_indvs[0])
 
     # Generate labels, markers and colours
 
@@ -298,7 +295,7 @@ else:
         <div class="hover_container">
             <img class='hover_img' src='@spectrogram' style='float: top; width:120px;height:120px;'/>
             <div class="image_label">
-                <span style='font-size: 16px; '>@auto_type_label</span>
+                <span style='font-size: 16px; '>@auto_class</span>
             </div>
         </div>
     </div>
@@ -337,7 +334,7 @@ else:
     )
 
     def get_legend_items():
-        dummy_labels = list(dict.fromkeys(source.data["auto_type_label"]))
+        dummy_labels = list(dict.fromkeys(source.data["auto_class"]))
         legend_items = [
             LegendItem(label=label, renderers=[dummy_scatter], index=i)
             for i, label in enumerate(labs)
@@ -348,7 +345,6 @@ else:
     legend_items = get_legend_items()
 
     # Inactive legend
-
     # plot_legend = Legend(
     #     items=legend_items,
     #     location=(0, 0),
@@ -399,9 +395,9 @@ else:
     feedback_text = Div(text=text, css_classes=["help_text"])
 
     def update_class_examples_div():
-        spec = source.data[source.data["auto_type_label"] == "0"][0][
-            "spectrogram"
-        ][0]
+        spec = source.data[source.data["auto_class"] == "0"][0]["spectrogram"][
+            0
+        ]
 
     # Panel with class examples
     # Prepare marker dictionary for legend
@@ -443,35 +439,35 @@ else:
 
         # Add previous individual to list of already checked
         indv = source.data["ID"][0]
-        getattr(dataset.DIRS, dataset_labels)["already_checked"].append(indv)
+
+        dataset.files.loc[
+            (dataset.files[checktype] == False) & (dataset.files["ID"] == indv),
+            checktype,
+        ] = True
 
         # Save labels from last individual to dataset
         label_dict = {
             key: label
             for key, label in zip(
-                source.data["index"], source.data["auto_type_label"]
+                source.data["index"], source.data["auto_class"]
             )
         }
 
-        if "type_label" not in getattr(dataset, dataset_type).columns:
-            getattr(dataset, dataset_type).insert(
-                1, "type_label", pd.Series(label_dict)
+        if "class_label" not in getattr(dataset, datatype).columns:
+            getattr(dataset, datatype).insert(
+                1, "class_label", pd.Series(label_dict)
             )
         else:
-            getattr(dataset, dataset_type)["type_label"].update(
+            getattr(dataset, datatype)["class_label"].update(
                 pd.Series(label_dict)
             )
 
         dataset.save_to_disk(verbose=True)
 
         # Get next individual and update plot
-
-        remaining_indvs = [
-            indv
-            for indv in indv_list
-            if indv
-            not in getattr(dataset.DIRS, dataset_labels)["already_checked"]
-        ]
+        remaining_indvs = dataset.files.dropna(subset=[checktype]).query(
+            f"{checktype} == False"
+        )["ID"]
 
         if len(remaining_indvs) == 0:
             done_t = "Done. You can now stop the app."
@@ -480,8 +476,8 @@ else:
             return
 
         indv = remaining_indvs[0]
-        source.data = dict(load_bk_data(dataset, dataset_labels, indv).data)
-        labels = source.data["auto_type_label"]
+        source.data = dict(load_app_data(dataset, labtype, indv).data)
+        labels = source.data["auto_class"]
         source.data["markers"] = get_markers(marker_types, labels)
 
         # Update legend
@@ -507,9 +503,9 @@ else:
     def update_labels(event):
         if "indices" not in globals():
             return
-        labels = source.data["auto_type_label"]
+        labels = source.data["auto_class"]
         labels[indices] = event.item
-        source.data["auto_type_label"] = labels
+        source.data["auto_class"] = labels
         source.data["markers"] = get_markers(marker_types, labels)
 
         # Update legend

@@ -9,23 +9,21 @@ Classes and methods to store and modify pykanto parameters.
 from __future__ import annotations
 
 import math
-import os
 import warnings
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List, Tuple
+from typing import TYPE_CHECKING, List, Tuple
 
 import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from matplotlib import gridspec
 from matplotlib.axes import Axes
 from matplotlib.cm import get_cmap
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from matplotlib.ticker import FormatStrFormatter
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from numba.core.decorators import njit
 
 from pykanto.parameters import Parameters
@@ -156,7 +154,6 @@ def melspectrogram(
         cbar = plt.colorbar(spec_im, cax=cax)
         cbar.ax.tick_params(size=0, labelsize=9, pad=10, colors=text_colour)
         cbar.outline.set_visible(False)
-        cax.set_title("# of contacts")
         cbar.ax.set_ylabel("dB", color=text_colour, size=12, labelpad=12)
         cbar.ax.yaxis.set_label_position("right")
 
@@ -193,11 +190,9 @@ def segmentation(
 
     params = dataset.parameters
     if not isinstance(spectrogram, np.ndarray):
-        spectrogram = retrieve_spectrogram(
-            dataset.vocs.at[key, "spectrogram_loc"]
-        )
+        spectrogram = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
         onsets_offsets = [
-            dataset.vocs.at[key, i] for i in ["onsets", "offsets"]
+            dataset.data.at[key, i] for i in ["onsets", "offsets"]
         ]
 
     ax = melspectrogram(
@@ -277,7 +272,7 @@ def show_spec_centroid_bandwidth(
         KeyError("You need to provide either a key or a spectrogram")
 
     if not isinstance(spec, np.ndarray):
-        spec = retrieve_spectrogram(dataset.vocs.at[key, "spectrogram_loc"])
+        spec = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 
     times = (
         np.array(range(spec.shape[1]))
@@ -302,6 +297,7 @@ def show_minmax_frequency(
     dataset: KantoData,
     minfreqs: np.ndarray,
     maxfreqs: np.ndarray,
+    roll_percents: list[float, float],
     key: None | str = None,
     spec: None | np.ndarray = None,
 ) -> None:
@@ -312,8 +308,10 @@ def show_minmax_frequency(
 
     Args:
         dataset (KantoData): Dataset object with your data.
-        rolloff_max (np.ndarray): Array of maximum frequencies.
-        rolloff_min (np.ndarray): Array of minimum frequencies.
+        maxfreqs (np.ndarray): Array of maximum frequencies.
+        minfreqs (np.ndarray): Array of minimum frequencies.
+        roll_percents (list[float, float]): Percentage of energy
+            contained in bins.
         key (None | str = None): Key of a vocalisation. Defaults to None.
         spec (spec: None | np.ndarray): Mel spectrogram. Defaults to None.
     """
@@ -322,7 +320,7 @@ def show_minmax_frequency(
         KeyError("You need to provide either a key or a spectrogram")
 
     if not isinstance(spec, np.ndarray):
-        spec = retrieve_spectrogram(dataset.vocs.at[key, "spectrogram_loc"])
+        spec = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 
     times = (
         np.array(range(spec.shape[1]))
@@ -331,8 +329,8 @@ def show_minmax_frequency(
     )
 
     ax = melspectrogram(spec, parameters=dataset.parameters, title=key)
-    ax.plot(times, maxfreqs, label="Max frequency (roll = 0.95)")
-    ax.plot(times, minfreqs, label="Min frequency (roll = 0.1)")
+    ax.plot(times, maxfreqs, label=f"Max frequency (roll = {roll_percents[0]})")
+    ax.plot(times, minfreqs, label=f"Min frequency (roll ={roll_percents[1]})")
     ax.legend(loc="upper right", frameon=False, labelcolor="w")
     plt.show()
 
@@ -380,11 +378,11 @@ def build_plot_summary(
 
         if var == "frequency":
             data = {
-                "upper_freq": dataset.vocs["upper_freq"],
-                "lower_freq": dataset.vocs["lower_freq"],
+                "upper_freq": dataset.data["upper_freq"],
+                "lower_freq": dataset.data["lower_freq"],
             }
         else:
-            data = {"song_duration": dataset.vocs["length_s"]}
+            data = {"song_duration": dataset.data["length_s"]}
 
         sns.histplot(
             data,
@@ -424,7 +422,7 @@ def build_plot_summary(
 
     # Build sample size plot
     if variable in ["sample_size", "all"]:
-        individual_ss = dataset.vocs["ID"].value_counts()
+        individual_ss = dataset.data["ID"].value_counts()
         data = pd.DataFrame(individual_ss).rename(columns={"ID": "n"})
         data["ID"] = individual_ss.index
         sns.histplot(
@@ -436,7 +434,7 @@ def build_plot_summary(
             legend=False,
         )
         (axes[2] if variable == "all" else axes).set(
-            xlabel=f"Sample size (total: {len(dataset.vocs)})",
+            xlabel=f"Sample size (total: {len(dataset.data)})",
             ylabel="Count",
         )
         # Reduce xtick density

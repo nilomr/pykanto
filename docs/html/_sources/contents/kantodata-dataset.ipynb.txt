@@ -53,7 +53,7 @@
     ".. code-block:: python\n",
     "    :linenos:\n",
     "\n",
-    "    dataset.vocs['ID'].value_counts()\n",
+    "    dataset.data['ID'].value_counts()\n",
     "\n",
     ".. code-block:: none\n",
     "\n",

@@ -1,13 +1,25 @@
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
 from pathlib import Path
+
 import numpy as np
 import pkg_resources
 import pytest
 import soundfile as sf
-from pykanto.signal.segment import ReadWav, SegmentMetadata, segment_is_valid
+from pykanto.signal.segment import (
+    ReadWav,
+    SegmentMetadata,
+    segment_files_parallel,
+    segment_is_valid,
+)
+from pykanto.utils.compute import flatten_list
+from pykanto.utils.custom import parse_sonic_visualiser_xml
 from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
 from pykanto.utils.types import Annotation, AudioAnnotation, Metadata
+
+# ──── SETTINGS ────────────────────────────────────────────────────────────────
+
+DATASET_ID = "STORM-PETREL"
 
 # ──── FIXTURES ─────────────────────────────────────────────────────────────────
 
@@ -16,8 +28,8 @@ from pykanto.utils.types import Annotation, AudioAnnotation, Metadata
 def DIRS():
     DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
     PROJECT = Path(DATA_PATH).parent
-    RAW_DATA = DATA_PATH / "raw"
-    DIRS = ProjDirs(PROJECT, RAW_DATA, mkdir=True)
+    RAW_DATA = DATA_PATH / "raw" / DATASET_ID
+    DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
     return DIRS
 
 
@@ -50,6 +62,16 @@ def metadata():
 @pytest.fixture()
 def audio_section():
     return np.random.uniform(-1, 1, 44100)
+
+
+@pytest.fixture()
+def files_to_segment(DIRS):
+    # Get files to segment and segment them
+    wav_filepaths, xml_filepaths = [
+        get_file_paths(DIRS.RAW_DATA, [ext]) for ext in [".wav", ".xml"]
+    ]
+    files_to_segment = get_wavs_w_annotation(wav_filepaths, xml_filepaths)
+    return files_to_segment
 
 
 # ──── TESTS ────────────────────────────────────────────────────────────────────
@@ -111,49 +133,19 @@ def test_segment_is_valid(
     )
 
 
-# min_duration: float = .5
-# min_freqrange: int = 200
-# resample: int = 22050
-# labels_to_ignore: List[str] = ["FIRST", "first"]
+def test_segment_files_parallel(files_to_segment, DIRS):
+    segment_files_parallel(
+        files_to_segment,
+        DIRS,
+        resample=22050,
+        parser_func=parse_sonic_visualiser_xml,
+        min_duration=0.1,
+        min_freqrange=100,
+        labels_to_ignore=["NOISE"],
+    )
 
-# # Make sure output folders exists
-# wav_outdir = makedir(DIRS.SEGMENTED / "WAV")
-# json_outdir = makedir(DIRS.SEGMENTED / "JSON")
-
-# class TestMeta:
-#     def __init__(self):
-
-#         self.metadata = Annotation(
-#             ID=['segment_1', 'segment_2', 'segment_3'],
-#             start_times=[1, 3, 5],
-#             durations=[1, 1, 1],
-#             end_times=[2, 4, 6],
-#             lower_freq=[2000, 3000, 3000],
-#             upper_freq=[5000, 4000, 6000],
-#             label=['A', 'A', 'B'],
-#             annotation_file=Path('root')/"ann.xml",
-#             sample_rate=48000,
-#             bit_rate=352,
-#             length_s=3.2,
-#             source_wav=Path('root')/"ann.wav"
-#         )
-
-#     def return_metadata(self):
-#         return self.metadata
-
-# # Extend the Annotation class to include your new attributes
-# # E.g., a datetime attribute of type str.
-
-# @attr.s
-# class CustomAnnotation(Annotation):
-#     datetime: str = attr.ib(validator=validators.instance_of(str))
-
-# testmeta().return_metadata()
-
-# class CustomTestMeta(TestMeta):
-#     def return_metadata(self):
-#         newkeys = {'datetime': self.metadata.datetime}
-#         annotation = CustomAnnotation(**{**self.metadata.__dict__, **newkeys})
-#         return annotation
-
-# TestMeta = CustomTestMeta
+    outfiles = [
+        get_file_paths(DIRS.SEGMENTED, [ext]) for ext in [".wav", ".JSON"]
+    ]
+    outfiles = flatten_list(outfiles)
+    assert all([f.stat().st_size for f in outfiles]) > 0

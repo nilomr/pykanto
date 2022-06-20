@@ -48,7 +48,7 @@ def makedir(DIR: Path, return_path: bool = True) -> Path | None:
     """
 
     if not isinstance(DIR, Path):
-        raise TypeError("Wrong argument type to 'DIR'")
+        raise TypeError(f"Wrong argument type passed to 'DIR': {DIR}")
 
     # If this is a file
     if len(DIR.suffix) > 0:
@@ -107,7 +107,7 @@ def save_to_jsons(dataset: KantoData) -> None:
         dataset (KantoData): Dataset object.
     """
     # need to convert numpy to list before can dump to json:
-    df = dataset.vocs.copy()
+    df = dataset.data.copy()
 
     # Convert any numpy arrays to lists, pathlib.Paths to str
     arraycols, pathcols = [
@@ -129,7 +129,7 @@ def save_to_jsons(dataset: KantoData) -> None:
     ):
         idx = jsonfile.stem
 
-        if idx in dataset.vocs.index:
+        if idx in dataset.data.index:
             dfdict = df.loc[idx].to_dict()
             with open(jsonfile, "r") as f:
                 data = json.load(f)

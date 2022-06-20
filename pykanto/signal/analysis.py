@@ -7,15 +7,15 @@ Basic audio feature calculations (spectral centroids, peak frequencies, etc.)
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
 
 from __future__ import annotations
-import pickle
 
+import pickle
 from typing import TYPE_CHECKING, List, Tuple
 
 import librosa
 import numpy as np
 from pykanto.plot import show_minmax_frequency, show_spec_centroid_bandwidth
-from pykanto.signal.spectrogram import retrieve_spectrogram
 from pykanto.signal.filter import mels_to_hzs
+from pykanto.signal.spectrogram import retrieve_spectrogram
 
 if TYPE_CHECKING:
     from pykanto.dataset import KantoData
@@ -78,7 +78,7 @@ def spec_centroid_bandwidth(
     if not key and not isinstance(spec, np.ndarray):
         raise KeyError("You need to provide either a key or a spectrogram")
     if not isinstance(spec, np.ndarray):
-        spec = retrieve_spectrogram(dataset.vocs.at[key, "spectrogram_loc"])
+        spec = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 
     offset = 0
     if np.min(spec) < 0:
@@ -122,6 +122,7 @@ def approximate_minmax_frequency(
     dataset: KantoData,
     key: None | str = None,
     spec: None | np.ndarray = None,
+    roll_percents: list[float, float] = [0.95, 0.1],
     plot: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
@@ -133,6 +134,8 @@ def approximate_minmax_frequency(
         dataset (KantoData): Dataset object with your data.
         key (None | str = None): Key of a vocalisation. Defaults to None.
         spec (spec: None | np.ndarray): Mel spectrogram. Defaults to None.
+        roll_percents (list[float, float], optional): Percentage of energy
+            contained in bin. Defaults to [0.95, 0.1].
         plot (bool, optional): Whether to show the result. Defaults to False.
 
     Returns:
@@ -143,7 +146,7 @@ def approximate_minmax_frequency(
     if not key and not isinstance(spec, np.ndarray):
         raise KeyError("You need to provide either a key or a spectrogram")
     if not isinstance(spec, np.ndarray):
-        spec = retrieve_spectrogram(dataset.vocs.at[key, "spectrogram_loc"])
+        spec = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 
     offset = 0
     if np.min(spec) < 0:
@@ -156,13 +159,15 @@ def approximate_minmax_frequency(
             roll_percent=p,
             freq=mels_to_hzs(dataset),
         )[0]
-        for p in [0.95, 0.1]
+        for p in roll_percents
     ]
 
     maxfreqs[maxfreqs <= dataset.parameters.lowcut] = np.nan
     minfreqs[minfreqs <= dataset.parameters.lowcut] = np.nan
 
     if plot:
-        show_minmax_frequency(dataset, maxfreqs, minfreqs, key=key, spec=spec)
+        show_minmax_frequency(
+            dataset, maxfreqs, minfreqs, roll_percents, key=key, spec=spec
+        )
 
     return minfreqs, maxfreqs
