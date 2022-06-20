@@ -10,6 +10,7 @@ from __future__ import annotations
 import pickle
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List
+import numpy as np
 
 import ray
 import ujson as json
@@ -30,11 +31,29 @@ from pykanto.utils.compute import (
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
 
 
+def _relink_kantodata(dataset_dir: Path, path: Path) -> Path:
+    index = path.parts.index("spectrograms")
+    return dataset_dir.parent.joinpath(*path.parts[index:])
+
+
+def _relink_df(dataset_dir: Path, x: Any) -> None | Any:
+    if isinstance(x, Path):
+        return _relink_kantodata(dataset_dir, x)
+    else:
+        return x
+
+
+def _path_is_file(x) -> bool | None:
+    if isinstance(x, Path):
+        return x.is_file()
+
+
 def load_dataset(
     dataset_dir: Path, DIRS: ProjDirs, relink_data: bool = True
 ) -> KantoData:
     """
-    Load an existing dataset. NOTE: temporaty fix.
+    Load an existing dataset, fixing any broken links to data using a new
+    ProjDirs object.
 
     Args:
         dataset_dir (Path): Path to the dataset file (*.db)
@@ -42,62 +61,52 @@ def load_dataset(
         relink_data (bool, optional): Whether to make update dataset paths.
             Defaults to True.
 
-    Raises:
-        FileNotFoundError: _description_
-
     Returns:
-        KantoData: _description_
+        KantoData: The dataset
     """
-
-    def relink_kantodata(dataset_location: Path, path: Path):
-        index = path.parts.index("spectrograms")
-        return dataset_location.parent.joinpath(*path.parts[index:])
-
+    # Load
     dataset = pickle.load(open(dataset_dir, "rb"))
+
     if relink_data:
 
-        # Update ProjDirs section
-        for k, v in dataset.DIRS.__dict__.items():
-            if k in DIRS.__dict__:
-                setattr(dataset.DIRS, k, getattr(DIRS, k))
-
-        # Update dataset location
+        # Fix DIRS
+        dataset.DIRS = DIRS
         setattr(dataset.DIRS, "DATASET", dataset_dir)
+        dataset.DIRS.SPECTROGRAMS = _relink_kantodata(
+            dataset_dir, dataset.DIRS.SPECTROGRAMS
+        )
 
-        if not dataset.files["spectrogram"][0].is_file():
-            dataset.files["spectrogram"] = dataset.files["spectrogram"].apply(
-                lambda x: relink_kantodata(dataset_dir, x)
+        # Update all paths
+        dataset.files
+        pathcols = [
+            col
+            for col in dataset.files.columns
+            if any(isinstance(x, Path) for x in dataset.files[col])
+        ]
+        for col in pathcols:
+            dataset.files[col] = dataset.files[col].apply(
+                lambda x: _relink_df(dataset_dir, x)
             )
-        if not dataset.files["spectrogram"][0].is_file():
-            raise FileNotFoundError("Failed to reconnect spectrogram data")
 
-        for k, v in dataset.DIRS.__dict__.items():
-            if k in [
-                "SPECTROGRAMS",
-                "UNITS",
-                "UNIT_LABELS",
-                "AVG_UNITS",
-                "VOCALISATION_LABELS",
-            ]:
-                if isinstance(v, Path):
-                    dataset.DIRS.__dict__[k] = relink_kantodata(dataset_dir, v)
-                elif isinstance(v, list):
-                    dataset.DIRS.__dict__[k] = [
-                        relink_kantodata(dataset_dir, path) for path in v
-                    ]
-                elif isinstance(v, dict):
-                    for k1, v1 in v.items():  # Level 1
-                        if isinstance(v1, Path):
-                            dataset.DIRS.__dict__[k][k1] = relink_kantodata(
-                                dataset_dir, v1
-                            )
-                        elif isinstance(v1, dict):
-                            for k2, v2 in v1.items():
-                                dataset.DIRS.__dict__[k][k1][
-                                    k2
-                                ] = relink_kantodata(dataset_dir, v2)
-                        elif k1 == "already_checked":
-                            continue
+        # Check data are reachable
+        exist = np.concatenate(
+            [
+                dataset.files[col].apply(lambda x: _path_is_file(x)).values
+                for col in pathcols
+            ]
+        )
+        n_noexist, n_none = [
+            np.count_nonzero(exist == v) for v in [False, None]
+        ]
+        if n_noexist > 0 and n_noexist != len(exist) - n_none:
+            raise FileNotFoundError(
+                "Could not reconnect all data in the dataset "
+                f"({n_noexist}/{len(exist)} failed)."
+            )
+        elif n_noexist == len(exist) - n_none:
+            raise FileNotFoundError(
+                "Could not reconnect any data in the dataset."
+            )
     return dataset
 
 
