@@ -21,12 +21,10 @@ from typing import List, Literal, Tuple
 
 import numpy as np
 import pandas as pd
-import ray
 from bokeh.palettes import Set3_12
 
 import pykanto.plot as kplot
 from pykanto.labelapp.data import (
-    prepare_datasource,
     prepare_datasource_parallel,
 )
 from pykanto.parameters import Parameters
@@ -265,7 +263,7 @@ class KantoData:
 
     def _create_df(self) -> None:
         """
-        Creates a pandas DataFrame from the metadata dictionary and adds it to
+        Creates pandas DataFrames from the metadata dictionary and adds them to
             the KantoData instance.
 
         Warning:
@@ -282,7 +280,13 @@ class KantoData:
                 )
             data_dict[key] = data
 
-        self.data = pd.DataFrame.from_dict(data_dict, orient="index")
+        pathcols = ["source_wav", "wav_file"]
+        self.data = pd.DataFrame.from_dict(data_dict, orient="index").drop(
+            columns=pathcols
+        )
+        self.files = pd.DataFrame.from_dict(
+            data_dict, orient="index", columns=pathcols
+        )
 
         # Get minimum and maximum frequencies and durations in song dataset
         self.minmax_values = {
@@ -335,9 +339,7 @@ class KantoData:
             **specs,
             **(existing if (existing and not overwrite_data) else {}),
         }
-        self.files = pd.DataFrame(
-            pd.Series(specs, dtype=object), columns=["spectrogram"]
-        )
+        self.files["spectrogram"] = pd.Series(specs, dtype=object)
 
     # ──────────────────────────────────────────────────────────────────────────
     # KantoData: Public methods
@@ -346,7 +348,7 @@ class KantoData:
         self, nbins: int = 50, variable: str = "frequency"
     ) -> None:
         """
-        Plots a histogram + kernel densiyy estimate of the frequency
+        Plots a histogram + kernel density estimate of the frequency
         distribution of vocalisation duration and frequencies.
 
         Note:
