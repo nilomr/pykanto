@@ -566,80 +566,45 @@ import shutil
 move_to = Path("/home/nilomr/Downloads/") / f"{dataset.DIRS.DATASET.stem}"
 shutil.move(str(dataset.DIRS.DATASET.parent), move_to)
 moved_dataset = move_to / f"{dataset.DIRS.DATASET.stem}.db"
-
-#%%
 dataset_dir = moved_dataset
-relink_data: bool = True
-# Re-read dataset
-
-# def load_dataset(
-#     dataset_dir: Path, DIRS: ProjDirs, relink_data: bool = True
-# ) -> KantoData:
-#     """
-#     Load an existing dataset. NOTE: temporaty fix.
-
-#     Args:
-#         dataset_dir (Path): Path to the dataset file (*.db)
-#         DIRS (ProjDirs): New project directories
-#         relink_data (bool, optional): Whether to make update dataset paths.
-#             Defaults to True.
-
-#     Raises:
-#         FileNotFoundError: _description_
-
-#     Returns:
-#         KantoData: _description_
-#     """
+#%%
 
 
-def relink_kantodata(dataset_dir: Path, path: Path):
-    index = path.parts.index("spectrograms")
-    return dataset_dir.parent.joinpath(*path.parts[index:])
+DATASET_ID = "GREAT_TIT"
+DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
+PROJECT = Path(DATA_PATH).parent
+RAW_DATA = DATA_PATH / "segmented" / "great_tit"
+DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
 
-
-def relink_df(dataset_dir, x):
-    if isinstance(x, Path):
-        return relink_kantodata(dataset_dir, x)
-    else:
-        return x
-
-
-dataset = pickle.load(open(dataset_dir, "rb"))
-
-dataset.files.loc[dataset.files.index[2], "voc_app_data"] = np.nan  # REMOVE
-
-# Fix DIRS
-dataset.DIRS = DIRS
-setattr(dataset.DIRS, "DATASET", dataset_dir)
-dataset.DIRS.SPECTROGRAMS = relink_kantodata(
-    dataset_dir, dataset.DIRS.SPECTROGRAMS
-)
-
-# Update all paths
-dataset.files
-pathcols = [
-    col
-    for col in dataset.files.columns
-    if any(isinstance(x, Path) for x in dataset.files[col])
-]
-
-for col in pathcols:
-    dataset.files[col] = dataset.files[col].apply(
-        lambda x: relink_df(dataset_dir, x)
-    )
-
+new_dataset = load_dataset(moved_dataset, DIRS)
+new_dataset.plot(new_dataset.data.index[0], segmented=True)
 
 #%%
-import pandas as pd
+# Save dataset as csv
 
-print(dataset.DIRS)
+# If you want to save the dataset as a .csv file,
+# which I recommend you do as backup,
+csv_dir = dataset.DIRS.DATASET.parent
+dataset.to_csv(csv_dir)
 
+from datetime import datetime
 
-undf = pd.DataFrame.from_dict(
-    dataset.DIRS.UNITS, orient="index", columns=["path"]
-)
+timestamp: bool = True
+# def to_csv(self, path: Path, timestamp: bool = True) -> None:
+# """
+# Output vocalisation (and, if present, unit) metadata in the dataset as
+# a .csv file.
 
-undf.loc["B32"]
+# Args:
+#     path (Path): Directory where to save the file(s).
+#     timestamp (bool, optional): Whether to add timestamp to file name.
+#         Defaults to True.
+# """
+t = f'{datetime.now().strftime("%H%M%S")}' if timestamp else ""
+dataset.data.to_csv(csv_dir / f"{dataset.DIRS.DATASET.stem}_{t}.csv")
+dataset.files.to_csv(csv_dir / f"{dataset.DIRS.DATASET.stem}_FILES_{t}.csv")
+if hasattr(dataset, "units"):
+    dataset.units.to_csv(csv_dir / f"{self.DIRS.DATASET.stem}_UNITS_{t}.csv")
 
 
 #%%
