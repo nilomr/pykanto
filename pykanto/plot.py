@@ -9,23 +9,21 @@ Classes and methods to store and modify pykanto parameters.
 from __future__ import annotations
 
 import math
-import os
 import warnings
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List, Tuple
+from typing import TYPE_CHECKING, List, Tuple
 
 import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from matplotlib import gridspec
 from matplotlib.axes import Axes
 from matplotlib.cm import get_cmap
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 from matplotlib.ticker import FormatStrFormatter
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from numba.core.decorators import njit
 
 from pykanto.parameters import Parameters
@@ -156,7 +154,6 @@ def melspectrogram(
         cbar = plt.colorbar(spec_im, cax=cax)
         cbar.ax.tick_params(size=0, labelsize=9, pad=10, colors=text_colour)
         cbar.outline.set_visible(False)
-        cax.set_title("# of contacts")
         cbar.ax.set_ylabel("dB", color=text_colour, size=12, labelpad=12)
         cbar.ax.yaxis.set_label_position("right")
 
