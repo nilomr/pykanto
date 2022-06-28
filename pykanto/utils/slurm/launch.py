@@ -50,6 +50,7 @@ def submit_job():
         ray jobs.
 
     """
+    # TODO: #16 @nilomr: migrate CLI to typer
 
     # Locate bash template file
     template_file = Path(__file__).parent / "sbatch_template.sh"
@@ -107,8 +108,10 @@ def submit_job():
         type=str,
         default="",
         required=True,
-        help=("The name of your environment. Note: you have to provide "
-              "the location of your envs in the `sbatch_template.sh` file"),
+        help=(
+            "The name of your environment. Note: you have to provide "
+            "the location of your envs in the `sbatch_template.sh` file"
+        ),
     )
     parser.add_argument(
         "--command",
