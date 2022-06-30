@@ -27,7 +27,7 @@ from pykanto.utils.compute import (
     to_iterator,
     with_pbar,
 )
-from pykanto.utils.write import makedir
+from pykanto.utils.io import makedir
 
 if TYPE_CHECKING:
     from pykanto.dataset import KantoData

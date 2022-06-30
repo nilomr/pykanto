@@ -16,11 +16,11 @@ import attr
 import audio_metadata as audiometa
 import librosa
 import librosa.display
+import numba
 import numpy as np
 import psutil
 import ray
 import soundfile as sf
-import numba
 from pykanto.signal.filter import (
     dereverberate,
     dereverberate_jit,
@@ -40,13 +40,13 @@ from pykanto.utils.compute import (
     with_pbar,
 )
 from pykanto.utils.custom import parse_sonic_visualiser_xml
+from pykanto.utils.io import makedir
 from pykanto.utils.types import (
     Annotation,
     AudioAnnotation,
     Metadata,
     SegmentAnnotation,
 )
-from pykanto.utils.write import makedir
 from scipy import ndimage
 from skimage.exposure import equalize_hist
 from skimage.filters.rank import median

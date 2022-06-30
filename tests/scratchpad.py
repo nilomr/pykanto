@@ -49,14 +49,13 @@ from pykanto.utils.custom import (
     chipper_units_to_json,
     parse_sonic_visualiser_xml,
 )
+from pykanto.utils.io import load_dataset, makedir
 from pykanto.utils.paths import (
     ProjDirs,
     get_file_paths,
     get_wavs_w_annotation,
     pykanto_data,
 )
-from pykanto.utils.read import load_dataset
-from pykanto.utils.write import makedir
 
 warnings.simplefilter("always", ImportWarning)
 os.environ["RAY_DISABLE_IMPORT_WARNING"] = "1"
@@ -465,8 +464,7 @@ dataset.cluster_ids(min_sample=10)
 dataset.prepare_interactive_data()
 
 
-from pykanto.utils.read import load_dataset
-from pykanto.utils.write import save_to_jsons
+from pykanto.utils.io import load_dataset, save_to_jsons
 
 out_dir = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
 dataset = load_dataset(out_dir)
@@ -481,7 +479,7 @@ dataset.to_csv(csv_dir)
 # If you want to save the new metadata you have generated
 # (vocalisation type labels and onset/offsets, for example)
 # to the original .json files (as a backup or to use with other software):
-from pykanto.utils.write import save_to_jsons
+from pykanto.utils.io import save_to_jsons
 
 save_to_jsons(dataset)
 

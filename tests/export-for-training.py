@@ -1,17 +1,17 @@
 #%%
 import ast
 from pathlib import Path
-from matplotlib import cm
 
 import numpy as np
 import pandas as pd
 import pkg_resources
+from matplotlib import cm
 from PIL import Image
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.utils.compute import with_pbar
+from pykanto.utils.io import load_dataset
 from pykanto.utils.paths import ProjDirs, link_project_data, pykanto_data
-from pykanto.utils.read import load_dataset
 from sklearn.neural_network import MLPClassifier
 from tqdm.auto import tqdm
 

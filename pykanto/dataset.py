@@ -24,9 +24,7 @@ import pandas as pd
 from bokeh.palettes import Set3_12
 
 import pykanto.plot as kplot
-from pykanto.labelapp.data import (
-    prepare_datasource_parallel,
-)
+from pykanto.app.data import prepare_datasource_parallel
 from pykanto.parameters import Parameters
 from pykanto.signal.cluster import reduce_and_cluster_parallel
 from pykanto.signal.segment import (
@@ -45,9 +43,8 @@ from pykanto.utils.compute import (
     to_iterator,
     with_pbar,
 )
+from pykanto.utils.io import _get_json, _get_json_parallel, makedir
 from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
-from pykanto.utils.read import _get_json, _get_json_parallel
-from pykanto.utils.write import makedir
 
 # ─── CLASSES ──────────────────────────────────────────────────────────────────
 

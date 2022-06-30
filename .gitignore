@@ -181,7 +181,7 @@ docs/jupyter_execute/jupyter_execute/*
 MANIFEST.in
 
 source/modules.rst
-source/pykanto.labelapp.rst
+source/pykanto.app.rst
 source/pykanto.rst
 source/pykanto.signal.rst
 source/pykanto.utils.rst

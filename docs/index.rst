@@ -34,7 +34,7 @@ Modules
    pykanto.signal
    pykanto.parameters
    pykanto.dataset
-   pykanto.labelapp
+   pykanto.app
    pykanto.utils
    pykanto.plot
 

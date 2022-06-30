@@ -54,6 +54,7 @@ from pykanto.utils.custom import (
     chipper_units_to_json,
     parse_sonic_visualiser_xml,
 )
+from pykanto.utils.io import makedir
 from pykanto.utils.paths import (
     ProjDirs,
     get_file_paths,
@@ -61,7 +62,6 @@ from pykanto.utils.paths import (
     pykanto_data,
 )
 from pykanto.utils.types import Annotation, AudioAnnotation
-from pykanto.utils.write import makedir
 
 warnings.simplefilter("always", ImportWarning)
 os.environ["RAY_DISABLE_IMPORT_WARNING"] = "1"

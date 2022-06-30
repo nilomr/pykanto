@@ -8,8 +8,8 @@ from pykanto.utils.custom import (
     chipper_units_to_json,
     parse_sonic_visualiser_xml,
 )
+from pykanto.utils.io import read_json
 from pykanto.utils.paths import ProjDirs, get_file_paths
-from pykanto.utils.read import read_json
 from pykanto.utils.types import SegmentAnnotation
 
 # ──── FIXTURES ─────────────────────────────────────────────────────────────────

@@ -12,8 +12,8 @@ import pkg_resources
 import pytest
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
+from pykanto.utils.io import load_dataset
 from pykanto.utils.paths import ProjDirs, pykanto_data
-from pykanto.utils.read import load_dataset
 
 # ──── SETTINGS ─────────────────────────────────────────────────────────────────
 

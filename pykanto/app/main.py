@@ -5,7 +5,7 @@ Source code for pykanto's interactive labelling app.
 """
 # To run from terminal:
 # set `debug = True`` in this script.
-# bokeh serve --show /home/nilomr/projects/pykanto/pykanto/labelapp
+# bokeh serve --show /home/nilomr/projects/pykanto/pykanto/app
 
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
 
@@ -37,7 +37,7 @@ from bokeh.palettes import Set3_12
 from bokeh.plotting import curdoc, figure
 from bokeh.themes import Theme
 from bokeh.transform import factor_cmap
-from pykanto.labelapp.data import load_app_data
+from pykanto.app.data import load_app_data
 from pykanto.utils.paths import ProjDirs
 
 # ──── FUNCTIONS ───────────────────────────────────────────────────────────────

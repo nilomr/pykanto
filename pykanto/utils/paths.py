@@ -20,9 +20,8 @@ from pykanto.utils.compute import (
     to_iterator,
     with_pbar,
 )
-from pykanto.utils.read import read_json
+from pykanto.utils.io import makedir, read_json, save_json
 from pykanto.utils.types import ValidDirs
-from pykanto.utils.write import makedir, save_json
 
 # ──── CLASSES ─────────────────────────────────────────────────────────────────
 

@@ -11,12 +11,11 @@ from xml.etree import ElementTree
 
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
 from pykanto.utils.compute import timing, with_pbar
+from pykanto.utils.io import read_json
 from pykanto.utils.paths import get_file_paths
-from pykanto.utils.read import read_json
-
 from pykanto.utils.types import SegmentAnnotation
+from tqdm import tqdm
 
 # ──── METADATA FILE PARSERS ────────────────────────────────────────────────────
 

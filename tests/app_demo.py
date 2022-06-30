@@ -43,13 +43,13 @@ from pykanto.utils.custom import (
     chipper_units_to_json,
     parse_sonic_visualiser_xml,
 )
+from pykanto.utils.io import makedir
 from pykanto.utils.paths import (
     ProjDirs,
     get_file_paths,
     get_wavs_w_annotation,
     pykanto_data,
 )
-from pykanto.utils.write import makedir
 
 warnings.simplefilter("always", ImportWarning)
 os.environ["RAY_DISABLE_IMPORT_WARNING"] = "1"
