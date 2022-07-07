@@ -652,7 +652,7 @@ class KantoData:
             timestamp (bool, optional): Whether to add timestamp to file name.
                 Defaults to True.
         """
-        t = f'_{datetime.now().strftime("%H%M%S")}' if timestamp else ""
+        t = f'{datetime.now().strftime("%Y%m%d_%H%M%S")}' if timestamp else ""
         self.data.to_csv(path / f"{self.DIRS.DATASET.stem}_{t}.csv")
         if hasattr(self, "units"):
             self.units.to_csv(path / f"{self.DIRS.DATASET.stem}_UNITS_{t}.csv")
