@@ -57,3 +57,7 @@ pykanto-slaunch = 'pykanto.utils.slurm.launch:submit_job'
 
 [tool.black]
 line-length = 80
+
+[tool.isort]
+profile = "black"
+float_to_top = 'True'
