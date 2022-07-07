@@ -334,7 +334,7 @@ def get_file_paths(
                 file_list.append(Path(root) / file)
     if len(file_list) == 0:
         raise FileNotFoundError(
-            f"There are no {ext} files in directory {root_dir}."
+            f"There are no {ext} files in directory {root_dir}"
         )
     else:
         if verbose:
