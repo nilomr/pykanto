@@ -874,7 +874,7 @@ class KantoData:
 
         # Check that we are where we should
         # REVIEW: easy to break!
-        app_path = Path(__file__).parent / "labelapp"
+        app_path = Path(__file__).parent / "app"
         if not app_path.is_dir():
             raise FileNotFoundError(str(app_path))
 
