@@ -37,6 +37,7 @@ from bokeh.palettes import Set3_12
 from bokeh.plotting import curdoc, figure
 from bokeh.themes import Theme
 from bokeh.transform import factor_cmap
+
 from pykanto.app.data import load_app_data
 from pykanto.utils.paths import ProjDirs
 
@@ -465,9 +466,11 @@ else:
         dataset.save_to_disk(verbose=True)
 
         # Get next individual and update plot
-        remaining_indvs = dataset.files.dropna(subset=[checktype]).query(
-            f"{checktype} == False"
-        )["ID"]
+        remaining_indvs = np.unique(
+            dataset.files.dropna(subset=[checktype]).query(
+                f"{checktype} == False"
+            )["ID"]
+        )
 
         if len(remaining_indvs) == 0:
             done_t = "Done. You can now stop the app."
