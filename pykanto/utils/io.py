@@ -165,7 +165,7 @@ def _get_json_parallel(
 ) -> List[Dict[str, Any]]:
     """
     Parallel implementation of
-    :func:`~pykanto.utils.read._get_json`.
+    :func:`~pykanto.utils.io._get_json`.
     """
     # Calculate and make chunks
     n = len(lst)
