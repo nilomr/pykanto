@@ -86,7 +86,7 @@ html_theme_options = {
 }
 
 # nb_execution_mode = "cache"
-nb_execution_mode = "force"
+nb_execution_mode = "auto"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

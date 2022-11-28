@@ -1,7 +1,7 @@
-pykanto.labelapp.main
-=====================
+pykanto.app.main
+================
 
-.. automodule:: pykanto.labelapp.main
+.. automodule:: pykanto.app.main
 
    
    

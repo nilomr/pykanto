@@ -122,13 +122,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -206,8 +211,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -216,13 +221,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -248,13 +253,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -282,16 +287,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -505,7 +500,7 @@ title="Print to PDF"
 <h1>Installing <code class="docutils literal notranslate"><span class="pre">pykanto</span></code><a class="headerlink" href="#installing-pykanto" title="Permalink to this headline">#</a></h1>
 <section id="basic-installation">
 <h2>Basic installation<a class="headerlink" href="#basic-installation" title="Permalink to this headline">#</a></h2>
-<p>To install pykanto using <code class="docutils literal notranslate"><span class="pre">pip</span></code>, run:</p>
+<p>To install <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> using <code class="docutils literal notranslate"><span class="pre">pip</span></code>, run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pykanto
 </pre></div>
 </div>
@@ -543,7 +538,7 @@ selector</a>.)</p>
 preferred order would be:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># pytorch and cuML installation via conda</span>
 conda install -c rapidsai -c nvidia -c conda-forge cuml
-conda install -c pytorch pytorch torchvision torchaudio   
+conda install -c pytorch pytorch torchvision   
 pip install pykanto
 </pre></div>
 </div>

@@ -119,13 +119,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -203,8 +208,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../../../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -213,13 +218,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -245,13 +250,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -279,16 +284,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -418,9 +413,8 @@ title="Source repository"
     <span class="n">to_iterator</span><span class="p">,</span>
     <span class="n">with_pbar</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.read</span> <span class="kn">import</span> <span class="n">read_json</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">makedir</span><span class="p">,</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">save_json</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.types</span> <span class="kn">import</span> <span class="n">ValidDirs</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span><span class="p">,</span> <span class="n">save_json</span>
 
 <span class="c1"># ──── CLASSES ─────────────────────────────────────────────────────────────────</span>
 
@@ -436,6 +430,7 @@ title="Source repository"
 <span class="sd">        PROJECT (Path): Root directory of the project.</span>
 <span class="sd">        RAW_DATA (Path): (Immutable) location of the raw data to be used in</span>
 <span class="sd">            this project.</span>
+<span class="sd">        DATASET_ID (str): Name of the dataset.</span>
 <span class="sd">        mkdir (bool, optional): Wether to create directories if they</span>
 <span class="sd">            don&#39;t already exist. Defaults to False.</span>
 
@@ -443,22 +438,18 @@ title="Source repository"
 <span class="sd">        &gt;&gt;&gt; PROJROOT = Path(&#39;home&#39; / &#39;user&#39; / &#39;projects&#39; / &#39;myproject&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; RAW_DATA= Path(&#39;bigexternaldrive&#39; / &#39;fieldrecordings&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; DIRS = ProjDirs(PROJROOT, RAW_DATA, mkdir=True)</span>
-<span class="sd">        &gt;&gt;&gt; print(DIRS)</span>
-
-<span class="sd">        Items held:</span>
-<span class="sd">        PROJECT:   (/user/projects/myproject)</span>
-<span class="sd">        DATA:      (/user/projects/myproject/data)</span>
-<span class="sd">        RAW_DATA:  (/bigexternaldrive/fieldrecordings)</span>
-<span class="sd">        SEGMENTED: (/user/projects/myproject/data/segmented/bengalese_finch)</span>
-<span class="sd">        RESOURCES: (/user/projects/myproject/resources)</span>
-<span class="sd">        REPORTS:   (/user/projects/myproject/reports)</span>
-<span class="sd">        FIGURES:   (/user/projects/myproject/reports/figures)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ProjDirs.__init__"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ProjDirs.__init__"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">RAW_DATA</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">DATASET_ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
 
         <span class="c1"># Type check input paths</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">ValidDirs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">ValidDirs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">,</span> <span class="n">DATASET_ID</span><span class="p">)</span>
 
         <span class="c1"># Define project directories</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PROJECT</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">PROJECT</span>
@@ -470,16 +461,15 @@ title="Source repository"
         <span class="bp">self</span><span class="o">.</span><span class="n">REPORTS</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">PROJECT</span> <span class="o">/</span> <span class="s2">&quot;reports&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">FIGURES</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">REPORTS</span> <span class="o">/</span> <span class="s2">&quot;figures&quot;</span>
 
-        <span class="c1"># Type annotations for later use within KantoData objects</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DATASET</span><span class="p">:</span> <span class="n">Path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">SPECTROGRAMS</span><span class="p">:</span> <span class="n">Path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">WAV_LIST</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DATASET</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DATASET_ID</span> <span class="o">=</span> <span class="n">DATASET_ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="s2">&quot;spectrograms&quot;</span>
 
         <span class="c1"># Create them if needed</span>
         <span class="k">if</span> <span class="n">mkdir</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="n">makedir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+                    <span class="n">makedir</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -566,7 +556,7 @@ title="Source repository"
 <span class="sd">                a different location to where the rest of the data are.</span>
 <span class="sd">                Defaults to False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
+        <span class="c1"># TODO@nilomr: #11 Path to spectrogram .npy files breaks if dataset changes location</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;SEGMENTED&quot;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
                 <span class="s2">&quot;This ProjDirs object does not have a SEGMENTED attribute. &quot;</span>
@@ -676,13 +666,13 @@ title="Source repository"
 
     <span class="n">wavcase</span> <span class="o">=</span> <span class="n">wav_filepaths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">suffix</span>
 
-    <span class="n">filtered_wavpaths</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">stem</span><span class="si">}{</span><span class="n">wavcase</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">wav_filepaths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">stem</span><span class="si">}{</span><span class="n">wavcase</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">annotation_paths</span>
-        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">stem</span><span class="si">}{</span><span class="n">wavcase</span><span class="si">}</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">wav_filepaths</span>
+        <span class="k">if</span> <span class="n">wav_filepaths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file</span><span class="o">.</span><span class="n">stem</span><span class="si">}{</span><span class="n">wavcase</span><span class="si">}</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">wav_filepaths</span>
     <span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">filtered_wavpaths</span></div>
+    <span class="k">return</span> <span class="n">matches</span></div>
 
 
 <div class="viewcode-block" id="change_data_loc"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.change_data_loc">[docs]</a><span class="k">def</span> <span class="nf">change_data_loc</span><span class="p">(</span><span class="n">DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
@@ -737,7 +727,7 @@ title="Source repository"
                 <span class="n">file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">/</span> <span class="n">file</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;There are no </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> files in directory </span><span class="si">{</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;There are no </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2"> files in directory </span><span class="si">{</span><span class="n">root_dir</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
@@ -750,7 +740,9 @@ title="Source repository"
 <span class="sd">    Creates a symlink from a project&#39;s data folder (not under version control)</span>
 <span class="sd">    to the directory where the data lives (e.g. on an external HDD).</span>
 
-<span class="sd">    Args: origin (os.PathLike): Path to the directory containing your &#39;raw&#39; data folder.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        origin (os.PathLike): Path to the directory containing your &#39;raw&#39;</span>
+<span class="sd">            data folder.</span>
 <span class="sd">        project_data_dir (Path): A project&#39;s data folder to link with &#39;origin&#39;.</span>
 
 <span class="sd">    Note:</span>
@@ -760,7 +752,7 @@ title="Source repository"
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: The &#39;project_data_dir&#39; already contains data or is a</span>
-<span class="sd">            symlink.</span>
+<span class="sd">        symlink.</span>
 <span class="sd">        FileExistsError: File exists; your target folder already exists.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -799,7 +791,9 @@ title="Source repository"
         <span class="o">/</span> <span class="n">dfolder</span>
         <span class="o">/</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s2">&quot;GREAT_TIT&quot;</span> <span class="k">else</span> <span class="n">dataset</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="n">dataset</span> <span class="o">!=</span> <span class="s2">&quot;AM&quot;</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span>
+        <span class="n">PROJECT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="n">dataset</span> <span class="o">!=</span> <span class="s2">&quot;AM&quot;</span> <span class="k">else</span> <span class="kc">False</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">DIRS</span></div>
 </pre></div>
 

@@ -2,7 +2,7 @@
 
 ### Basic installation
 
-To install pykanto using `pip`, run:
+To install `pykanto` using `pip`, run:
 
 ```bash
 pip install pykanto
@@ -55,7 +55,7 @@ preferred order would be:
 ```bash
 # pytorch and cuML installation via conda
 conda install -c rapidsai -c nvidia -c conda-forge cuml
-conda install -c pytorch pytorch torchvision torchaudio   
+conda install -c pytorch pytorch torchvision   
 pip install pykanto
 ```
 

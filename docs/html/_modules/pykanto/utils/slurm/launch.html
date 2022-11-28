@@ -119,13 +119,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../../../../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../../../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -203,8 +208,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../../../../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../../../../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -213,13 +218,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../../../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../../../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -245,13 +250,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../../../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../../../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -279,16 +284,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../../../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -448,6 +443,7 @@ title="Source repository"
 <span class="sd">        ray jobs.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: #16 @nilomr: migrate CLI to typer</span>
 
     <span class="c1"># Locate bash template file</span>
     <span class="n">template_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;sbatch_template.sh&quot;</span>
@@ -504,7 +500,11 @@ title="Source repository"
         <span class="s2">&quot;-env&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The script to load your environment, e.g. &#39;module load cuda/10.1&#39;&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;The name of your environment. Note: you have to provide &quot;</span>
+            <span class="s2">&quot;the location of your envs in the `sbatch_template.sh` file&quot;</span>
+        <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--command&quot;</span><span class="p">,</span>
@@ -554,6 +554,10 @@ title="Source repository"
         <span class="sa">f</span><span class="s2">&quot;Log file is at: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">out_dir</span> <span class="o">/</span> <span class="n">job_name</span><span class="p">)</span><span class="si">}</span><span class="s2">.log&quot;</span>
     <span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">submit_job</span><span class="p">()</span>
 </pre></div>
 
               </div>

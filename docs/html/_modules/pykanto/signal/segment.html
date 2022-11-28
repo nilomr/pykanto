@@ -119,13 +119,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -203,8 +208,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../../../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -213,13 +218,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -245,13 +250,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -279,16 +284,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -414,11 +409,11 @@ title="Source repository"
 <span class="kn">import</span> <span class="nn">audio_metadata</span> <span class="k">as</span> <span class="nn">audiometa</span>
 <span class="kn">import</span> <span class="nn">librosa</span>
 <span class="kn">import</span> <span class="nn">librosa.display</span>
+<span class="kn">import</span> <span class="nn">numba</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="kn">import</span> <span class="nn">ray</span>
 <span class="kn">import</span> <span class="nn">soundfile</span> <span class="k">as</span> <span class="nn">sf</span>
-<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
 <span class="kn">from</span> <span class="nn">pykanto.signal.filter</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">dereverberate</span><span class="p">,</span>
     <span class="n">dereverberate_jit</span><span class="p">,</span>
@@ -438,13 +433,13 @@ title="Source repository"
     <span class="n">with_pbar</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.custom</span> <span class="kn">import</span> <span class="n">parse_sonic_visualiser_xml</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">makedir</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.types</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Annotation</span><span class="p">,</span>
     <span class="n">AudioAnnotation</span><span class="p">,</span>
     <span class="n">Metadata</span><span class="p">,</span>
     <span class="n">SegmentAnnotation</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span>
 <span class="kn">from</span> <span class="nn">skimage.exposure</span> <span class="kn">import</span> <span class="n">equalize_hist</span>
 <span class="kn">from</span> <span class="nn">skimage.filters.rank</span> <span class="kn">import</span> <span class="n">median</span>
@@ -550,11 +545,7 @@ title="Source repository"
 <span class="sd">    which can then be saved as a standard .JSON file.</span>
 
 <span class="sd">    You can extend this class to incorporate other metadata fields</span>
-<span class="sd">    specific to your research (see Example).</span>
-
-<span class="sd">    Examples:</span>
-
-<span class="sd">        TODO</span>
+<span class="sd">    specific to your research (see the docs).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -619,6 +610,8 @@ title="Source repository"
             <span class="n">ID</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span>
             <span class="n">label</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
             <span class="n">sample_rate</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">start_times</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">end_times</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
             <span class="n">length_s</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">audio_section</span><span class="p">)</span> <span class="o">/</span> <span class="n">sr</span><span class="p">,</span>
             <span class="n">lower_freq</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">lower_freq</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
             <span class="n">upper_freq</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">upper_freq</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
@@ -725,9 +718,6 @@ title="Source repository"
     <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">start_times</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_segments</span><span class="p">):</span>
-        <span class="c1"># Filter segments not matching inclusion criteria</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">segment_is_valid</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="k">continue</span>
 
         <span class="c1"># Get segment frames</span>
         <span class="n">wavfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">start_times</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -738,6 +728,16 @@ title="Source repository"
             <span class="n">audio_section</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">librosa</span><span class="o">.</span><span class="n">to_mono</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">audio_section</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="p">)</span>
+
+        <span class="c1"># Filter segments not matching inclusion criteria</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">segment_is_valid</span><span class="p">(</span>
+            <span class="n">metadata</span><span class="p">,</span>
+            <span class="nb">float</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">audio_section</span><span class="p">)),</span>
+            <span class="n">i</span><span class="p">,</span>
+            <span class="n">integer_format</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">wavfile</span><span class="o">.</span><span class="n">subtype</span><span class="p">),</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">continue</span>
 
         <span class="c1"># Resample if necessary</span>
         <span class="n">sr</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">sample_rate</span>
@@ -769,9 +769,12 @@ title="Source repository"
 
 <div class="viewcode-block" id="segment_is_valid"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_is_valid">[docs]</a><span class="k">def</span> <span class="nf">segment_is_valid</span><span class="p">(</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">Annotation</span><span class="p">,</span>
+    <span class="n">max_amplitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">integer_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PCM_16&quot;</span><span class="p">,</span>
     <span class="n">min_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
-    <span class="n">min_freqrange</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">min_freqrange</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">min_amplitude</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">labels_to_ignore</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;NO&quot;</span><span class="p">,</span> <span class="s2">&quot;NOISE&quot;</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -783,7 +786,7 @@ title="Source repository"
 <span class="sd">        min_duration (float, optional): Minimum duration of segment to</span>
 <span class="sd">            consider valid, in seconds. Defaults to 0.01.</span>
 <span class="sd">        min_freqrange (int, optional): Minimum frequency range of segment to</span>
-<span class="sd">            consider valid, in Hertzs. Defaults to 1.</span>
+<span class="sd">            consider valid, in Hertzs. Defaults to 10.</span>
 <span class="sd">        labels_to_ignore (List[str], optional): Exclude any segments with these</span>
 <span class="sd">            labels. Defaults to [&quot;NO&quot;, &quot;NOISE&quot;].</span>
 
@@ -792,11 +795,22 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">min_frames</span> <span class="o">=</span> <span class="n">min_duration</span> <span class="o">*</span> <span class="n">metadata</span><span class="o">.</span><span class="n">sample_rate</span>
+    <span class="k">if</span> <span class="n">integer_format</span> <span class="o">==</span> <span class="s2">&quot;PCM_16&quot;</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">32767</span>
+    <span class="k">elif</span> <span class="n">integer_format</span> <span class="o">==</span> <span class="s2">&quot;PCM_25&quot;</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">8388607</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Integer format &#39;</span><span class="si">{</span><span class="n">integer_format</span><span class="si">}</span><span class="s2">&#39;&#39; not supported&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">max_amplitude</span> <span class="o">=</span> <span class="n">max_amplitude</span> <span class="o">*</span> <span class="n">scale</span>
 
     <span class="k">if</span> <span class="p">(</span>
         <span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">durations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_frames</span><span class="p">)</span>
         <span class="ow">or</span> <span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">upper_freq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">metadata</span><span class="o">.</span><span class="n">lower_freq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_freqrange</span><span class="p">)</span>
         <span class="ow">or</span> <span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">label</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">labels_to_ignore</span><span class="p">)</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">max_amplitude</span> <span class="o">&lt;</span> <span class="n">min_amplitude</span><span class="p">)</span>
     <span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1097,12 +1111,10 @@ title="Source repository"
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 
-    <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span>
-        <span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">]</span>
-    <span class="p">)</span>
+    <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram&quot;</span><span class="p">])</span>
 
-    <span class="c1"># NOTE: numba version (dereverberate_jit) more likely to crash when running</span>
-    <span class="c1"># this in parallel in low memory situations for obvious reasons.</span>
+    <span class="c1"># TODO@nilomr #9 Jitted version of dereverberate() now causes ray workers to crash</span>
+    <span class="c1"># dereverberate_jit = numba.njit(dereverberate)</span>
 
     <span class="n">mel_spectrogram_d</span> <span class="o">=</span> <span class="n">dereverberate</span><span class="p">(</span>
         <span class="n">mel_spectrogram</span><span class="p">,</span>
@@ -1128,7 +1140,7 @@ title="Source repository"
     <span class="p">)</span>
     <span class="n">img_gauss</span> <span class="o">=</span> <span class="n">gaussian_blur</span><span class="p">(</span><span class="n">img_inv</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 
-    <span class="n">img_gauss_d</span> <span class="o">=</span> <span class="n">dereverberate_jit</span><span class="p">(</span>
+    <span class="n">img_gauss_d</span> <span class="o">=</span> <span class="n">dereverberate</span><span class="p">(</span>
         <span class="n">img_gauss</span><span class="p">,</span>
         <span class="n">echo_range</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">echo_reduction</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -1163,13 +1175,13 @@ title="Source repository"
     <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
         <span class="n">print_parallel_info</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s2">&quot;vocalisations&quot;</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
 
-    <span class="c1"># Copy dataset to local object store</span>
-    <span class="n">dataset_ref</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
-
     <span class="c1"># Distribute with ray</span>
-    <span class="nd">@ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">num_cpus</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">)</span>
+    <span class="nd">@ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">num_cpus</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">,</span> <span class="n">num_gpus</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_segment_song_into_units_r</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">segment_song_into_units</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+
+    <span class="c1"># Copy dataset to local object store</span>
+    <span class="n">dataset_ref</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 
     <span class="n">obj_ids</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">_segment_song_into_units_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">dataset_ref</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

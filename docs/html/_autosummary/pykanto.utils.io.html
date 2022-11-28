@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pykanto.utils.write &#8212; pykanto 0.1 documentation</title>
+    <title>pykanto.utils.io &#8212; pykanto 0.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pykanto.utils.xenocanto" href="pykanto.utils.xenocanto.html" />
-    <link rel="prev" title="pykanto.utils.types" href="pykanto.utils.types.html" />
+    <link rel="next" title="pykanto.utils.paths" href="pykanto.utils.paths.html" />
+    <link rel="prev" title="pykanto.utils.custom" href="pykanto.utils.custom.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -122,13 +122,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -206,8 +211,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -216,13 +221,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -247,14 +252,14 @@
      pykanto.utils.custom
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.paths.html">
-     pykanto.utils.paths
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -282,16 +287,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -383,7 +378,7 @@ title="Source repository"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="../_sources/_autosummary/pykanto.utils.write.rst.txt"
+        <a href="../_sources/_autosummary/pykanto.utils.io.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -432,7 +427,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>pykanto.utils.write</h1>
+                <h1>pykanto.utils.io</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -444,10 +439,9 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="module-pykanto.utils.write">
-<span id="pykanto-utils-write"></span><h1>pykanto.utils.write<a class="headerlink" href="#module-pykanto.utils.write" title="Permalink to this headline">#</a></h1>
-<p>A collection of functions and methods used to create directories and write data
-to disk.</p>
+  <section id="module-pykanto.utils.io">
+<span id="pykanto-utils-io"></span><h1>pykanto.utils.io<a class="headerlink" href="#module-pykanto.utils.io" title="Permalink to this headline">#</a></h1>
+<p>Functions to read external files -e.g. JSON- efficiently.</p>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable table autosummary">
 <colgroup>
@@ -455,17 +449,26 @@ to disk.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.write.copy_xml_files" title="pykanto.utils.write.copy_xml_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_xml_files</span></code></a>(file_list, dest_dir)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.io.copy_xml_files" title="pykanto.utils.io.copy_xml_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_xml_files</span></code></a>(file_list, dest_dir)</p></td>
 <td><p>Copies a list of files to <code class="xref py py-obj docutils literal notranslate"><span class="pre">dest_dir</span> <span class="pre">/</span> <span class="pre">file.parent.name</span> <span class="pre">/</span> <span class="pre">file.name</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.write.make_tarfile" title="pykanto.utils.write.make_tarfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_tarfile</span></code></a>(source_dir, output_filename)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.io.load_dataset" title="pykanto.utils.io.load_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_dataset</span></code></a>(dataset_dir, DIRS[, relink_data])</p></td>
+<td><p>Load an existing dataset, fixing any broken links to data using a new ProjDirs object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.io.make_tarfile" title="pykanto.utils.io.make_tarfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_tarfile</span></code></a>(source_dir, output_filename)</p></td>
 <td><p>Makes a tarfile from a given directory.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.write.makedir" title="pykanto.utils.write.makedir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">makedir</span></code></a>(DIR[, return_path])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.io.makedir" title="pykanto.utils.io.makedir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">makedir</span></code></a>(DIR[, return_path])</p></td>
 <td><p>Make a safely nested directory.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.write.save_json" title="pykanto.utils.write.save_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_json</span></code></a>(json_object, json_loc)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.io.read_json" title="pykanto.utils.io.read_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_json</span></code></a>(json_loc)</p></td>
+<td><p>Reads a .json file using ujson.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.utils.io.save_json" title="pykanto.utils.io.save_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_json</span></code></a>(json_object, json_loc)</p></td>
 <td><p>Saves a .json file using ujson.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.io.save_to_jsons" title="pykanto.utils.io.save_to_jsons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_to_jsons</span></code></a>(dataset)</p></td>
+<td><p>Appends new metadata generated in pykanto to the original json metadata files that were used to create a <code class="xref py py-obj docutils literal notranslate"><span class="pre">KantoData</span></code> dataset.</p></td>
 </tr>
 </tbody>
 </table>
@@ -476,14 +479,54 @@ to disk.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.write.NumpyEncoder" title="pykanto.utils.write.NumpyEncoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumpyEncoder</span></code></a>(*[, skipkeys, ensure_ascii, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.utils.io.NumpyEncoder" title="pykanto.utils.io.NumpyEncoder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NumpyEncoder</span></code></a>(*[, skipkeys, ensure_ascii, ...])</p></td>
 <td><p>Stores a numpy.ndarray or any nested-list composition as JSON.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
-<dt class="sig sig-object py" id="pykanto.utils.write.makedir">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.write.</span></span><span class="sig-name descname"><span class="pre">makedir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DIR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/write.html#makedir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.write.makedir" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykanto.utils.io.load_dataset">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.io.</span></span><span class="sig-name descname"><span class="pre">load_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DIRS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><span class="pre">ProjDirs</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">relink_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></span><a class="reference internal" href="../_modules/pykanto/utils/io.html#load_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.io.load_dataset" title="Permalink to this definition">#</a></dt>
+<dd><p>Load an existing dataset, fixing any broken links to data using a new
+ProjDirs object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_dir</strong> (<em>Path</em>) – Path to the dataset file (<a href="#id1"><span class="problematic" id="id2">*</span></a>.db)</p></li>
+<li><p><strong>DIRS</strong> (<a class="reference internal" href="pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><em>ProjDirs</em></a>) – New project directories</p></li>
+<li><p><strong>relink_data</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to make update dataset paths.
+Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The dataset</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData">KantoData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.io.read_json">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.io.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_loc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/io.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.io.read_json" title="Permalink to this definition">#</a></dt>
+<dd><p>Reads a .json file using ujson.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>json_loc</strong> (<em>Path</em>) – Path to json file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Json file as a dictionary.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.io.makedir">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.io.</span></span><span class="sig-name descname"><span class="pre">makedir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DIR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/io.html#makedir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.io.makedir" title="Permalink to this definition">#</a></dt>
 <dd><p>Make a safely nested directory. Returns the Path object by default. Modified
 from code by Tim Sainburg (<a class="reference external" href="https://shorturl.at/douA0">source</a>).</p>
 <dl class="field-list simple">
@@ -506,8 +549,8 @@ from code by Tim Sainburg (<a class="reference external" href="https://shorturl.
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykanto.utils.write.copy_xml_files">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.write.</span></span><span class="sig-name descname"><span class="pre">copy_xml_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/write.html#copy_xml_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.write.copy_xml_files" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykanto.utils.io.copy_xml_files">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.io.</span></span><span class="sig-name descname"><span class="pre">copy_xml_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/io.html#copy_xml_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.io.copy_xml_files" title="Permalink to this definition">#</a></dt>
 <dd><p>Copies a list of files to <code class="xref py py-obj docutils literal notranslate"><span class="pre">dest_dir</span> <span class="pre">/</span> <span class="pre">file.parent.name</span> <span class="pre">/</span> <span class="pre">file.name</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -521,8 +564,8 @@ if doesn’t exist.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykanto.utils.write.save_json">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.write.</span></span><span class="sig-name descname"><span class="pre">save_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_loc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/write.html#save_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.write.save_json" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykanto.utils.io.save_json">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.io.</span></span><span class="sig-name descname"><span class="pre">save_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_loc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/io.html#save_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.io.save_json" title="Permalink to this definition">#</a></dt>
 <dd><p>Saves a .json file using ujson.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -537,15 +580,28 @@ if doesn’t exist.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.utils.io.save_to_jsons">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.io.</span></span><span class="sig-name descname"><span class="pre">save_to_jsons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/io.html#save_to_jsons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.io.save_to_jsons" title="Permalink to this definition">#</a></dt>
+<dd><p>Appends new metadata generated in pykanto to the original json metadata
+files that were used to create a <code class="xref py py-obj docutils literal notranslate"><span class="pre">KantoData</span></code> dataset. These usually include
+things like type labels and unit oset/offsets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><em>KantoData</em></a>) – Dataset object.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
-<dt class="sig sig-object py" id="pykanto.utils.write.NumpyEncoder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykanto.utils.write.</span></span><span class="sig-name descname"><span class="pre">NumpyEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_ascii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/write.html#NumpyEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.write.NumpyEncoder" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykanto.utils.io.NumpyEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykanto.utils.io.</span></span><span class="sig-name descname"><span class="pre">NumpyEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_ascii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/io.html#NumpyEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.io.NumpyEncoder" title="Permalink to this definition">#</a></dt>
 <dd><p>Stores a numpy.ndarray or any nested-list composition as JSON.
 Source: karlB on <a class="reference external" href="https://stackoverflow.com/a/47626762">Stack Overflow</a>.</p>
 <p>Extends the json.JSONEncoder class.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="pykanto.utils.write.NumpyEncoder.default">
-<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/write.html#NumpyEncoder.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.write.NumpyEncoder.default" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykanto.utils.io.NumpyEncoder.default">
+<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/utils/io.html#NumpyEncoder.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.io.NumpyEncoder.default" title="Permalink to this definition">#</a></dt>
 <dd><p>Implement this method in a subclass such that it returns
 a serializable object for <code class="docutils literal notranslate"><span class="pre">o</span></code>, or calls the base implementation
 (to raise a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>).</p>
@@ -567,8 +623,8 @@ implement default like this:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pykanto.utils.write.make_tarfile">
-<span class="sig-prename descclassname"><span class="pre">pykanto.utils.write.</span></span><span class="sig-name descname"><span class="pre">make_tarfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/write.html#make_tarfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.write.make_tarfile" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="pykanto.utils.io.make_tarfile">
+<span class="sig-prename descclassname"><span class="pre">pykanto.utils.io.</span></span><span class="sig-name descname"><span class="pre">make_tarfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/utils/io.html#make_tarfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.utils.io.make_tarfile" title="Permalink to this definition">#</a></dt>
 <dd><p>Makes a tarfile from a given directory.
 Source: George V. Reilly on
 <a class="reference external" href="https://stackoverflow.com/a/17081026">stack overflow</a>.</p>
@@ -592,17 +648,17 @@ Source: George V. Reilly on
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="pykanto.utils.types.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="pykanto.utils.custom.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">pykanto.utils.types</p>
+            <p class="prev-next-title">pykanto.utils.custom</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="pykanto.utils.xenocanto.html" title="next page">
+    <a class='right-next' id="next-link" href="pykanto.utils.paths.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">pykanto.utils.xenocanto</p>
+        <p class="prev-next-title">pykanto.utils.paths</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

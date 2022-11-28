@@ -119,13 +119,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -203,8 +208,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -213,13 +218,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -245,13 +250,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -279,16 +284,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -413,6 +408,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">:</span>
+    <span class="c1"># TODO: #8 Parameters should be an attrs class with validation @nilomr</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    General parameters class - stores parameters to be passed to</span>
 <span class="sd">    a :meth:`~pykanto.dataset.KantoData` object.</span>
@@ -431,7 +427,7 @@ title="Source repository"
         <span class="bp">self</span><span class="o">.</span><span class="n">hop_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span>
         <span class="sd">&quot;&quot;&quot;Number of samples between successive frames. Defaults to 128.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fft_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span>
-        <span class="sd">&quot;&quot;&quot;Number of bins used to divide the window. Defaults to 1024.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Number of bins used to divide the window. Defaults to 2048.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_mel_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">224</span>
         <span class="sd">&quot;&quot;&quot;Number of Mel frequency bins to use </span>
 <span class="sd">        (n of &#39;rows&#39; in mel-spectrogram). Defaults to 224.&quot;&quot;&quot;</span>
@@ -479,7 +475,7 @@ title="Source repository"
         <span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="sd">&quot;&quot;&quot;Indices of the first and last items to include in the dataset. </span>
 <span class="sd">        Optional, defaults to None.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="sd">&quot;&quot;&quot;How many cpus to use for parallel computing. Default is available</span>
 <span class="sd">        number of cpus&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>

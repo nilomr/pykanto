@@ -119,13 +119,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -203,8 +208,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../../../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -213,13 +218,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -245,13 +250,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -279,16 +284,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -425,7 +420,7 @@ title="Source repository"
     <span class="n">to_iterator</span><span class="p">,</span>
     <span class="n">with_pbar</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">makedir</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pykanto.dataset</span> <span class="kn">import</span> <span class="n">KantoData</span>
@@ -496,9 +491,7 @@ title="Source repository"
     <span class="c1"># Save spec</span>
     <span class="n">file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="n">ID</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
-    <span class="n">spec_out_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">/</span> <span class="n">ID</span> <span class="o">/</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s2">&quot;.npy&quot;</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="n">spec_out_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">/</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s2">&quot;.npy&quot;</span><span class="p">)</span>
     <span class="n">makedir</span><span class="p">(</span><span class="n">spec_out_dir</span><span class="p">)</span>
     <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">spec_out_dir</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
 
@@ -710,12 +703,12 @@ title="Source repository"
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Get spectrogram and segmentation information</span>
-    <span class="k">if</span> <span class="s2">&quot;onsets&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;onsets&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
             <span class="s2">&quot;&#39;onsets&#39;:  This vocalisation has not yet been segmented.&quot;</span>
         <span class="p">)</span>
-    <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">])</span>
-    <span class="n">onsets</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]]</span>
+    <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram&quot;</span><span class="p">])</span>
+    <span class="n">onsets</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]]</span>
 
     <span class="c1"># Get spectrogram for each unit</span>
     <span class="n">unit_spectrograms</span> <span class="o">=</span> <span class="n">get_unit_spectrograms</span><span class="p">(</span>
@@ -741,25 +734,25 @@ title="Source repository"
 <div class="viewcode-block" id="get_indv_units"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_indv_units">[docs]</a><span class="k">def</span> <span class="nf">get_indv_units</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
     <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">individual</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">pad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a spectrogram representations of the units or the average of</span>
-<span class="sd">    the units present in the vocalisations of an individual in the dataset.</span>
+<span class="sd">    the units present in the vocalisations of an ID in the dataset.</span>
 <span class="sd">    Saves the data as pickled dictionary, returns its location.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        dataset (KantoData): Source dataset</span>
-<span class="sd">        keys (List[str]): List of keys belonging to an individual</span>
-<span class="sd">        individual (str): Individual ID</span>
+<span class="sd">        keys (List[str]): List of keys belonging to an ID</span>
+<span class="sd">        ID (str): ID ID</span>
 <span class="sd">        pad (bool, optional): Whether to pad spectrograms to the maximum lenght.</span>
 <span class="sd">            Defaults to True.</span>
 <span class="sd">        song_level (bool, optional): Whether to return the average of all units.</span>
 <span class="sd">            Defaults to False.</span>
 <span class="sd">    Returns:</span>
-<span class="sd">        Dict[str, Path]: Individual and location of its pickled dictionary.</span>
+<span class="sd">        Dict[str, Path]: ID and location of its pickled dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">units</span> <span class="o">=</span> <span class="p">[</span>
@@ -785,19 +778,12 @@ title="Source repository"
             <span class="p">}</span>
 
     <span class="c1"># Save dataset</span>
-    <span class="n">out_dir</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span>
-        <span class="o">/</span> <span class="p">(</span><span class="s2">&quot;average_units&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;units&quot;</span><span class="p">)</span>
-        <span class="o">/</span> <span class="n">individual</span>
-        <span class="o">/</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">individual</span><span class="si">}</span><span class="s2">_average_units.p&quot;</span>
-            <span class="k">if</span> <span class="n">song_level</span>
-            <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">individual</span><span class="si">}</span><span class="s2">_units.p&quot;</span>
-        <span class="p">)</span>
+    <span class="n">out_dir</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">/</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ID</span><span class="si">}</span><span class="s2">_avg_units.p&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ID</span><span class="si">}</span><span class="s2">_units.p&quot;</span>
     <span class="p">)</span>
     <span class="n">makedir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
     <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">individual</span><span class="p">:</span> <span class="n">out_dir</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="n">ID</span><span class="p">:</span> <span class="n">out_dir</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="get_indv_units_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.spectrogram.html#pykanto.signal.spectrogram.get_indv_units_parallel">[docs]</a><span class="k">def</span> <span class="nf">get_indv_units_parallel</span><span class="p">(</span>
@@ -811,8 +797,8 @@ title="Source repository"
 <span class="sd">    :func:`~pykanto.signal.spectrogram.get_indv_units`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">indv_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">indv</span><span class="p">:</span> <span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">indv</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
-        <span class="k">for</span> <span class="n">indv</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">])</span>
+        <span class="n">indv</span><span class="p">:</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">indv</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+        <span class="k">for</span> <span class="n">indv</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">])</span>
     <span class="p">}</span>
 
     <span class="c1"># Calculate and make chunks</span>

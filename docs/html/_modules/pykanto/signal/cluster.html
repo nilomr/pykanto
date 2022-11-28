@@ -119,13 +119,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -203,8 +208,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../../../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -213,13 +218,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -245,13 +250,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -279,16 +284,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -552,9 +547,9 @@ title="Source repository"
     <span class="c1"># Retrieve units or averaged units for one individual</span>
     <span class="n">units</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
         <span class="nb">open</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">AVG_UNITS</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">song_level</span>
-            <span class="k">else</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">UNITS</span><span class="p">[</span><span class="n">ID</span><span class="p">],</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;ID==@ID&quot;</span><span class="p">)[</span>
+                <span class="s2">&quot;average_units&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;units&quot;</span>
+            <span class="p">][</span><span class="mi">0</span><span class="p">],</span>
             <span class="s2">&quot;rb&quot;</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="p">)</span>
@@ -636,10 +631,11 @@ title="Source repository"
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parallel implementation of</span>
-<span class="sd">    :func:`~pykanto.signal.spectrogram.save_melspectrogram`.</span>
+<span class="sd">    :func:`~pykanto.signal.cluster.reduce_and_cluster`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">song_level</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span>
-    <span class="n">IDS</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">AVG_UNITS</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">UNITS</span>
+    <span class="n">IDS</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">])</span>
+    <span class="c1"># IDS = dataset.DIRS.AVG_UNITS if song_level else dataset.DIRS.UNITS</span>
 
     <span class="c1"># Calculate and make chunks</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">IDS</span><span class="p">)</span>

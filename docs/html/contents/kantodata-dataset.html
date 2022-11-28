@@ -44,8 +44,8 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="High Performance Computing" href="hpc.html" />
-    <link rel="prev" title="File segmentation" href="segmenting-files.html" />
+    <link rel="next" title="Raw file segmentation" href="segmenting-files.html" />
+    <link rel="prev" title="Setting up a project" href="project-setup.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -121,14 +121,19 @@
    Setting up a project
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="segmenting-files.html">
-   File segmentation
-  </a>
- </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    The KantoData class
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -206,8 +211,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -216,13 +221,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -248,13 +253,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -282,16 +287,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -531,21 +526,13 @@ B226    134
 B216    117
 </pre></div>
 </div>
-<p>Loading an existing dataset</p>
-<p>.. code-block:: python
-:linenos:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DATASET_ID = &quot;WYTHAM_GRETIS_2021_TEST&quot;
-out_dir = DIRS.DATA / &quot;datasets&quot; / DATASET_ID / f&quot;{DATASET_ID}.db&quot;
-dataset = pickle.load(open(out_dir, &quot;rb&quot;))
-</pre></div>
-</div>
 <p>Creating a dataset for which there is already derived data (e.g. spectrograms).
 This is something that might happen if, say, creating a dataset fails but
 at least some spectrogram files were saved succesfully.</p>
 <p>.. code-block:: python
 :linenos:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DATASET_ID = &quot;BIGBIRD&quot;
-dataset = KantoData(DATASET_ID, DIRS, parameters=params,
+dataset = KantoData(DIRS, parameters=params,
                     overwrite_dataset=True, overwrite_data=False)
 </pre></div>
 </div>
@@ -556,19 +543,41 @@ See <code class="docutils literal notranslate"><span class="pre">colourmaps</spa
 <p>Load an existing dataset:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset_loc</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
-<span class="n">dataset</span> <span class="o">=</span> <span class="n">open_dataset</span><span class="p">(</span><span class="n">dataset_loc</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Opening an existing dataset</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="n">DATASET_ID</span> <span class="o">=</span> <span class="s1">&#39;BIG_BIRD&#39;</span>
+<span class="n">out_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="nn">Input In [1],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">dataset_loc</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">dataset</span> <span class="o">=</span> <span class="n">open_dataset</span><span class="p">(</span><span class="n">dataset_loc</span><span class="p">)</span>
+<span class="nn">Input In [1],</span> in <span class="ni">&lt;cell line: 4&gt;</span><span class="nt">()</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">DATASET_ID</span> <span class="o">=</span> <span class="s1">&#39;BIG_BIRD&#39;</span>
+<span class="ne">----&gt; </span><span class="mi">4</span> <span class="n">out_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
 
 <span class="ne">NameError</span>: name &#39;DIRS&#39; is not defined
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to save the dataset as a .csv file,</span>
+<span class="c1"># which I recommend you do as backup,</span>
+<span class="n">csv_dir</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">parent</span>
+<span class="n">dataset</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">csv_dir</span><span class="p">)</span>
+
+
+<span class="c1"># If you want to save the new metadata you have generated</span>
+<span class="c1"># (vocalisation type labels and onset/offsets, for example)</span>
+<span class="c1"># to the original .json files (as a backup or to use with other software):</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">save_to_jsons</span>
+<span class="n">save_to_jsons</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -584,17 +593,17 @@ See <code class="docutils literal notranslate"><span class="pre">colourmaps</spa
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="segmenting-files.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="project-setup.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">File segmentation</p>
+            <p class="prev-next-title">Setting up a project</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="hpc.html" title="next page">
+    <a class='right-next' id="next-link" href="segmenting-files.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">High Performance Computing</p>
+        <p class="prev-next-title">Raw file segmentation</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

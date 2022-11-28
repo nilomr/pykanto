@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pykanto.labelapp &#8212; pykanto 0.1 documentation</title>
+    <title>pykanto.app.main &#8212; pykanto 0.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -44,8 +44,8 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pykanto.labelapp.data" href="pykanto.labelapp.data.html" />
-    <link rel="prev" title="pykanto.dataset" href="pykanto.dataset.html" />
+    <link rel="next" title="pykanto.utils" href="pykanto.utils.html" />
+    <link rel="prev" title="pykanto.app.data" href="pykanto.app.data.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -122,13 +122,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -206,23 +211,23 @@
   </a>
  </li>
  <li class="toctree-l1 current active has-children">
-  <a class="current reference internal" href="#">
-   pykanto.labelapp
+  <a class="reference internal" href="pykanto.app.html">
+   pykanto.app
   </a>
   <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
+  <ul class="current">
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -248,13 +253,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -282,16 +287,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -383,7 +378,7 @@ title="Source repository"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="../_sources/_autosummary/pykanto.labelapp.rst.txt"
+        <a href="../_sources/_autosummary/pykanto.app.main.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -432,7 +427,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>pykanto.labelapp</h1>
+                <h1>pykanto.app.main</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -444,24 +439,66 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="module-pykanto.labelapp">
-<span id="pykanto-labelapp"></span><h1>pykanto.labelapp<a class="headerlink" href="#module-pykanto.labelapp" title="Permalink to this headline">#</a></h1>
-<p>Interactive web application to explore and label large numbers of vocalisations.</p>
-<p class="rubric">Modules</p>
+  <section id="module-pykanto.app.main">
+<span id="pykanto-app-main"></span><h1>pykanto.app.main<a class="headerlink" href="#module-pykanto.app.main" title="Permalink to this headline">#</a></h1>
+<p>Source code for pykanto’s interactive labelling app.</p>
+<p class="rubric">Functions</p>
 <table class="autosummary longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pykanto.labelapp.data.html#module-pykanto.labelapp.data" title="pykanto.labelapp.data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.labelapp.data</span></code></a></p></td>
-<td><p>Code to generate embeddable data to be used in the interactive song labelling web application.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.app.main.build_legend" title="pykanto.app.main.build_legend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_legend</span></code></a>(source, html_markers, ...)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pykanto.labelapp.main.html#module-pykanto.labelapp.main" title="pykanto.labelapp.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pykanto.labelapp.main</span></code></a></p></td>
-<td><p>Source code for pykanto's interactive labelling app.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.app.main.get_markers" title="pykanto.app.main.get_markers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_markers</span></code></a>(marker_types, mapping)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.app.main.parse_boolean" title="pykanto.app.main.parse_boolean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_boolean</span></code></a>(b)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.app.main.prepare_legend" title="pykanto.app.main.prepare_legend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_legend</span></code></a>(source, palette, labs[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.app.main.set_range" title="pykanto.app.main.set_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_range</span></code></a>(sdata[, ax_percentage])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.app.main.update_feedback_text" title="pykanto.app.main.update_feedback_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_feedback_text</span></code></a>(indv_list, remaining_indvs)</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.app.main.get_markers">
+<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">get_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marker_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#get_markers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.get_markers" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.app.main.prepare_legend">
+<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">prepare_legend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bokeh.models.sources.ColumnDataSource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto_class'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#prepare_legend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.prepare_legend" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.app.main.build_legend">
+<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">build_legend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html_markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">span_mk_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mk_colours</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#build_legend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.build_legend" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.app.main.update_feedback_text">
+<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">update_feedback_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indv_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remaining_indvs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#update_feedback_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.update_feedback_text" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.app.main.parse_boolean">
+<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">parse_boolean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#parse_boolean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.parse_boolean" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.app.main.set_range">
+<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">set_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#set_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.set_range" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 </section>
 
 
@@ -472,17 +509,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="pykanto.dataset.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="pykanto.app.data.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">pykanto.dataset</p>
+            <p class="prev-next-title">pykanto.app.data</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="pykanto.labelapp.data.html" title="next page">
+    <a class='right-next' id="next-link" href="pykanto.utils.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">pykanto.labelapp.data</p>
+        <p class="prev-next-title">pykanto.utils</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -13,6 +13,7 @@
 
    .. autosummary::
    
+      build_plot_summary
       melspectrogram
       mspaced_mask
       rand_jitter

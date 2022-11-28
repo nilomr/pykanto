@@ -1,0 +1,760 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pykanto.utils.io &#8212; pykanto 0.1 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../../_static/pykanto-logo-grey-04.svg" class="logo" alt="logo">
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  User guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/installation.html">
+   Installing
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pykanto
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/basic-workflow.html">
+   Basic workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/project-setup.html">
+   Setting up a project
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
+   The KantoData class
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/interactive-app.html">
+   Interactive app
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/hpc.html">
+   High Performance Computing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/segmentation.html">
+   Vocalisation segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/analysis.html">
+   Vocalisation analysis
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/FAQs.html">
+   FAQs &amp; known issues
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  API reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../_autosummary/pykanto.signal.html">
+   pykanto.signal
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.analysis.html">
+     pykanto.signal.analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.cluster.html">
+     pykanto.signal.cluster
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.filter.html">
+     pykanto.signal.filter
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.segment.html">
+     pykanto.signal.segment
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.signal.spectrogram.html">
+     pykanto.signal.spectrogram
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../_autosummary/pykanto.parameters.html">
+   pykanto.parameters
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../_autosummary/pykanto.dataset.html">
+   pykanto.dataset
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../_autosummary/pykanto.app.html">
+   pykanto.app
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../_autosummary/pykanto.utils.html">
+   pykanto.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.compute.html">
+     pykanto.utils.compute
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.custom.html">
+     pykanto.utils.custom
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.slurm.html">
+     pykanto.utils.slurm
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../_autosummary/pykanto.utils.slurm.launch.html">
+       pykanto.utils.slurm.launch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../../_autosummary/pykanto.utils.slurm.tester.html">
+       pykanto.utils.slurm.tester
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.types.html">
+     pykanto.utils.types
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../_autosummary/pykanto.plot.html">
+   pykanto.plot
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/nilomr/pykanto"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <h1>Source code for pykanto.utils.io</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions to read external files -e.g. JSON- efficiently.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ──── IMPORTS ─────────────────────────────────────────────────────────────────</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">ray</span>
+<span class="kn">import</span> <span class="nn">ujson</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pykanto.dataset</span> <span class="kn">import</span> <span class="n">KantoData</span>
+    <span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">ujson</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">calc_chunks</span><span class="p">,</span>
+    <span class="n">flatten_list</span><span class="p">,</span>
+    <span class="n">get_chunks</span><span class="p">,</span>
+    <span class="n">print_parallel_info</span><span class="p">,</span>
+    <span class="n">to_iterator</span><span class="p">,</span>
+    <span class="n">with_pbar</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pykanto.dataset</span> <span class="kn">import</span> <span class="n">KantoData</span>
+
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="n">with_pbar</span>
+
+<span class="c1"># ─── FUNCTIONS ────────────────────────────────────────────────────────────────</span>
+
+
+<span class="k">def</span> <span class="nf">_relink_kantodata</span><span class="p">(</span><span class="n">dataset_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;spectrograms&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dataset_dir</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="o">*</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="n">index</span><span class="p">:])</span>
+
+
+<span class="k">def</span> <span class="nf">_relink_df</span><span class="p">(</span><span class="n">dataset_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_relink_kantodata</span><span class="p">(</span><span class="n">dataset_dir</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span> <span class="nf">_path_is_file</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="load_dataset"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.load_dataset">[docs]</a><span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span>
+    <span class="n">dataset_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">DIRS</span><span class="p">:</span> <span class="n">ProjDirs</span><span class="p">,</span> <span class="n">relink_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KantoData</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load an existing dataset, fixing any broken links to data using a new</span>
+<span class="sd">    ProjDirs object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset_dir (Path): Path to the dataset file (*.db)</span>
+<span class="sd">        DIRS (ProjDirs): New project directories</span>
+<span class="sd">        relink_data (bool, optional): Whether to make update dataset paths.</span>
+<span class="sd">            Defaults to True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        KantoData: The dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Load</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">dataset_dir</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">relink_data</span><span class="p">:</span>
+
+        <span class="c1"># Fix DIRS</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">DIRS</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="s2">&quot;DATASET&quot;</span><span class="p">,</span> <span class="n">dataset_dir</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">=</span> <span class="n">_relink_kantodata</span><span class="p">(</span>
+            <span class="n">dataset_dir</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Update all paths</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">files</span>
+        <span class="n">pathcols</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">col</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">columns</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">pathcols</span><span class="p">:</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_relink_df</span><span class="p">(</span><span class="n">dataset_dir</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check data are reachable</span>
+        <span class="n">exist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_path_is_file</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">values</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">pathcols</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">n_noexist</span><span class="p">,</span> <span class="n">n_none</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">exist</span> <span class="o">==</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">n_noexist</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_noexist</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exist</span><span class="p">)</span> <span class="o">-</span> <span class="n">n_none</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="s2">&quot;Could not reconnect all data in the dataset &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">n_noexist</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">exist</span><span class="p">)</span><span class="si">}</span><span class="s2"> failed).&quot;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n_noexist</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">exist</span><span class="p">)</span> <span class="o">-</span> <span class="n">n_none</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="s2">&quot;Could not reconnect any data in the dataset.&quot;</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">dataset</span></div>
+
+
+<div class="viewcode-block" id="read_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.read_json">[docs]</a><span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">json_loc</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads a .json file using ujson.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json_loc (Path): Path to json file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict: Json file as a dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_loc</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ujson</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_json</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads and returns a .json file with a new &#39;noise&#39; key with value True if the</span>
+<span class="sd">    json file has a &#39;label&#39; key with value &#39;NOISE&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">jf</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;noise&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;NOISE&quot;</span> <span class="k">else</span> <span class="kc">False</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">jf</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">jf</span>
+
+
+<span class="nd">@ray</span><span class="o">.</span><span class="n">remote</span>
+<span class="k">def</span> <span class="nf">_get_json_r</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">_get_json</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_get_json_parallel</span><span class="p">(</span>
+    <span class="n">lst</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parallel implementation of</span>
+<span class="sd">    :func:`~pykanto.utils.io._get_json`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate and make chunks</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span>
+    <span class="n">chunk_info</span> <span class="o">=</span> <span class="n">calc_chunks</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">chunk_length</span><span class="p">,</span> <span class="n">n_chunks</span> <span class="o">=</span> <span class="n">chunk_info</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">chunk_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">chunks</span> <span class="o">=</span> <span class="n">get_chunks</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
+    <span class="n">print_parallel_info</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s2">&quot;JSON files&quot;</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">)</span>
+
+    <span class="c1"># Distribute with ray</span>
+    <span class="n">obj_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_json_r</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">]</span>
+    <span class="n">pbar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Loading JSON files&quot;</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">n_chunks</span><span class="p">}</span>
+    <span class="n">jsons</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj_id</span> <span class="k">for</span> <span class="n">obj_id</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">),</span> <span class="o">**</span><span class="n">pbar</span><span class="p">)]</span>
+
+    <span class="c1"># Flatten and return</span>
+    <span class="k">return</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">jsons</span><span class="p">)</span>
+
+
+<span class="c1"># ──── WRITE ────────────────────────────────────────────────────────────────────</span>
+
+
+<div class="viewcode-block" id="makedir"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.makedir">[docs]</a><span class="k">def</span> <span class="nf">makedir</span><span class="p">(</span><span class="n">DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">return_path</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make a safely nested directory. Returns the Path object by default. Modified</span>
+<span class="sd">    from code by Tim Sainburg (`source &lt;https://shorturl.at/douA0&gt;`_).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        DIR (Path): Path to be created. return_path (bool, optional): Whether to</span>
+<span class="sd">        return the path. Defaults to True.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: Wrong argument type to &#39;DIR&#39;</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path: Path to file or directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">DIR</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong argument type passed to &#39;DIR&#39;: </span><span class="si">{</span><span class="n">DIR</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># If this is a file</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">DIR</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">DIR</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">DIR</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="mi">17</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">return_path</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DIR</span></div>
+
+
+<div class="viewcode-block" id="copy_xml_files"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.copy_xml_files">[docs]</a><span class="k">def</span> <span class="nf">copy_xml_files</span><span class="p">(</span><span class="n">file_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">dest_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copies a list of files to `dest_dir / file.parent.name / file.name`</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file_list (List[Path]): List of files to be copied.</span>
+<span class="sd">        dest_dir (Path): Path to destination folder, will create it</span>
+<span class="sd">            if doesn&#39;t exist.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file</span><span class="p">:</span> <span class="n">Path</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+        <span class="n">file_list</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Copying files&quot;</span><span class="p">,</span> <span class="n">leave</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="p">):</span>
+        <span class="n">dest_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">dest_dir</span> <span class="o">/</span> <span class="n">file</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">makedir</span><span class="p">(</span><span class="n">dest_file</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">,</span> <span class="n">follow_symlinks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Done copying </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> files to </span><span class="si">{</span><span class="n">dest_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.save_json">[docs]</a><span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="n">json_object</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">json_loc</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves a .json file using ujson.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json_loc (Path): Path to json file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict: Json file as a dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_loc</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">ujson</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_object</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+
+<span class="c1"># Save segmentation and label data to jsons:</span>
+<div class="viewcode-block" id="save_to_jsons"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.save_to_jsons">[docs]</a><span class="k">def</span> <span class="nf">save_to_jsons</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Appends new metadata generated in pykanto to the original json metadata</span>
+<span class="sd">    files that were used to create a `KantoData` dataset. These usually include</span>
+<span class="sd">    things like type labels and unit oset/offsets.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset (KantoData): Dataset object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># need to convert numpy to list before can dump to json:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Convert any numpy arrays to lists, pathlib.Paths to str</span>
+    <span class="n">arraycols</span><span class="p">,</span> <span class="n">pathcols</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">coltype</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">coltype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span>
+    <span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">arraycols</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">arraycols</span><span class="p">]</span><span class="o">.</span><span class="n">applymap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+    <span class="c1"># Convert any pathlib.Paths to str</span>
+    <span class="n">arraycols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">Path</span><span class="p">)]</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">pathcols</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">pathcols</span><span class="p">]</span><span class="o">.</span><span class="n">applymap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">as_posix</span><span class="p">())</span>
+
+    <span class="c1"># Parallelisable part</span>
+    <span class="c1"># TODO: refactor and parallelise with ray</span>
+    <span class="k">for</span> <span class="n">jsonfile</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">,</span>
+        <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Adding new metadata to .json files &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot; in </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">JSON_LIST</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">jsonfile</span><span class="o">.</span><span class="n">stem</span>
+
+        <span class="k">if</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">dfdict</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">jsonfile</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dfdict</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+            <span class="c1"># create randomly named temporary file to avoid</span>
+            <span class="c1"># interference with other thread/asynchronous request</span>
+            <span class="n">tempfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">jsonfile</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+            <span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tempfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+            <span class="c1"># rename temporary file replacing old file</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tempfile</span><span class="p">,</span> <span class="n">jsonfile</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NumpyEncoder"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.NumpyEncoder">[docs]</a><span class="k">class</span> <span class="nc">NumpyEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stores a numpy.ndarray or any nested-list composition as JSON.</span>
+<span class="sd">    Source: karlB on `Stack Overflow &lt;https://stackoverflow.com/a/47626762&gt;`_.</span>
+
+<span class="sd">    Extends the json.JSONEncoder class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NumpyEncoder.default"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.NumpyEncoder.default">[docs]</a>    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="make_tarfile"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.make_tarfile">[docs]</a><span class="k">def</span> <span class="nf">make_tarfile</span><span class="p">(</span><span class="n">source_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes a tarfile from a given directory.</span>
+<span class="sd">    Source: George V. Reilly on</span>
+<span class="sd">    `stack overflow &lt;https://stackoverflow.com/a/17081026&gt;`_.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        source_dir (Path): Directory to tar</span>
+<span class="sd">        output_filename (Path): Name of output file (e.g. file.tar.gz).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s2">&quot;w:gz&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+        <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">source_dir</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">source_dir</span><span class="p">))</span></div>
+</pre></div>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Nilo M. Recalde<br/>
+  
+      &copy; Copyright 2021, Nilo M. Recalde.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

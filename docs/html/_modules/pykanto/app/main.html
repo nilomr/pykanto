@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pykanto.labelapp.main &#8212; pykanto 0.1 documentation</title>
+    <title>pykanto.app.main &#8212; pykanto 0.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -119,13 +119,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -203,8 +208,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../../../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -213,13 +218,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -245,13 +250,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -279,16 +284,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -395,7 +390,7 @@ title="Source repository"
                 
               <div>
                 
-  <h1>Source code for pykanto.labelapp.main</h1><div class="highlight"><pre>
+  <h1>Source code for pykanto.app.main</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -403,20 +398,21 @@ title="Source repository"
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># To run from terminal:</span>
 <span class="c1"># set `debug = True`` in this script.</span>
-<span class="c1"># bokeh serve --show /home/nilomr/projects/pykanto/pykanto/labelapp</span>
+<span class="c1"># bokeh serve --show /home/nilomr/projects/pykanto/pykanto/app</span>
 
 <span class="c1"># ─── DEPENDENCIES ─────────────────────────────────────────────────────────────</span>
 
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
 <span class="kn">from</span> <span class="nn">bokeh.layouts</span> <span class="kn">import</span> <span class="n">row</span>
 <span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BoxSelectTool</span><span class="p">,</span>
@@ -434,14 +430,14 @@ title="Source repository"
 <span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="kn">import</span> <span class="n">curdoc</span><span class="p">,</span> <span class="n">figure</span>
 <span class="kn">from</span> <span class="nn">bokeh.themes</span> <span class="kn">import</span> <span class="n">Theme</span>
 <span class="kn">from</span> <span class="nn">bokeh.transform</span> <span class="kn">import</span> <span class="n">factor_cmap</span>
-<span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="kn">from</span> <span class="nn">pykanto.labelapp.data</span> <span class="kn">import</span> <span class="n">load_app_data</span>
+
+<span class="kn">from</span> <span class="nn">pykanto.app.data</span> <span class="kn">import</span> <span class="n">load_app_data</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span>
 
 <span class="c1"># ──── FUNCTIONS ───────────────────────────────────────────────────────────────</span>
 
 
-<div class="viewcode-block" id="get_markers"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.get_markers">[docs]</a><span class="k">def</span> <span class="nf">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<div class="viewcode-block" id="get_markers"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.get_markers">[docs]</a><span class="k">def</span> <span class="nf">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
     <span class="n">marker_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">lab</span><span class="p">:</span> <span class="n">marker</span> <span class="k">for</span> <span class="n">marker</span><span class="p">,</span> <span class="n">lab</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cycle</span><span class="p">(</span><span class="n">marker_types</span><span class="p">),</span> <span class="n">labs</span><span class="p">)</span>
     <span class="p">}</span>
@@ -449,7 +445,7 @@ title="Source repository"
     <span class="k">return</span> <span class="n">markers</span></div>
 
 
-<div class="viewcode-block" id="prepare_legend"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.prepare_legend">[docs]</a><span class="k">def</span> <span class="nf">prepare_legend</span><span class="p">(</span>
+<div class="viewcode-block" id="prepare_legend"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.prepare_legend">[docs]</a><span class="k">def</span> <span class="nf">prepare_legend</span><span class="p">(</span>
     <span class="n">source</span><span class="p">:</span> <span class="n">ColumnDataSource</span><span class="p">,</span>
     <span class="n">palette</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">labs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -488,7 +484,7 @@ title="Source repository"
     <span class="k">return</span> <span class="n">palette</span><span class="p">,</span> <span class="n">marker_types</span><span class="p">,</span> <span class="n">colours</span></div>
 
 
-<div class="viewcode-block" id="build_legend"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.build_legend">[docs]</a><span class="k">def</span> <span class="nf">build_legend</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">html_markers</span><span class="p">,</span> <span class="n">span_mk_sizes</span><span class="p">,</span> <span class="n">mk_colours</span><span class="p">):</span>
+<div class="viewcode-block" id="build_legend"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.build_legend">[docs]</a><span class="k">def</span> <span class="nf">build_legend</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">html_markers</span><span class="p">,</span> <span class="n">span_mk_sizes</span><span class="p">,</span> <span class="n">mk_colours</span><span class="p">):</span>
     <span class="c1"># Build html code</span>
     <span class="n">pre</span> <span class="o">=</span> <span class="s1">&#39;&lt;div class=&quot;legend_wrapper&quot;&gt;&#39;</span>
     <span class="n">img_htmls</span> <span class="o">=</span> <span class="p">[</span><span class="n">pre</span><span class="p">]</span>
@@ -517,7 +513,7 @@ title="Source repository"
     <span class="k">return</span> <span class="n">legend_html</span></div>
 
 
-<div class="viewcode-block" id="update_feedback_text"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.update_feedback_text">[docs]</a><span class="k">def</span> <span class="nf">update_feedback_text</span><span class="p">(</span><span class="n">indv_list</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">):</span>
+<div class="viewcode-block" id="update_feedback_text"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.update_feedback_text">[docs]</a><span class="k">def</span> <span class="nf">update_feedback_text</span><span class="p">(</span><span class="n">indv_list</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">):</span>
     <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;// &lt;b&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_indvs</span><span class="p">)</span><span class="si">}</span><span class="s2"> out of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> done&lt;/b&gt; // &quot;</span>
         <span class="s2">&quot;Use the &#39;Label&#39; button to change the label of the selected points. &quot;</span>
@@ -527,11 +523,11 @@ title="Source repository"
     <span class="k">return</span> <span class="n">text</span></div>
 
 
-<div class="viewcode-block" id="parse_boolean"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.parse_boolean">[docs]</a><span class="k">def</span> <span class="nf">parse_boolean</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_boolean"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.parse_boolean">[docs]</a><span class="k">def</span> <span class="nf">parse_boolean</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">b</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span></div>
 
 
-<div class="viewcode-block" id="set_range"><a class="viewcode-back" href="../../../_autosummary/pykanto.labelapp.main.html#pykanto.labelapp.main.set_range">[docs]</a><span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span> <span class="n">ax_percentage</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="set_range"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.set_range">[docs]</a><span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span> <span class="n">ax_percentage</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_x&quot;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_x&quot;</span><span class="p">])</span>
     <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_y&quot;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_y&quot;</span><span class="p">])</span>
     <span class="n">xlen</span><span class="p">,</span> <span class="n">ylen</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">xmin</span> <span class="o">-</span> <span class="n">xmax</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ymin</span> <span class="o">-</span> <span class="n">ymax</span><span class="p">)</span>
@@ -590,12 +586,9 @@ title="Source repository"
 
     <span class="c1"># ──── MAIN ────────────────────────────────────────────────────────────────────</span>
 
-    <span class="k">if</span> <span class="n">song_level</span><span class="p">:</span>
-        <span class="n">dataset_type</span> <span class="o">=</span> <span class="s2">&quot;vocs&quot;</span>
-        <span class="n">dataset_labels</span> <span class="o">=</span> <span class="s2">&quot;VOCALISATION_LABELS&quot;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">dataset_type</span> <span class="o">=</span> <span class="s2">&quot;units&quot;</span>
-        <span class="n">dataset_labels</span> <span class="o">=</span> <span class="s2">&quot;UNIT_LABELS&quot;</span>
+    <span class="n">datatype</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;units&quot;</span>
+    <span class="n">labtype</span> <span class="o">=</span> <span class="s2">&quot;voc_app_data&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;unit_app_data&quot;</span>
+    <span class="n">checktype</span> <span class="o">=</span> <span class="s2">&quot;voc_check&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;unit_check&quot;</span>
 
     <span class="c1"># Load dataset</span>
     <span class="k">if</span> <span class="n">dataset_loc</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
@@ -607,19 +600,19 @@ title="Source repository"
     <span class="c1"># :func:`~pykanto.signal.cluster.dim_reduction_and_cluster`</span>
     <span class="c1"># because len &lt; min_sample)</span>
     <span class="n">indv_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
-        <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">])[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">datatype</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">])[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
     <span class="p">)</span>
 
     <span class="c1"># Where to store labelling information?</span>
-    <span class="k">if</span> <span class="s2">&quot;already_checked&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">):</span>
-        <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s2">&quot;already_checked&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">checktype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">checktype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="c1"># Get individuals to do</span>
-    <span class="n">remaining_indvs</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">indv</span>
-        <span class="k">for</span> <span class="n">indv</span> <span class="ow">in</span> <span class="n">indv_list</span>
-        <span class="k">if</span> <span class="n">indv</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s2">&quot;already_checked&quot;</span><span class="p">]</span>
-    <span class="p">]</span>
+    <span class="n">remaining_indvs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">checktype</span><span class="p">])</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">checktype</span><span class="si">}</span><span class="s2"> == False&quot;</span><span class="p">)[</span>
+            <span class="s2">&quot;ID&quot;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_indvs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
@@ -627,7 +620,7 @@ title="Source repository"
             <span class="s2">&quot;Close the app.&quot;</span>
         <span class="p">)</span>
 
-    <span class="n">source</span> <span class="o">=</span> <span class="n">load_app_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">load_app_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">labtype</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="c1"># Generate labels, markers and colours</span>
 
@@ -746,7 +739,6 @@ title="Source repository"
     <span class="n">legend_items</span> <span class="o">=</span> <span class="n">get_legend_items</span><span class="p">()</span>
 
     <span class="c1"># Inactive legend</span>
-
     <span class="c1"># plot_legend = Legend(</span>
     <span class="c1">#     items=legend_items,</span>
     <span class="c1">#     location=(0, 0),</span>
@@ -797,9 +789,9 @@ title="Source repository"
     <span class="n">feedback_text</span> <span class="o">=</span> <span class="n">Div</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">css_classes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;help_text&quot;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">update_class_examples_div</span><span class="p">():</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span>
-            <span class="s2">&quot;spectrogram&quot;</span>
-        <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;spectrogram&quot;</span><span class="p">][</span>
+            <span class="mi">0</span>
+        <span class="p">]</span>
 
     <span class="c1"># Panel with class examples</span>
     <span class="c1"># Prepare marker dictionary for legend</span>
@@ -841,7 +833,11 @@ title="Source repository"
 
         <span class="c1"># Add previous individual to list of already checked</span>
         <span class="n">indv</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s2">&quot;already_checked&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indv</span><span class="p">)</span>
+
+        <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+            <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="n">checktype</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">indv</span><span class="p">),</span>
+            <span class="n">checktype</span><span class="p">,</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># Save labels from last individual to dataset</span>
         <span class="n">label_dict</span> <span class="o">=</span> <span class="p">{</span>
@@ -851,25 +847,23 @@ title="Source repository"
             <span class="p">)</span>
         <span class="p">}</span>
 
-        <span class="k">if</span> <span class="s2">&quot;class_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+        <span class="k">if</span> <span class="s2">&quot;class_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">datatype</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">datatype</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
                 <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;class_label&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_dict</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_type</span><span class="p">)[</span><span class="s2">&quot;class_label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">datatype</span><span class="p">)[</span><span class="s2">&quot;class_label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">label_dict</span><span class="p">)</span>
             <span class="p">)</span>
 
         <span class="n">dataset</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Get next individual and update plot</span>
-
-        <span class="n">remaining_indvs</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">indv</span>
-            <span class="k">for</span> <span class="n">indv</span> <span class="ow">in</span> <span class="n">indv_list</span>
-            <span class="k">if</span> <span class="n">indv</span>
-            <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">)[</span><span class="s2">&quot;already_checked&quot;</span><span class="p">]</span>
-        <span class="p">]</span>
+        <span class="n">remaining_indvs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">checktype</span><span class="p">])</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">checktype</span><span class="si">}</span><span class="s2"> == False&quot;</span>
+            <span class="p">)[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_indvs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">done_t</span> <span class="o">=</span> <span class="s2">&quot;Done. You can now stop the app.&quot;</span>
@@ -878,7 +872,7 @@ title="Source repository"
             <span class="k">return</span>
 
         <span class="n">indv</span> <span class="o">=</span> <span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">source</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">load_app_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">indv</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">load_app_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">labtype</span><span class="p">,</span> <span class="n">indv</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span>
         <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 

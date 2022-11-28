@@ -119,13 +119,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -203,8 +208,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -213,13 +218,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -245,13 +250,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -279,16 +284,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -407,27 +402,28 @@ title="Source repository"
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">librosa.display</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">matplotlib.axes</span> <span class="kn">import</span> <span class="n">Axes</span>
 <span class="kn">from</span> <span class="nn">matplotlib.cm</span> <span class="kn">import</span> <span class="n">get_cmap</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">gridspec</span>
 <span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PatchCollection</span>
 <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Rectangle</span>
 <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">FormatStrFormatter</span>
-<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.inset_locator</span> <span class="kn">import</span> <span class="n">inset_axes</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
 <span class="kn">from</span> <span class="nn">numba.core.decorators</span> <span class="kn">import</span> <span class="n">njit</span>
+
+<span class="kn">from</span> <span class="nn">pykanto.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
 <span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">cut_or_pad_spectrogram</span><span class="p">,</span>
     <span class="n">retrieve_spectrogram</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pykanto.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pykanto.dataset</span> <span class="kn">import</span> <span class="n">KantoData</span>
@@ -455,8 +451,28 @@ title="Source repository"
     <span class="n">title</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bone&quot;</span><span class="p">,</span>
     <span class="n">max_lenght</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">colour_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">colour_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots a melspectrogram from a numpy array or path to a numpy array.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nparray_or_dir (Path | np.ndarray): Spectrogram array or path to a</span>
+<span class="sd">            stored numpy array.</span>
+<span class="sd">        parameters (None | Parameters, optional): Parameters used to</span>
+<span class="sd">            calculate the spectrogram. Defaults to None.</span>
+<span class="sd">        title (None | str, optional): Title for plot. Defaults to None.</span>
+<span class="sd">        cmap (str, optional): Matplotlib colour palette to use.</span>
+<span class="sd">            Defaults to &quot;bone&quot;.</span>
+<span class="sd">        max_lenght (None | float, optional): Maximum length of the</span>
+<span class="sd">            spectrogram beyond which it will be center-cropped for plotting.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">        colour_bar (bool, optional): Wheter to include a colour bar</span>
+<span class="sd">            legend for the amplitude. Defaults to True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Axes: A matplotlib.axes.Axes instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nparray_or_dir</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">mel_spectrogram</span> <span class="o">=</span> <span class="n">nparray_or_dir</span>
@@ -487,8 +503,8 @@ title="Source repository"
         <span class="p">)</span>
 
     <span class="c1"># Fig settings</span>
-    <span class="n">back_colour</span> <span class="o">=</span> <span class="s2">&quot;#2F2F2F&quot;</span>
-    <span class="n">text_colour</span> <span class="o">=</span> <span class="s2">&quot;#c2c2c2&quot;</span>
+    <span class="n">back_colour</span> <span class="o">=</span> <span class="s2">&quot;white&quot;</span>
+    <span class="n">text_colour</span> <span class="o">=</span> <span class="s2">&quot;#636363&quot;</span>
     <span class="n">shape</span> <span class="o">=</span> <span class="n">mel_spectrogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">figsize</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">x</span> <span class="o">/</span> <span class="mi">50</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">])</span>
 
@@ -505,21 +521,15 @@ title="Source repository"
         <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
         <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="c1"># Set limits</span>
+    <span class="n">spec_im</span><span class="o">.</span><span class="n">set_clim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">mel_spectrogram</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">mel_spectrogram</span><span class="p">))</span>
 
     <span class="c1"># Set background in case spectrogram doesnt reach 0</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)(</span><span class="mi">0</span><span class="p">))</span>
 
     <span class="c1"># Ticks and labels</span>
-    <span class="n">xlims</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span>
-        <span class="p">[</span>
-            <span class="nb">min</span><span class="p">(</span><span class="n">xlims</span><span class="p">),</span>
-            <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">,</span>
-            <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span>
-            <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.75</span><span class="p">,</span>
-            <span class="nb">max</span><span class="p">(</span><span class="n">xlims</span><span class="p">),</span>
-        <span class="p">]</span>
-    <span class="p">)</span>
+    <span class="n">ax0</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ax0</span><span class="p">,</span> <span class="n">ax1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)])</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%1.1f</span><span class="s2">&quot;</span><span class="p">))</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span>
@@ -532,27 +542,13 @@ title="Source repository"
 
     <span class="c1"># Colour bar</span>
     <span class="k">if</span> <span class="n">colour_bar</span><span class="p">:</span>
-        <span class="n">cbaxes</span> <span class="o">=</span> <span class="n">inset_axes</span><span class="p">(</span>
-            <span class="n">ax</span><span class="p">,</span>
-            <span class="n">width</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-            <span class="n">height</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span>
-            <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span>
-            <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="n">bbox_transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
-            <span class="n">borderpad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span>
-            <span class="n">mappable</span><span class="o">=</span><span class="n">spec_im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cbaxes</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">0</span>
-        <span class="p">)</span>
-        <span class="n">clims</span> <span class="o">=</span> <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
-        <span class="n">cbar</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">clims</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">clims</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">clims</span><span class="p">))]</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
+        <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">spec_im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">)</span>
         <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">text_colour</span><span class="p">)</span>
         <span class="n">cbar</span><span class="o">.</span><span class="n">outline</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;dB&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">text_colour</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
 
     <span class="c1"># Title</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -587,11 +583,9 @@ title="Source repository"
 
     <span class="n">params</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span>
-            <span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">]</span>
-        <span class="p">)</span>
+        <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram&quot;</span><span class="p">])</span>
         <span class="n">onsets_offsets</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]</span>
+            <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]</span>
         <span class="p">]</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">melspectrogram</span><span class="p">(</span>
@@ -604,14 +598,14 @@ title="Source repository"
     <span class="n">ymin</span> <span class="o">=</span> <span class="n">ylmax</span> <span class="o">-</span> <span class="n">ysize</span>
     <span class="n">patches</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">onset</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">onsets_offsets</span><span class="p">):</span>
-        <span class="c1"># ax.axvline(onset, color=&quot;#FFFFFF&quot;, ls=&quot;-&quot;, lw=0.5, alpha=0.3)</span>
-        <span class="c1"># ax.axvline(offset, color=&quot;#FFFFFF&quot;, ls=&quot;-&quot;, lw=0.5, alpha=0.3)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">onset</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="n">patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">Rectangle</span><span class="p">(</span>
                 <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">onset</span><span class="p">,</span> <span class="n">ylmin</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">offset</span> <span class="o">-</span> <span class="n">onset</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="p">(</span><span class="n">ylmax</span> <span class="o">-</span> <span class="n">ylmin</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="p">)</span>
-    <span class="n">collection</span> <span class="o">=</span> <span class="n">PatchCollection</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">PatchCollection</span><span class="p">(</span><span class="n">patches</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.07</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
@@ -671,7 +665,7 @@ title="Source repository"
         <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;You need to provide either a key or a spectrogram&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">])</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram&quot;</span><span class="p">])</span>
 
     <span class="n">times</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
@@ -696,6 +690,7 @@ title="Source repository"
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
     <span class="n">minfreqs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">maxfreqs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">roll_percents</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
     <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -706,8 +701,10 @@ title="Source repository"
 
 <span class="sd">    Args:</span>
 <span class="sd">        dataset (KantoData): Dataset object with your data.</span>
-<span class="sd">        rolloff_max (np.ndarray): Array of maximum frequencies.</span>
-<span class="sd">        rolloff_min (np.ndarray): Array of minimum frequencies.</span>
+<span class="sd">        maxfreqs (np.ndarray): Array of maximum frequencies.</span>
+<span class="sd">        minfreqs (np.ndarray): Array of minimum frequencies.</span>
+<span class="sd">        roll_percents (list[float, float]): Percentage of energy</span>
+<span class="sd">            contained in bins.</span>
 <span class="sd">        key (None | str = None): Key of a vocalisation. Defaults to None.</span>
 <span class="sd">        spec (spec: None | np.ndarray): Mel spectrogram. Defaults to None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -716,7 +713,7 @@ title="Source repository"
         <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;You need to provide either a key or a spectrogram&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">vocs</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram_loc&quot;</span><span class="p">])</span>
+        <span class="n">spec</span> <span class="o">=</span> <span class="n">retrieve_spectrogram</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram&quot;</span><span class="p">])</span>
 
     <span class="n">times</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
@@ -725,9 +722,133 @@ title="Source repository"
     <span class="p">)</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">melspectrogram</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">maxfreqs</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Max frequency (roll = 0.95)&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">minfreqs</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Min frequency (roll = 0.1)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">maxfreqs</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Max frequency (roll = </span><span class="si">{</span><span class="n">roll_percents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">minfreqs</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Min frequency (roll =</span><span class="si">{</span><span class="n">roll_percents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="build_plot_summary"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.build_plot_summary">[docs]</a><span class="k">def</span> <span class="nf">build_plot_summary</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">nbins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;frequency&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots a histogram + kernel densiyy estimate of the frequency</span>
+<span class="sd">    distribution of vocalisation duration and frequencies.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Durations and frequencies come from bounding boxes,</span>
+<span class="sd">        not vocalisations. This function, along with</span>
+<span class="sd">        :func:`~pykanto.dataset.show_extreme_songs`, is useful to spot</span>
+<span class="sd">        any outliers, and to quickly explore the full range of data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset (KantoData): Dataset to use.</span>
+<span class="sd">        nbins (int, optional): Number of bins in histogram. Defaults to 50.</span>
+<span class="sd">        variable (str, optional): One of &#39;frequency&#39;, &#39;duration&#39;,</span>
+<span class="sd">            &#39;sample_size&#39;, &#39;all&#39;. Defaults to &#39;frequency&#39;.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: `variable` must be one of</span>
+<span class="sd">            [&#39;frequency&#39;, &#39;duration&#39;, &#39;sample_size&#39;, &#39;all&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;sample_size&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;`variable` must be one of [&#39;frequency&#39;, &#39;duration&#39;, &#39;sample_size&#39;, &#39;all&#39;]&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Plot size and general aesthetics</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">font_scale</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">rc</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;axes.facecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;#ededed&quot;</span><span class="p">},</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;dark&quot;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span>
+        <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="n">ncols</span><span class="o">=</span><span class="mi">3</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Build frequency or duration plots</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">var</span> <span class="o">!=</span> <span class="n">variable</span> <span class="ow">and</span> <span class="n">variable</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;upper_freq&quot;</span><span class="p">:</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;upper_freq&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;lower_freq&quot;</span><span class="p">:</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;lower_freq&quot;</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;song_duration&quot;</span><span class="p">:</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;length_s&quot;</span><span class="p">]}</span>
+
+        <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span>
+            <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">palette</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;#107794&quot;</span><span class="p">,</span> <span class="s2">&quot;#d97102&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span>
+            <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;#107794&quot;</span><span class="p">],</span>
+            <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">axes</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+            <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;duration&quot;</span> <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">line_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;duration&quot;</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span>
+                <span class="n">mpl</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">ScalarFormatter</span><span class="p">()</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+                <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Min&quot;</span><span class="p">,</span> <span class="s2">&quot;Max&quot;</span><span class="p">],</span>
+                <span class="n">loc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.70</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">borderaxespad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Frequency (Hz)&quot;</span>
+                <span class="k">if</span> <span class="n">var</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span>
+                <span class="k">else</span> <span class="s2">&quot;Duration (s)&quot;</span><span class="p">,</span>
+                <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Count&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Build sample size plot</span>
+    <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sample_size&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+        <span class="n">individual_ss</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">individual_ss</span><span class="p">)</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="s2">&quot;n&quot;</span><span class="p">})</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">individual_ss</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">palette</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;#107794&quot;</span><span class="p">],</span>
+            <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">axes</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+            <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Sample size (total: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Count&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># Reduce xtick density</span>
+        <span class="n">nlabs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">((</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">())</span>
+        <span class="n">mid</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">nlabs</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span> <span class="k">else</span> <span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">nlabs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="n">label</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Common axes</span>
+    <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="mi">15</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="mi">15</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="mi">15</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 </pre></div>
 

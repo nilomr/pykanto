@@ -1,7 +1,7 @@
-pykanto.utils.write
-===================
+pykanto.utils.io
+================
 
-.. automodule:: pykanto.utils.write
+.. automodule:: pykanto.utils.io
 
    
    
@@ -14,9 +14,12 @@ pykanto.utils.write
    .. autosummary::
    
       copy_xml_files
+      load_dataset
       make_tarfile
       makedir
+      read_json
       save_json
+      save_to_jsons
    
    
 

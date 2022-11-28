@@ -4,14 +4,14 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# File segmentation"
+    "# Raw file segmentation"
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "'File segmentation' here refers to the extraction of segments of audio data of interest from raw recordings, along with any relevant metadata. Pykanto is agnostic as to how you found those segments (see 'tip' box below for some suggestions). For this guide I have used a friendly application called [sonic visualiser](https://www.sonicvisualiser.org/) to manually draw boxes around individual regions of interest, with time and frequency information stored in `.xml` files. To read these, I provide `pykanto` with a custom parser, called `parse_sonic_visualiser_xml`. You can write your own to work with your format of choice - it just needs to return a {py:class}`pykanto.utils.types.SegmentAnnotation` object."
+    "'File segmentation' here refers to the extraction of segments of audio data of interest from raw recordings, along with any relevant metadata. Pykanto is agnostic as to how you found those segments (see 'tip' box below for some suggestions). For this guide I have used a friendly application called [sonic visualiser](https://www.sonicvisualiser.org/) to manually draw boxes around individual regions of interest, with time and frequency information stored in `.xml` files. To read these, I provide `pykanto` with a custom parser, called `parse_sonic_visualiser_xml`. If you have annotation files that are formatted differently, you can either transform them into the format used here, or write your own parser - it just needs to return a {py:class}`pykanto.utils.types.SegmentAnnotation` object."
    ]
   },
   {
@@ -60,7 +60,7 @@
     "from pykanto.utils.paths import (get_file_paths, get_wavs_w_annotation,\n",
     "                                 pykanto_data)\n",
     "from pykanto.utils.types import Annotation\n",
-    "from pykanto.utils.write import makedir"
+    "from pykanto.utils.io import makedir"
    ]
   },
   {

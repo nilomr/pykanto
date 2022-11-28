@@ -122,13 +122,18 @@
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/segmenting-files.html">
-   File segmentation
+  <a class="reference internal" href="../contents/kantodata-dataset.html">
+   The KantoData class
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/kantodata-dataset.html">
-   The KantoData class
+  <a class="reference internal" href="../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -206,8 +211,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -216,13 +221,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -248,13 +253,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -282,16 +287,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -466,8 +461,8 @@ title="Print to PDF"
 <tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.spectrogram.flatten_spectrograms" title="pykanto.signal.spectrogram.flatten_spectrograms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_spectrograms</span></code></a>(windows)</p></td>
 <td><p>Return a numba typed list containing the 2d array collapsed into one dimension.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.spectrogram.get_indv_units" title="pykanto.signal.spectrogram.get_indv_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_indv_units</span></code></a>(dataset, keys, individual[, ...])</p></td>
-<td><p>Returns a spectrogram representations of the units or the average of the units present in the vocalisations of an individual in the dataset.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.spectrogram.get_indv_units" title="pykanto.signal.spectrogram.get_indv_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_indv_units</span></code></a>(dataset, keys, ID[, pad, ...])</p></td>
+<td><p>Returns a spectrogram representations of the units or the average of the units present in the vocalisations of an ID in the dataset.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.spectrogram.get_indv_units_parallel" title="pykanto.signal.spectrogram.get_indv_units_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_indv_units_parallel</span></code></a>(dataset[, pad, ...])</p></td>
 <td><p>Parallel implementation of <a class="reference internal" href="#pykanto.signal.spectrogram.get_indv_units" title="pykanto.signal.spectrogram.get_indv_units"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_indv_units()</span></code></a>.</p></td>
@@ -650,16 +645,16 @@ key and a list of unit spectrograms, without padding.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.signal.spectrogram.get_indv_units">
-<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">get_indv_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#get_indv_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.get_indv_units" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.spectrogram.</span></span><span class="sig-name descname"><span class="pre">get_indv_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/spectrogram.html#get_indv_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.spectrogram.get_indv_units" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns a spectrogram representations of the units or the average of
-the units present in the vocalisations of an individual in the dataset.
+the units present in the vocalisations of an ID in the dataset.
 Saves the data as pickled dictionary, returns its location.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dataset</strong> (<a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><em>KantoData</em></a>) – Source dataset</p></li>
-<li><p><strong>keys</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of keys belonging to an individual</p></li>
-<li><p><strong>individual</strong> (<em>str</em>) – Individual ID</p></li>
+<li><p><strong>keys</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of keys belonging to an ID</p></li>
+<li><p><strong>ID</strong> (<em>str</em>) – ID ID</p></li>
 <li><p><strong>pad</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to pad spectrograms to the maximum lenght.
 Defaults to True.</p></li>
 <li><p><strong>song_level</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the average of all units.
@@ -667,7 +662,7 @@ Defaults to False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Individual and location of its pickled dictionary.</p>
+<dd class="field-even"><p>ID and location of its pickled dictionary.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Dict[str, Path]</p>

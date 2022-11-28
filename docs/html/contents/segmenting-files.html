@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>File segmentation &#8212; pykanto 0.1 documentation</title>
+    <title>Raw file segmentation &#8212; pykanto 0.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -42,13 +42,13 @@
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script type="application/vnd.jupyter.widget-state+json">{"state": {"8c72654353bf43739bbf34457d9fe9c0": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "7149382ca6464c07b8aa6ad757e1124d": {"model_name": "ProgressStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "25e958f2777e46c3825272a0f15de6e9": {"model_name": "FloatProgressModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_tooltip": null, "layout": "IPY_MODEL_8c72654353bf43739bbf34457d9fe9c0", "max": 1.0, "min": 0.0, "orientation": "horizontal", "style": "IPY_MODEL_7149382ca6464c07b8aa6ad757e1124d", "value": 1.0}}, "acf49915e9dd40cdb8897efd6362162a": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "f4a9253cb77e4c2880238bbfc02a08a4": {"model_name": "DescriptionStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "DescriptionStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": ""}}, "48616cacae65430590060ad46e0a0295": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HTMLView", "description": "", "description_tooltip": null, "layout": "IPY_MODEL_acf49915e9dd40cdb8897efd6362162a", "placeholder": "\u200b", "style": "IPY_MODEL_f4a9253cb77e4c2880238bbfc02a08a4", "value": "Finding and saving audio segments and their metadata: 100%"}}, "737c36541edc4754b2d3b7ec8ba7c9b8": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "8ba92bb53b844b4287bab96552a92dd9": {"model_name": "DescriptionStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "DescriptionStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": ""}}, "190f352202874b7592eb60af83371a53": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HTMLView", "description": "", "description_tooltip": null, "layout": "IPY_MODEL_737c36541edc4754b2d3b7ec8ba7c9b8", "placeholder": "\u200b", "style": "IPY_MODEL_8ba92bb53b844b4287bab96552a92dd9", "value": " 1/1 [00:00&lt;00:00,  2.33it/s]"}}, "8886852ce1ac49cc83fe943ff7be81c7": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "b5bf85dc4cf64586936be7ebae5b835b": {"model_name": "HBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_48616cacae65430590060ad46e0a0295", "IPY_MODEL_25e958f2777e46c3825272a0f15de6e9", "IPY_MODEL_190f352202874b7592eb60af83371a53"], "layout": "IPY_MODEL_8886852ce1ac49cc83fe943ff7be81c7"}}}, "version_major": 2, "version_minor": 0}</script>
+    <script type="application/vnd.jupyter.widget-state+json">{"state": {"a308d2cfa1ce4e0299313e9c617a821c": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "5bd4c69f3c3a461187a90f5a437c072e": {"model_name": "ProgressStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "ProgressStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "bar_color": null, "description_width": ""}}, "d338c59a1b7b4703881c8752e9652366": {"model_name": "FloatProgressModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "FloatProgressModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "ProgressView", "bar_style": "success", "description": "", "description_tooltip": null, "layout": "IPY_MODEL_a308d2cfa1ce4e0299313e9c617a821c", "max": 1.0, "min": 0.0, "orientation": "horizontal", "style": "IPY_MODEL_5bd4c69f3c3a461187a90f5a437c072e", "value": 1.0}}, "c519b965b78d46fab276c9d272412b1d": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "13f1999e09a94811a0b5aeee83c48b91": {"model_name": "DescriptionStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "DescriptionStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": ""}}, "9e65af0451b94567b91adaec56e7ddba": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HTMLView", "description": "", "description_tooltip": null, "layout": "IPY_MODEL_c519b965b78d46fab276c9d272412b1d", "placeholder": "\u200b", "style": "IPY_MODEL_13f1999e09a94811a0b5aeee83c48b91", "value": "Finding and saving audio segments and their metadata: 100%"}}, "69c1d14760f94ee8970b5e0511db6999": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "e4ad1c9106b1413caba7c7d0575c0650": {"model_name": "DescriptionStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "DescriptionStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "StyleView", "description_width": ""}}, "ca0e409e5e23405e95fc1c8fb7425005": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HTMLView", "description": "", "description_tooltip": null, "layout": "IPY_MODEL_69c1d14760f94ee8970b5e0511db6999", "placeholder": "\u200b", "style": "IPY_MODEL_e4ad1c9106b1413caba7c7d0575c0650", "value": " 1/1 [00:00&lt;00:00,  1.19it/s]"}}, "f04e4a1a63684cdf981e0f8d979f420b": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "1.2.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "1.2.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "1.2.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "overflow_x": null, "overflow_y": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "c2fdcdfd0a604260b60b0a5cd4d8b731": {"model_name": "HBoxModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "1.5.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "1.5.0", "_model_name": "HBoxModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "1.5.0", "_view_name": "HBoxView", "box_style": "", "children": ["IPY_MODEL_9e65af0451b94567b91adaec56e7ddba", "IPY_MODEL_d338c59a1b7b4703881c8752e9652366", "IPY_MODEL_ca0e409e5e23405e95fc1c8fb7425005"], "layout": "IPY_MODEL_f04e4a1a63684cdf981e0f8d979f420b"}}}, "version_major": 2, "version_minor": 0}</script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script crossorigin="anonymous" data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/" src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="The KantoData class" href="kantodata-dataset.html" />
-    <link rel="prev" title="Setting up a project" href="project-setup.html" />
+    <link rel="next" title="Interactive app" href="interactive-app.html" />
+    <link rel="prev" title="The KantoData class" href="kantodata-dataset.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -124,14 +124,19 @@
    Setting up a project
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   File segmentation
-  </a>
- </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kantodata-dataset.html">
    The KantoData class
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="interactive-app.html">
+   Interactive app
   </a>
  </li>
  <li class="toctree-l1">
@@ -209,8 +214,8 @@
   </a>
  </li>
  <li class="toctree-l1 has-children">
-  <a class="reference internal" href="../_autosummary/pykanto.labelapp.html">
-   pykanto.labelapp
+  <a class="reference internal" href="../_autosummary/pykanto.app.html">
+   pykanto.app
   </a>
   <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
@@ -219,13 +224,13 @@
   </label>
   <ul>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.labelapp.data.html">
-     pykanto.labelapp.data
+    <a class="reference internal" href="../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.labelapp.main.html">
-     pykanto.labelapp.main
+    <a class="reference internal" href="../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
     </a>
    </li>
   </ul>
@@ -251,13 +256,13 @@
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.paths.html">
-     pykanto.utils.paths
+    <a class="reference internal" href="../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
     </a>
    </li>
    <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.read.html">
-     pykanto.utils.read
+    <a class="reference internal" href="../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
     </a>
    </li>
    <li class="toctree-l2 has-children">
@@ -285,16 +290,6 @@
    <li class="toctree-l2">
     <a class="reference internal" href="../_autosummary/pykanto.utils.types.html">
      pykanto.utils.types
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.write.html">
-     pykanto.utils.write
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="../_autosummary/pykanto.utils.xenocanto.html">
-     pykanto.utils.xenocanto
     </a>
    </li>
   </ul>
@@ -459,7 +454,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>File segmentation</h1>
+                <h1>Raw file segmentation</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -484,9 +479,9 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="file-segmentation">
-<h1>File segmentation<a class="headerlink" href="#file-segmentation" title="Permalink to this headline">#</a></h1>
-<p>‘File segmentation’ here refers to the extraction of segments of audio data of interest from raw recordings, along with any relevant metadata. Pykanto is agnostic as to how you found those segments (see ‘tip’ box below for some suggestions). For this guide I have used a friendly application called <a class="reference external" href="https://www.sonicvisualiser.org/">sonic visualiser</a> to manually draw boxes around individual regions of interest, with time and frequency information stored in <code class="docutils literal notranslate"><span class="pre">.xml</span></code> files. To read these, I provide <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> with a custom parser, called <code class="docutils literal notranslate"><span class="pre">parse_sonic_visualiser_xml</span></code>. You can write your own to work with your format of choice - it just needs to return a <a class="reference internal" href="../_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation" title="pykanto.utils.types.SegmentAnnotation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykanto.utils.types.SegmentAnnotation</span></code></a> object.</p>
+  <section id="raw-file-segmentation">
+<h1>Raw file segmentation<a class="headerlink" href="#raw-file-segmentation" title="Permalink to this headline">#</a></h1>
+<p>‘File segmentation’ here refers to the extraction of segments of audio data of interest from raw recordings, along with any relevant metadata. Pykanto is agnostic as to how you found those segments (see ‘tip’ box below for some suggestions). For this guide I have used a friendly application called <a class="reference external" href="https://www.sonicvisualiser.org/">sonic visualiser</a> to manually draw boxes around individual regions of interest, with time and frequency information stored in <code class="docutils literal notranslate"><span class="pre">.xml</span></code> files. To read these, I provide <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> with a custom parser, called <code class="docutils literal notranslate"><span class="pre">parse_sonic_visualiser_xml</span></code>. If you have annotation files that are formatted differently, you can either transform them into the format used here, or write your own parser - it just needs to return a <a class="reference internal" href="../_autosummary/pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation" title="pykanto.utils.types.SegmentAnnotation"><code class="xref py py-class docutils literal notranslate"><span class="pre">pykanto.utils.types.SegmentAnnotation</span></code></a> object.</p>
 <section id="segmenting-files-with-custom-metadata-fields">
 <h2>Segmenting files with custom metadata fields<a class="headerlink" href="#segmenting-files-with-custom-metadata-fields" title="Permalink to this headline">#</a></h2>
 <p>Let’s say you are using
@@ -507,7 +502,7 @@ and (2) the date and time time of an audio segment.</p>
 <span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_file_paths</span><span class="p">,</span> <span class="n">get_wavs_w_annotation</span><span class="p">,</span>
                                  <span class="n">pykanto_data</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.types</span> <span class="kn">import</span> <span class="n">Annotation</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.write</span> <span class="kn">import</span> <span class="n">makedir</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">makedir</span>
 </pre></div>
 </div>
 </div>
@@ -527,7 +522,7 @@ and (2) the date and time time of an audio segment.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;WAVE({
-    &#39;filepath&#39;: &#39;/home/nilomr/miniconda3/envs/pykanto-dev/lib/python3.8/site-packages/pykanto/data/raw/AM/20210502_040000.WAV&#39;,
+    &#39;filepath&#39;: &#39;/home/nilomr/projects/pykanto/pykanto/data/raw/AM/20210502_040000.WAV&#39;,
     &#39;filesize&#39;: &#39;92.23 KiB&#39;,
     &#39;pictures&#39;: [],
     &#39;streaminfo&#39;: &lt;WAVEStreamInfo({
@@ -623,7 +618,7 @@ metadata will contain your custom fields.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "b5bf85dc4cf64586936be7ebae5b835b"}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "c2fdcdfd0a604260b60b0a5cd4d8b731"}</script></div>
 </div>
 <p><strong>Note:</strong> if you want to run this in paralell with ray (as in
 <code class="docutils literal notranslate"><span class="pre">segment_files_parallel</span></code>) monkey-patching will not work: for now, you will have
@@ -639,17 +634,17 @@ to properly extend <code class="docutils literal notranslate"><span class="pre">
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="project-setup.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="kantodata-dataset.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Setting up a project</p>
+            <p class="prev-next-title">The KantoData class</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="kantodata-dataset.html" title="next page">
+    <a class='right-next' id="next-link" href="interactive-app.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">The KantoData class</p>
+        <p class="prev-next-title">Interactive app</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
