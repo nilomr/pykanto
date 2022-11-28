@@ -20,7 +20,7 @@
 # from pykanto.utils.compute import flatten_list
 # from pykanto.utils.custom import parse_sonic_visualiser_xml
 # from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
-# from pykanto.utils.read import load_dataset
+# from pykanto.utils.io import load_dataset
 
 # # ──── SETTINGS ─────────────────────────────────────────────────────────────────
 

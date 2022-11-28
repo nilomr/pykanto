@@ -23,7 +23,7 @@
 #     parse_sonic_visualiser_xml,
 # )
 # from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
-# from pykanto.utils.read import load_dataset, read_json
+# from pykanto.utils.io import load_dataset, read_json
 
 # # ──── SETTINGS ────────────────────────────────────────────────────────────────
 
@@ -187,7 +187,7 @@
 #         top_dB=65,
 #         highcut=10000,
 #         dereverb=True,
-#         song_level=True,
+#         song_level=False,
 #     )
 #     dataset = KantoData(
 #         DIRS,
@@ -200,6 +200,7 @@
 #     dataset = load_dataset(out_dir, DIRS)
 #     dataset.segment_into_units()
 
+#     dataset.parameters.update(song_level=False)
 #     dataset.get_units()
 #     dataset.reload()
 #     dataset.cluster_ids(min_sample=5)
