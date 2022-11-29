@@ -717,6 +717,17 @@ def onsets_offsets(signal: np.ndarray) -> np.ndarray:
 def segment_song_into_units(
     dataset: KantoData, key: str
 ) -> Tuple[str, np.ndarray, np.ndarray] | None:
+    """
+    Find amplitude-differentiable units in a given vocalisation after applying a
+    series of morphological transformations to reduce noise.
+
+    Args:
+        dataset (KantoData): Datset to use.
+        key (str): _description_
+
+    Returns:
+        Tuple[str, np.ndarray, np.ndarray] | None: _description_
+    """
 
     mel_spectrogram = retrieve_spectrogram(dataset.files.at[key, "spectrogram"])
 

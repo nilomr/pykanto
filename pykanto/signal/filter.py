@@ -28,6 +28,24 @@ def dereverberate(
     hop_length: int = 128,
     sr: int = 22050,
 ) -> np.ndarray:
+    """
+    Reduce echo in a spectrogram by subtracting a delayed version of itself.
+    Based in JS code from
+    `Robert Lachlan <https://rflachlan.github.io/Luscinia/>`_.
+
+    Args:
+        spectrogram (np.ndarray): Data to dereverberate.
+        echo_range (int, optional): How many frames to dereverb.
+            Defaults to 100.
+        echo_reduction (float, optional): How much reduction to perform.
+            Defaults to 0.5.
+        hop_length (int, optional): Hop length used to create the spectrogram.
+            Defaults to 128.
+        sr (int, optional): Sampling ratio. Defaults to 22050.
+
+    Returns:
+        np.ndarray: De-echoed spectrogram.
+    """
 
     hop_length_ms = int(hop_length / sr * 1000)
     echo_range = int(echo_range / hop_length_ms)

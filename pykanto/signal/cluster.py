@@ -263,7 +263,7 @@ def reduce_and_cluster_parallel(
     # Distribute with ray
     @ray.remote(
         num_cpus=num_cpus, num_gpus=1 / psutil.cpu_count() if _has_cuml else 0
-    )
+    )  # type: ignore
     def _reduce_and_cluster_r(
         dataset: KantoData,
         IDS: List[str],
