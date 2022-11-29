@@ -28,7 +28,19 @@ def get_peak_freqs(
     spectrograms: np.ndarray,
     melscale: bool = True,
     threshold: float = 0.3,
-):
+) -> np.ndarray:
+    """
+    Return the peak frequencies of each spectrogram in an array of spectrograms.
+
+    Args:
+        dataset (KantoData): Vocalisation dataset.
+        spectrograms (np.ndarray): Array of np.ndarray spectrograms.
+        melscale (bool, optional): Are the spectrograms in the mel scale? Defaults to True.
+        threshold (float, optional): Threshold for peak detection. Defaults to 0.3.
+
+    Returns:
+        np.ndarray: Array with peak frequencies.
+    """
 
     minfreq = dataset.parameters.lowcut
     min_db = -dataset.parameters.top_dB
