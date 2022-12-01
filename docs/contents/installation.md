@@ -18,7 +18,8 @@ Virtual environments create a clean Python environment that does not interfere w
 
 --[ scikit-image docs](https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst)
 
-I highly recommend that you create a new environment, for example with conda: 
+I highly recommend that you create a new environment, for example with conda:
+
 ```bash
 conda create -n pykanto-env python==3.8
 conda activate pykanto-env      

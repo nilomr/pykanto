@@ -1,6 +1,9 @@
 
-# Setting up a project
+# ML Model training
 
+
+`pykanto` can be used to filter and prepare data to train classifiers.
+There is a complete example in the [preprint presenting `pykanto`](LINK) that walks you through the steps of training a 'deep learning' model to distinguish between different birds based on their songs.
 
 ## Working with paths and directories
 
