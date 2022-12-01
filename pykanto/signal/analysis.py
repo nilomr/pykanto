@@ -134,7 +134,7 @@ def approximate_minmax_frequency(
     dataset: KantoData,
     key: None | str = None,
     spec: None | np.ndarray = None,
-    roll_percents: list[float, float] = [0.95, 0.1],
+    roll_percents: list[float] = [0.95, 0.1],
     plot: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
