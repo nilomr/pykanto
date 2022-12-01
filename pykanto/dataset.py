@@ -382,6 +382,8 @@ class KantoData:
             ...     dataset.plot(spec)
 
         """
+        title = kwargs.pop("title") if "title" in kwargs else Path(key).stem
+
         if segmented:
             if "onsets" not in self.data.columns:
                 raise KeyError(
@@ -389,12 +391,13 @@ class KantoData:
                     "run `.segment_into_units()` or provided unit "
                     "segmentation information."
                 )
-            kplot.segmentation(self, key, **kwargs)
+            else:
+                kplot.segmentation(self, key, title=title, **kwargs)
         else:
             kplot.melspectrogram(
                 self.files.at[key, "spectrogram"],
                 parameters=self.parameters,
-                title=Path(key).stem,
+                title=title,
                 **kwargs,
             )
 

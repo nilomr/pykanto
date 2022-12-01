@@ -195,9 +195,9 @@ def segmentation(
             dataset.data.at[key, i] for i in ["onsets", "offsets"]
         ]
 
-    ax = melspectrogram(
-        spectrogram, parameters=params, title=key if key else "", **kwargs
-    )
+    title = kwargs.pop("title") if "title" in kwargs else (key if key else "")
+
+    ax = melspectrogram(spectrogram, parameters=params, title=title, **kwargs)
 
     # Add unit onsets and offsets
     ylmin, ylmax = ax.get_ylim()
