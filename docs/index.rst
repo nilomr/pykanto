@@ -12,14 +12,15 @@ Documentation
    :maxdepth: 1
    
    contents/installation
-   contents/basic-workflow
    contents/project-setup
-   contents/kantodata-dataset
+   contents/basic-workflow
    contents/segmenting-files
+   contents/segmentation
+   contents/kantodata-dataset
    contents/interactive-app
    contents/hpc
-   contents/segmentation
-   contents/analysis
+   contents/feature-extraction
+   contents/deep-learning
    contents/FAQs
 
 
