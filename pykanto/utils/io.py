@@ -7,30 +7,24 @@ Functions to read external files -e.g. JSON- efficiently.
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
 from __future__ import annotations
 
-import pickle
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List
-
-import numpy as np
-import ray
-import ujson
-
-if TYPE_CHECKING:
-    from pykanto.dataset import KantoData
-    from pykanto.utils.paths import ProjDirs
-
 import json
 import os
 import os.path
+import pickle
 import shutil
 import sys
 import tarfile
 import uuid
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING, Any, Dict, ItemsView, List
+from matplotlib import cm
 
 import numpy as np
+import ray
 import ujson
+from PIL import Image
+from tqdm import tqdm
+
 from pykanto.utils.compute import (
     calc_chunks,
     flatten_list,
@@ -39,12 +33,11 @@ from pykanto.utils.compute import (
     to_iterator,
     with_pbar,
 )
-from tqdm import tqdm
 
 if TYPE_CHECKING:
     from pykanto.dataset import KantoData
+    from pykanto.utils.paths import ProjDirs
 
-from pykanto.utils.compute import with_pbar
 
 # ─── FUNCTIONS ────────────────────────────────────────────────────────────────
 
@@ -307,7 +300,7 @@ def save_to_jsons(dataset: KantoData) -> None:
 class NumpyEncoder(json.JSONEncoder):
     """
     Stores a numpy.ndarray or any nested-list composition as JSON.
-    Source: karlB on `Stack Overflow <https://stackoverflow.com/a/47626762>`_.
+    Source: `karlB on Stack Overflow <https://stackoverflow.com/a/47626762>`_.
 
     Extends the json.JSONEncoder class.
     """
@@ -321,8 +314,7 @@ class NumpyEncoder(json.JSONEncoder):
 def make_tarfile(source_dir: Path, output_filename: Path) -> None:
     """
     Makes a tarfile from a given directory.
-    Source: George V. Reilly on
-    `stack overflow <https://stackoverflow.com/a/17081026>`_.
+    Source: ` George V. Reilly on stack overflow <https://stackoverflow.com/a/17081026>`_.
 
     Args:
         source_dir (Path): Directory to tar
@@ -330,3 +322,68 @@ def make_tarfile(source_dir: Path, output_filename: Path) -> None:
     """
     with tarfile.open(output_filename, "w:gz") as tar:
         tar.add(source_dir, arcname=os.path.basename(source_dir))
+
+
+def get_unit_spectrograms(dataset: KantoData, ID: str) -> Dict[str, np.ndarray]:
+    """
+    Retrieves unit (e.g. individual notes) spectrograms for a grouping ID in a
+        dataset.
+
+    Args:
+        dataset (KantoData): Dataset to use.
+        ID (str): Which id to use (present in an ID column in the dataset)
+
+    Returns:
+        Dict[str, np.ndarray]: A dictionary of spectrograms, keyed by
+            vocalisation index.
+    Example:
+        >>> units = get_unit_spectrograms(dataset, "BIGBIRD")
+        >>> last_note = units["BIGBIRD_0"][-1]
+    """
+    units = pickle.load(
+        open(
+            dataset.files.query("ID==@ID")[
+                "average_units" if dataset.parameters.song_level else "units"
+            ][0],
+            "rb",
+        )
+    )
+    return units
+
+
+def save_songs(folder: Path, specs: List[Path]) -> None:
+    """
+    Save song spectrograms as .jpg images to folder.
+
+    Args:
+        folder (Path): Path to destination folder.
+        specs (List[Path]): List of spectrogram paths.
+    """
+    folder.mkdir(parents=True, exist_ok=True)
+    for spec in specs:
+        img = np.load(spec)
+        img *= 255.0 / (img + img.min()).max()
+        img = np.invert(np.flipud(np.floor(img).astype(int))) + 256
+        img = Image.fromarray(np.uint8(cm.magma(img) * 255)).convert("RGB")
+        img.save(folder / f"{spec.stem}.jpg")
+
+
+def save_subset(
+    train_dir: Path,
+    test_dir: Path,
+    dname: str,
+    to_export: ItemsView[str, List[Path]],
+) -> None:
+    """
+    Save train and test subsets of dataset to disk as .jpg images (in folders
+    correspoding to class labels).
+
+    Args:
+        train_dir (Path): Destination folder for training data.
+        test_dir (Path): Destination folder for test data.
+        dname (str): Name of subset, one of "train" or "test".
+        to_export (ItemsView[str, List[Path]]): Subset of dataset to export.
+    """
+    for song_class, specs in with_pbar(to_export, total=len(to_export)):
+        folder = (train_dir if dname == "train" else test_dir) / song_class
+        save_songs(folder, specs)
