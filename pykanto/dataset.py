@@ -716,10 +716,14 @@ class KantoData:
                 pass
             else:
                 raise e
+        colname = "average_units" if song_level else "units"
         au = pd.DataFrame(
             pd.Series(dic_locs),
-            columns=["average_units" if song_level else "units"],
+            columns=[colname],
         )
+        if colname in self.files.columns:
+            self.files.drop(columns=colname, inplace=True)
+
         self.files = pd.merge(self.files, au, right_index=True, left_on="ID")
         self.save_to_disk(verbose=self.parameters.verbose)
 
