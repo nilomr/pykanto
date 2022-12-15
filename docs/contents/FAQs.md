@@ -14,3 +14,6 @@ out of RAM. Try using fewer cpus when running in parallel. You can do this by,
 for example, setting `parameters.num_cpus` to a number lower than your available
 CPUS. Example: If your KantoData object is called dataset, then run `dataset.parameters.update(num_cpus=1)`
 
+- Dependencies:
+  
+`hdbscan` requires `gcc` to be installed. If you get an error when installing `hdbscan`, then you might need to install `gcc` first, e.g. by running `sudo apt-get install gcc`.
