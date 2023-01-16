@@ -222,6 +222,76 @@ main.bd-content #main-content a, main.bd-content #main-content a:visited, main.b
 
 /* code boxes, warnings and notes */
 
+/* show/hide code boxes */
+
+
+div.cell details.hide>summary>span {
+    color: #969696;
+    opacity: 100%;
+}
+
+div.cell details.above-input>summary,
+div.cell details.above-output>summary {
+    /* align to right */
+    text-align: right;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 0px var(--mystnb-source-border-color) dashed;
+    padding-left: 1em;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: .5em;
+    border: 0px var(--mystnb-source-border-color) solid;
+    background-color: #f7f7f7;
+    border-radius: 0.4rem;
+}
+
+
+div.cell details.hide>summary::marker {
+    /* place after text */
+    opacity: 10%;
+    color: #969696;
+    text-align: end !important;
+    text-align-last: end !important;
+}
+
+::marker {
+    unicode-bidi: isolate;
+    font-variant-numeric: tabular-nums;
+    text-transform: none;
+    text-indent: 0px !important;
+    text-align: right !important;
+    text-align-last: right !important;
+}
+
+/* output cell formatting */
+
+
+.cell_output.docutils.container {
+    border-top: 3px solid #f7f7f700;
+}
+
+div.cell div.cell_output pre {
+
+    border-radius: 0.4em;
+    border: none;
+}
+
+div.cell div.cell_output:before {
+    content: "Output";
+    text-align: right;
+    font-size: 0.8em;
+    background-color: #f7f7f7;
+    color: darkgrey;
+    position: relative;
+    bottom: -20px;
+    z-index: 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 0.3em 0.4em;
+    border-radius: 0.4em;
+    border: none;
+}
 
 .admonition, div.admonition {
     margin: 1.5625em auto;
@@ -370,7 +440,7 @@ main.bd-content #main-content dl.module .viewcode-link, main.bd-content #main-co
     padding-top: 2px;
 }
 
-.viewcode-link{
+.viewcode-link {
     display: inline-block;
     color: #78adcc;
     font-size: 80%;
@@ -379,18 +449,21 @@ main.bd-content #main-content dl.module .viewcode-link, main.bd-content #main-co
 }
 
 
-dl.py.method{
+dl.py.method {
     padding-top: 1em;
     padding-bottom: 1em;
     border-top: 1px solid #d3d3d3;
 }
 
-dt  {line-height: 1.1em;
+dt {
+    line-height: 1.1em;
 
 }
 
-nav.bd-links p.caption {color: #444444;
-border-bottom: 1px solid #d3d3d3;}
+nav.bd-links p.caption {
+    color: #444444;
+    border-bottom: 1px solid #d3d3d3;
+}
 
 
 
