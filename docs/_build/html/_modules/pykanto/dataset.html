@@ -1,0 +1,1352 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pykanto.dataset &#8212; pykanto 0.1 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.1ae1adf31bcec4f5a66e594d147bbc00e33ac08d67b8f5697420a1436a24298a.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/pykanto-logo-grey-04.svg" class="logo" alt="logo">
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  User guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/installation.html">
+   Installing
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pykanto
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/project-setup.html">
+   Setting up a project
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/basic-workflow.html">
+   Basic workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/segmentation.html">
+   Vocalisation segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/kantodata-dataset.html">
+   KantoData datasets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/interactive-app.html">
+   Interactive app
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/hpc.html">
+   High Performance Computing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/feature-extraction.html">
+   Acoustic feature extraction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/deep-learning.html">
+   ML Model training
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contents/FAQs.html">
+   FAQs &amp; known issues
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  API reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../_autosummary/pykanto.signal.html">
+   pykanto.signal
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.analysis.html">
+     pykanto.signal.analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.cluster.html">
+     pykanto.signal.cluster
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.filter.html">
+     pykanto.signal.filter
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.segment.html">
+     pykanto.signal.segment
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.signal.spectrogram.html">
+     pykanto.signal.spectrogram
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../_autosummary/pykanto.parameters.html">
+   pykanto.parameters
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../_autosummary/pykanto.dataset.html">
+   pykanto.dataset
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../_autosummary/pykanto.app.html">
+   pykanto.app
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.app.data.html">
+     pykanto.app.data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.app.main.html">
+     pykanto.app.main
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../_autosummary/pykanto.utils.html">
+   pykanto.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.compute.html">
+     pykanto.utils.compute
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.custom.html">
+     pykanto.utils.custom
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.io.html">
+     pykanto.utils.io
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.paths.html">
+     pykanto.utils.paths
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.slurm.html">
+     pykanto.utils.slurm
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../_autosummary/pykanto.utils.slurm.launch.html">
+       pykanto.utils.slurm.launch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="../../_autosummary/pykanto.utils.slurm.tester.html">
+       pykanto.utils.slurm.tester
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../_autosummary/pykanto.utils.types.html">
+     pykanto.utils.types
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../_autosummary/pykanto.plot.html">
+   pykanto.plot
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/nilomr/pykanto"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <h1>Source code for pykanto.dataset</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Build the main dataset class and its methods to visualise, segment and label </span>
+<span class="sd">animal vocalisations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># ─── LIBRARIES ────────────────────────────────────────────────────────────────</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.spawn</span> <span class="kn">import</span> <span class="n">prepare</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">sample</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">bokeh.palettes</span> <span class="kn">import</span> <span class="n">Set3_12</span>
+
+<span class="kn">import</span> <span class="nn">pykanto.plot</span> <span class="k">as</span> <span class="nn">kplot</span>
+<span class="kn">from</span> <span class="nn">pykanto.app.data</span> <span class="kn">import</span> <span class="n">prepare_datasource_parallel</span>
+<span class="kn">from</span> <span class="nn">pykanto.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.cluster</span> <span class="kn">import</span> <span class="n">reduce_and_cluster_parallel</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.segment</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">drop_zero_len_units</span><span class="p">,</span>
+    <span class="n">segment_song_into_units_parallel</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.signal.spectrogram</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_save_melspectrogram_parallel</span><span class="p">,</span>
+    <span class="n">get_indv_units_parallel</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.compute</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">dictlist_to_dict</span><span class="p">,</span>
+    <span class="n">flatten_list</span><span class="p">,</span>
+    <span class="n">print_dict</span><span class="p">,</span>
+    <span class="n">timing</span><span class="p">,</span>
+    <span class="n">to_iterator</span><span class="p">,</span>
+    <span class="n">with_pbar</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">_get_json</span><span class="p">,</span> <span class="n">_get_json_parallel</span><span class="p">,</span> <span class="n">makedir</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span><span class="p">,</span> <span class="n">get_file_paths</span><span class="p">,</span> <span class="n">get_wavs_w_annotation</span>
+
+<span class="c1"># ─── CLASSES ──────────────────────────────────────────────────────────────────</span>
+
+
+<div class="viewcode-block" id="KantoData"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData">[docs]</a><span class="k">class</span> <span class="nc">KantoData</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main dataset class. See `__init__` docstring.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        DIRS (:class:`~pykanto.utils.paths.ProjDirs`):</span>
+<span class="sd">        data: Placeholder</span>
+<span class="sd">        parameters (:class:`~pykanto.parameters.Parameters`)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO@nilomr #10 Refactor private methods in KantoData class</span>
+<div class="viewcode-block" id="KantoData.__init__"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">DIRS</span><span class="p">:</span> <span class="n">ProjDirs</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">random_subset</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">overwrite_dataset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">overwrite_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instantiates the main dataset class.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            If your dataset contains noise samples (useful when training a</span>
+<span class="sd">            neural network), these should be labelled as &#39;NOISE&#39; in the</span>
+<span class="sd">            corresponding json file.</span>
+<span class="sd">            i.e., `json_file[&quot;label&quot;] == &#39;NOISE&#39;`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            DIRS (ProjDirs): Project directory structure. Must contain</span>
+<span class="sd">                a &#39;SEGMENTED&#39; attribute pointing to a directory that contains</span>
+<span class="sd">                the segmented data organised in two folders: &#39;WAV&#39; and</span>
+<span class="sd">                &#39;JSON&#39; for audio and metadata, respectively.</span>
+<span class="sd">            parameters (Parameters, optional): Parameters for dataset.</span>
+<span class="sd">                Defaults to None. See :class:`~pykanto.parameters.Parameters`.</span>
+<span class="sd">            random_subset (None, optional): Size of random subset for</span>
+<span class="sd">                testing. Defaults to None.</span>
+<span class="sd">            overwrite_dataset (bool, optional): Whether to overwrite dataset if</span>
+<span class="sd">                it already exists. Defaults to False.</span>
+<span class="sd">            overwrite_data (bool, optional): Whether to overwrite spectrogram</span>
+<span class="sd">                files if they already exist. Defaults to False.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileExistsError: DATASET_ID already exists. You can overwrite it</span>
+<span class="sd">                by setting `overwrite_dataset=True`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get or set parameters</span>
+        <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;You have not provided parameters for this dataset.&quot;</span>
+                <span class="s2">&quot;Setting default parameters - these will almost certainly be &quot;</span>
+                <span class="s2">&quot;inadequate for your dataset.&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">Parameters</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+
+        <span class="c1"># Get dataset identifier and location</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">DIRS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DATASET_ID</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET_ID</span>
+
+        <span class="c1"># Throw error if dataset already exists</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="n">overwrite_dataset</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="si">}</span><span class="s2"> already exists. You can overwrite &quot;</span>
+                <span class="s2">&quot;it by setting `overwrite_dataset=True`&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Build dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_wav_json_filedirs</span><span class="p">(</span><span class="n">random_subset</span><span class="o">=</span><span class="n">random_subset</span><span class="p">)</span>
+        <span class="c1"># TODO: perform a field check for the json files and provide</span>
+        <span class="c1"># feedback on any missing/wrong fields, or their value types.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_metadata</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_unique_ids</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_df</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_melspectrograms</span><span class="p">(</span>
+            <span class="n">dereverb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">dereverb</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="o">=</span><span class="n">overwrite_data</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Save current state of dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the class object as a string.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Pretty printed dictionary contents</span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; dataset = KantoData(...)</span>
+<span class="sd">            &gt;&gt;&gt; print(dataset)</span>
+<span class="sd">            Items held:</span>
+<span class="sd">            minmax_values: {&#39;max_freq&#39;: 10249} + 3 other entries.</span>
+<span class="sd">            vocalisations: pd.DataFrame with length 20 and columns</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">print_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+    <span class="c1"># ──────────────────────────────────────────────────────────────────────────</span>
+    <span class="c1"># KantoData: Private methods</span>
+
+    <span class="nd">@timing</span>
+    <span class="k">def</span> <span class="nf">_get_wav_json_filedirs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">random_subset</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get paths of wav and json files for this dataset.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            random_subset (int, optional): Get a random subset without</span>
+<span class="sd">                repetition. Defaults to None.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            Will drop any .wav for which there is no .json!</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="p">,</span> <span class="s2">&quot;SEGMENTED&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="s2">&quot;The ProjDirs object you used to initialise &quot;</span>
+                <span class="s2">&quot;this KantoData object does not have a SEGMENTED attribute. &quot;</span>
+                <span class="s2">&quot;Search the docs for KantoData for more information.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># TODO: read both lower and uppercase wav and json extensions.</span>
+        <span class="c1"># Load and check file paths:</span>
+        <span class="n">wav_filepaths</span><span class="p">,</span> <span class="n">json_filepaths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">get_file_paths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="p">,</span> <span class="p">[</span><span class="n">ext</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.wav&quot;</span><span class="p">,</span> <span class="s2">&quot;.JSON&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="n">file_tuples</span> <span class="o">=</span> <span class="n">get_wavs_w_annotation</span><span class="p">(</span><span class="n">wav_filepaths</span><span class="p">,</span> <span class="n">json_filepaths</span><span class="p">)</span>
+
+        <span class="n">nfiles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_tuples</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nfiles</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">wav_filepaths</span><span class="p">):</span>
+            <span class="n">ndrop</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">wav_filepaths</span><span class="p">)</span> <span class="o">-</span> <span class="n">nfiles</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;There is an unequal number of matching .wav and .json &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Keeping only those that match: dropped </span><span class="si">{</span><span class="n">ndrop</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Subset as per parameters if possible</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nfiles</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nfiles</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Cannot subset: there is only one file.&quot;</span><span class="p">)</span>
+                <span class="k">pass</span>
+
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">nfiles</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">nfiles</span>
+            <span class="p">):</span>
+                <span class="n">file_tuples</span> <span class="o">=</span> <span class="n">file_tuples</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="p">]</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                    <span class="s2">&quot;List index out of range: the provided &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;subset&#39; parameter </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">subset</span><span class="si">}</span><span class="s2"> is ouside &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;the range of the dataset (0, </span><span class="si">{</span><span class="n">nfiles</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">random_subset</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">random_subset</span> <span class="o">&gt;</span> <span class="n">nfiles</span><span class="p">:</span>
+                <span class="n">random_subset</span> <span class="o">=</span> <span class="n">nfiles</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;The &#39;random_subset&#39; you specified is larger &quot;</span>
+                    <span class="s2">&quot;than the dataset: setting to the length of the dataset.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">file_tuples</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">file_tuples</span><span class="p">,</span> <span class="n">random_subset</span><span class="p">)</span>
+
+        <span class="c1"># Add paths to self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavfiles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jsonfiles</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">file_tuples</span><span class="p">)</span>
+        <span class="p">]</span>
+
+    <span class="nd">@timing</span>
+    <span class="k">def</span> <span class="nf">_load_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads json metadata in sequence if there are &lt; 100 items, in parallel</span>
+<span class="sd">        chunks of length chunk_len if there are &gt; 1000 items.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">n_jsonfiles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jsonfiles</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_jsonfiles</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="n">jsons</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">_get_json</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">with_pbar</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_jsonfiles</span><span class="p">,</span>
+                    <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading JSON files&quot;</span><span class="p">,</span>
+                    <span class="n">total</span><span class="o">=</span><span class="n">n_jsonfiles</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">jsons</span> <span class="o">=</span> <span class="n">_get_json_parallel</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_jsonfiles</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s2">&quot;wav_file&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">json</span> <span class="k">for</span> <span class="n">json</span> <span class="ow">in</span> <span class="n">jsons</span><span class="p">}</span>
+
+        <span class="c1"># Match wav_file field with actual wav_file location for this dataset</span>
+        <span class="c1"># Partially fixes nilomr/pykanto#12</span>
+        <span class="k">for</span> <span class="n">wavfile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavfiles</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">wavfile</span><span class="o">.</span><span class="n">stem</span><span class="p">][</span><span class="s2">&quot;wav_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_unique_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a &#39;unique_ID&#39; attribute holding an array with unique IDs in the</span>
+<span class="sd">        dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_ID</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates pandas DataFrames from the metadata dictionary and adds them to</span>
+<span class="sd">            the KantoData instance.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            Removes onset/offset pairs which (under current spectrogram</span>
+<span class="sd">            parameter combinations) would result in a unit of length zero.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">file</span>
+
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">e</span> <span class="ow">in</span> <span class="n">file</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]):</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">drop_zero_len_units</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="n">data_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="n">pathcols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;source_wav&quot;</span><span class="p">,</span> <span class="s2">&quot;wav_file&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data_dict</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">pathcols</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+            <span class="n">data_dict</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">pathcols</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Get minimum and maximum frequencies and durations in song dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minmax_values</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;max_freq&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;upper_freq&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;min_freq&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;lower_freq&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;max_duration&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;length_s&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;min_duration&quot;</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;length_s&quot;</span><span class="p">]),</span>
+        <span class="p">}</span>
+
+    <span class="nd">@timing</span>
+    <span class="k">def</span> <span class="nf">_compute_melspectrograms</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute melspectrograms and add their location to the KantoData object.</span>
+<span class="sd">        It applies dereverberation to and bandpasses spectrogram data by</span>
+<span class="sd">        default.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            overwrite_data (bool): Whether to overwrite any spectrogram files</span>
+<span class="sd">            that already exist for this dataset.</span>
+<span class="sd">            **kwargs: Passed to</span>
+<span class="sd">                :func:`~pykanto.signal.spectrogram.save_melspectrogram`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_spec_exists</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>  <span class="c1"># TODO: refactor</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;wav_file&quot;</span><span class="p">]</span>
+            <span class="n">ID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">SPECTROGRAMS</span> <span class="o">/</span> <span class="n">ID</span> <span class="o">/</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s2">&quot;.npy&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="k">return</span> <span class="p">{</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">:</span> <span class="n">path</span><span class="p">}</span>
+
+        <span class="c1"># Check if spectrograms already exist for any keys:</span>
+        <span class="n">existing</span> <span class="o">=</span> <span class="p">[</span><span class="n">_spec_exists</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">existing</span> <span class="o">=</span> <span class="n">dictlist_to_dict</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">existing</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span>
+
+        <span class="c1"># Get new keys (all keys if overwrite_data=True)</span>
+        <span class="k">if</span> <span class="n">overwrite_data</span><span class="p">:</span>
+            <span class="n">new_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing</span><span class="p">]</span>
+
+        <span class="c1"># Compute melspectrograms</span>
+        <span class="n">specs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_save_melspectrogram_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_keys</span>
+            <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="n">specs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="o">**</span><span class="n">specs</span><span class="p">,</span>
+            <span class="o">**</span><span class="p">(</span><span class="n">existing</span> <span class="k">if</span> <span class="p">(</span><span class="n">existing</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_data</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}),</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;spectrogram&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">specs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+    <span class="c1"># ──────────────────────────────────────────────────────────────────────────</span>
+    <span class="c1"># KantoData: Public methods</span>
+
+<div class="viewcode-block" id="KantoData.plot_summary"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.plot_summary">[docs]</a>    <span class="k">def</span> <span class="nf">plot_summary</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">nbins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;frequency&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots a histogram + kernel density estimate of the frequency</span>
+<span class="sd">        distribution of vocalisation duration and frequencies.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Durations and frequencies come from bounding boxes,</span>
+<span class="sd">            not vocalisations. This function, along with</span>
+<span class="sd">            :func:`~pykanto.dataset.show_extreme_songs`, is useful to spot</span>
+<span class="sd">            any outliers, and to quickly explore the full range of data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nbins (int, optional): Number of bins in histogram. Defaults to 50.</span>
+<span class="sd">            variable (str, optional): One of &#39;frequency&#39;, &#39;duration&#39;,</span>
+<span class="sd">                &#39;sample_size&#39;, &#39;all&#39;. Defaults to &#39;frequency&#39;.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: `variable` must be one of</span>
+<span class="sd">                [&#39;frequency&#39;, &#39;duration&#39;, &#39;sample_size&#39;, &#39;all&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">kplot</span><span class="o">.</span><span class="n">build_plot_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.plot"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">segmented</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot an spectrogram from the dataset.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): Key of the spectrogram.</span>
+<span class="sd">            segmented (bool, optional): Whether to overlay onset/offset</span>
+<span class="sd">                information. Defaults to False.</span>
+<span class="sd">            kwargs: passed to :func:`~pykanto.plot.melspectrogram`</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Plot the first 10 specrograms in the vocalisations dataframe:</span>
+<span class="sd">            &gt;&gt;&gt; for spec in dataset.data.index[:10]:</span>
+<span class="sd">            ...     dataset.plot(spec)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;title&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span>
+
+        <span class="k">if</span> <span class="n">segmented</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;onsets&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="s2">&quot;Setting `segmented` to True requires that you have &quot;</span>
+                    <span class="s2">&quot;run `.segment_into_units()` or provided unit &quot;</span>
+                    <span class="s2">&quot;segmentation information.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kplot</span><span class="o">.</span><span class="n">segmentation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kplot</span><span class="o">.</span><span class="n">melspectrogram</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram&quot;</span><span class="p">],</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.sample_info"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.sample_info">[docs]</a>    <span class="k">def</span> <span class="nf">sample_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the length of the KantoData and other information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        Total length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">        Unique IDs: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_ID</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.plot_example"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.plot_example">[docs]</a>    <span class="k">def</span> <span class="nf">plot_example</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_songs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;maxfreq&quot;</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;descending&quot;</span><span class="p">,</span>
+        <span class="n">return_keys</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show mel spectrograms for songs at the ends of the time or</span>
+<span class="sd">        frequency distribution.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Durations and frequencies come from bounding boxes,</span>
+<span class="sd">            not vocalisations. This function, along with</span>
+<span class="sd">            :func:`~pykanto.dataset.plot_summary`, is useful to spot any</span>
+<span class="sd">            outliers, and to quickly explore the full range of data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            n_songs (int, optional): Number of songs to return. Defaults to 1.</span>
+<span class="sd">            query (str, optional):</span>
+<span class="sd">                What to query the database for. Defaults to &#39;maxfreq&#39;. One of:</span>
+
+<span class="sd">                - &#39;duration&#39;</span>
+<span class="sd">                - &#39;maxfreq&#39;</span>
+<span class="sd">                - &#39;minfreq&#39;</span>
+<span class="sd">            order (str, optional): Defaults to &#39;descending&#39;. One of:</span>
+
+<span class="sd">                - &#39;ascending&#39;</span>
+<span class="sd">                - &#39;descending&#39;</span>
+<span class="sd">            return_keys (bool, optional): Defaults to &#39;False&#39;. Whether to return</span>
+<span class="sd">                the keys of the displayed spectrograms.</span>
+<span class="sd">            **kwargs: Keyword arguments to be passed to</span>
+<span class="sd">                :func:`~pykanto.plot.melspectrogram`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">argdict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;duration&quot;</span><span class="p">:</span> <span class="s2">&quot;length_s&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;maxfreq&quot;</span><span class="p">:</span> <span class="s2">&quot;upper_freq&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;minfreq&quot;</span><span class="p">:</span> <span class="s2">&quot;lower_freq&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">query</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">argdict</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;show_extreme_songs: query must be one of &quot;</span>
+                <span class="s2">&quot;[&#39;duration&#39;, &#39;maxfreq&#39;, &#39;minfreq&#39;]&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">testkeys</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">argdict</span><span class="p">[</span><span class="n">query</span><span class="p">]]</span>
+            <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span> <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s2">&quot;ascending&quot;</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)[</span>
+                <span class="p">:</span><span class="n">n_songs</span>
+            <span class="p">]</span>
+            <span class="o">.</span><span class="n">index</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">testkeys</span><span class="p">:</span>
+            <span class="n">kplot</span><span class="o">.</span><span class="n">melspectrogram</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;spectrogram&quot;</span><span class="p">],</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">return_keys</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">testkeys</span><span class="p">)</span></div>
+
+    <span class="c1"># REVIEW: quarantine for now</span>
+    <span class="c1"># def relabel_noise_segments(self, keys: List[str]) -&gt; None:</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     Moves entries from the vocalisations subset to the noise subset.</span>
+    <span class="c1">#     You will be prompted to choose whether to save the dataset to disk.</span>
+
+    <span class="c1">#     Warning:</span>
+    <span class="c1">#         Changes &#39;label&#39; in the json metadata within the dataset to</span>
+    <span class="c1">#         &#39;NOISE&#39;, but does not change the original json file from which</span>
+    <span class="c1">#         you created the entry.</span>
+    <span class="c1">#         Make sure you leave a trail when relabelling segments (i.e., do</span>
+    <span class="c1">#         it programmatically) or else your work will not be fully</span>
+    <span class="c1">#         reproducible!</span>
+
+    <span class="c1">#     Args:</span>
+    <span class="c1">#         keys (List[str]): A list of the segments to move.</span>
+
+    <span class="c1">#     Examples:</span>
+    <span class="c1">#         &gt;&gt;&gt; dataset = KantoData(...)</span>
+    <span class="c1">#         &gt;&gt;&gt; keys_to_move = [&#39;ABC.wav&#39;,&#39;CBA.wav&#39;]</span>
+    <span class="c1">#         &gt;&gt;&gt; dataset.relabel_segments(keys_to_move)</span>
+
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     df_tomove = self.data.loc[keys]</span>
+    <span class="c1">#     self.noise = pd.concat([self.noise, df_tomove], join=&quot;inner&quot;)</span>
+    <span class="c1">#     self.data.drop(keys, inplace=True)</span>
+    <span class="c1">#     # Change label in json metadata - TODO: also in original json file</span>
+    <span class="c1">#     for key in keys:</span>
+    <span class="c1">#         self.metadata[key][&quot;label&quot;] = &quot;NOISE&quot;</span>
+    <span class="c1">#     if len(self.noise.loc[keys]) == len(keys):</span>
+    <span class="c1">#         print(&quot;The entries were moved successfully.&quot;)</span>
+    <span class="c1">#         tx = &quot;Do you want to save the dataset to disk now?&quot; &quot; (Enter y/n)&quot;</span>
+    <span class="c1">#         while (res := input(tx).lower()) not in {&quot;y&quot;, &quot;n&quot;}:</span>
+    <span class="c1">#             pass</span>
+    <span class="c1">#         if res == &quot;y&quot;:</span>
+    <span class="c1">#             print(&quot;Done.&quot;)</span>
+    <span class="c1">#             self.save_to_disk(verbose=self.parameters.verbose)</span>
+
+<div class="viewcode-block" id="KantoData.segment_into_units"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.segment_into_units">[docs]</a>    <span class="nd">@timing</span>
+    <span class="k">def</span> <span class="nf">segment_into_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds segment onsets, offsets, unit and silence durations</span>
+<span class="sd">        to :attr:`~.KantoData.data`.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            If segmentation fails for a vocalisation it will be dropped from</span>
+<span class="sd">            the database so that it doesn&#39;t cause trouble downstream.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            overwrite (bool, optional): Whether to overwrite unit</span>
+<span class="sd">            segmentation information if it already exists. Defaults to False.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileExistsError: The vocalisations in this dataset have already</span>
+<span class="sd">                been segmented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Throw segmentation already exists</span>
+        <span class="k">if</span> <span class="s2">&quot;unit_durations&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                <span class="s2">&quot;The vocalisations in this dataset have already been segmented. &quot;</span>
+                <span class="s2">&quot;If you want to do it again, you can overwrite the existing &quot;</span>
+                <span class="s2">&quot;segmentation information by it by setting `overwrite=True`&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Find song units iff onset/offset metadata not present</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;onsets&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="n">segment_song_into_units_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">onoff_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">units</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+            <span class="n">onoff_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Otherwise just use that</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using existing unit onset/offset information.&quot;</span><span class="p">)</span>
+            <span class="n">onoff_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+            <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="c1"># Calculate durations and add to dataset</span>
+        <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;unit_durations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">]</span>
+        <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;silence_durations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="p">[</span>
+                <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">])</span>
+            <span class="p">],</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">],</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">onoff_df</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;index&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Save</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">n_units</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;unit_durations&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found and segmented </span><span class="si">{</span><span class="n">n_units</span><span class="si">}</span><span class="s2"> units.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.subset"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.subset">[docs]</a>    <span class="nd">@timing</span>
+    <span class="k">def</span> <span class="nf">subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">new_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KantoData</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new dataset containing a subset of the IDs present</span>
+<span class="sd">        in the original dataset (e.g., different individual birds).</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            - Existing files common to both datasets</span>
+<span class="sd">              (vocalisation spectrograms, unit spectrograms,</span>
+<span class="sd">              wav files) will not be copied or moved from their</span>
+<span class="sd">              original location.</span>
+
+<span class="sd">            - Any newly generated files (e.g., by running a function</span>
+<span class="sd">              that saves spectrograms to disk) will be exclusive to</span>
+<span class="sd">              the new dataset.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dataset ([type]): Source dataset.</span>
+<span class="sd">            ids (List[str]): IDs to keep.</span>
+<span class="sd">            new_dataset (str): Name of new dataset.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            KantoData: A subset of the dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Copy dataset</span>
+        <span class="n">subself</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Remove unwanted data</span>
+        <span class="n">subself</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">subself</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;average_units&quot;</span><span class="p">):</span>
+            <span class="n">rm_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">subself</span><span class="o">.</span><span class="n">average_units</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">average_units</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">rm_keys</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
+            <span class="n">subself</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">subself</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">)]</span>
+        <span class="n">popkeys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">key</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">subself</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids</span>
+        <span class="p">]</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">subself</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">popkeys</span><span class="p">]</span>
+        <span class="n">subself</span><span class="o">.</span><span class="n">_get_unique_ids</span><span class="p">()</span>
+
+        <span class="c1"># Change pointers / paths</span>
+        <span class="n">subself</span><span class="o">.</span><span class="n">DATASET_ID</span> <span class="o">=</span> <span class="n">new_dataset</span>
+        <span class="n">subself</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DATASET_ID</span><span class="p">,</span> <span class="n">new_dataset</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Save</span>
+        <span class="n">makedir</span><span class="p">(</span><span class="n">subself</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">subself</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">subself</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved subset to </span><span class="si">{</span><span class="n">subself</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">subself</span></div>
+
+<div class="viewcode-block" id="KantoData.save_to_disk"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.save_to_disk">[docs]</a>    <span class="k">def</span> <span class="nf">save_to_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save dataset to disk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Save dataset</span>
+        <span class="n">out_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span>
+        <span class="n">makedir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved dataset to </span><span class="si">{</span><span class="n">out_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.to_csv"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.to_csv">[docs]</a>    <span class="k">def</span> <span class="nf">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Output vocalisation (and, if present, unit) metadata in the dataset as</span>
+<span class="sd">        a .csv file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (Path): Directory where to save the file(s).</span>
+<span class="sd">            timestamp (bool, optional): Whether to add timestamp to file name.</span>
+<span class="sd">                Defaults to True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">timestamp</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">_UNITS_</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.reload"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.reload">[docs]</a>    <span class="k">def</span> <span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KantoData</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the current dataset from disk. Remember to assign the output to</span>
+<span class="sd">        a variable!</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            You will lose any changes that happened after the last time</span>
+<span class="sd">            you saved the dataset to disk.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            KantoData: Last saved version of the dataset.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; dataset = dataset.reload()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="KantoData.get_units"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.get_units">[docs]</a>    <span class="nd">@timing</span>
+    <span class="k">def</span> <span class="nf">get_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pad</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates and saves a dictionary containing spectrogram</span>
+<span class="sd">        representations of the units or the average of</span>
+<span class="sd">        the units present in the vocalisations of each individual ID</span>
+<span class="sd">        in the dataset.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pad (bool, optional): Whether to pad spectrograms</span>
+<span class="sd">                to the maximum lenght (per ID). Defaults to False.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            If `pad = True`, unit spectrograms are padded to the maximum</span>
+<span class="sd">            duration found among units that belong to the same ID,</span>
+<span class="sd">            not the dataset maximum.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            If each of your IDs (grouping factor, such as individual or</span>
+<span class="sd">            population) has lots of data and you are using a machine with very</span>
+<span class="sd">            limited memory resources you will likely run out of it when</span>
+<span class="sd">            executing this funtion in parallel. If this is the case, you can</span>
+<span class="sd">            limit the number of cpus to be used at once by setting the</span>
+<span class="sd">            `num_cpus` parameter to a smaller number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: #7 Prepare data for interactive app using custom grouping</span>
+        <span class="c1"># factor (current default: ID), or allow user to to choose something</span>
+        <span class="c1"># other than individual ID as grouping factor. @nilomr</span>
+        <span class="n">song_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span>
+        <span class="n">dic_locs</span> <span class="o">=</span> <span class="n">get_indv_units_parallel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span>
+            <span class="n">song_level</span><span class="o">=</span><span class="n">song_level</span><span class="p">,</span>
+            <span class="n">num_cpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;cannot insert ID, already exists&quot;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
+        <span class="n">colname</span> <span class="o">=</span> <span class="s2">&quot;average_units&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;units&quot;</span>
+        <span class="n">au</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dic_locs</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">colname</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">colname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">colname</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">,</span> <span class="n">au</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;ID&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.cluster_ids"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.cluster_ids">[docs]</a>    <span class="nd">@timing</span>
+    <span class="k">def</span> <span class="nf">cluster_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_sample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dimensionality reduction using UMAP + unsupervised clustering using</span>
+<span class="sd">        HDBSCAN. This will fail if the sample size for an ID (grouping factor,</span>
+<span class="sd">        such as individual or population) is too small.</span>
+
+<span class="sd">        Adds cluster membership information and 2D UMAP coordinates to</span>
+<span class="sd">        :attr:`~.KantoData.data` if `song_level=True`</span>
+<span class="sd">        in :attr:`~.KantoData.parameters`, else to :attr:`~.KantoData.units`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            min_sample (int): Minimum sample size below which an ID will</span>
+<span class="sd">                be skipped. Defaults to 10, but you can reallistically expect</span>
+<span class="sd">                good automatic results above ~100.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">reduce_and_cluster_parallel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">min_sample</span><span class="o">=</span><span class="n">min_sample</span><span class="p">,</span> <span class="n">num_cpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">combine_first</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">df</span>
+            <span class="c1"># TODO #14@nilomr: Add individual element information to self.data?</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.prepare_interactive_data"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.prepare_interactive_data">[docs]</a>    <span class="nd">@timing</span>
+    <span class="k">def</span> <span class="nf">prepare_interactive_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">spec_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare lightweigth representations of each vocalization</span>
+<span class="sd">        or unit (if song_level=False in :attr:`~.KantoData.parameters`)</span>
+<span class="sd">        for each individual in the dataset.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spec_length (float, optional): In seconds, duration of</span>
+<span class="sd">            spectrogram that will be produced. Shorter segments</span>
+<span class="sd">            will be padded, longer segments trimmed. Defaults to maximum note</span>
+<span class="sd">            duration in the dataset.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">song_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span>
+
+        <span class="c1"># Check that we have the relevant data to proceed</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">song_level</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="s2">&quot;This function requires the output of &quot;</span>
+                <span class="s2">&quot;`self.cluster_ids()`. &quot;</span>
+                <span class="s2">&quot;Make sure you that have run it, then try again&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;auto_class&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_x&quot;</span><span class="p">,</span> <span class="s2">&quot;umap_y&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="s2">&quot;This function requires the output of &quot;</span>
+                <span class="s2">&quot;`self.cluster_ids()`. &quot;</span>
+                <span class="s2">&quot;Make sure you that have run it, then try again&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">prepare_datasource_parallel</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">spec_length</span><span class="o">=</span><span class="n">spec_length</span><span class="p">,</span>
+            <span class="n">song_level</span><span class="o">=</span><span class="n">song_level</span><span class="p">,</span>
+            <span class="n">num_cpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add their locations to the files df, then save</span>
+        <span class="n">int_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">flatten_list</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;voc_app_data&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;unit_app_data&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">int_df</span><span class="p">[</span><span class="s2">&quot;voc_check&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;unit_check&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">int_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;ID&quot;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.open_label_app"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.open_label_app">[docs]</a>    <span class="k">def</span> <span class="nf">open_label_app</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">palette</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">Set3_12</span><span class="p">,</span> <span class="n">max_n_labs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Opens a new web browser tab with an interactive app that can be used to</span>
+<span class="sd">        check the accuracy of the automaticaly assigned labels. Uses average</span>
+<span class="sd">        units per vocalisation (if song_level=True in self.parameters) or</span>
+<span class="sd">        individual units.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Starting this app requires the output of</span>
+<span class="sd">            :func:`~pykanto.dataset.KantoData.prepare_interactive_data`; you will</span>
+<span class="sd">            be prompted to choose whether to run it if it is missing.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The app will try to create a palette based on the maximum number</span>
+<span class="sd">            of categories in any individual in the dataset. You will get</span>
+<span class="sd">            a ValueError if the palette you provided is not large enough</span>
+<span class="sd">            (the default palette allows for a maximum of 12 categories).</span>
+<span class="sd">            You can use your own palettes or import existing ones,</span>
+<span class="sd">            see &#39;Examples&#39; below.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            palette (List[str], optional): A colour palette of</span>
+<span class="sd">                length &gt;= max_n_labs. Defaults to list(Set3_12).</span>
+<span class="sd">            max_n_labs (int, optional): maximum number of classes expected in</span>
+<span class="sd">                the dataset. Defaults to 10.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Allow for a maximum of 20 labels by setting ``max_n_labs = 20`` and</span>
+<span class="sd">            ``palette = list(Category20_20)``.</span>
+
+<span class="sd">            &gt;&gt;&gt; from bokeh.palettes import Category20_20</span>
+<span class="sd">            ...</span>
+<span class="sd">            &gt;&gt;&gt; self.open_label_app(max_n_labs = 20,</span>
+<span class="sd">            &gt;&gt;&gt; palette = list(Category20_20))</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">song_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span>
+        <span class="n">datatype</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;units&quot;</span>
+        <span class="n">labtype</span> <span class="o">=</span> <span class="s2">&quot;voc_app_data&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;unit_app_data&quot;</span>
+
+        <span class="c1"># Can this be run?</span>
+        <span class="c1"># Save and reload dataset:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">labtype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="ow">or</span> <span class="s2">&quot;auto_class&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">datatype</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="s2">&quot;This function requires the output of &quot;</span>
+                <span class="s2">&quot; `self.cluster_ids()` and `self.prepare_interactive_data()` &quot;</span>
+                <span class="s2">&quot;Make sure you that have run this, then try again.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s2">&quot;voc_check&quot;</span> <span class="k">if</span> <span class="n">song_level</span> <span class="k">else</span> <span class="s2">&quot;unit_check&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="s2">&quot;You have already checked all the labels in this dataset. &quot;</span>
+                <span class="s2">&quot;If you want to re-check any/all, change the check status of &quot;</span>
+                <span class="s2">&quot;any ID from True to False in `self.files.voc_check` or &quot;</span>
+                <span class="s2">&quot;`self.files.unit_check`, then run again.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check that we are where we should</span>
+        <span class="c1"># REVIEW: easy to break!</span>
+        <span class="n">app_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;app&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">app_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">app_path</span><span class="p">))</span>
+
+        <span class="c1"># Check palette validity</span>
+        <span class="n">max_labs_data</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datatype</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">])[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="o">+</span> <span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="n">max_labs</span> <span class="o">=</span> <span class="n">max_n_labs</span> <span class="k">if</span> <span class="n">max_n_labs</span> <span class="o">&gt;</span> <span class="n">max_labs_data</span> <span class="k">else</span> <span class="n">max_labs_data</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_labs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The chosen palette does not have enough values. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Palette lenght : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span><span class="si">}</span><span class="s2">, needed: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_labs</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Run app</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;bokeh serve --show </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">app_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> --args &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">max_labs</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">song_level</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">palette</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+            <span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+            <span class="n">bufsize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">universal_newlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># process line here</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">(</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
+                <span class="s2">&quot;Troubleshooting: the port may already be in use. Check &quot;</span>
+                <span class="s2">&quot;that the port is free and try again.&quot;</span><span class="p">,</span>
+            <span class="p">)</span></div></div>
+</pre></div>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Nilo M. Recalde<br/>
+  
+      &copy; Copyright 2021, Nilo M. Recalde.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

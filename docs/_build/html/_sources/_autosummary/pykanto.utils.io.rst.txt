@@ -1,0 +1,44 @@
+pykanto.utils.io
+================
+
+.. automodule:: pykanto.utils.io
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      copy_xml_files
+      get_unit_spectrograms
+      load_dataset
+      make_tarfile
+      makedir
+      read_json
+      save_json
+      save_songs
+      save_subset
+      save_to_jsons
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      NumpyEncoder
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,148 @@
+{
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "# KantoData datasets\n",
+                "\n",
+                "Parameters\n",
+                "----------\n",
+                "\n",
+                "The print function will return the contents of the dataset. can also do with\n",
+                "parameters or directories\n",
+                "\n",
+                "Most computationally intensive methods will have three versions:\n",
+                "``method`` (single)\n",
+                "``method_r`` (n elements), remote\n",
+                "``method_parallel``, parallelised/distributed w/ a ray cluster\n",
+                "\n",
+                "\n",
+                ".. code-block:: python\n",
+                "    :linenos:\n",
+                "\n",
+                "    print(dataset.parameters)\n",
+                "\n",
+                "\n",
+                "To get some basic info on the data in the dataset:\n",
+                "\n",
+                ".. code-block:: python\n",
+                "    :linenos:\n",
+                "    \n",
+                "    # Check dataset length\n",
+                "    dataset.sample_info()\n",
+                ".. code-block:: none\n",
+                "\n",
+                "    Total length: 800\n",
+                "    Vocalisations: 740\n",
+                "    Noise: 60\n",
+                "    Unique IDs: 3\n",
+                "\n",
+                "Plot some info \n",
+                "\n",
+                ".. code-block:: python\n",
+                "    :linenos:\n",
+                "\n",
+                "    # Plot some information about the dataset\n",
+                "    dataset.plot_summary(variable='all')\n",
+                "\n",
+                "\n",
+                "Check sample size per individual ID in the dataset:\n",
+                "\n",
+                ".. code-block:: python\n",
+                "    :linenos:\n",
+                "\n",
+                "    dataset.data['ID'].value_counts()\n",
+                "\n",
+                ".. code-block:: none\n",
+                "\n",
+                "    B119    159\n",
+                "    B108    157\n",
+                "    B163    134\n",
+                "    B226    134\n",
+                "    B216    117\n",
+                "    \n",
+                "\n",
+                "\n",
+                "Creating a dataset for which there is already derived data (e.g. spectrograms).\n",
+                "This is something that might happen if, say, creating a dataset fails but\n",
+                "at least some spectrogram files were saved succesfully. \n",
+                "\n",
+                ".. code-block:: python\n",
+                "    :linenos:\n",
+                "\n",
+                "    DATASET_ID = \"BIGBIRD\"\n",
+                "    dataset = KantoData(DIRS, parameters=params,\n",
+                "                        overwrite_dataset=True, overwrite_data=False)\n",
+                "\n",
+                "\n",
+                "Note: \n",
+                "    You can use any matplotlib palette here using the 'cmap' argument.\n",
+                "    See `colourmaps`_.\n",
+                "\n",
+                ".. _colourmaps: https://matplotlib.org/stable/tutorials/colors/colormaps.html\n",
+                "\n",
+                "\n"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "Load an existing dataset:"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": null,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "# Opening an existing dataset\n",
+                "from pykanto.utils.io import load_dataset\n",
+                "DATASET_ID = 'BIG_BIRD'\n",
+                "out_dir = DIRS.DATA / \"datasets\" / DATASET_ID / f\"{DATASET_ID}.db\"\n",
+                "dataset = load_dataset(out_dir)"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": null,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "\n",
+                "# If you want to save the dataset as a .csv file,\n",
+                "# which I recommend you do as backup,\n",
+                "csv_dir = dataset.DIRS.DATASET.parent\n",
+                "dataset.to_csv(csv_dir)\n",
+                "\n",
+                "\n",
+                "# If you want to save the new metadata you have generated\n",
+                "# (vocalisation type labels and onset/offsets, for example)\n",
+                "# to the original .json files (as a backup or to use with other software):\n",
+                "from pykanto.utils.io import save_to_jsons\n",
+                "save_to_jsons(dataset)"
+            ]
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3.9.12 ('pykanto-dev')",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "name": "python",
+            "version": "3.9.12"
+        },
+        "orig_nbformat": 4,
+        "vscode": {
+            "interpreter": {
+                "hash": "cf30c6a63fc6852a8d910622565c3348d4a7fab8fc38710c97d8db63a595f32d"
+            }
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 2
+}

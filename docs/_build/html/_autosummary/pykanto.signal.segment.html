@@ -1,0 +1,926 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>pykanto.signal.segment &#8212; pykanto 0.1 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.1ae1adf31bcec4f5a66e594d147bbc00e33ac08d67b8f5697420a1436a24298a.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pykanto.signal.spectrogram" href="pykanto.signal.spectrogram.html" />
+    <link rel="prev" title="pykanto.signal.filter" href="pykanto.signal.filter.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/pykanto-logo-grey-04.svg" class="logo" alt="logo">
+      
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  User guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/installation.html">
+   Installing
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pykanto
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/project-setup.html">
+   Setting up a project
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/basic-workflow.html">
+   Basic workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/segmenting-files.html">
+   Raw file segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/segmentation.html">
+   Vocalisation segmentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/kantodata-dataset.html">
+   KantoData datasets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/interactive-app.html">
+   Interactive app
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/hpc.html">
+   High Performance Computing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/feature-extraction.html">
+   Acoustic feature extraction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/deep-learning.html">
+   ML Model training
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contents/FAQs.html">
+   FAQs &amp; known issues
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  API reference
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="pykanto.signal.html">
+   pykanto.signal
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.signal.analysis.html">
+     pykanto.signal.analysis
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.signal.cluster.html">
+     pykanto.signal.cluster
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.signal.filter.html">
+     pykanto.signal.filter
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     pykanto.signal.segment
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.signal.spectrogram.html">
+     pykanto.signal.spectrogram
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pykanto.parameters.html">
+   pykanto.parameters
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pykanto.dataset.html">
+   pykanto.dataset
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pykanto.app.html">
+   pykanto.app
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.app.data.html">
+     pykanto.app.data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.app.main.html">
+     pykanto.app.main
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="pykanto.utils.html">
+   pykanto.utils
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.utils.compute.html">
+     pykanto.utils.compute
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.utils.custom.html">
+     pykanto.utils.custom
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.utils.io.html">
+     pykanto.utils.io
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.utils.paths.html">
+     pykanto.utils.paths
+    </a>
+   </li>
+   <li class="toctree-l2 has-children">
+    <a class="reference internal" href="pykanto.utils.slurm.html">
+     pykanto.utils.slurm
+    </a>
+    <input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/>
+    <label for="toctree-checkbox-4">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="pykanto.utils.slurm.launch.html">
+       pykanto.utils.slurm.launch
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="pykanto.utils.slurm.tester.html">
+       pykanto.utils.slurm.tester
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="pykanto.utils.types.html">
+     pykanto.utils.types
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pykanto.plot.html">
+   pykanto.plot
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/nilomr/pykanto"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/_autosummary/pykanto.signal.segment.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>pykanto.signal.segment</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section id="module-pykanto.signal.segment">
+<span id="pykanto-signal-segment"></span><h1>pykanto.signal.segment<a class="headerlink" href="#module-pykanto.signal.segment" title="Permalink to this headline">#</a></h1>
+<p>Segment audio files and find vocalisation units in spectrograms.</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.segment.drop_zero_len_units" title="pykanto.signal.segment.drop_zero_len_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">drop_zero_len_units</span></code></a>(dataset, onsets, offsets)</p></td>
+<td><p>Removes onset/offset pairs which (under this dataset's spectrogram parameter combination) would result in a unit of length zero.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.segment.find_units" title="pykanto.signal.segment.find_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_units</span></code></a>(dataset, spectrogram)</p></td>
+<td><p>Segment a given spectrogram array into its units.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.segment.get_segment_info" title="pykanto.signal.segment.get_segment_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_segment_info</span></code></a>(RAW_DATA_DIR, min_duration, ...)</p></td>
+<td><p>Get a summary of all segments present in a directory. Works for .xml files</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.segment.onsets_offsets" title="pykanto.signal.segment.onsets_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">onsets_offsets</span></code></a>(signal)</p></td>
+<td><p>Labels features in array as insets and offsets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.segment.save_segments" title="pykanto.signal.segment.save_segments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_segments</span></code></a>(metadata, wavfile, wav_outdir, ...)</p></td>
+<td><p>Save segments present in a single wav file to new separate files along with their metadata.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.segment.segment_file" title="pykanto.signal.segment.segment_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment_file</span></code></a>(wav_dir, metadata_dir, ...[, ...])</p></td>
+<td><p>Segments and saves audio segmets and their metadata from a single audio file, based on annotations provided in a separate 'metadata' file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.segment.segment_files" title="pykanto.signal.segment.segment_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment_files</span></code></a>(datapaths, wav_outdir, json_outdir)</p></td>
+<td><p>Finds and saves audio segments and their metadata.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.segment.segment_files_parallel" title="pykanto.signal.segment.segment_files_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment_files_parallel</span></code></a>(datapaths, dirs[, ...])</p></td>
+<td><p>Finds and saves audio segments and their metadata.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.segment.segment_is_valid" title="pykanto.signal.segment.segment_is_valid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment_is_valid</span></code></a>(metadata, max_amplitude, i)</p></td>
+<td><p>Checks whether a segment of index i within a dictionary is a valid segment.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.segment.segment_song_into_units" title="pykanto.signal.segment.segment_song_into_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment_song_into_units</span></code></a>(dataset, key)</p></td>
+<td><p>Find amplitude-differentiable units in a given vocalisation after applying a series of morphological transformations to reduce noise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.segment.segment_song_into_units_parallel" title="pykanto.signal.segment.segment_song_into_units_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segment_song_into_units_parallel</span></code></a>(dataset, ...)</p></td>
+<td><p>See save_melspectrogram</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.segment.ReadWav" title="pykanto.signal.segment.ReadWav"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReadWav</span></code></a>(wav_dir)</p></td>
+<td><p>Reads a wav file and its metadata.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.segment.SegmentMetadata" title="pykanto.signal.segment.SegmentMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SegmentMetadata</span></code></a>(metadata, audio_section, i, ...)</p></td>
+<td><p>Consolidates segment metadata in a single Metadata object, which can then be saved as a standard .JSON file.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="pykanto.signal.segment.ReadWav">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">ReadWav</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wav_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#ReadWav"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.ReadWav" title="Permalink to this definition">#</a></dt>
+<dd><p>Reads a wav file and its metadata.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can extend this class to read in metadata from the wav file that is
+specific to your research, e.g. the recorder device ID, or time
+information.</p>
+</div>
+<p class="rubric">Examples</p>
+<p>TODO</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.signal.segment.ReadWav.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wav_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#ReadWav.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.ReadWav.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.signal.segment.ReadWav.wav_dir">
+<span class="sig-name descname"><span class="pre">wav_dir</span></span><a class="headerlink" href="#pykanto.signal.segment.ReadWav.wav_dir" title="Permalink to this definition">#</a></dt>
+<dd><p>Location of wav file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.signal.segment.ReadWav.get_wav">
+<span class="sig-name descname"><span class="pre">get_wav</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">soundfile.SoundFile</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#ReadWav.get_wav"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.ReadWav.get_wav" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the wavfile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Seekable wavfile.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>sf.SoundFile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.signal.segment.ReadWav.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation" title="pykanto.utils.types.AudioAnnotation"><span class="pre">pykanto.utils.types.AudioAnnotation</span></a></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#ReadWav.get_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.ReadWav.get_metadata" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns metadata attached to wavfile as an AudioAnnotation object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Wavfile metadata.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.AudioAnnotation" title="pykanto.utils.types.AudioAnnotation">AudioAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.signal.segment.ReadWav.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#ReadWav.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.ReadWav.as_dict" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns metadata attached to wavfile as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Wavfile metadata.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pykanto.signal.segment.SegmentMetadata">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">SegmentMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Annotation" title="pykanto.utils.types.Annotation"><span class="pre">pykanto.utils.types.Annotation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio_section</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wav_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#SegmentMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.SegmentMetadata" title="Permalink to this definition">#</a></dt>
+<dd><p>Consolidates segment metadata in a single Metadata object,
+which can then be saved as a standard .JSON file.</p>
+<p>You can extend this class to incorporate other metadata fields
+specific to your research (see the docs).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.signal.segment.SegmentMetadata.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Annotation" title="pykanto.utils.types.Annotation"><span class="pre">pykanto.utils.types.Annotation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio_section</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wav_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#SegmentMetadata.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.SegmentMetadata.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Consolidates segment metadata in a single Metadata object,
+which can then be saved as a standard .JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Segment identifier.</p></li>
+<li><p><strong>metadata</strong> (<a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Annotation" title="pykanto.utils.types.Annotation"><em>Annotation</em></a>) – An object containing relevant metadata.</p></li>
+<li><p><strong>audio_section</strong> (<em>np.ndarray</em>) – Array containing segment audio data
+(to extract min/max amplitude).</p></li>
+<li><p><strong>i</strong> (<em>int</em>) – Segment index.</p></li>
+<li><p><strong>sr</strong> (<em>int</em>) – Sample rate.</p></li>
+<li><p><strong>wav_out</strong> (<em>Path</em>) – Path to segment wav file.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.signal.segment.SegmentMetadata.all_metadata">
+<span class="sig-name descname"><span class="pre">all_metadata</span></span><a class="headerlink" href="#pykanto.signal.segment.SegmentMetadata.all_metadata" title="Permalink to this definition">#</a></dt>
+<dd><p>Attribute containing all available metadata</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.signal.segment.SegmentMetadata.index">
+<span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pykanto.signal.segment.SegmentMetadata.index" title="Permalink to this definition">#</a></dt>
+<dd><p>Index of ‘focal’ segment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.signal.segment.SegmentMetadata.get_metadata">
+<span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Metadata" title="pykanto.utils.types.Metadata"><span class="pre">pykanto.utils.types.Metadata</span></a></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#SegmentMetadata.get_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.SegmentMetadata.get_metadata" title="Permalink to this definition">#</a></dt>
+<dd><p>Get Metadata object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Single-segment metadata.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Metadata" title="pykanto.utils.types.Metadata">Metadata</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pykanto.signal.segment.SegmentMetadata.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#SegmentMetadata.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.SegmentMetadata.as_dict" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns Metadata object as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Wavfile metadata.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.segment_file">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">segment_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">wav_dir:</span> <span class="pre">Path,</span> <span class="pre">metadata_dir:</span> <span class="pre">Path,</span> <span class="pre">wav_outdir:</span> <span class="pre">Path,</span> <span class="pre">json_outdir:</span> <span class="pre">Path,</span> <span class="pre">resample:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">22050,</span> <span class="pre">parser_func:</span> <span class="pre">Callable[[Path],</span> <span class="pre">SegmentAnnotation]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">parse_sonic_visualiser_xml&gt;,</span> <span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#segment_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.segment_file" title="Permalink to this definition">#</a></dt>
+<dd><p>Segments and saves audio segmets and their metadata from a single audio
+file, based on annotations provided in a separate ‘metadata’ file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wav_dir</strong> (<em>Path</em>) – Where is the wav file to be segmented?</p></li>
+<li><p><strong>metadata_dir</strong> (<em>Path</em>) – Where is the file containing its segmentation
+metadata?</p></li>
+<li><p><strong>wav_outdir</strong> (<em>Path</em>) – Where to save the resulting wav segments.</p></li>
+<li><p><strong>json_outdir</strong> (<em>Path</em>) – Where to save the resulting json metadata files.</p></li>
+<li><p><strong>resample</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Whether to resample audio, and to what
+sample ratio. Defaults to 22050.</p></li>
+<li><p><strong>parser_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Path</em><em>]</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Function to parse your metadata format. Defaults to parse_sonic_visualiser_xml.</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments passed to
+<a class="reference internal" href="#pykanto.signal.segment.segment_is_valid" title="pykanto.signal.segment.segment_is_valid"><code class="xref py py-func docutils literal notranslate"><span class="pre">segment_is_valid()</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.save_segments">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">save_segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Annotation" title="pykanto.utils.types.Annotation"><span class="pre">Annotation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sf.SoundFile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wav_outdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_outdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#save_segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.save_segments" title="Permalink to this definition">#</a></dt>
+<dd><p>Save segments present in a single wav file to new separate files along with
+their metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata</strong> (<a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Annotation" title="pykanto.utils.types.Annotation"><em>Annotation</em></a>) – Annotation and file metadata for this wav file.</p></li>
+<li><p><strong>wavfile</strong> (<em>SoundFile</em>) – Seekable wav file.</p></li>
+<li><p><strong>wav_outdir</strong> (<em>Path</em>) – Where to save the resulting segmented wav files.</p></li>
+<li><p><strong>json_outdir</strong> (<em>Path</em>) – Where to save the resulting json metadata files.</p></li>
+<li><p><strong>resample</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Whether to resample audio, and to what
+sample ratio. Defaults to 22050.</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments passed to
+<a class="reference internal" href="#pykanto.signal.segment.segment_is_valid" title="pykanto.signal.segment.segment_is_valid"><code class="xref py py-func docutils literal notranslate"><span class="pre">segment_is_valid()</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.segment_is_valid">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">segment_is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Annotation" title="pykanto.utils.types.Annotation"><span class="pre">pykanto.utils.types.Annotation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_amplitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integer_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'PCM_16'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_freqrange</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_amplitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels_to_ignore</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['NO',</span> <span class="pre">'NOISE']</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#segment_is_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.segment_is_valid" title="Permalink to this definition">#</a></dt>
+<dd><p>Checks whether a segment of index i within a dictionary is a valid segment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata</strong> (<a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.Annotation" title="pykanto.utils.types.Annotation"><em>Annotation</em></a>) – Annotation object for a wav file.</p></li>
+<li><p><strong>i</strong> (<em>int</em>) – Segment index.</p></li>
+<li><p><strong>min_duration</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum duration of segment to
+consider valid, in seconds. Defaults to 0.01.</p></li>
+<li><p><strong>min_freqrange</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum frequency range of segment to
+consider valid, in Hertzs. Defaults to 10.</p></li>
+<li><p><strong>labels_to_ignore</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Exclude any segments with these
+labels. Defaults to [“NO”, “NOISE”].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Is this a valid segment?</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.segment_files">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">segment_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">datapaths:</span> <span class="pre">List[Tuple[Path,</span> <span class="pre">Path]],</span> <span class="pre">wav_outdir:</span> <span class="pre">Path,</span> <span class="pre">json_outdir:</span> <span class="pre">Path,</span> <span class="pre">resample:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">22050,</span> <span class="pre">parser_func:</span> <span class="pre">Callable[[Path],</span> <span class="pre">SegmentAnnotation]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">parse_sonic_visualiser_xml&gt;,</span> <span class="pre">pbar:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">**kwargs</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#segment_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.segment_files" title="Permalink to this definition">#</a></dt>
+<dd><p>Finds and saves audio segments and their metadata.
+Parallel version in <a class="reference internal" href="#pykanto.signal.segment.segment_files_parallel" title="pykanto.signal.segment.segment_files_parallel"><code class="xref py py-func docutils literal notranslate"><span class="pre">segment_files_parallel()</span></code></a>.
+Works well with large files (only reads one chunk at a time).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datapaths</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>Path</em><em>, </em><em>Path</em><em>]</em><em>]</em>) – List of tuples with pairs of paths
+to raw data files and their annotation metadata files.</p></li>
+<li><p><strong>wav_outdir</strong> (<em>Path</em>) – Location where to save generated wav files.</p></li>
+<li><p><strong>json_outdir</strong> (<em>Path</em>) – Location where to save generated json metadata files.</p></li>
+<li><p><strong>resample</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Whether to resample audio.
+Defaults to 22050.</p></li>
+<li><p><strong>parser_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Path</em><em>]</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Function to parse your metadata format.
+Defaults to parse_sonic_visualiser_xml.</p></li>
+<li><p><strong>pbar</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wheter to print progress bar. Defaults to True.</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments passed to
+<a class="reference internal" href="#pykanto.signal.segment.segment_is_valid" title="pykanto.signal.segment.segment_is_valid"><code class="xref py py-func docutils literal notranslate"><span class="pre">segment_is_valid()</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.segment_files_parallel">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">segment_files_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">datapaths:</span> <span class="pre">List[Tuple[Path,</span> <span class="pre">Path]],</span> <span class="pre">dirs:</span> <span class="pre">ProjDirs,</span> <span class="pre">resample:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">22050,</span> <span class="pre">parser_func:</span> <span class="pre">Callable[[Path],</span> <span class="pre">SegmentAnnotation]</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">parse_sonic_visualiser_xml&gt;,</span> <span class="pre">num_cpus:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">**kwargs</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#segment_files_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.segment_files_parallel" title="Permalink to this definition">#</a></dt>
+<dd><p>Finds and saves audio segments and their metadata.
+Parallel version of <a class="reference internal" href="#pykanto.signal.segment.segment_files" title="pykanto.signal.segment.segment_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">segment_files()</span></code></a>.
+Works well with large files (only reads one chunk at a time).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Creates [“WAV”, “JSON”] output subfolders in data/segmented/dataset.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datapaths</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>Path</em><em>, </em><em>Path</em><em>]</em><em>]</em>) – List of tuples with pairs of paths
+to raw data files and their annotation metadata files.</p></li>
+<li><p><strong>dirs</strong> (<a class="reference internal" href="pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><em>ProjDirs</em></a>) – Project directory structure.</p></li>
+<li><p><strong>resample</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Whether to resample audio.
+Defaults to 22050.</p></li>
+<li><p><strong>parser_func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Path</em><em>]</em><em>, </em><a class="reference internal" href="pykanto.utils.types.html#pykanto.utils.types.SegmentAnnotation" title="pykanto.utils.types.SegmentAnnotation"><em>SegmentAnnotation</em></a><em>]</em><em>, </em><em>optional</em>) – Function to parse your metadata format.
+Defaults to parse_sonic_visualiser_xml.</p></li>
+<li><p><strong>num_cpus</strong> (<em>float</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Number of cpus to use for parallel
+computing. Defaults to None (all available).</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Defaults to True</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments passed to
+<a class="reference internal" href="#pykanto.signal.segment.segment_is_valid" title="pykanto.signal.segment.segment_is_valid"><code class="xref py py-func docutils literal notranslate"><span class="pre">segment_is_valid()</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.get_segment_info">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">get_segment_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">RAW_DATA_DIR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_freqrange</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['FIRST',</span> <span class="pre">'first']</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#get_segment_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.get_segment_info" title="Permalink to this definition">#</a></dt>
+<dd><dl class="simple">
+<dt>Get a summary of all segments present in a directory. Works for .xml files</dt><dd><p>output by Sonic Visualiser.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>RAW_DATA_DIR</strong> (<em>Path</em>) – Folder to check, normally DATA_DIR / “raw” / YEAR</p></li>
+<li><p><strong>min_duration</strong> (<em>float</em>) – Minimum duration for a segment to be
+considered (in seconds)</p></li>
+<li><p><strong>min_freqrange</strong> (<em>int</em>) – Minimum frequency range for a segment to be
+considered (in hertz)</p></li>
+<li><p><strong>ignore_labels</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Ignore segments with these labels.
+Defaults to [“FIRST”, “first”].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Lists of segment durations, in seconds</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict[str, List[float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.find_units">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">find_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#find_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.find_units" title="Permalink to this definition">#</a></dt>
+<dd><p>Segment a given spectrogram array into its units. For convenience,
+parameters are defined in a KantoData class instance (class Parameters).
+Based on Tim Sainburg’s
+<a class="reference external" href="https://github.com/timsainb/vocalization-segmentation/">vocalseg</a> code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuple(onsets, offsets)
+None: Did not find any units matching given criteria.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.onsets_offsets">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">onsets_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#onsets_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.onsets_offsets" title="Permalink to this definition">#</a></dt>
+<dd><p>Labels features in array as insets and offsets.
+Based on Tim Sainburg’s
+<a class="reference external" href="https://github.com/timsainb/vocalization-segmentation/">vocalseg</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>signal</strong> (<em>np.ndarray</em>) – _description_</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.segment_song_into_units">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">segment_song_into_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#segment_song_into_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.segment_song_into_units" title="Permalink to this definition">#</a></dt>
+<dd><p>Find amplitude-differentiable units in a given vocalisation after applying a
+series of morphological transformations to reduce noise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><em>KantoData</em></a>) – Datset to use.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – _description_</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[str, np.ndarray, np.ndarray] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.segment_song_into_units_parallel">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">segment_song_into_units_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#segment_song_into_units_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.segment_song_into_units_parallel" title="Permalink to this definition">#</a></dt>
+<dd><p>See save_melspectrogram</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pykanto.signal.segment.drop_zero_len_units">
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.segment.</span></span><span class="sig-name descname"><span class="pre">drop_zero_len_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">onsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/signal/segment.html#drop_zero_len_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.segment.drop_zero_len_units" title="Permalink to this definition">#</a></dt>
+<dd><p>Removes onset/offset pairs which (under this dataset’s spectrogram parameter
+combination) would result in a unit of length zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><em>KantoData</em></a>) – KantoData instance containing parameters.</p></li>
+<li><p><strong>onsets</strong> (<em>np.ndarray</em>) – In seconds</p></li>
+<li><p><strong>offsets</strong> (<em>np.ndarray</em>) – In seconds</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Remaining onsets and offsets</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="pykanto.signal.filter.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">pykanto.signal.filter</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="pykanto.signal.spectrogram.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pykanto.signal.spectrogram</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Nilo M. Recalde<br/>
+  
+      &copy; Copyright 2021, Nilo M. Recalde.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
