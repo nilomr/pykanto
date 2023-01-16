@@ -47,8 +47,9 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
     "sphinx_copybutton",
+    "IPython.sphinxext.ipython_console_highlighting",
 ]
-
+nbsphinx_execute = "auto"
 coverage_show_missing_items = True
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 templates_path = ["_templates"]
@@ -87,6 +88,8 @@ html_theme_options = {
 
 # nb_execution_mode = "cache"
 nb_execution_mode = "auto"
+
+exclude_patterns = ["_build", "**.ipynb_checkpoints"]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
