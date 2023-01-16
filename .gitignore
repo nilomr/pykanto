@@ -164,8 +164,12 @@ notebooks/data-analysis/bus_chatter.wav
 notebooks/data-analysis/TEST_REMOVE.py
 
 # Sphinx documentation
-docs/_build/
-#docs/_autosummary
+# ignore everythong in docs/_build except the html folder:
+docs/_build/*
+!docs/_build/html
+!docs/_build/html/*
+
+docs/_autosummary
 !docs/_templates/footer.html
 !docs/_templates/layout.html
 !docs/custom/custom.css
@@ -188,3 +192,4 @@ source/pykanto.utils.rst
 source/pykanto.utils.slurm.rst
 docs/doctrees/
 docs/jupyter_execute/
+
