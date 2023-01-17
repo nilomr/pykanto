@@ -168,7 +168,7 @@ def melspectrogram(
 
 def segmentation(
     dataset: KantoData,
-    key: str = None,
+    key: str | None = None,
     spectrogram: bool | np.ndarray = False,
     onsets_offsets: bool | Tuple[np.ndarray, np.ndarray] = False,
     **kwargs,
@@ -196,6 +196,21 @@ def segmentation(
         ]
 
     title = kwargs.pop("title") if "title" in kwargs else (key if key else "")
+    max_lenght = kwargs.pop("max_lenght") if "max_lenght" in kwargs else None
+
+    if max_lenght:
+        max_len_frames = math.floor(max_lenght * params.sr / params.hop_length)
+        if max_len_frames > spectrogram.shape[1]:
+            max_len_frames = spectrogram.shape[1]
+            warnings.warn(
+                f"{max_lenght=} is longer than the spectrogram, "
+                "setting max_lenght to the length of the spectrogram"
+            )
+        spectrogram = spectrogram[:, :max_len_frames]
+        onsets_offsets = (
+            onsets_offsets[0][onsets_offsets[0] <= max_lenght],
+            onsets_offsets[1][onsets_offsets[1] <= max_lenght],
+        )
 
     ax = melspectrogram(spectrogram, parameters=params, title=title, **kwargs)
 
