@@ -440,12 +440,18 @@ title="Print to PDF"
                 
   <section id="interactive-app">
 <h1>Interactive app<a class="headerlink" href="#interactive-app" title="Permalink to this headline">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">pykanto</span></code> includes a web application that allows you to interactively explore your data. It can be launched using a method of <code class="docutils literal notranslate"><span class="pre">KantoData</span></code> objects, for example:</p>
+<p><code class="docutils literal notranslate"><span class="pre">pykanto</span></code> includes a web application that allows you to interactively explore
+your data. It can be launched using a method from the <code class="docutils literal notranslate"><span class="pre">KantoData</span></code> class:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">open_label_app</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>This will open a new tab in your browser: you can follow the instructions in the app to explore and label your data.</p>
 <p><img alt="webapp" src="../_images/web_pykantoapp.png" /></p>
+<p>Once you are done checking the automatically assigned labels you need to reload
+the updated dataset, which has been automatically saved to disk:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+</pre></div>
+</div>
 <div class="note admonition">
 <p class="admonition-title">Note:</p>
 <p>Running the web application requires having run the following methods on your <code class="docutils literal notranslate"><span class="pre">KantoData</span></code> object:</p>
@@ -457,6 +463,14 @@ title="Print to PDF"
 </div>
 <p>In short, these find distinct units in each vocalisation, label them, and create lightweight representations of the sounds, see the entire process in the <a class="reference internal" href="basic-workflow.html"><span class="doc std std-doc">basic workflow page</span></a> for more details.</p>
 </div>
+<p>You can also use the app to check and correct labels assigned through any other
+means, for example after training a deep learning classifier model. To do this,
+you simply need to add your custom labels to the dataframe containing your data.</p>
+<p>For example, if your <a class="reference internal" href="../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><code class="xref py py-class docutils literal notranslate"><span class="pre">KantoData</span></code></a> object is called <code class="docutils literal notranslate"><span class="pre">dataset</span></code>, you
+can overwrite the <code class="docutils literal notranslate"><span class="pre">auto_class</span></code> column in <code class="docutils literal notranslate"><span class="pre">dataset.data</span></code> with your own labels
+(str). This will work when <code class="docutils literal notranslate"><span class="pre">dataset.parameters.song_level</span> <span class="pre">=</span> <span class="pre">True</span></code>; if you want
+to do this at the note or unit level please open an issue on GitHub and I’ll add
+this functionality.</p>
 </section>
 
 

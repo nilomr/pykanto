@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>ML Model training &#8212; pykanto 0.1 documentation</title>
+    <title>Training ML models &#8212; pykanto 0.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -117,17 +117,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -147,7 +147,7 @@
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -414,80 +414,23 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
-</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#working-with-paths-and-directories">
-   Working with paths and directories
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#link-your-data">
-   1. Link your data
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#set-up-project-directories">
-   2. Set up project directories
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
     </div>
     <div class="article row">
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>ML Model training</h1>
+                <h1>Training ML models</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#working-with-paths-and-directories">
-   Working with paths and directories
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#link-your-data">
-   1. Link your data
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#set-up-project-directories">
-   2. Set up project directories
-  </a>
- </li>
-</ul>
-
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -495,66 +438,13 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="ml-model-training">
-<h1>ML Model training<a class="headerlink" href="#ml-model-training" title="Permalink to this headline">#</a></h1>
+  <section id="training-ml-models">
+<h1>Training ML models<a class="headerlink" href="#training-ml-models" title="Permalink to this headline">#</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">pykanto</span></code> can be used to filter and prepare data to train classifiers.
-There is a complete example in the <span class="xref myst">preprint presenting <code class="docutils literal notranslate"><span class="pre">pykanto</span></code></span> that walks you through the steps of training a ‘deep learning’ model to distinguish between different birds based on their songs.</p>
-<section id="working-with-paths-and-directories">
-<h2>Working with paths and directories<a class="headerlink" href="#working-with-paths-and-directories" title="Permalink to this headline">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">pykanto</span></code> provides a convenient way to store all paths pointing to directories
-and files in your project together: this makes it easier to access them, and
-promotes standardisation among your projects.</p>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">First, import any dependencies</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">link_project_data</span><span class="p">,</span> <span class="n">ProjDirs</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="link-your-data">
-<h2>1. Link your data<a class="headerlink" href="#link-your-data" title="Permalink to this headline">#</a></h2>
-<p>Find your project’s root directory. You can do this in any number of ways, as
-long as you do it programmatically. For example, the code below assumes that you
-are doing version control with <a class="reference external" href="https://git-scm.com/">git</a> and simply gets the root of your repository:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
-<span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">working_tree_dir</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>It is common to have your raw data on a large external drive or remote server
-(for example I use a RAID system). If this is the case for you, you probably
-want to link the actual location of your raw data to an otherwise empty <code class="docutils literal notranslate"><span class="pre">/data</span></code>
-folder in your project for ease of access and clarity. Pykanto includes a
-function to do just that:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DATA_LOCATION</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;path/to/your/data/drive&#39;</span><span class="p">)</span>
-<span class="n">link_project_data</span><span class="p">(</span><span class="n">DATA_LOCATION</span><span class="p">,</span> <span class="n">PROJECT_ROOT</span> <span class="o">/</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="tip admonition">
-<p class="admonition-title">Tip: freeze your raw data and only work on programmatically derived datasets</p>
-<p>You wil likely create different derived datasets from the same raw data, and that is why pykanto lets your (raw) data live wherever you want.
-I <strong>strongly</strong> recommend that you make its directory read-only and
-never ever touch it.</p>
-</div>
-</section>
-<section id="set-up-project-directories">
-<h2>2. Set up project directories<a class="headerlink" href="#set-up-project-directories" title="Permalink to this headline">#</a></h2>
-<p>Next, tell <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> where the raw data for your project live,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RAW_DATA</span> <span class="o">=</span> <span class="n">PROJECT_ROOT</span> <span class="o">/</span> <span class="s1">&#39;data&#39;</span> <span class="o">/</span> <span class="s1">&#39;raw&#39;</span> <span class="o">/</span> <span class="s1">&#39;BIGBIRD_2021&#39;</span>
-</pre></div>
-</div>
-<p>and build the project’s directory tree. See the <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">ProjDirs</span></code></span> docs for more information.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJECT_ROOT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">DIRS</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>If you need to change the location of your raw data before you create a dataset,
-you can use the following method:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DIRS</span><span class="o">.</span><span class="n">update_json_locs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Now you are ready to read and segment your raw data (see next section).</strong></p>
-</section>
+There is a complete example in the <span class="xref myst">preprint presenting <code class="docutils literal notranslate"><span class="pre">pykanto</span></code></span> that
+walks you through the steps of training a ‘deep learning’ model to distinguish
+between different birds based on their songs. The code to run this example,
+whoch you can adapt to your own data, is available in its onwn repository: <span class="xref myst">LINK</span>.</p>
 </section>
 
 

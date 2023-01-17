@@ -49,7 +49,7 @@ extensions = [
     "sphinx_copybutton",
     "IPython.sphinxext.ipython_console_highlighting",
 ]
-nbsphinx_execute = "auto"
+nb_execution_mode = "cache"
 coverage_show_missing_items = True
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 templates_path = ["_templates"]

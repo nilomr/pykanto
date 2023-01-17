@@ -117,17 +117,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="segmenting-files.html">
-   Raw file segmentation
+   Segmenting long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -147,7 +147,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -451,6 +451,13 @@ title="Print to PDF"
    </code>
    in a HPC cluster
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#instructions">
+     Instructions
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -486,6 +493,13 @@ title="Print to PDF"
    </code>
    in a HPC cluster
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#instructions">
+     Instructions
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -511,9 +525,9 @@ computing. As an example, the <code class="docutils literal notranslate"><span c
 and segment 20.000 discrete acoustic units in approximately 16 seconds on a
 desktop 8-core machine; a dataset with over half a million (556.472) units takes
 ~132 seconds on a standard 48-core compute node.</p>
-<p><code class="docutils literal notranslate"><span class="pre">pykanto</span></code> works in any (well, hopefully!) personal machine, but for most real-world
-applications you will probably want to run it on a compute cluster. This can be a
-daunting task, so I have packaged some tools that should make it a little bit
+<p><code class="docutils literal notranslate"><span class="pre">pykanto</span></code> works in average desktop machines, but for most real-world
+applications you will probably want to use it on a compute cluster. This can be a
+daunting task for the uninitiated, so I have packaged some tools that should make it a little bit
 easier—at least they do for me!</p>
 <p><a class="reference external" href="https://slurm.schedmd.com/documentation.html">Slurm</a> is still the most popular
 job scheduler used in compute clusters and the one I’m familiar with, so the following instructions and tips
@@ -539,32 +553,32 @@ machine. There are two ways to do this in <code class="docutils literal notransl
 </pre></div>
 </div>
 </div>
-<p>See <a class="reference external" href="https://github.com/pengzhenghao/use-ray-with-slurm">source code by Peng Zhenghao</a>. Also see <a class="reference external" href="https://docs.ray.io/en/ray-1.1.0/cluster/slurm.html">ray instructions</a></p>
-<ol class="arabic simple">
-<li><p>Add this to the top of the script you want to run, right after any imports:</p></li>
-</ol>
+<section id="instructions">
+<h3>Instructions<a class="headerlink" href="#instructions" title="Permalink to this headline">#</a></h3>
+<blockquote>
+<div><p>See <a class="reference external" href="https://github.com/pengzhenghao/use-ray-with-slurm">source code by Peng Zhenghao</a>. Also see <a class="reference external" href="https://docs.ray.io/en/ray-1.1.0/cluster/slurm.html">ray instructions</a>.</p>
+</div></blockquote>
+<ul>
+<li><p>Add this to the top of the script you want to run, right after any imports:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">redis_password</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="linenos">2</span><span class="n">ray</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ip_head&quot;</span><span class="p">],</span> <span class="n">_redis_password</span><span class="o">=</span><span class="n">redis_password</span><span class="p">)</span>
 <span class="linenos">3</span><span class="nb">print</span><span class="p">(</span><span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">())</span>
 </pre></div>
 </div>
-<ol class="arabic simple">
-<li><p>Request compute resources the same way you would normally do, say you want an interactive session in one node with an NVIDIA v100 GPU:</p></li>
-</ol>
+</li>
+<li><p>Request compute resources the same way you would normally do, say you want an interactive session in one node with an NVIDIA v100 GPU:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For reference only, how you do this exactly will depend on which particular system you are using.</span>
 srun -p interactive --x11 --pty --gres<span class="o">=</span>gpu:v100:1 --mem<span class="o">=</span><span class="m">90000</span> /bin/bash
 </pre></div>
 </div>
-<ol class="arabic" start="2">
-<li><p>You can run <code class="docutils literal notranslate"><span class="pre">pykanto-slaunch</span> <span class="pre">--help</span></code> in your terminal to see which arguments you can pass to pykanto-slaunch.</p></li>
-<li><p>A sumbission command will look something like this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pykanto-slaunch --exp BigBird2020 --p short --time <span class="m">00</span>:30:00 -n <span class="m">1</span> --memory <span class="m">40000</span> --gpu <span class="m">1</span> --c <span class="s2">&quot;python 0.0_build-dataset.py&quot;</span>
-</pre></div>
-</div>
-<p>This will create a bash (.sh) file and a  log (.log) file in a <code class="docutils literal notranslate"><span class="pre">/logs</span></code> folder within the directory from which you are calling the script.</p>
+</li>
+<li><p>You can run <code class="docutils literal notranslate"><span class="pre">pykanto-slaunch</span> <span class="pre">--help</span></code> in your terminal to see which arguments you can pass to pykanto-slaunch.</p>
+<p>A sumbission command will look something like this:
+<code class="docutils literal notranslate"><span class="pre">{code-block}</span> <span class="pre">bash</span>&#160;&#160;&#160;&#160; <span class="pre">pykanto-slaunch</span> <span class="pre">--exp</span> <span class="pre">BigBird2020</span> <span class="pre">--p</span> <span class="pre">short</span> <span class="pre">--time</span> <span class="pre">00:30:00</span> <span class="pre">-n</span> <span class="pre">1</span> <span class="pre">--memory</span> <span class="pre">40000</span> <span class="pre">--gpu</span> <span class="pre">1</span> <span class="pre">--c</span> <span class="pre">&quot;python</span> <span class="pre">0.0_build-dataset.py&quot;</span>&#160;&#160;&#160;&#160; </code>
+This will create a bash (.sh) file and a  log (.log) file in a <code class="docutils literal notranslate"><span class="pre">/logs</span></code> folder within the directory from which you are calling the script.</p>
 </li>
 <li><p>Check the logfile for errors!</p></li>
-</ol>
+</ul>
 <div class="tip dropdown admonition">
 <p class="admonition-title">Tip: uploading data to your cluster storage area</p>
 <p>If you need to upload your raw or segmented data to use in a HPC cluster and you
@@ -577,6 +591,7 @@ reduce overhead. <code class="docutils literal notranslate"><span class="pre">py
 </pre></div>
 </div>
 </div>
+</section>
 </section>
 </section>
 

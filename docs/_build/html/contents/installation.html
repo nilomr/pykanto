@@ -442,8 +442,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installing-gpu-ml-libraries">
-   Installing GPU/ML libraries
+  <a class="reference internal nav-link" href="#installing-gpu-accelerated-and-ml-libraries">
+   Installing GPU-accelerated and ML libraries
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -476,8 +476,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installing-gpu-ml-libraries">
-   Installing GPU/ML libraries
+  <a class="reference internal nav-link" href="#installing-gpu-accelerated-and-ml-libraries">
+   Installing GPU-accelerated and ML libraries
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -503,19 +503,29 @@ title="Print to PDF"
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pykanto
 </pre></div>
 </div>
+<p>It is possible to use pip and install pykanto outside of a virtual environment,
+but this is not advised. Virtual environments create a clean Python environment
+that does not interfere with any existing system installation, can be easily
+removed, and contain only the package versions your application needs. They help
+avoid a common challenge known as dependency hell. <a class="reference external" href="https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst">scikit-image
+docs</a></p>
 <div class="tip admonition">
 <p class="admonition-title">Tip: avoid a <a class="reference external" href="https://en.wikipedia.org/wiki/Dependency_hell">dependency hell</a>!</p>
-<p>It is possible to use pip and install pykanto outside of a virtual environment, but this is not advised:</p>
-<blockquote class="epigraph">
-<div><p>Virtual environments create a clean Python environment that does not interfere with any existing system installation, can be easily removed, and contain only the package versions your application needs. They help avoid a common challenge known as dependency hell.</p>
-<p class="attribution">—<a class="reference external" href="https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst"> scikit-image docs</a>
-</p>
-</div></blockquote>
+<p>It is possible to use pip and install pykanto outside of a virtual environment,
+but this is not advised. Virtual environments create a clean Python environment
+that does not interfere with any existing system installation, can be easily
+removed, and contain only the package versions your application needs. They help
+avoid a common challenge known as dependency hell. <a class="reference external" href="https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst">scikit-image
+docs</a></p>
+<p>I highly recommend that you create a new environment, for example with conda:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n pykanto-env <span class="nv">python</span><span class="o">==</span><span class="m">3</span>.9 <span class="o">&amp;&amp;</span> conda activate pykanto-env      
+</pre></div>
+</div>
 <p>And only then install <code class="docutils literal notranslate"><span class="pre">pykanto</span></code>.</p>
 </div>
 </section>
-<section id="installing-gpu-ml-libraries">
-<h2>Installing GPU/ML libraries<a class="headerlink" href="#installing-gpu-ml-libraries" title="Permalink to this headline">#</a></h2>
+<section id="installing-gpu-accelerated-and-ml-libraries">
+<h2>Installing GPU-accelerated and ML libraries<a class="headerlink" href="#installing-gpu-accelerated-and-ml-libraries" title="Permalink to this headline">#</a></h2>
 <p>Under the hood, <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> uses some libraries and algorithms (like UMAP) that
 can run much faster on a GPU. If you have a CUDA-supported GPU and install
 <a class="reference external" href="https://rapids.ai/">RAPIDS</a>’s <a class="reference external" href="https://github.com/rapidsai/cuml">cuML</a> in the
@@ -523,7 +533,7 @@ same environment, <code class="docutils literal notranslate"><span class="pre">p
 implementation.</p>
 <p>I recommend that, if this is the case, you first create a fresh environment with
 conda:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n pykanto-env <span class="nv">python</span><span class="o">==</span><span class="m">3</span>.8             
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n pykanto-env <span class="nv">python</span><span class="o">==</span><span class="m">3</span>.9             
 </pre></div>
 </div>
 <p>And then install cuML &amp; <code class="docutils literal notranslate"><span class="pre">pykanto</span></code>, in that order.</p>
@@ -544,12 +554,14 @@ pip install pykanto
 </section>
 <section id="developer-installation">
 <h2>Developer installation<a class="headerlink" href="#developer-installation" title="Permalink to this headline">#</a></h2>
+<p>If you want to contribute to the project, you can install it in editable mode
+along with the development dependencies such as <code class="docutils literal notranslate"><span class="pre">pytest</span></code>, <code class="docutils literal notranslate"><span class="pre">nox</span></code> or <code class="docutils literal notranslate"><span class="pre">sphinx</span></code>,
+necessary for testing and generating the documentation.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/nilomr/pykanto.git
 <span class="nb">cd</span> pykanto
-pip install -e .<span class="s1">&#39;[dev]&#39;</span>
+pip install -e <span class="s1">&#39;.[dev, test, doc]&#39;</span>
 </pre></div>
 </div>
-<p>This will install extra dependencies, such as <code class="docutils literal notranslate"><span class="pre">pytest</span></code>, <code class="docutils literal notranslate"><span class="pre">nox</span></code> or <code class="docutils literal notranslate"><span class="pre">sphinx</span></code>, necessary for testing and generating the documentation.</p>
 </section>
 </section>
 

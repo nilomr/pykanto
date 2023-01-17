@@ -515,8 +515,9 @@ promotes standardisation among your projects.</p>
 <p>Find your project’s root directory. You can do this in any number of ways, as
 long as you do it programmatically. For example, the code below assumes that you
 are doing version control with <a class="reference external" href="https://git-scm.com/">git</a> and simply gets the root of your repository:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
-<span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">working_tree_dir</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
+    <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">search_parent_directories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">working_tree_dir</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>It is common to have your raw data on a large external drive or remote server
@@ -524,8 +525,8 @@ are doing version control with <a class="reference external" href="https://git-s
 want to link the actual location of your raw data to an otherwise empty <code class="docutils literal notranslate"><span class="pre">/data</span></code>
 folder in your project for ease of access and clarity. Pykanto includes a
 function to do just that:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DATA_LOCATION</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;path/to/your/data/drive&#39;</span><span class="p">)</span>
-<span class="n">link_project_data</span><span class="p">(</span><span class="n">DATA_LOCATION</span><span class="p">,</span> <span class="n">PROJECT_ROOT</span> <span class="o">/</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">external_data</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;path/to/your/data/drive&#39;</span><span class="p">)</span>
+<span class="n">link_project_data</span><span class="p">(</span><span class="n">external_data</span><span class="p">,</span> <span class="n">project_root</span> <span class="o">/</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="tip admonition">
@@ -538,20 +539,19 @@ never ever touch it.</p>
 <section id="set-up-project-directories">
 <h2>2. Set up project directories<a class="headerlink" href="#set-up-project-directories" title="Permalink to this headline">#</a></h2>
 <p>Next, tell <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> where the raw data for your project live,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">RAW_DATA</span> <span class="o">=</span> <span class="n">PROJECT_ROOT</span> <span class="o">/</span> <span class="s1">&#39;data&#39;</span> <span class="o">/</span> <span class="s1">&#39;raw&#39;</span> <span class="o">/</span> <span class="s1">&#39;BIGBIRD_2021&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset_name</span> <span class="o">=</span> <span class="s1">&#39;BIGBIRD_2021&#39;</span>
+<span class="n">data_dir</span> <span class="o">=</span> <span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span> <span class="o">/</span> <span class="s2">&quot;raw&quot;</span> <span class="o">/</span> <span class="n">dataset_name</span>
 </pre></div>
 </div>
-<p>and build the project’s directory tree. See the <span class="xref myst"><code class="docutils literal notranslate"><span class="pre">ProjDirs</span></code></span> docs for more information.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJECT_ROOT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>and build the project’s directory tree:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">project_root</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span>  <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">DIRS</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If you need to change the location of your raw data before you create a dataset,
-you can use the following method:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DIRS</span><span class="o">.</span><span class="n">update_json_locs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Now you are ready to read and segment your raw data (see next section).</strong></p>
+<p>See the
+<a class="reference internal" href="../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a> docs for more information.
+<br>
+<strong>Now you are ready to import and segment your raw data (see next section).</strong></p>
 </section>
 </section>
 

@@ -12,9 +12,9 @@ and segment 20.000 discrete acoustic units in approximately 16 seconds on a
 desktop 8-core machine; a dataset with over half a million (556.472) units takes
 ~132 seconds on a standard 48-core compute node.
 
-`pykanto` works in any (well, hopefully!) personal machine, but for most real-world
-applications you will probably want to run it on a compute cluster. This can be a
-daunting task, so I have packaged some tools that should make it a little bit
+`pykanto` works in average desktop machines, but for most real-world
+applications you will probably want to use it on a compute cluster. This can be a
+daunting task for the uninitiated, so I have packaged some tools that should make it a little bit
 easier—at least they do for me!
 
 
@@ -52,35 +52,35 @@ dataset = KantoData(... , parameters=params)
 ```
 ````
 
+### Instructions
 
-See [source code by Peng Zhenghao](https://github.com/pengzhenghao/use-ray-with-slurm). Also see [ray instructions](https://docs.ray.io/en/ray-1.1.0/cluster/slurm.html)
+> See [source code by Peng Zhenghao](https://github.com/pengzhenghao/use-ray-with-slurm). Also see [ray instructions](https://docs.ray.io/en/ray-1.1.0/cluster/slurm.html).
 
 
-1. Add this to the top of the script you want to run, right after any imports:
+- Add this to the top of the script you want to run, right after any imports:
+   ```{code-block} python
+   :linenos:
 
-```{code-block} python
-:linenos:
-
-redis_password = sys.argv[1]
-ray.init(address=os.environ["ip_head"], _redis_password=redis_password)
-print(ray.cluster_resources())
-```
-
-1. Request compute resources the same way you would normally do, say you want an interactive session in one node with an NVIDIA v100 GPU: 
-```{code-block} bash
-# For reference only, how you do this exactly will depend on which particular system you are using.
-srun -p interactive --x11 --pty --gres=gpu:v100:1 --mem=90000 /bin/bash
-```
-
-2. You can run `pykanto-slaunch --help` in your terminal to see which arguments you can pass to pykanto-slaunch.
-   
-3. A sumbission command will look something like this:
-   ```{code-block} bash
-   pykanto-slaunch --exp BigBird2020 --p short --time 00:30:00 -n 1 --memory 40000 --gpu 1 --c "python 0.0_build-dataset.py"
+   redis_password = sys.argv[1]
+   ray.init(address=os.environ["ip_head"], _redis_password=redis_password)
+   print(ray.cluster_resources())
    ```
+
+- Request compute resources the same way you would normally do, say you want an interactive session in one node with an NVIDIA v100 GPU: 
+   ```{code-block} bash
+   # For reference only, how you do this exactly will depend on which particular system you are using.
+   srun -p interactive --x11 --pty --gres=gpu:v100:1 --mem=90000 /bin/bash
+   ```
+
+- You can run `pykanto-slaunch --help` in your terminal to see which arguments you can pass to pykanto-slaunch.
+   
+   A sumbission command will look something like this:
+      ```{code-block} bash
+      pykanto-slaunch --exp BigBird2020 --p short --time 00:30:00 -n 1 --memory 40000 --gpu 1 --c "python 0.0_build-dataset.py"
+      ```
    This will create a bash (.sh) file and a  log (.log) file in a `/logs` folder within the directory from which you are calling the script.
 
-4. Check the logfile for errors!
+- Check the logfile for errors!
 
 
 ````{admonition} Tip: uploading data to your cluster storage area

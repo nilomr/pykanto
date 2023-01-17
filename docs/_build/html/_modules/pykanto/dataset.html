@@ -114,17 +114,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/segmenting-files.html">
-   Raw file segmentation
+   Segmenting long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../contents/segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="../../contents/segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -144,7 +144,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -406,7 +406,6 @@ title="Source repository"
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">multiprocessing.spawn</span> <span class="kn">import</span> <span class="n">prepare</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">sample</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
@@ -432,10 +431,14 @@ title="Source repository"
     <span class="n">flatten_list</span><span class="p">,</span>
     <span class="n">print_dict</span><span class="p">,</span>
     <span class="n">timing</span><span class="p">,</span>
-    <span class="n">to_iterator</span><span class="p">,</span>
     <span class="n">with_pbar</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">_get_json</span><span class="p">,</span> <span class="n">_get_json_parallel</span><span class="p">,</span> <span class="n">makedir</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_get_json</span><span class="p">,</span>
+    <span class="n">_get_json_parallel</span><span class="p">,</span>
+    <span class="n">makedir</span><span class="p">,</span>
+    <span class="n">save_to_jsons</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span><span class="p">,</span> <span class="n">get_file_paths</span><span class="p">,</span> <span class="n">get_wavs_w_annotation</span>
 
 <span class="c1"># ─── CLASSES ──────────────────────────────────────────────────────────────────</span>
@@ -1121,6 +1124,12 @@ title="Source repository"
 
         <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">,</span> <span class="n">au</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;ID&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KantoData.write_to_json"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.write_to_json">[docs]</a>    <span class="k">def</span> <span class="nf">write_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the dataset to the existing JSON files for each vocalisation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">save_to_jsons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KantoData.cluster_ids"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.cluster_ids">[docs]</a>    <span class="nd">@timing</span>
     <span class="k">def</span> <span class="nf">cluster_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_sample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

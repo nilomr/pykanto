@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>KantoData datasets &#8212; pykanto 0.1 documentation</title>
+    <title>The KantoData dataset &#8212; pykanto 0.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Interactive app" href="interactive-app.html" />
-    <link rel="prev" title="Vocalisation segmentation" href="segmentation.html" />
+    <link rel="prev" title="Segmenting vocalisations" href="segmenting-vocalisations.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -117,17 +117,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -147,7 +147,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -437,8 +437,13 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parameters">
-   Parameters
+  <a class="reference internal nav-link" href="#useful-attributes">
+   Useful attributes
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#some-common-operations-with-datasets">
+   Some common operations with datasets
   </a>
  </li>
 </ul>
@@ -450,7 +455,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>KantoData datasets</h1>
+                <h1>The KantoData dataset</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -461,8 +466,13 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parameters">
-   Parameters
+  <a class="reference internal nav-link" href="#useful-attributes">
+   Useful attributes
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#some-common-operations-with-datasets">
+   Some common operations with datasets
   </a>
  </li>
 </ul>
@@ -475,111 +485,139 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="kantodata-datasets">
-<h1>KantoData datasets<a class="headerlink" href="#kantodata-datasets" title="Permalink to this headline">#</a></h1>
-<section id="parameters">
-<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">#</a></h2>
-<p>The print function will return the contents of the dataset. can also do with
-parameters or directories</p>
-<p>Most computationally intensive methods will have three versions:
-<code class="docutils literal notranslate"><span class="pre">method</span></code> (single)
-<code class="docutils literal notranslate"><span class="pre">method_r</span></code> (n elements), remote
-<code class="docutils literal notranslate"><span class="pre">method_parallel</span></code>, parallelised/distributed w/ a ray cluster</p>
-<p>.. code-block:: python
-:linenos:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>print(dataset.parameters)
-</pre></div>
-</div>
-<p>To get some basic info on the data in the dataset:</p>
-<p>.. code-block:: python
-:linenos:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Check dataset length
-dataset.sample_info()
-</pre></div>
-</div>
-<p>.. code-block:: none</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Total length: 800
-Vocalisations: 740
-Noise: 60
-Unique IDs: 3
-</pre></div>
-</div>
-<p>Plot some info</p>
-<p>.. code-block:: python
-:linenos:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Plot some information about the dataset
-dataset.plot_summary(variable=&#39;all&#39;)
-</pre></div>
-</div>
-<p>Check sample size per individual ID in the dataset:</p>
-<p>.. code-block:: python
-:linenos:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>dataset.data[&#39;ID&#39;].value_counts()
-</pre></div>
-</div>
-<p>.. code-block:: none</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>B119    159
-B108    157
-B163    134
-B226    134
-B216    117
-</pre></div>
-</div>
-<p>Creating a dataset for which there is already derived data (e.g. spectrograms).
-This is something that might happen if, say, creating a dataset fails but
-at least some spectrogram files were saved succesfully.</p>
-<p>.. code-block:: python
-:linenos:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DATASET_ID = &quot;BIGBIRD&quot;
-dataset = KantoData(DIRS, parameters=params,
-                    overwrite_dataset=True, overwrite_data=False)
-</pre></div>
-</div>
-<p>Note:
-You can use any matplotlib palette here using the ‘cmap’ argument.
-See <code class="docutils literal notranslate"><span class="pre">colourmaps</span></code>_.</p>
-<p>.. _colourmaps: https://matplotlib.org/stable/tutorials/colors/colormaps.html</p>
-<p>Load an existing dataset:</p>
+  <section id="the-kantodata-dataset">
+<h1>The KantoData dataset<a class="headerlink" href="#the-kantodata-dataset" title="Permalink to this headline">#</a></h1>
+<section id="useful-attributes">
+<h2>Useful attributes<a class="headerlink" href="#useful-attributes" title="Permalink to this headline">#</a></h2>
+<p><a class="reference internal" href="../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><code class="xref py py-class docutils literal notranslate"><span class="pre">KantoData</span></code></a> datasets contain a series of attributes,
+here are some of the ones you are most likely to access:</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KantoData.data</span></code></p></td>
+<td><p>a dataframe containing information about each vocalization</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KantoData.files</span></code></p></td>
+<td><p>a list of files associated with the dataset</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KantoData.parameters</span></code></p></td>
+<td><p>a <a class="reference internal" href="../_autosummary/pykanto.parameters.html#pykanto.parameters.Parameters" title="pykanto.parameters.Parameters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameters</span></code></a> instance containing the params used to generate the dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KantoData.metadata</span></code></p></td>
+<td><p>a dictionary of metadata associated with the dataset</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KantoData.units</span></code></p></td>
+<td><p>a dataframe of single sound units in dataset, created if song_level = False in the parametres after running <code class="docutils literal notranslate"><span class="pre">KantoData.cluster_ids()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="some-common-operations-with-datasets">
+<h2>Some common operations with datasets<a class="headerlink" href="#some-common-operations-with-datasets" title="Permalink to this headline">#</a></h2>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Description</p></th>
+<th class="head"><p>Code</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Load an existing dataset</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dataset</span> <span class="pre">=</span> <span class="pre">load_dataset(dataset.DIRS.DATASET,</span> <span class="pre">DIRS)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Save an existing dataset</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dataset.save_to_disk()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Save a dataset to csv</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dataset.to_csv(dataset.DIRS.DATASET.parent)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Save new metadata to JSON files</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dataset.write_to_json()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>You can get some basic information about the dataset by running:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Opening an existing dataset</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">load_dataset</span>
-<span class="n">DATASET_ID</span> <span class="o">=</span> <span class="s1">&#39;BIG_BIRD&#39;</span>
-<span class="n">out_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
-<span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">sample_info</span><span class="p">()</span>
+<span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">KantoData.data</span></code> and <code class="docutils literal notranslate"><span class="pre">KantoData.units</span></code> are <code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code>
+instances: I have chosen this since it is a very flexible and most users are
+already familiar with it. You can query and modify it as you would any other
+dataframe. For example, to see the first three rows and a subset of columns:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[[</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;recordist&#39;</span><span class="p">,</span> <span class="s1">&#39;unit_durations&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">4</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">load_dataset</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">DATASET_ID</span> <span class="o">=</span> <span class="s1">&#39;BIG_BIRD&#39;</span>
-<span class="ne">----&gt; </span><span class="mi">4</span> <span class="n">out_dir</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<span class="ne">NameError</span>: name &#39;DIRS&#39; is not defined
-</pre></div>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>recordist</th>
+      <th>unit_durations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2021-B32-0415_05-11</th>
+      <td>2021-04-15</td>
+      <td>Nilo Merino Recalde</td>
+      <td>[0.0986848072562358, 0.10448979591836727, 0.10...</td>
+    </tr>
+    <tr>
+      <th>2021-B32-0415_05-15</th>
+      <td>2021-04-15</td>
+      <td>Nilo Merino Recalde</td>
+      <td>[0.1102947845804989, 0.09868480725623585, 0.12...</td>
+    </tr>
+    <tr>
+      <th>2021-B32-0415_05-21</th>
+      <td>2021-04-15</td>
+      <td>Nilo Merino Recalde</td>
+      <td>[0.1219047619047619, 0.10448979591836738, 0.14...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
-</div>
-</div>
+<p>Or to extract the length of each vocalisation and calculate inter-onset
+intervals:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to save the dataset as a .csv file,</span>
-<span class="c1"># which I recommend you do as backup,</span>
-<span class="n">csv_dir</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">DIRS</span><span class="o">.</span><span class="n">DATASET</span><span class="o">.</span><span class="n">parent</span>
-<span class="n">dataset</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">csv_dir</span><span class="p">)</span>
-
-
-<span class="c1"># If you want to save the new metadata you have generated</span>
-<span class="c1"># (vocalisation type labels and onset/offsets, for example)</span>
-<span class="c1"># to the original .json files (as a backup or to use with other software):</span>
-<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">save_to_jsons</span>
-<span class="n">save_to_jsons</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">last_offsets</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+<span class="n">iois</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">onsets</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
+</div>
+<div class="cell tag_remove-input docutils container">
 </div>
 </section>
 </section>
@@ -592,11 +630,11 @@ See <code class="docutils literal notranslate"><span class="pre">colourmaps</spa
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="segmentation.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="segmenting-vocalisations.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Vocalisation segmentation</p>
+            <p class="prev-next-title">Segmenting vocalisations</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="interactive-app.html" title="next page">

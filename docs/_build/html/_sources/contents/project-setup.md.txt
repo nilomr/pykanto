@@ -27,8 +27,9 @@ are doing version control with [git](https://git-scm.com/) and simply gets the r
 
 ```{code-block} python
 
-PROJECT_ROOT = Path(
-git.Repo('.', search_parent_directories=True).working_tree_dir)
+project_root = Path(
+    git.Repo(".", search_parent_directories=True).working_tree_dir
+)
 
 ```
 
@@ -40,8 +41,8 @@ function to do just that:
 
 ```{code-block} python
 
-DATA_LOCATION = Path('path/to/your/data/drive')
-link_project_data(DATA_LOCATION, PROJECT_ROOT / 'data')
+external_data = Path('path/to/your/data/drive')
+link_project_data(external_data, project_root / 'data')
 
 ```
 
@@ -58,28 +59,19 @@ never ever touch it.
 Next, tell `pykanto` where the raw data for your project live, 
 
 ```{code-block} python
-
-RAW_DATA = PROJECT_ROOT / 'data' / 'raw' / 'BIGBIRD_2021'
+dataset_name = 'BIGBIRD_2021'
+data_dir = project_root / "data" / "raw" / dataset_name
 ```
 
-and build the project's directory tree. See the [`ProjDirs`](../_autosummary/pykanto.utils.paths.rst#pykanto.utils.paths.ProjDirs) docs for more information.
-
+and build the project's directory tree:
+ 
 
 ```{code-block} python
 
-DIRS = ProjDirs(PROJECT_ROOT, RAW_DATA, mkdir=True)
+DIRS = ProjDirs(project_root, data_dir, dataset_name,  mkdir=True)
 print(DIRS)
-
 ```
-
-If you need to change the location of your raw data before you create a dataset,
-you can use the following method:
-
-
-```{code-block} python
-
-DIRS.update_json_locs(PROJECT)
-
-```
-
-**Now you are ready to read and segment your raw data (see next section).**
+See the
+{py:class}`~pykanto.utils.paths.ProjDirs` docs for more information.
+<br>
+**Now you are ready to import and segment your raw data (see next section).**

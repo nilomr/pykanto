@@ -1,108 +1,102 @@
 {
     "cells": [
         {
+            "attachments": {},
             "cell_type": "markdown",
             "metadata": {},
             "source": [
-                "# KantoData datasets\n",
-                "\n",
-                "Parameters\n",
-                "----------\n",
-                "\n",
-                "The print function will return the contents of the dataset. can also do with\n",
-                "parameters or directories\n",
-                "\n",
-                "Most computationally intensive methods will have three versions:\n",
-                "``method`` (single)\n",
-                "``method_r`` (n elements), remote\n",
-                "``method_parallel``, parallelised/distributed w/ a ray cluster\n",
-                "\n",
-                "\n",
-                ".. code-block:: python\n",
-                "    :linenos:\n",
-                "\n",
-                "    print(dataset.parameters)\n",
-                "\n",
-                "\n",
-                "To get some basic info on the data in the dataset:\n",
-                "\n",
-                ".. code-block:: python\n",
-                "    :linenos:\n",
-                "    \n",
-                "    # Check dataset length\n",
-                "    dataset.sample_info()\n",
-                ".. code-block:: none\n",
-                "\n",
-                "    Total length: 800\n",
-                "    Vocalisations: 740\n",
-                "    Noise: 60\n",
-                "    Unique IDs: 3\n",
-                "\n",
-                "Plot some info \n",
-                "\n",
-                ".. code-block:: python\n",
-                "    :linenos:\n",
-                "\n",
-                "    # Plot some information about the dataset\n",
-                "    dataset.plot_summary(variable='all')\n",
-                "\n",
-                "\n",
-                "Check sample size per individual ID in the dataset:\n",
-                "\n",
-                ".. code-block:: python\n",
-                "    :linenos:\n",
-                "\n",
-                "    dataset.data['ID'].value_counts()\n",
-                "\n",
-                ".. code-block:: none\n",
-                "\n",
-                "    B119    159\n",
-                "    B108    157\n",
-                "    B163    134\n",
-                "    B226    134\n",
-                "    B216    117\n",
-                "    \n",
-                "\n",
-                "\n",
-                "Creating a dataset for which there is already derived data (e.g. spectrograms).\n",
-                "This is something that might happen if, say, creating a dataset fails but\n",
-                "at least some spectrogram files were saved succesfully. \n",
-                "\n",
-                ".. code-block:: python\n",
-                "    :linenos:\n",
-                "\n",
-                "    DATASET_ID = \"BIGBIRD\"\n",
-                "    dataset = KantoData(DIRS, parameters=params,\n",
-                "                        overwrite_dataset=True, overwrite_data=False)\n",
-                "\n",
-                "\n",
-                "Note: \n",
-                "    You can use any matplotlib palette here using the 'cmap' argument.\n",
-                "    See `colourmaps`_.\n",
-                "\n",
-                ".. _colourmaps: https://matplotlib.org/stable/tutorials/colors/colormaps.html\n",
-                "\n",
-                "\n"
-            ]
-        },
-        {
-            "cell_type": "markdown",
-            "metadata": {},
-            "source": [
-                "Load an existing dataset:"
+                "# The KantoData dataset"
             ]
         },
         {
             "cell_type": "code",
             "execution_count": null,
-            "metadata": {},
+            "metadata": {
+                "tags": [
+                    "remove-cell"
+                ]
+            },
             "outputs": [],
             "source": [
-                "# Opening an existing dataset\n",
+                "from pathlib import Path\n",
+                "from pykanto.dataset import KantoData\n",
+                "from pykanto.parameters import Parameters\n",
+                "from pykanto.utils.paths import ProjDirs, pykanto_data\n",
                 "from pykanto.utils.io import load_dataset\n",
-                "DATASET_ID = 'BIG_BIRD'\n",
-                "out_dir = DIRS.DATA / \"datasets\" / DATASET_ID / f\"{DATASET_ID}.db\"\n",
-                "dataset = load_dataset(out_dir)"
+                "import numpy as np\n",
+                "\n",
+                "\n",
+                "DATASET_ID = \"GREAT_TIT\"\n",
+                "DIRS = pykanto_data(dataset=DATASET_ID)\n",
+                "\n",
+                "params = Parameters(dereverb=False, verbose=False)\n",
+                "dataset = KantoData(\n",
+                "    DIRS,\n",
+                "    parameters=params,\n",
+                "    overwrite_dataset=True,\n",
+                "    overwrite_data=True\n",
+                ")\n",
+                "\n",
+                "dataset.segment_into_units()\n",
+                "\n",
+                "dataset.save_to_disk()\n",
+                "dataset = load_dataset(dataset.DIRS.DATASET, DIRS)\n",
+                "dataset.to_csv(dataset.DIRS.DATASET.parent)\n",
+                "dataset.write_to_json()\n"
+            ]
+        },
+        {
+            "attachments": {},
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "## Useful attributes"
+            ]
+        },
+        {
+            "attachments": {},
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "{py:class}`~pykanto.dataset.KantoData` datasets contain a series of attributes,\n",
+                "here are some of the ones you are most likely to access:\n",
+                "\n",
+                "| Attribute | Description |\n",
+                "|-----------|-------------|\n",
+                "| `KantoData.data` | a dataframe containing information about each vocalization |\n",
+                "| `KantoData.files` | a list of files associated with the dataset |\n",
+                "| `KantoData.parameters` | a {py:class}`~pykanto.parameters.Parameters` instance containing the params used to generate the dataset |\n",
+                "| `KantoData.metadata` | a dictionary of metadata associated with the dataset |\n",
+                "| `KantoData.units` | a dataframe of single sound units in dataset, created if song_level = False in the parametres after running `KantoData.cluster_ids()` |"
+            ]
+        },
+        {
+            "attachments": {},
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "##  Some common operations with datasets"
+            ]
+        },
+        {
+            "attachments": {},
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "| Description | Code |\n",
+                "| --- | --- |\n",
+                "| Load an existing dataset | ```dataset = load_dataset(dataset.DIRS.DATASET, DIRS)``` |\n",
+                "| Save an existing dataset | ```dataset.save_to_disk()``` |\n",
+                "| Save a dataset to csv | ```dataset.to_csv(dataset.DIRS.DATASET.parent)``` |\n",
+                "| Save new metadata to JSON files | ```dataset.write_to_json()``` |"
+            ]
+        },
+        {
+            "attachments": {},
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "You can get some basic information about the dataset by running:"
             ]
         },
         {
@@ -111,18 +105,129 @@
             "metadata": {},
             "outputs": [],
             "source": [
-                "\n",
-                "# If you want to save the dataset as a .csv file,\n",
-                "# which I recommend you do as backup,\n",
-                "csv_dir = dataset.DIRS.DATASET.parent\n",
-                "dataset.to_csv(csv_dir)\n",
-                "\n",
-                "\n",
-                "# If you want to save the new metadata you have generated\n",
-                "# (vocalisation type labels and onset/offsets, for example)\n",
-                "# to the original .json files (as a backup or to use with other software):\n",
-                "from pykanto.utils.io import save_to_jsons\n",
-                "save_to_jsons(dataset)"
+                "dataset.sample_info()\n",
+                "dataset.data['ID'].value_counts()"
+            ]
+        },
+        {
+            "attachments": {},
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "`KantoData.data` and `KantoData.units` are {py:class}`~pandas.DataFrame`\n",
+                "instances: I have chosen this since it is a very flexible and most users are\n",
+                "already familiar with it. You can query and modify it as you would any other\n",
+                "dataframe. For example, to see the first three rows and a subset of columns:"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 16,
+            "metadata": {},
+            "outputs": [
+                {
+                    "data": {
+                        "text/html": [
+                            "<div>\n",
+                            "<style scoped>\n",
+                            "    .dataframe tbody tr th:only-of-type {\n",
+                            "        vertical-align: middle;\n",
+                            "    }\n",
+                            "\n",
+                            "    .dataframe tbody tr th {\n",
+                            "        vertical-align: top;\n",
+                            "    }\n",
+                            "\n",
+                            "    .dataframe thead th {\n",
+                            "        text-align: right;\n",
+                            "    }\n",
+                            "</style>\n",
+                            "<table border=\"1\" class=\"dataframe\">\n",
+                            "  <thead>\n",
+                            "    <tr style=\"text-align: right;\">\n",
+                            "      <th></th>\n",
+                            "      <th>date</th>\n",
+                            "      <th>recordist</th>\n",
+                            "      <th>unit_durations</th>\n",
+                            "    </tr>\n",
+                            "  </thead>\n",
+                            "  <tbody>\n",
+                            "    <tr>\n",
+                            "      <th>2021-B32-0415_05-11</th>\n",
+                            "      <td>2021-04-15</td>\n",
+                            "      <td>Nilo Merino Recalde</td>\n",
+                            "      <td>[0.0986848072562358, 0.10448979591836727, 0.10...</td>\n",
+                            "    </tr>\n",
+                            "    <tr>\n",
+                            "      <th>2021-B32-0415_05-15</th>\n",
+                            "      <td>2021-04-15</td>\n",
+                            "      <td>Nilo Merino Recalde</td>\n",
+                            "      <td>[0.1102947845804989, 0.09868480725623585, 0.12...</td>\n",
+                            "    </tr>\n",
+                            "    <tr>\n",
+                            "      <th>2021-B32-0415_05-21</th>\n",
+                            "      <td>2021-04-15</td>\n",
+                            "      <td>Nilo Merino Recalde</td>\n",
+                            "      <td>[0.1219047619047619, 0.10448979591836738, 0.14...</td>\n",
+                            "    </tr>\n",
+                            "  </tbody>\n",
+                            "</table>\n",
+                            "</div>"
+                        ],
+                        "text/plain": [
+                            "                           date            recordist  \\\n",
+                            "2021-B32-0415_05-11  2021-04-15  Nilo Merino Recalde   \n",
+                            "2021-B32-0415_05-15  2021-04-15  Nilo Merino Recalde   \n",
+                            "2021-B32-0415_05-21  2021-04-15  Nilo Merino Recalde   \n",
+                            "\n",
+                            "                                                        unit_durations  \n",
+                            "2021-B32-0415_05-11  [0.0986848072562358, 0.10448979591836727, 0.10...  \n",
+                            "2021-B32-0415_05-15  [0.1102947845804989, 0.09868480725623585, 0.12...  \n",
+                            "2021-B32-0415_05-21  [0.1219047619047619, 0.10448979591836738, 0.14...  "
+                        ]
+                    },
+                    "execution_count": 16,
+                    "metadata": {},
+                    "output_type": "execute_result"
+                }
+            ],
+            "source": [
+                "dataset.data[['date', 'recordist', 'unit_durations']].head(3)"
+            ]
+        },
+        {
+            "attachments": {},
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "Or to extract the length of each vocalisation and calculate inter-onset\n",
+                "intervals:"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": null,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "last_offsets = dataset.data[\"offsets\"].apply(lambda x: x[-1]).to_list()\n",
+                "iois = dataset.data.onsets.apply(\n",
+                "    lambda x: np.diff(x)\n",
+                ")"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": null,
+            "metadata": {
+                "tags": [
+                    "remove-input"
+                ]
+            },
+            "outputs": [],
+            "source": [
+                "print(\"Vocalisation durations: \",[f\"{x:.2f}\" for x in last_offsets[:5]])\n",
+                "print(\"IOIs: \", [f\"{x:.2f}\" for x in iois[0][:5]])"
             ]
         }
     ],
@@ -133,8 +238,16 @@
             "name": "python3"
         },
         "language_info": {
+            "codemirror_mode": {
+                "name": "ipython",
+                "version": 3
+            },
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
             "name": "python",
-            "version": "3.9.12"
+            "nbconvert_exporter": "python",
+            "pygments_lexer": "ipython3",
+            "version": "3.9.15"
         },
         "orig_nbformat": 4,
         "vscode": {

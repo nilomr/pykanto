@@ -53,6 +53,11 @@ a.reference.internal span.doc.std.std-doc:hover {
     margin-bottom: 1em;
 }
 
+
+.content-container a, .content-container a:visited {
+    color: grey;
+}
+
 /* LOGO ───────────────────────────────────────────────────────────────────── */
 
 div.navbar-brand-box a.navbar-brand img {
@@ -110,6 +115,10 @@ div.navbar-brand-box a.navbar-brand img {
 .fas.fa-bars {
     font-weight: 900;
     margin-left: 15px;
+}
+
+#site-navigation {
+    font-size: 1em;
 }
 
 
@@ -193,6 +202,11 @@ a:hover {
     text-decoration: none;
 }
 
+p {
+    margin-bottom: 1.15rem;
+
+    color: rgba(var(--pst-color-paragraph), 1);
+}
 
 .prev-next-area a p.prev-next-title {
     color: #8f8f8f;
@@ -223,17 +237,36 @@ main.bd-content #main-content a, main.bd-content #main-content a:visited, main.b
 /* code boxes, warnings and notes */
 
 /* show/hide code boxes */
+output>summary {
+    text-align: right;
+    font-size: 0.8 !important;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 0px var(--mystnb-source-border-color) dashed;
+    padding-left: 1em;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0.5em;
+    border: 0px var(--mystnb-source-border-color) solid;
+    background-color: #f7f7f7;
+    border-radius: 0.4rem;
+}
 
+html {
+    font-size: 0.9em;
+}
 
 div.cell details.hide>summary>span {
     color: #969696;
     opacity: 100%;
+    font-size: 0.8 !important;
 }
 
 div.cell details.above-input>summary,
 div.cell details.above-output>summary {
     /* align to right */
     text-align: right;
+    font-size: 0.8 !important;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     border-bottom: 0px var(--mystnb-source-border-color) dashed;
@@ -248,11 +281,12 @@ div.cell details.above-output>summary {
 
 
 div.cell details.hide>summary::marker {
-    /* place after text */
+
     opacity: 10%;
     color: #969696;
     text-align: end !important;
     text-align-last: end !important;
+
 }
 
 ::marker {
@@ -262,6 +296,7 @@ div.cell details.hide>summary::marker {
     text-indent: 0px !important;
     text-align: right !important;
     text-align-last: right !important;
+
 }
 
 /* output cell formatting */
@@ -278,17 +313,19 @@ div.cell div.cell_output pre {
 }
 
 div.cell div.cell_output:before {
-    content: "Output";
+    content: "Output:";
     text-align: right;
     font-size: 0.8em;
     background-color: #f7f7f7;
-    color: darkgrey;
+    color: rgb(124, 124, 124);
     position: relative;
-    bottom: -20px;
+    bottom: 0px;
     z-index: 0;
     text-transform: uppercase;
     font-weight: 600;
-    padding: 0.3em 0.4em;
+    padding: 0.3em 0.7em;
+    /* add space below: */
+    margin-bottom: 0.5em;
     border-radius: 0.4em;
     border: none;
 }
@@ -420,6 +457,24 @@ main.bd-content #main-content dl.module:not(.docutils) dt, main.bd-content #main
     border-radius: 0.4em;
     position: relative;
 }
+
+/* make box for function name and parameters */
+/* TODO: left it here */
+dl.py.function {
+    border-top: 5px solid #dbdbdb;
+    /* add space above: */
+    margin-top: 1.5em;
+
+    background: #f7f7f7;
+
+}
+
+.sig {
+    font-family: var(--pst-font-family-monospace);
+    font-size: 0.8em;
+}
+
+
 
 /* parameter and argument boxes */
 main.bd-content #main-content dl.module:not(.docutils) dl dt, main.bd-content #main-content dl.class:not(.docutils) dl dt, main.bd-content #main-content dl.exception:not(.docutils) dl dt, main.bd-content #main-content dl.function:not(.docutils) dl dt, main.bd-content #main-content dl.decorator:not(.docutils) dl dt, main.bd-content #main-content dl.data:not(.docutils) dl dt, main.bd-content #main-content dl.method:not(.docutils) dl dt, main.bd-content #main-content dl.attribute:not(.docutils) dl dt, main.bd-content #print-main-content dl.module:not(.docutils) dl dt, main.bd-content #print-main-content dl.class:not(.docutils) dl dt, main.bd-content #print-main-content dl.exception:not(.docutils) dl dt, main.bd-content #print-main-content dl.function:not(.docutils) dl dt, main.bd-content #print-main-content dl.decorator:not(.docutils) dl dt, main.bd-content #print-main-content dl.data:not(.docutils) dl dt, main.bd-content #print-main-content dl.method:not(.docutils) dl dt, main.bd-content #print-main-content dl.attribute:not(.docutils) dl dt {
@@ -625,6 +680,7 @@ div.highlight pre, table.highlighttable pre {
     padding-bottom: 15px;
     box-shadow: none;
     border: none;
+
     background-color: #f7f7f7;
     white-space: break-spaces;
 }
