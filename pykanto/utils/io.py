@@ -67,7 +67,7 @@ def load_dataset(
     ProjDirs object.
 
     Args:
-        dataset_dir (Path): Path to the dataset file (*.db)
+        dataset_dir (Path): Path to the dataset file (\*.db)
         DIRS (ProjDirs): New project directories
         relink_data (bool, optional): Whether to make update dataset paths.
             Defaults to True.
@@ -271,9 +271,9 @@ def save_to_jsons(dataset: KantoData) -> None:
     # Parallelisable part
     # TODO: refactor and parallelise with ray
     for jsonfile in with_pbar(
-        dataset.DIRS.JSON_LIST,
+        dataset._jsonfiles,
         desc="Adding new metadata to .json files "
-        f" in {dataset.DIRS.JSON_LIST[0].parent}",
+        f" in {dataset._jsonfiles[0].parent}",
     ):
         idx = jsonfile.stem
 
