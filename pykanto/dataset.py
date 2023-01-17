@@ -14,7 +14,6 @@ import pickle
 import subprocess
 import warnings
 from datetime import datetime
-from multiprocessing.spawn import prepare
 from pathlib import Path
 from random import sample
 from typing import List, Literal, Tuple
@@ -40,10 +39,14 @@ from pykanto.utils.compute import (
     flatten_list,
     print_dict,
     timing,
-    to_iterator,
     with_pbar,
 )
-from pykanto.utils.io import _get_json, _get_json_parallel, makedir
+from pykanto.utils.io import (
+    _get_json,
+    _get_json_parallel,
+    makedir,
+    save_to_jsons,
+)
 from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
 
 # ─── CLASSES ──────────────────────────────────────────────────────────────────
@@ -729,6 +732,12 @@ class KantoData:
 
         self.files = pd.merge(self.files, au, right_index=True, left_on="ID")
         self.save_to_disk(verbose=self.parameters.verbose)
+
+    def write_to_json(self) -> None:
+        """
+        Write the dataset to the existing JSON files for each vocalisation.
+        """
+        save_to_jsons(self)
 
     @timing
     def cluster_ids(self, min_sample: int = 10) -> None:
