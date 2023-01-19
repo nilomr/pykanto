@@ -1,8 +1,10 @@
 
 # Training ML models
 
-`pykanto` can be used to filter and prepare data to train classifiers.
-There is a complete example in the [preprint presenting `pykanto`](LINK) that
-walks you through the steps of training a 'deep learning' model to distinguish
+`pykanto` can be used to filter and prepare data to train any model.
+There is a complete example in the [article presenting `pykanto`](LINK) that
+walks you through the steps of training a 'deep learning' model to differentiate
 between different birds based on their songs. The code to run this example,
-whoch you can adapt to your own data, is available in its onwn repository: [LINK](LINK).
+which you can easily use with your own data, is available in its onwn
+repository: [LINK](LINK).
+
