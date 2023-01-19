@@ -55,11 +55,6 @@ from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation
 class KantoData:
     """
     Main dataset class. See `__init__` docstring.
-
-    Attributes:
-        DIRS (:class:`~pykanto.utils.paths.ProjDirs`):
-        data: Placeholder
-        parameters (:class:`~pykanto.parameters.Parameters`)
     """
 
     # TODO@nilomr #10 Refactor private methods in KantoData class
@@ -536,44 +531,58 @@ class KantoData:
                 been segmented.
         """
 
-        # Throw segmentation already exists
-        if "unit_durations" in self.data.columns and overwrite is False:
-            raise FileExistsError(
-                "The vocalisations in this dataset have already been segmented. "
+        if (
+            all(item in self.data.columns for item in ["onsets", "offsets"])
+            and overwrite is False
+        ):
+            warnings.warn(
+                "The vocalisations in this dataset have already been segmented: "
+                "will use existing segmentation information."
                 "If you want to do it again, you can overwrite the existing "
                 "segmentation information by it by setting `overwrite=True`"
             )
+            print("Using existing unit onset/offset information.")
+            onoff_df = self.data[["onsets", "offsets"]].dropna()
+            onoff_df["index"] = onoff_df.index
 
-        # Find song units iff onset/offset metadata not present
-        if not "onsets" in self.data.columns:
+        elif overwrite is True or not all(
+            item in self.data.columns for item in ["onsets", "offsets"]
+        ):
             units = segment_song_into_units_parallel(self, self.data.index)
             onoff_df = pd.DataFrame(
                 units, columns=["index", "onsets", "offsets"]
             ).dropna()
             onoff_df.set_index("index", inplace=True)
 
-        # Otherwise just use that
-        else:
-            print("Using existing unit onset/offset information.")
-            onoff_df = self.data[["onsets", "offsets"]].dropna()
-            onoff_df["index"] = onoff_df.index
-
-        # Calculate durations and add to dataset
-        onoff_df["unit_durations"] = onoff_df["offsets"] - onoff_df["onsets"]
-        onoff_df["silence_durations"] = onoff_df.apply(
-            lambda row: [
-                a - b for a, b in zip(row["onsets"][1:], row["offsets"])
-            ],
-            axis=1,
-        ).to_numpy()
-        self.data.drop(
-            ["index", "onsets", "offsets"],
-            axis=1,
-            errors="ignore",
-            inplace=True,
-        )
-        self.data = self.data.merge(onoff_df, left_index=True, right_index=True)
-        self.data.drop(["index"], axis=1, errors="ignore", inplace=True)
+        if not all(
+            item in self.data.columns
+            for item in ["unit_durations", "silence_durations"]
+        ):
+            self.data.drop(
+                ["unit_durations", "silence_durations"],
+                axis=1,
+                errors="ignore",
+                inplace=True,
+            )
+            onoff_df["unit_durations"] = (
+                onoff_df["offsets"] - onoff_df["onsets"]
+            )
+            onoff_df["silence_durations"] = onoff_df.apply(
+                lambda row: [
+                    a - b for a, b in zip(row["onsets"][1:], row["offsets"])
+                ],
+                axis=1,
+            ).to_numpy()
+            self.data.drop(
+                ["index", "onsets", "offsets"],
+                axis=1,
+                errors="ignore",
+                inplace=True,
+            )
+            self.data = self.data.merge(
+                onoff_df, left_index=True, right_index=True
+            )
+            self.data.drop(["index"], axis=1, errors="ignore", inplace=True)
 
         # Save
         self.save_to_disk(verbose=self.parameters.verbose)
