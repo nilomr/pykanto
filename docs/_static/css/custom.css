@@ -180,11 +180,14 @@ main.bd-content #main-content h1, main.bd-content #main-content h2, main.bd-cont
 }
 
 .h2, h2 {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
 
 }
 
+.h3, h3 {
+    font-size: 1.3rem;
 
+}
 
 
 /* GENERAL TEXT COLOURS ───────────────────────────────────────────────────── */
@@ -460,18 +463,81 @@ main.bd-content #main-content dl.module:not(.docutils) dt, main.bd-content #main
 
 /* make box for function name and parameters */
 /* TODO: left it here */
+
 dl.py.function {
-    border-top: 5px solid #dbdbdb;
+
     /* add space above: */
     margin-top: 1.5em;
+    background: #fafafa;
+    padding-right: .5em;
 
-    background: #f7f7f7;
+}
 
+dl.py.class {
+    /* add space above: */
+    margin-top: 1.5em;
+    background: #fafafa;
+    padding-right: .5em;
+}
+
+
+
+dl.field-list {
+    display: grid;
+    grid-template-columns: fit-content(20%) minmax(0, 1fr);
+}
+
+
+dl.field-list dd, dl.simple dd {
+    margin-left: 1em;
+    margin-bottom: .5em;
+}
+
+dt:target, span.highlighted {
+    background-color: rgba(243, 148, 39, 0.39);
+}
+
+dl.py.method {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-top: 0 !important;
+}
+
+dl>dd:last-child, dl>dd:last-child> :last-child {
+    margin-bottom: 0.5em;
+    margin-top: 0em;
+    line-height: 1.2em;
+}
+
+
+dl.py.attribute {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-top: 0 !important;
 }
 
 .sig {
     font-family: var(--pst-font-family-monospace);
-    font-size: 0.8em;
+    font-size: 0.9em;
+    padding-top: .7em;
+    padding-bottom: 1em;
+    background-color: #eeeeee;
+    padding-left: 1em;
+    border-right: 1em solid #eeeeee;
+    /* extend 1em to right */
+    margin-right: -.5em;
+    margin-bottom: 1em;
+}
+
+/* 
+.sig-name::after {
+    content: "\A \T";
+    display: block;
+} */
+
+.sig-paren {
+    font-size: larger;
+    padding-left: 0em !important;
 }
 
 
@@ -486,21 +552,21 @@ main.bd-content #main-content dl.module:not(.docutils) dl dt, main.bd-content #m
 }
 
 
-/* source link */
-main.bd-content #main-content dl.module .viewcode-link, main.bd-content #main-content dl.class .viewcode-link, main.bd-content #main-content dl.exception .viewcode-link, main.bd-content #main-content dl.function .viewcode-link, main.bd-content #main-content dl.decorator .viewcode-link, main.bd-content #main-content dl.data .viewcode-link, main.bd-content #main-content dl.method .viewcode-link, main.bd-content #main-content dl.attribute .viewcode-link, main.bd-content #print-main-content dl.module .viewcode-link, main.bd-content #print-main-content dl.class .viewcode-link, main.bd-content #print-main-content dl.exception .viewcode-link, main.bd-content #print-main-content dl.function .viewcode-link, main.bd-content #print-main-content dl.decorator .viewcode-link, main.bd-content #print-main-content dl.data .viewcode-link, main.bd-content #print-main-content dl.method .viewcode-link, main.bd-content #print-main-content dl.attribute .viewcode-link {
-    display: inline-block;
-    color: #78adcc;
-    font-size: 80%;
-    padding-left: 24px;
-    padding-top: 2px;
+.viewcode-link {
+    visibility: hidden;
+    color: rgb(148, 148, 148);
 }
 
-.viewcode-link {
-    display: inline-block;
-    color: #78adcc;
-    font-size: 80%;
-    padding-left: 24px;
-    padding-top: 1em;
+.viewcode-link:after {
+    content: 'Source';
+    visibility: visible;
+    display: block;
+    transform: rotate(-90deg);
+    position: absolute;
+    left: 10px;
+    margin-right: 10px;
+    margin-top: -29px;
+    font-family: var(--pst-font-family-monospace);
 }
 
 
@@ -610,6 +676,8 @@ details.toggle-details summary {
 /* AUTOSUMMARY ────────────────────────────────────────────────────────────── */
 
 table.longtable.table.autosummary {
+    /* reduce size of first column */
+    width: 100%;
     font-size: 0.9em;
     line-height: 1rem;
     border-bottom: 1px solid #e1e4e5;
@@ -830,4 +898,10 @@ main.bd-content #main-content a.headerlink, main.bd-content #print-main-content 
     opacity: 0;
     margin-left: -0.5em;
     padding-top: -0.7em;
+}
+
+
+
+#modules h1 {
+    font-size: 1.4em;
 }

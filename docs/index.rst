@@ -7,8 +7,11 @@
 Documentation
 =============
 
+User guide
+==========
+
 .. toctree::
-   :caption: User guides
+   :caption: User guide
    :maxdepth: 1
    
    contents/installation
