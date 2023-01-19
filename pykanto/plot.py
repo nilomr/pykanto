@@ -73,7 +73,7 @@ def melspectrogram(
             Defaults to "bone".
         max_lenght (None | float, optional): Maximum length of the
             spectrogram beyond which it will be center-cropped for plotting.
-                Defaults to None.
+            Defaults to None.
         colour_bar (bool, optional): Wheter to include a colour bar
             legend for the amplitude. Defaults to True.
 
