@@ -388,7 +388,7 @@ def pykanto_data(dataset: str = "GREAT_TIT") -> ProjDirs:
 
     Returns:
         ProjDirs: An object with paths to data directories that can then be used
-            to create a dataset.
+        to create a dataset.
     """
     dfolder = "segmented" if dataset == "GREAT_TIT" else "raw"
     DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
