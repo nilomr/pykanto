@@ -220,8 +220,8 @@ def segmentation(
     ymin = ylmax - ysize
     patches = []
     for onset, offset in zip(*onsets_offsets):
-        ax.axvline(onset, color="#FFFFFF", ls="-", lw=0.5, alpha=0.5)
-        ax.axvline(offset, color="#FFFFFF", ls="-", lw=0.5, alpha=0.5)
+        ax.axvline(onset, color="#FFFFFF", ls="-", lw=0.7, alpha=0.7)
+        ax.axvline(offset, color="#FFFFFF", ls="-", lw=0.7, alpha=0.7)
         patches.append(
             Rectangle(
                 xy=(onset, ylmin), width=offset - onset, height=(ylmax - ylmin)
