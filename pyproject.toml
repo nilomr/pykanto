@@ -36,6 +36,7 @@ dependencies = [
     "psutil",
     "attrs",
     "gitpython",
+    "typer == 0.6",
 ]
 
 [project.optional-dependencies]
