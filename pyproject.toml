@@ -26,7 +26,7 @@ dependencies = [
     "ray[default]",
     "pysoundfile >= 0.9",
     "umap-learn >= 0.5",
-    "joblib ==1.1.0",
+    "joblib >= 1.2.0",
     "hdbscan >= 0.8",
     "seaborn >= 0.11",
     "scikit-image >= 0.18",
