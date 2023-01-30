@@ -91,7 +91,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="current nav bd-sidenav">
@@ -117,17 +117,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -147,7 +147,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -503,20 +503,16 @@ title="Print to PDF"
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pykanto
 </pre></div>
 </div>
-<p>It is possible to use pip and install pykanto outside of a virtual environment,
-but this is not advised. Virtual environments create a clean Python environment
-that does not interfere with any existing system installation, can be easily
-removed, and contain only the package versions your application needs. They help
-avoid a common challenge known as dependency hell. <a class="reference external" href="https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst">scikit-image
-docs</a></p>
+<hr class="docutils" />
+<br>
 <div class="tip admonition">
 <p class="admonition-title">Tip: avoid a <a class="reference external" href="https://en.wikipedia.org/wiki/Dependency_hell">dependency hell</a>!</p>
 <p>It is possible to use pip and install pykanto outside of a virtual environment,
 but this is not advised. Virtual environments create a clean Python environment
 that does not interfere with any existing system installation, can be easily
 removed, and contain only the package versions your application needs. They help
-avoid a common challenge known as dependency hell. <a class="reference external" href="https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst">scikit-image
-docs</a></p>
+avoid a common challenge known as dependency hell. [<a class="reference external" href="https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst">scikit-image
+docs</a>]</p>
 <p>I highly recommend that you create a new environment, for example with conda:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n pykanto-env <span class="nv">python</span><span class="o">==</span><span class="m">3</span>.9 <span class="o">&amp;&amp;</span> conda activate pykanto-env      
 </pre></div>

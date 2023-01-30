@@ -88,7 +88,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -114,7 +114,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/segmenting-files.html">
-   Segmenting long recordings
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
@@ -465,7 +465,7 @@ title="Source repository"
 <span class="sd">            Defaults to &quot;bone&quot;.</span>
 <span class="sd">        max_lenght (None | float, optional): Maximum length of the</span>
 <span class="sd">            spectrogram beyond which it will be center-cropped for plotting.</span>
-<span class="sd">                Defaults to None.</span>
+<span class="sd">            Defaults to None.</span>
 <span class="sd">        colour_bar (bool, optional): Wheter to include a colour bar</span>
 <span class="sd">            legend for the amplitude. Defaults to True.</span>
 
@@ -560,7 +560,7 @@ title="Source repository"
 
 <div class="viewcode-block" id="segmentation"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.segmentation">[docs]</a><span class="k">def</span> <span class="nf">segmentation</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span>
-    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">spectrogram</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">onsets_offsets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -588,6 +588,21 @@ title="Source repository"
         <span class="p">]</span>
 
     <span class="n">title</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;title&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="p">(</span><span class="n">key</span> <span class="k">if</span> <span class="n">key</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">max_lenght</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;max_lenght&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;max_lenght&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">max_lenght</span><span class="p">:</span>
+        <span class="n">max_len_frames</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">max_lenght</span> <span class="o">*</span> <span class="n">params</span><span class="o">.</span><span class="n">sr</span> <span class="o">/</span> <span class="n">params</span><span class="o">.</span><span class="n">hop_length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">max_len_frames</span> <span class="o">&gt;</span> <span class="n">spectrogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">max_len_frames</span> <span class="o">=</span> <span class="n">spectrogram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_lenght</span><span class="si">=}</span><span class="s2"> is longer than the spectrogram, &quot;</span>
+                <span class="s2">&quot;setting max_lenght to the length of the spectrogram&quot;</span>
+            <span class="p">)</span>
+        <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">spectrogram</span><span class="p">[:,</span> <span class="p">:</span><span class="n">max_len_frames</span><span class="p">]</span>
+        <span class="n">onsets_offsets</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">onsets_offsets</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">onsets_offsets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_lenght</span><span class="p">],</span>
+            <span class="n">onsets_offsets</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">onsets_offsets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_lenght</span><span class="p">],</span>
+        <span class="p">)</span>
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">melspectrogram</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -597,8 +612,8 @@ title="Source repository"
     <span class="n">ymin</span> <span class="o">=</span> <span class="n">ylmax</span> <span class="o">-</span> <span class="n">ysize</span>
     <span class="n">patches</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">onset</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">onsets_offsets</span><span class="p">):</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">onset</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">onset</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
         <span class="n">patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">Rectangle</span><span class="p">(</span>
                 <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">onset</span><span class="p">,</span> <span class="n">ylmin</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="n">offset</span> <span class="o">-</span> <span class="n">onset</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="p">(</span><span class="n">ylmax</span> <span class="o">-</span> <span class="n">ylmin</span><span class="p">)</span>

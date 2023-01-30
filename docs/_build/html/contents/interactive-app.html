@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="High Performance Computing" href="hpc.html" />
-    <link rel="prev" title="KantoData datasets" href="kantodata-dataset.html" />
+    <link rel="prev" title="The KantoData dataset" href="kantodata-dataset.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -91,7 +91,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="current nav bd-sidenav">
@@ -117,17 +117,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -147,7 +147,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -452,6 +452,15 @@ the updated dataset, which has been automatically saved to disk:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
 </pre></div>
 </div>
+<hr class="docutils" />
+<p>You can also use the app to check and correct labels assigned through any other
+means, for example after training a deep learning classifier model. To do this,
+you simply need to add your custom labels to the dataframe containing your data.</p>
+<p>For example, if your <a class="reference internal" href="../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><code class="xref py py-class docutils literal notranslate"><span class="pre">KantoData</span></code></a> object is called <code class="docutils literal notranslate"><span class="pre">dataset</span></code>, you
+can overwrite the <code class="docutils literal notranslate"><span class="pre">auto_class</span></code> column in <code class="docutils literal notranslate"><span class="pre">dataset.data</span></code> with your own labels
+(<code class="docutils literal notranslate"><span class="pre">type:</span> <span class="pre">str</span></code>). This will work when <code class="docutils literal notranslate"><span class="pre">dataset.parameters.song_level</span> <span class="pre">=</span> <span class="pre">True</span></code>; if you want
+to do this at the note or unit level please open an issue on GitHub and I’ll add
+this functionality.</p>
 <div class="note admonition">
 <p class="admonition-title">Note:</p>
 <p>Running the web application requires having run the following methods on your <code class="docutils literal notranslate"><span class="pre">KantoData</span></code> object:</p>
@@ -461,16 +470,8 @@ the updated dataset, which has been automatically saved to disk:</p>
 <span class="n">dataset</span><span class="o">.</span><span class="n">prepare_interactive_data</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>In short, these find distinct units in each vocalisation, label them, and create lightweight representations of the sounds, see the entire process in the <a class="reference internal" href="basic-workflow.html"><span class="doc std std-doc">basic workflow page</span></a> for more details.</p>
+<p>These find distinct units in each vocalisation, label them, and create lightweight representations of the sounds. See the entire process in the <a class="reference internal" href="basic-workflow.html"><span class="doc std std-doc">basic workflow page</span></a> for more details.</p>
 </div>
-<p>You can also use the app to check and correct labels assigned through any other
-means, for example after training a deep learning classifier model. To do this,
-you simply need to add your custom labels to the dataframe containing your data.</p>
-<p>For example, if your <a class="reference internal" href="../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><code class="xref py py-class docutils literal notranslate"><span class="pre">KantoData</span></code></a> object is called <code class="docutils literal notranslate"><span class="pre">dataset</span></code>, you
-can overwrite the <code class="docutils literal notranslate"><span class="pre">auto_class</span></code> column in <code class="docutils literal notranslate"><span class="pre">dataset.data</span></code> with your own labels
-(str). This will work when <code class="docutils literal notranslate"><span class="pre">dataset.parameters.song_level</span> <span class="pre">=</span> <span class="pre">True</span></code>; if you want
-to do this at the note or unit level please open an issue on GitHub and I’ll add
-this functionality.</p>
 </section>
 
 
@@ -485,7 +486,7 @@ this functionality.</p>
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">KantoData datasets</p>
+            <p class="prev-next-title">The KantoData dataset</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="hpc.html" title="next page">

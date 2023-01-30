@@ -88,7 +88,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -114,7 +114,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../contents/segmenting-files.html">
-   Segmenting long recordings
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
@@ -447,11 +447,6 @@ title="Source repository"
 <div class="viewcode-block" id="KantoData"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData">[docs]</a><span class="k">class</span> <span class="nc">KantoData</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main dataset class. See `__init__` docstring.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        DIRS (:class:`~pykanto.utils.paths.ProjDirs`):</span>
-<span class="sd">        data: Placeholder</span>
-<span class="sd">        parameters (:class:`~pykanto.parameters.Parameters`)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># TODO@nilomr #10 Refactor private methods in KantoData class</span>
@@ -928,44 +923,58 @@ title="Source repository"
 <span class="sd">                been segmented.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Throw segmentation already exists</span>
-        <span class="k">if</span> <span class="s2">&quot;unit_durations&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
-                <span class="s2">&quot;The vocalisations in this dataset have already been segmented. &quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">all</span><span class="p">(</span><span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">])</span>
+            <span class="ow">and</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="kc">False</span>
+        <span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The vocalisations in this dataset have already been segmented: &quot;</span>
+                <span class="s2">&quot;will use existing segmentation information.&quot;</span>
                 <span class="s2">&quot;If you want to do it again, you can overwrite the existing &quot;</span>
                 <span class="s2">&quot;segmentation information by it by setting `overwrite=True`&quot;</span>
             <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using existing unit onset/offset information.&quot;</span><span class="p">)</span>
+            <span class="n">onoff_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+            <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">index</span>
 
-        <span class="c1"># Find song units iff onset/offset metadata not present</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;onsets&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="n">units</span> <span class="o">=</span> <span class="n">segment_song_into_units_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
             <span class="n">onoff_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
                 <span class="n">units</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]</span>
             <span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
             <span class="n">onoff_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1"># Otherwise just use that</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using existing unit onset/offset information.&quot;</span><span class="p">)</span>
-            <span class="n">onoff_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[[</span><span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-            <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">index</span>
-
-        <span class="c1"># Calculate durations and add to dataset</span>
-        <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;unit_durations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">]</span>
-        <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;silence_durations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="p">[</span>
-                <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">])</span>
-            <span class="p">],</span>
-            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">],</span>
-            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
-            <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">onoff_df</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;index&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;unit_durations&quot;</span><span class="p">,</span> <span class="s2">&quot;silence_durations&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;unit_durations&quot;</span><span class="p">,</span> <span class="s2">&quot;silence_durations&quot;</span><span class="p">],</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
+                <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;unit_durations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">onoff_df</span><span class="p">[</span><span class="s2">&quot;silence_durations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">onoff_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;onsets&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;offsets&quot;</span><span class="p">])</span>
+                <span class="p">],</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;onsets&quot;</span><span class="p">,</span> <span class="s2">&quot;offsets&quot;</span><span class="p">],</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
+                <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">onoff_df</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;index&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Save</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_to_disk</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>

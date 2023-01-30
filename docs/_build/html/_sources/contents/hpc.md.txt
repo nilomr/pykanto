@@ -75,9 +75,10 @@ dataset = KantoData(... , parameters=params)
 - You can run `pykanto-slaunch --help` in your terminal to see which arguments you can pass to pykanto-slaunch.
    
    A sumbission command will look something like this:
-      ```{code-block} bash
-      pykanto-slaunch --exp BigBird2020 --p short --time 00:30:00 -n 1 --memory 40000 --gpu 1 --c "python 0.0_build-dataset.py"
-      ```
+
+   ```{code-block} bash
+    pykanto-slaunch --exp BigBird2020 --p short --time 00:30:00 -n 1 --memory 40000 --gpu 1 --c "python 0.0_build-dataset.py"
+   ```
    This will create a bash (.sh) file and a  log (.log) file in a `/logs` folder within the directory from which you are calling the script.
 
 - Check the logfile for errors!

@@ -1,18 +1,19 @@
 {
  "cells": [
   {
+   "attachments": {},
    "cell_type": "markdown",
    "metadata": {},
    "source": [
     "# Acoustic feature extraction\n",
     "\n",
     "Pykanto is designed to provide a platform that enables researchers to run and\n",
-    "store any analyses they might need with ease and in a reproducible way. The\n",
-    "precise nature of those analyses will vary greatly, hence `pykanto`'s aim is not\n",
+    "any analyses that they might need with ease and in a reproducible way. The\n",
+    "precise nature of those analyses will vary greatly, so `pykanto`'s aim is not\n",
     "to provide functions or methods to, for example, extract audio features—there\n",
     "already are other, much better libraries for that.\n",
     "\n",
-    "having said that, these are some examples that show one way in which you can\n",
+    "These are some examples that show one way in which you can\n",
     "extract and store features from vocalisations in a dataset created with pykanto:"
    ]
   },
@@ -39,10 +40,14 @@
     "    approximate_minmax_frequency,\n",
     "    spec_centroid_bandwidth,\n",
     ")\n",
-    "from pykanto.signal.segment import segment_files_parallel\n",
-    "from pykanto.utils.custom import chipper_units_to_json, parse_sonic_visualiser_xml\n",
+    "from pykanto.signal.segment import segment_files_parallel, ReadWav\n",
+    "from pykanto.utils.custom import (\n",
+    "    chipper_units_to_json,\n",
+    "    parse_sonic_visualiser_xml,\n",
+    ")\n",
     "from pykanto.utils.io import get_unit_spectrograms, load_dataset\n",
-    "from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation\n"
+    "from pykanto.utils.paths import ProjDirs, get_file_paths, get_wavs_w_annotation\n",
+    "from pykanto.signal.spectrogram import retrieve_spectrogram\n"
    ]
   },
   {
@@ -86,13 +91,13 @@
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "2023-01-17 11:15:04,708\tINFO worker.py:1519 -- Started a local Ray instance. View the dashboard at \u001b[1m\u001b[32m127.0.0.1:8265 \u001b[39m\u001b[22m\n"
+      "2023-01-19 16:21:31,991\tINFO worker.py:1519 -- Started a local Ray instance. View the dashboard at \u001b[1m\u001b[32m127.0.0.1:8266 \u001b[39m\u001b[22m\n"
      ]
     },
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "7f07f100a4174427846745a030daea4d",
+       "model_id": "f64ae6a97be7445dbfcf6a6cb6f70e9e",
        "version_major": 2,
        "version_minor": 0
       },
@@ -107,13 +112,13 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Function 'segment_files_parallel' took 4.9732 sec.\n"
+      "Function 'segment_files_parallel' took 5.1444 sec.\n"
      ]
     },
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "c236270db93a4a95ab9bc42a253aeea1",
+       "model_id": "7b8c064e78fc44bf8b1c23264f52e0f7",
        "version_major": 2,
        "version_minor": 0
       },
@@ -128,13 +133,13 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Function 'chipper_units_to_json' took 0.8859 sec.\n"
+      "Function 'chipper_units_to_json' took 0.9123 sec.\n"
      ]
     },
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "93af10614ceb4193ad035dfb136f8030",
+       "model_id": "6b55a79b9a8b485593f1ba4281e763f0",
        "version_major": 2,
        "version_minor": 0
       },
@@ -148,7 +153,7 @@
     {
      "data": {
       "application/vnd.jupyter.widget-view+json": {
-       "model_id": "48f888c6f810470f9e6efb4534602971",
+       "model_id": "9e2c2fa5ce154e9186032fe416e3105d",
        "version_major": 2,
        "version_minor": 0
       },
@@ -166,6 +171,14 @@
       "Done\n",
       "Using existing unit onset/offset information.\n",
       "Found and segmented 527 units.\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "UserWarning:\n",
+      "    The vocalisations in this dataset have already been segmented: will use existing segmentation information.If you want to do it again, you can overwrite the existing segmentation information by it by setting `overwrite=True`\n"
      ]
     }
    ],
@@ -317,6 +330,46 @@
    "source": [
     "![output](../custom/freq_bw_fig.jpg)"
    ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pykanto.signal.segment import ReadWav\n",
+    "from pykanto.signal.spectrogram import retrieve_spectrogram\n",
+    "key = dataset.data.index[0]\n",
+    "\n",
+    "spec = retrieve_spectrogram(dataset.files.at[key, \"spectrogram\"])\n",
+    "wav_object = ReadWav(Path(dataset.files.at[key, \"wav_file\"]))\n",
+    "wavfile, audio_metadata = wav_object.get_wav(), wav_object.as_dict()"
+   ]
+  },
+  {
+   "attachments": {},
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "That's just an example using wrappers around a couple of\n",
+    "`[librosa](https://librosa.org/doc/latest/index.html)` functions. In general, if\n",
+    "you need to access a spectrogram for further analysis, you can do so easily by\n",
+    "calling\n",
+    "\n",
+    "```{code-block} python\n",
+    "spec = retrieve_spectrogram(dataset.files.at[key, \"spectrogram\"])\n",
+    "```\n",
+    "\n",
+    "where `key` is the index of the vocalisation you want to access. If you need to\n",
+    "access the audio file itself, you can do it like so:\n",
+    "\n",
+    "```{code-block} python\n",
+    "wav_object = ReadWav(Path(dataset.files.at[key, \"wav_file\"]))\n",
+    "wavfile, audio_metadata = wav_object.get_wav(), wav_object.as_dict()\n",
+    "```\n",
+    "\n",
+    "or using your favourite library that can read wav files."
+   ]
   }
  ],
  "metadata": {
@@ -335,7 +388,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.9.15 (main, Nov 24 2022, 14:31:59) \n[GCC 11.2.0]"
+   "version": "3.9.15"
   },
   "orig_nbformat": 4,
   "vscode": {

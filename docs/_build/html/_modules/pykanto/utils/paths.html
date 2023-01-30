@@ -88,7 +88,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -114,17 +114,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="../../../contents/segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -144,7 +144,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -780,7 +780,7 @@ title="Source repository"
 
 <span class="sd">    Returns:</span>
 <span class="sd">        ProjDirs: An object with paths to data directories that can then be used</span>
-<span class="sd">            to create a dataset.</span>
+<span class="sd">        to create a dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dfolder</span> <span class="o">=</span> <span class="s2">&quot;segmented&quot;</span> <span class="k">if</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s2">&quot;GREAT_TIT&quot;</span> <span class="k">else</span> <span class="s2">&quot;raw&quot;</span>
     <span class="n">DATA_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;pykanto&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">))</span>

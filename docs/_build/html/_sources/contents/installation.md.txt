@@ -8,12 +8,8 @@ To install `pykanto` using `pip`, run:
 pip install pykanto
 ```
 
-It is possible to use pip and install pykanto outside of a virtual environment,
-but this is not advised. Virtual environments create a clean Python environment
-that does not interfere with any existing system installation, can be easily
-removed, and contain only the package versions your application needs. They help
-avoid a common challenge known as dependency hell. [scikit-image
-docs](https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst)
+***
+<br>
 
 
 ````{admonition} Tip: avoid a [dependency hell](https://en.wikipedia.org/wiki/Dependency_hell)!
@@ -23,8 +19,8 @@ It is possible to use pip and install pykanto outside of a virtual environment,
 but this is not advised. Virtual environments create a clean Python environment
 that does not interfere with any existing system installation, can be easily
 removed, and contain only the package versions your application needs. They help
-avoid a common challenge known as dependency hell. [scikit-image
-docs](https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst)
+avoid a common challenge known as dependency hell. [[scikit-image
+docs](https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst)]
 
 I highly recommend that you create a new environment, for example with conda:
 

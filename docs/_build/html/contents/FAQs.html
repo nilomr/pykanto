@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pykanto.signal" href="../_autosummary/pykanto.signal.html" />
-    <link rel="prev" title="ML Model training" href="deep-learning.html" />
+    <link rel="prev" title="Training ML models" href="deep-learning.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -91,7 +91,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="current nav bd-sidenav">
@@ -117,17 +117,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -147,7 +147,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -436,14 +436,14 @@ title="Print to PDF"
     </div>
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   FAQs &amp; known issues
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#known-issues">
    Known issues:
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#system-dependencies">
+   System dependencies
   </a>
  </li>
 </ul>
@@ -465,14 +465,14 @@ title="Print to PDF"
                         </div>
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#">
-   FAQs &amp; known issues
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#known-issues">
    Known issues:
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#system-dependencies">
+   System dependencies
   </a>
  </li>
 </ul>
@@ -487,22 +487,38 @@ title="Print to PDF"
                 
   <section id="faqs-known-issues">
 <h1>FAQs &amp; known issues<a class="headerlink" href="#faqs-known-issues" title="Permalink to this headline">#</a></h1>
-</section>
 <section id="known-issues">
-<h1>Known issues:<a class="headerlink" href="#known-issues" title="Permalink to this headline">#</a></h1>
-<ul class="simple">
-<li><p>If using the autoreload ipython magic, might get the following error:
-<code class="docutils literal notranslate"><span class="pre">Can't</span> <span class="pre">pickle</span> <span class="pre">&lt;class</span> <span class="pre">'pykanto.dataset.KantoData'&gt;:</span> <span class="pre">it's</span> <span class="pre">not</span> <span class="pre">the</span> <span class="pre">same</span> <span class="pre">object</span> <span class="pre">as</span> <span class="pre">pykanto.dataset.KantoData</span></code>
-Fix: restart your kernel without the autoreload extension.</p></li>
-<li><p>Ray throws a fork support INFO message <code class="docutils literal notranslate"><span class="pre">Fork</span> <span class="pre">support</span> <span class="pre">is</span> <span class="pre">only</span> <span class="pre">compatible</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">epoll1</span> <span class="pre">and</span> <span class="pre">poll</span> <span class="pre">polling</span> <span class="pre">strategies</span></code> with grpcio==1.44.0. See ray issue <a class="reference external" href="https://github.com/ray-project/ray/issues/22518">#22518</a></p></li>
+<h2>Known issues:<a class="headerlink" href="#known-issues" title="Permalink to this headline">#</a></h2>
+<ul>
+<li><p>If using the autoreload ipython magic, you might get the following error when
+saving a <code class="docutils literal notranslate"><span class="pre">KantoData</span></code> dataset:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Can</span><span class="s1">&#39;t pickle &lt;class &#39;</span><span class="n">pykanto</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">KantoData</span><span class="s1">&#39;&gt;: it&#39;</span><span class="n">s</span> <span class="ow">not</span> <span class="n">the</span> <span class="n">same</span> <span class="nb">object</span> <span class="k">as</span> <span class="n">pykanto</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">KantoData</span>
+</pre></div>
+</div>
+<p>Fix: restart your kernel without the autoreload extension.</p>
+</li>
+<li><p>Ray throws a fork support INFO message when using grpcio==1.44.0</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Fork</span> <span class="n">support</span> <span class="ow">is</span> <span class="n">only</span> <span class="n">compatible</span> <span class="k">with</span> <span class="n">the</span> <span class="n">epoll1</span> <span class="ow">and</span> <span class="n">poll</span> <span class="n">polling</span> <span class="n">strategies</span>
+</pre></div>
+</div>
+<p>Fix: see ray issue <a class="reference external" href="https://github.com/ray-project/ray/issues/22518">#22518</a>.</p>
+</li>
 <li><p>Ray workers crash:<br />
 If your workers crash and/or your machine freezes it is likely that you have run
-out of RAM. Try using fewer cpus when running in parallel. You can do this by,
-for example, setting <code class="docutils literal notranslate"><span class="pre">parameters.num_cpus</span></code> to a number lower than your available
-CPUS. Example: If your KantoData object is called dataset, then run <code class="docutils literal notranslate"><span class="pre">dataset.parameters.update(num_cpus=1)</span></code></p></li>
-<li><p>Dependencies:</p></li>
+out of RAM. You could try using fewer cpus when eecuting paralell processes. You
+can do this by, for example, setting <code class="docutils literal notranslate"><span class="pre">parameters.num_cpus</span></code> to a number lower
+than your available CPUS. Example: If your KantoData object is called dataset,
+then run <code class="docutils literal notranslate"><span class="pre">dataset.parameters.update(num_cpus=1)</span></code></p></li>
 </ul>
-<p><code class="docutils literal notranslate"><span class="pre">hdbscan</span></code> requires <code class="docutils literal notranslate"><span class="pre">gcc</span></code> to be installed. If you get an error when installing <code class="docutils literal notranslate"><span class="pre">hdbscan</span></code>, then you might need to install <code class="docutils literal notranslate"><span class="pre">gcc</span></code> first, e.g. by running <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">gcc</span></code>.</p>
+</section>
+<section id="system-dependencies">
+<h2>System dependencies<a class="headerlink" href="#system-dependencies" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hdbscan</span></code> requires <code class="docutils literal notranslate"><span class="pre">gcc</span></code> to be installed. If you get an error when <code class="docutils literal notranslate"><span class="pre">hdbscan</span></code> is
+being installed, then you might need to install <code class="docutils literal notranslate"><span class="pre">gcc</span></code> first, e.g. by running
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">gcc</span></code>, and then try installing pykanto again.</p></li>
+</ul>
+</section>
 </section>
 
 
@@ -517,7 +533,7 @@ CPUS. Example: If your KantoData object is called dataset, then run <code class=
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">ML Model training</p>
+            <p class="prev-next-title">Training ML models</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="../_autosummary/pykanto.signal.html" title="next page">

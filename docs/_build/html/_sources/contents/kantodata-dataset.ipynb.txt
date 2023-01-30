@@ -10,13 +10,85 @@
         },
         {
             "cell_type": "code",
-            "execution_count": null,
+            "execution_count": 10,
             "metadata": {
                 "tags": [
                     "remove-cell"
                 ]
             },
-            "outputs": [],
+            "outputs": [
+                {
+                    "data": {
+                        "application/vnd.jupyter.widget-view+json": {
+                            "model_id": "3fd8a1d930704f388699d2701694a073",
+                            "version_major": 2,
+                            "version_minor": 0
+                        },
+                        "text/plain": [
+                            "Loading JSON files:   0%|          | 0/20 [00:00<?, ?it/s]"
+                        ]
+                    },
+                    "metadata": {},
+                    "output_type": "display_data"
+                },
+                {
+                    "data": {
+                        "application/vnd.jupyter.widget-view+json": {
+                            "model_id": "beeddf61a84b4ed4b3507100dea95b33",
+                            "version_major": 2,
+                            "version_minor": 0
+                        },
+                        "text/plain": [
+                            "Preparing spectrograms:   0%|          | 0/7 [00:00<?, ?it/s]"
+                        ]
+                    },
+                    "metadata": {},
+                    "output_type": "display_data"
+                },
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": [
+                        "Done\n"
+                    ]
+                },
+                {
+                    "data": {
+                        "application/vnd.jupyter.widget-view+json": {
+                            "model_id": "b9821542d6fb4b56ba644a54bb96882b",
+                            "version_major": 2,
+                            "version_minor": 0
+                        },
+                        "text/plain": [
+                            "Finding units in vocalisations:   0%|          | 0/7 [00:00<?, ?it/s]"
+                        ]
+                    },
+                    "metadata": {},
+                    "output_type": "display_data"
+                },
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": [
+                        "Found and segmented 169 units.\n",
+                        "Saved dataset to /home/nilomr/projects/pykanto/pykanto/data/datasets/GREAT_TIT/GREAT_TIT.db\n"
+                    ]
+                },
+                {
+                    "data": {
+                        "application/vnd.jupyter.widget-view+json": {
+                            "model_id": "35ccc96a820641919c30e8ea1cdad6d5",
+                            "version_major": 2,
+                            "version_minor": 0
+                        },
+                        "text/plain": [
+                            "Adding new metadata to .json files  in /home/nilomr/projects/pykanto/pykanto/data/segmented/great_tit/JSON:   …"
+                        ]
+                    },
+                    "metadata": {},
+                    "output_type": "display_data"
+                }
+            ],
             "source": [
                 "from pathlib import Path\n",
                 "from pykanto.dataset import KantoData\n",
@@ -24,7 +96,6 @@
                 "from pykanto.utils.paths import ProjDirs, pykanto_data\n",
                 "from pykanto.utils.io import load_dataset\n",
                 "import numpy as np\n",
-                "\n",
                 "\n",
                 "DATASET_ID = \"GREAT_TIT\"\n",
                 "DIRS = pykanto_data(dataset=DATASET_ID)\n",
@@ -37,8 +108,7 @@
                 "    overwrite_data=True\n",
                 ")\n",
                 "\n",
-                "dataset.segment_into_units()\n",
-                "\n",
+                "dataset.segment_into_units(overwrite=True)\n",
                 "dataset.save_to_disk()\n",
                 "dataset = load_dataset(dataset.DIRS.DATASET, DIRS)\n",
                 "dataset.to_csv(dataset.DIRS.DATASET.parent)\n",
@@ -58,16 +128,15 @@
             "cell_type": "markdown",
             "metadata": {},
             "source": [
-                "{py:class}`~pykanto.dataset.KantoData` datasets contain a series of attributes,\n",
-                "here are some of the ones you are most likely to access:\n",
+                "{py:class}`~pykanto.dataset.KantoData` datasets contain a series of attributes: these are some of the ones you are most likely to access:\n",
                 "\n",
                 "| Attribute | Description |\n",
                 "|-----------|-------------|\n",
-                "| `KantoData.data` | a dataframe containing information about each vocalization |\n",
-                "| `KantoData.files` | a list of files associated with the dataset |\n",
-                "| `KantoData.parameters` | a {py:class}`~pykanto.parameters.Parameters` instance containing the params used to generate the dataset |\n",
-                "| `KantoData.metadata` | a dictionary of metadata associated with the dataset |\n",
-                "| `KantoData.units` | a dataframe of single sound units in dataset, created if song_level = False in the parametres after running `KantoData.cluster_ids()` |"
+                "| `KantoData.data` | Dataframe containing information about each vocalization |\n",
+                "| `KantoData.files` | List of files associated with the dataset |\n",
+                "| `KantoData.parameters` | A {py:class}`~pykanto.parameters.Parameters` instance containing the params used to generate the dataset |\n",
+                "| `KantoData.metadata` | A dictionary of metadata associated with the dataset |\n",
+                "| `KantoData.units` | Dataframe of single sound units in dataset, created after running `KantoData.cluster_ids()` if `song_level` is set to `False` in the parameters  |"
             ]
         },
         {
@@ -75,7 +144,8 @@
             "cell_type": "markdown",
             "metadata": {},
             "source": [
-                "##  Some common operations with datasets"
+                "##  Common operations with datasets\n",
+                "<br>"
             ]
         },
         {
@@ -83,12 +153,12 @@
             "cell_type": "markdown",
             "metadata": {},
             "source": [
-                "| Description | Code |\n",
+                "| Method | Description |\n",
                 "| --- | --- |\n",
-                "| Load an existing dataset | ```dataset = load_dataset(dataset.DIRS.DATASET, DIRS)``` |\n",
-                "| Save an existing dataset | ```dataset.save_to_disk()``` |\n",
-                "| Save a dataset to csv | ```dataset.to_csv(dataset.DIRS.DATASET.parent)``` |\n",
-                "| Save new metadata to JSON files | ```dataset.write_to_json()``` |"
+                "|```dataset = load_dataset()``` | Load an existing dataset |\n",
+                "|```dataset.save_to_disk()``` | Save an existing dataset | \n",
+                "|```dataset.to_csv()``` | Save a dataset to csv |\n",
+                "|```dataset.write_to_json()``` | Save new metadata to JSON files |"
             ]
         },
         {
@@ -96,7 +166,7 @@
             "cell_type": "markdown",
             "metadata": {},
             "source": [
-                "You can get some basic information about the dataset by running:"
+                "You can get some basic information about the contents of the dataset by running:"
             ]
         },
         {
@@ -114,10 +184,10 @@
             "cell_type": "markdown",
             "metadata": {},
             "source": [
-                "`KantoData.data` and `KantoData.units` are {py:class}`~pandas.DataFrame`\n",
-                "instances: I have chosen this since it is a very flexible and most users are\n",
+                "`KantoData.data` and `KantoData.units` are {py:class}`pandas.DataFrame`\n",
+                "instances: I have chosen this format because it is a very flexible and most users are\n",
                 "already familiar with it. You can query and modify it as you would any other\n",
-                "dataframe. For example, to see the first three rows and a subset of columns:"
+                "pandas dataframe. For example, to see the first three rows and a subset of columns:"
             ]
         },
         {
@@ -221,7 +291,7 @@
             "execution_count": null,
             "metadata": {
                 "tags": [
-                    "remove-input"
+                    "hide-input"
                 ]
             },
             "outputs": [],

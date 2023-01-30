@@ -91,7 +91,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="current nav bd-sidenav">
@@ -117,7 +117,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="segmenting-files.html">
-   Segmenting long recordings
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
@@ -573,9 +573,11 @@ srun -p interactive --x11 --pty --gres<span class="o">=</span>gpu:v100:1 --mem<s
 </div>
 </li>
 <li><p>You can run <code class="docutils literal notranslate"><span class="pre">pykanto-slaunch</span> <span class="pre">--help</span></code> in your terminal to see which arguments you can pass to pykanto-slaunch.</p>
-<p>A sumbission command will look something like this:
-<code class="docutils literal notranslate"><span class="pre">{code-block}</span> <span class="pre">bash</span>&#160;&#160;&#160;&#160; <span class="pre">pykanto-slaunch</span> <span class="pre">--exp</span> <span class="pre">BigBird2020</span> <span class="pre">--p</span> <span class="pre">short</span> <span class="pre">--time</span> <span class="pre">00:30:00</span> <span class="pre">-n</span> <span class="pre">1</span> <span class="pre">--memory</span> <span class="pre">40000</span> <span class="pre">--gpu</span> <span class="pre">1</span> <span class="pre">--c</span> <span class="pre">&quot;python</span> <span class="pre">0.0_build-dataset.py&quot;</span>&#160;&#160;&#160;&#160; </code>
-This will create a bash (.sh) file and a  log (.log) file in a <code class="docutils literal notranslate"><span class="pre">/logs</span></code> folder within the directory from which you are calling the script.</p>
+<p>A sumbission command will look something like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span> pykanto-slaunch --exp BigBird2020 --p short --time <span class="m">00</span>:30:00 -n <span class="m">1</span> --memory <span class="m">40000</span> --gpu <span class="m">1</span> --c <span class="s2">&quot;python 0.0_build-dataset.py&quot;</span>
+</pre></div>
+</div>
+<p>This will create a bash (.sh) file and a  log (.log) file in a <code class="docutils literal notranslate"><span class="pre">/logs</span></code> folder within the directory from which you are calling the script.</p>
 </li>
 <li><p>Check the logfile for errors!</p></li>
 </ul>
