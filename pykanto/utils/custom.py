@@ -1,3 +1,12 @@
+# ─── DESCRIPTION ──────────────────────────────────────────────────────────────
+
+"""
+This module contains functions for parsing custom metadata files.
+Currently: Sonic Visualiser XML files and Chipper .gzip files.
+"""
+
+# ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
+
 import glob
 import gzip
 import json

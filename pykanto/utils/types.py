@@ -6,10 +6,11 @@ modules and b) classes whose main purpose is data storage and/or type checking.
 """
 
 # ─── DEPENDENCIES ─────────────────────────────────────────────────────────────
+from __future__ import annotations
 
 from collections import namedtuple
 from pathlib import Path
-from typing import Any, List, Protocol, TypedDict
+from typing import Any, List, Protocol
 
 import attr
 from attr import validators
@@ -122,7 +123,19 @@ class Metadata(AudioAnnotation):
     wav_file: str = attr.ib(validator=validators.instance_of(str))
 
 
-Chunkinfo = namedtuple(
+Chunkinfo_ = namedtuple(
     "Chunkinfo",
     ["n_workers", "len_iterable", "n_chunks", "chunksize", "last_chunk"],
 )
+
+
+class Chunkinfo(Chunkinfo_):
+    """
+    Stores information about a chunked iterable.
+    """
+
+    n_workers: int | float
+    len_iterable: int
+    n_chunks: float
+    chunksize: float
+    last_chunk: float

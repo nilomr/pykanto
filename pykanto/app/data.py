@@ -134,7 +134,28 @@ def prepare_datasource_parallel(
     spec_length: float | None = None,
     song_level: bool = False,
     num_cpus: float | None = None,
-):
+) -> List[List[Tuple[str, Path]]]:
+    """
+    Prepare and save data sources for the interactibe labelling application (parallel).
+
+    Args:
+        dataset (KantoData): Source dataset.
+        spec_length (float | None, optional): . Defaults to None.
+        song_level (bool, optional): _description_. Defaults to False.
+        num_cpus (float | None, optional): N cpus to use. Defaults to None.
+
+        dataset (KantoData): Source dataset.
+        spec_length (float | None, optional): Desired spectrogram lenght, in
+            frames. Defaults to 500.
+        song_level (bool, optional): Whether to use all units per vocalisation
+            or their average. Defaults to False.
+        num_cpus (float | None, optional):
+            N cpus to use. Defaults to None.
+
+    Returns:
+        List[List[Tuple[str, Path]]]: A list of lists of tuples
+            with ID and path to saved data source.
+    """
 
     # Set or get spectrogram length (affects width of unit/voc preview)
     # NOTE: this is set to maxlen=50%len if using units, 4*maxlen if using

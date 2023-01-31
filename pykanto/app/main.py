@@ -20,6 +20,7 @@ from typing import List
 import numpy as np
 import pandas as pd
 import pkg_resources
+from bokeh.core.property.vectorization import Field
 from bokeh.layouts import row
 from bokeh.models import (
     BoxSelectTool,
@@ -44,7 +45,17 @@ from pykanto.utils.paths import ProjDirs
 # ──── FUNCTIONS ───────────────────────────────────────────────────────────────
 
 
-def get_markers(marker_types: List[str], mapping: np.ndarray):
+def get_markers(marker_types: List[str], mapping: np.ndarray) -> List[str]:
+    """
+    Maps a list of markers to labels.
+
+    Args:
+        marker_types (List[str]): List of marker types.
+        mapping (np.ndarray): List of labels.
+
+    Returns:
+        List[str]: List of markers.
+    """
     marker_dict = {
         lab: marker for marker, lab in zip(cycle(marker_types), labs)
     }
@@ -57,8 +68,21 @@ def prepare_legend(
     palette: List[str],
     labs: List[str],
     grouping_labels: str = "auto_class",
-):
+) -> tuple[List[str], list[str], Field]:
+    """
+    Prepares the legend for the scatterplot.
 
+    Args:
+        source (ColumnDataSource): Data source for the scatterplot.
+        palette (List[str]): Colour palette for the scatterplot.
+        labs (List[str]): List of labels.
+        grouping_labels (str, optional): Column name for the labels. Defaults to
+        "auto_class".
+
+    Returns:
+        tuple[List[str], list[str], Field]: Tuple of the colour palette, marker
+        types and the colour field.
+    """
     # Build marker shapes
     marker_types = [
         "asterisk",
@@ -92,7 +116,19 @@ def prepare_legend(
 
 
 def build_legend(source, html_markers, span_mk_sizes, mk_colours):
-    # Build html code
+    """
+    Builds the legend for the main interactive plot.
+
+    Args:
+        source (ColumnDataSource): Data source for the scatterplot.
+        html_markers (dict): Dictionary of HTML markers.
+        span_mk_sizes (dict): Dictionary of marker sizes.
+        mk_colours (dict): Dictionary of marker colours.
+
+    Returns:
+        str: HTML for the legend.
+    """
+
     pre = '<div class="legend_wrapper">'
     img_htmls = [pre]
 
@@ -121,6 +157,16 @@ def build_legend(source, html_markers, span_mk_sizes, mk_colours):
 
 
 def update_feedback_text(indv_list, remaining_indvs):
+    """
+    Updates the feedback text for the user.
+
+    Args:
+        indv_list (list): List of individuals.
+        remaining_indvs (list): List of remaining individuals.
+
+    Returns:
+        str: Feedback text.
+    """
     text = (
         f"// <b>{len(indv_list) - len(remaining_indvs)} out of {len(indv_list)} done</b> // "
         "Use the 'Label' button to change the label of the selected points. "
@@ -131,10 +177,31 @@ def update_feedback_text(indv_list, remaining_indvs):
 
 
 def parse_boolean(b):
+    """
+    Parses a boolean.
+
+    Args:
+        b (str): String to parse.
+
+    Returns:
+        bool: Boolean.
+    """
     return b == "True"
 
 
 def set_range(sdata, ax_percentage=5):
+    """
+    Sets the range of the scatterplot.
+
+    Args:
+        sdata (pd.DataFrame): Dataframe with the scatterplot data.
+        ax_percentage (int, optional): Percentage of the axis to extend.
+            Defaults to 5.
+
+    Returns:
+        tuple: Tuple of the x and y ranges.
+    """
+
     xmin, xmax = min(sdata["umap_x"]), max(sdata["umap_x"])
     ymin, ymax = min(sdata["umap_y"]), max(sdata["umap_y"])
     xlen, ylen = abs(xmin - xmax), abs(ymin - ymax)
@@ -334,7 +401,10 @@ else:
         name="dummy_scatter",
     )
 
-    def get_legend_items():
+    def get_legend_items() -> list[LegendItem]:
+        """
+        Returns a list of LegendItem objects for the legend.
+        """
         dummy_labels = list(dict.fromkeys(source.data["auto_class"]))
         legend_items = [
             LegendItem(label=label, renderers=[dummy_scatter], index=i)

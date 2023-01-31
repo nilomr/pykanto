@@ -1,7 +1,7 @@
 # ─── DESCRIPTION ──────────────────────────────────────────────────────────────
 
 """
-Classes and methods to store and modify pykanto parameters.
+A collection of functions to plot spectrograms. annotations and other output.
 """
 
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
@@ -258,7 +258,17 @@ def mspaced_mask(N: int, M: int) -> List[int]:
 
 
 @njit
-def rand_jitter(arr, jitter: float = 0.001):
+def rand_jitter(arr: np.ndarray, jitter: float = 0.001) -> np.ndarray:
+    """
+    Adds random jitter to an array.
+
+    Args:
+        arr (np.ndarray): Array to jitter.
+        jitter (float, optional): Jitter factor. Defaults to 0.001.
+
+    Returns:
+        np.ndarray: Jittered array.
+    """
     stdev = jitter * (max(arr) - min(arr))
     return arr + np.random.randn(len(arr)) * stdev
 

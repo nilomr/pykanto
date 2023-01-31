@@ -2,7 +2,7 @@
 
 """
 Functions and methods to perform spectrogram filtering, dereverberating,
-bandpassio, etc.
+bandpassing, etc.
 """
 
 # ──── IMPORTS ─────────────────────────────────────────────────────────────────
@@ -133,6 +133,10 @@ def gaussian_blur(array: np.ndarray, gauss_sigma: int = 3, max: int = 0):
 
 
 class kernels:
+    """
+    Class holding kernels for use in filtering.
+    """
+
     erosion_kern = np.array([[0, 0, 0], [1, 1, 1], [0, 0, 0]])
 
     dilation_kern = np.array(
@@ -140,12 +144,34 @@ class kernels:
     )
 
 
+# write function to normalise a numpy array to [0,1]:
+
+
 @njit
-def norm(x):
+def norm(x: np.ndarray) -> np.ndarray:
+    """
+    Normalise a numpy array to [0,1].
+
+    Args:
+        x (np.ndarray): Array to normalise.
+
+    Returns:
+        np.ndarray: Normalised array.
+    """
     return (x - np.min(x)) / (np.max(x) - np.min(x))
 
 
-def normalise(S, min_level_db):
+def normalise(S: np.ndarray, min_level_db: int) -> np.ndarray:
+    """
+    Normalise a numpy array to [0,1] and clip to min_level_db.
+
+    Args:
+        S (np.ndarray): Array to normalise.
+        min_level_db (int): Threshold, in relative dB.
+
+    Returns:
+        np.ndarray: Normalised and clipped array.
+    """
     return np.clip((S - min_level_db) / -min_level_db, 0, 1)
 
 
