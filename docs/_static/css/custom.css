@@ -168,6 +168,14 @@ main.bd-content #main-content, main.bd-content #print-main-content {
     }
 }
 
+
+
+#main-page .toctree-wrapper.compound {
+    /* # hide: */
+    display: none;
+}
+
+
 /* HEADING STYLES ─────────────────────────────────────────────────────────── */
 
 main.bd-content #main-content h1, main.bd-content #main-content h2, main.bd-content #main-content h3, main.bd-content #main-content h4, main.bd-content #main-content h5, main.bd-content #print-main-content h1, main.bd-content #print-main-content h2, main.bd-content #print-main-content h3, main.bd-content #print-main-content h4, main.bd-content #print-main-content h5 {
