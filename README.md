@@ -12,8 +12,8 @@
 ![version](https://img.shields.io/badge/package_version-0.1.0-orange)
 ![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
-![Open Source Love](https://img.shields.io/badge/open%20source%3F-yes!-lightgrey)
-![Python 3.8](https://img.shields.io/badge/python->=3.8-blue.svg)
+![Open Source Love](https://img.shields.io/badge/open%20source-♡-lightgrey)
+![Python 3.8](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue.svg)
 
 **pykanto** is a python library to manage and analyse bird vocalisations
 
@@ -43,7 +43,7 @@ complete use guide.
 <br>
 
 ### Datasets
-There are three very small vocalisation datasets packaged with `pykanto`, used
+There are three small vocalisation datasets packaged with `pykanto`, used
 for unit tests and demonstration purposes. These will be downloaded automatically
 when you install the library.
 
@@ -51,7 +51,7 @@ when you install the library.
 | -------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Great tit songs                  | Dawn songs from male birds in a population in Oxford, UK     | Nilo M. Recalde                                                                                                                                                                                     |
 | European storm-petrel purr songs | Males singing from burrows in the Shetland and Faroe islands | [XC46092](https://xeno-canto.org/46092) © Dougie Preston <br> [XC663885](https://xeno-canto.org/663885) © Simon S. Christiansen // [CC licence](https://creativecommons.org/licenses/by-nc-nd/2.5/) |
-| Bengalese finch songs            | Recordings from 2 isolated Bengalese finches                 | Originally published in [Tachibana, Koumura & Okanoya (2015)](https://link.springer.com/article/10.1007/s00359-015-1046-z) Data: [DOI](https://osf.io/r6paq/)                                       |
+| Bengalese finch songs            | Recordings from two isolated Bengalese finches               | Originally published in [Tachibana, Koumura & Okanoya (2015)](https://link.springer.com/article/10.1007/s00359-015-1046-z) Data: [DOI](https://osf.io/r6paq/)                                       |
 
 <br>
 
