@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "pykanto"
 description = "A library for managing and analysing animal vocalisation data."
-version = "0.1.0"
+version = "0.1.1"
 authors = [{ name = "Nilo M. Recalde", email = "nilomerinorecalde@gmail.com" }]
 classifiers = [
     'License :: OSI Approved :: MIT License',
