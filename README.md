@@ -3,7 +3,7 @@
 <div align='center'>
 
 <a href="https://nilomr.github.io/pykanto">
-    <img src="docs/custom/pykanto-logo-grey-04.svg" alt="pykanto logo" title="pykanto" height="80" style="padding-bottom:1em !important;" />
+    <img src="https://raw.githubusercontent.com/nilomr/pykanto/2c1613a928c4f98ce982176e52ddadc23e043834/docs/custom/pykanto-logo-grey-04.svg?token=AOQJBIQLQ4VKUF4V7NFYLKTD3TWVG" alt="pykanto logo" title="pykanto" height="80" style="padding-bottom:1em !important;" />
 </a>
 
 <br>
