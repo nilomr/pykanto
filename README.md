@@ -9,7 +9,7 @@
 <br>
 <br>
 
-![version](https://img.shields.io/badge/package_version-0.1.0-orange)
+![version](https://img.shields.io/badge/package_version-0.1.1-orange)
 ![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![Open Source Love](https://img.shields.io/badge/open%20source-♡-lightgrey)
@@ -26,7 +26,7 @@
 
 ### Installation
 
-See [installing pykanto](https://nilomr.github.io/pykanto/contents/1_getting-started.html) for a complete installation guide.
+See [installing pykanto](https://nilomr.github.io/pykanto/_build/html/contents/installation.html) for a complete installation guide.
 
 To install pykanto using pip, simply run:
 ```
@@ -56,7 +56,6 @@ when you install the library.
 <br>
 
 ### License
-
 The project is licensed under the [MIT license](./LICENSE).
 
 <br>
@@ -64,7 +63,6 @@ The project is licensed under the [MIT license](./LICENSE).
 ### Citation
 If you use `pykanto`, please cite the associated preprint: <br>
 ![DOI](https://img.shields.io/badge/DOI-coming%20soon-yellow)
-
 
 <br>
 
