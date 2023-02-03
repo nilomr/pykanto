@@ -4,7 +4,6 @@
    contain the root `toctree` directive.
 
 
-.. raw:: html
 
    <div align='center'>
    <img src="/docs/custom/pykanto-logo-grey-04.svg" alt="pykanto logo" title="pykanto" height="80" style="padding-bottom:1em !important;" />
@@ -14,9 +13,7 @@
    <img src="/custom/pykanto-logo-grey-04.svg" alt="pykanto logo" title="pykanto" height="80" style="padding-bottom:1em !important;" />
    </div>
 
-insert custom/pykanto-logo-grey-04.svg as image:
 
-.. image:: /custom/pykanto-logo-grey-04.svg
 
 
 Documentation

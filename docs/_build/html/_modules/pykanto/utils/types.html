@@ -88,7 +88,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -114,17 +114,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="../../../contents/segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -144,7 +144,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -398,10 +398,11 @@ title="Source repository"
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># ─── DEPENDENCIES ─────────────────────────────────────────────────────────────</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">TypedDict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Protocol</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
 <span class="kn">from</span> <span class="nn">attr</span> <span class="kn">import</span> <span class="n">validators</span>
@@ -514,10 +515,22 @@ title="Source repository"
     <span class="n">wav_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">(</span><span class="n">validator</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span></div>
 
 
-<span class="n">Chunkinfo</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+<span class="n">Chunkinfo_</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
     <span class="s2">&quot;Chunkinfo&quot;</span><span class="p">,</span>
     <span class="p">[</span><span class="s2">&quot;n_workers&quot;</span><span class="p">,</span> <span class="s2">&quot;len_iterable&quot;</span><span class="p">,</span> <span class="s2">&quot;n_chunks&quot;</span><span class="p">,</span> <span class="s2">&quot;chunksize&quot;</span><span class="p">,</span> <span class="s2">&quot;last_chunk&quot;</span><span class="p">],</span>
 <span class="p">)</span>
+
+
+<div class="viewcode-block" id="Chunkinfo"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.types.html#pykanto.utils.types.Chunkinfo">[docs]</a><span class="k">class</span> <span class="nc">Chunkinfo</span><span class="p">(</span><span class="n">Chunkinfo_</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stores information about a chunked iterable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span>
+    <span class="n">len_iterable</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">n_chunks</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">chunksize</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">last_chunk</span><span class="p">:</span> <span class="nb">float</span></div>
 </pre></div>
 
               </div>

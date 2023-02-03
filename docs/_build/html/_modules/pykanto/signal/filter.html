@@ -88,7 +88,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -114,17 +114,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="../../../contents/segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -144,7 +144,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -394,7 +394,7 @@ title="Source repository"
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Functions and methods to perform spectrogram filtering, dereverberating,</span>
-<span class="sd">bandpassio, etc.</span>
+<span class="sd">bandpassing, etc.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># ──── IMPORTS ─────────────────────────────────────────────────────────────────</span>
@@ -525,6 +525,10 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="kernels"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.kernels">[docs]</a><span class="k">class</span> <span class="nc">kernels</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class holding kernels for use in filtering.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">erosion_kern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 
     <span class="n">dilation_kern</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -532,12 +536,34 @@ title="Source repository"
     <span class="p">)</span></div>
 
 
+<span class="c1"># write function to normalise a numpy array to [0,1]:</span>
+
+
 <div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.norm">[docs]</a><span class="nd">@njit</span>
-<span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalise a numpy array to [0,1].</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (np.ndarray): Array to normalise.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: Normalised array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="normalise"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.normalise">[docs]</a><span class="k">def</span> <span class="nf">normalise</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">min_level_db</span><span class="p">):</span>
+<div class="viewcode-block" id="normalise"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.filter.html#pykanto.signal.filter.normalise">[docs]</a><span class="k">def</span> <span class="nf">normalise</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">min_level_db</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalise a numpy array to [0,1] and clip to min_level_db.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        S (np.ndarray): Array to normalise.</span>
+<span class="sd">        min_level_db (int): Threshold, in relative dB.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: Normalised and clipped array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">S</span> <span class="o">-</span> <span class="n">min_level_db</span><span class="p">)</span> <span class="o">/</span> <span class="o">-</span><span class="n">min_level_db</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
 
 

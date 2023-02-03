@@ -393,7 +393,7 @@ title="Source repository"
 <span></span><span class="c1"># ─── DESCRIPTION ──────────────────────────────────────────────────────────────</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Classes and methods to store and modify pykanto parameters.</span>
+<span class="sd">A collection of functions to plot spectrograms. annotations and other output.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># ──── IMPORTS ─────────────────────────────────────────────────────────────────</span>
@@ -650,7 +650,17 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="rand_jitter"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.rand_jitter">[docs]</a><span class="nd">@njit</span>
-<span class="k">def</span> <span class="nf">rand_jitter</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">jitter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">rand_jitter</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">jitter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds random jitter to an array.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        arr (np.ndarray): Array to jitter.</span>
+<span class="sd">        jitter (float, optional): Jitter factor. Defaults to 0.001.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: Jittered array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">stdev</span> <span class="o">=</span> <span class="n">jitter</span> <span class="o">*</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">arr</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span> <span class="o">*</span> <span class="n">stdev</span></div>
 

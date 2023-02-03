@@ -91,7 +91,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -117,17 +117,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../contents/segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../contents/segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="../contents/segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../contents/kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -147,7 +147,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../contents/deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -441,7 +441,7 @@ title="Print to PDF"
   <section id="module-pykanto.signal.filter">
 <span id="pykanto-signal-filter"></span><h1>pykanto.signal.filter<a class="headerlink" href="#module-pykanto.signal.filter" title="Permalink to this headline">#</a></h1>
 <p>Functions and methods to perform spectrogram filtering, dereverberating,
-bandpassio, etc.</p>
+bandpassing, etc.</p>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable table autosummary">
 <colgroup>
@@ -471,10 +471,10 @@ bandpassio, etc.</p>
 <td><p>Returns the original frequencies from the mel bins used in a dataset.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pykanto.signal.filter.norm" title="pykanto.signal.filter.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a>(x)</p></td>
-<td><p></p></td>
+<td><p>Normalise a numpy array to [0,1].</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.filter.normalise" title="pykanto.signal.filter.normalise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalise</span></code></a>(S, min_level_db)</p></td>
-<td><p></p></td>
+<td><p>Normalise a numpy array to [0,1] and clip to min_level_db.</p></td>
 </tr>
 </tbody>
 </table>
@@ -486,7 +486,7 @@ bandpassio, etc.</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.signal.filter.kernels" title="pykanto.signal.filter.kernels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kernels</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Class holding kernels for use in filtering.</p></td>
 </tr>
 </tbody>
 </table>
@@ -592,7 +592,8 @@ song’s frequency distribution. Minmax rescaled to [0,1]</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pykanto.signal.filter.kernels">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pykanto.signal.filter.</span></span><span class="sig-name descname"><span class="pre">kernels</span></span><a class="reference internal" href="../_modules/pykanto/signal/filter.html#kernels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.filter.kernels" title="Permalink to this definition">#</a></dt>
-<dd><dl class="py attribute">
+<dd><p>Class holding kernels for use in filtering.</p>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="pykanto.signal.filter.kernels.erosion_kern">
 <span class="sig-name descname"><span class="pre">erosion_kern</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([[0,</span> <span class="pre">0,</span> <span class="pre">0],</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1],</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]])</span></em><a class="headerlink" href="#pykanto.signal.filter.kernels.erosion_kern" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
@@ -606,13 +607,40 @@ song’s frequency distribution. Minmax rescaled to [0,1]</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.signal.filter.norm">
-<span class="sig-prename descclassname"><span class="pre">pykanto.signal.filter.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/signal/filter.html#norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.filter.norm" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.filter.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/filter.html#norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.filter.norm" title="Permalink to this definition">#</a></dt>
+<dd><p>Normalise a numpy array to [0,1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>np.ndarray</em>) – Array to normalise.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Normalised array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.signal.filter.normalise">
-<span class="sig-prename descclassname"><span class="pre">pykanto.signal.filter.</span></span><span class="sig-name descname"><span class="pre">normalise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_level_db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/signal/filter.html#normalise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.filter.normalise" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">pykanto.signal.filter.</span></span><span class="sig-name descname"><span class="pre">normalise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_level_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/signal/filter.html#normalise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.signal.filter.normalise" title="Permalink to this definition">#</a></dt>
+<dd><p>Normalise a numpy array to [0,1] and clip to min_level_db.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> (<em>np.ndarray</em>) – Array to normalise.</p></li>
+<li><p><strong>min_level_db</strong> (<em>int</em>) – Threshold, in relative dB.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Normalised and clipped array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.signal.filter.hz_to_mel_lib">

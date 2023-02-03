@@ -91,7 +91,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -459,7 +459,7 @@ web application.</p>
 <td><p>Prepare and save data source for the interactibe labelling application.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pykanto.app.data.prepare_datasource_parallel" title="pykanto.app.data.prepare_datasource_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_datasource_parallel</span></code></a>(dataset[, ...])</p></td>
-<td><p></p></td>
+<td><p>Prepare and save data sources for the interactibe labelling application (parallel).</p></td>
 </tr>
 </tbody>
 </table>
@@ -511,8 +511,35 @@ vocalisation or their average. Defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.app.data.prepare_datasource_parallel">
-<span class="sig-prename descclassname"><span class="pre">pykanto.app.data.</span></span><span class="sig-name descname"><span class="pre">prepare_datasource_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cpus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/data.html#prepare_datasource_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.data.prepare_datasource_parallel" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">pykanto.app.data.</span></span><span class="sig-name descname"><span class="pre">prepare_datasource_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><span class="pre">KantoData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_cpus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/app/data.html#prepare_datasource_parallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.data.prepare_datasource_parallel" title="Permalink to this definition">#</a></dt>
+<dd><p>Prepare and save data sources for the interactibe labelling application (parallel).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="pykanto.dataset.html#pykanto.dataset.KantoData" title="pykanto.dataset.KantoData"><em>KantoData</em></a>) – Source dataset.</p></li>
+<li><p><strong>spec_length</strong> (<em>float</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – . Defaults to None.</p></li>
+<li><p><strong>song_level</strong> (<em>bool</em><em>, </em><em>optional</em>) – _description_. Defaults to False.</p></li>
+<li><p><strong>num_cpus</strong> (<em>float</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – N cpus to use. Defaults to None.</p></li>
+<li><p><strong>dataset</strong> – Source dataset.</p></li>
+<li><p><strong>spec_length</strong> – Desired spectrogram lenght, in
+frames. Defaults to 500.</p></li>
+<li><p><strong>song_level</strong> – Whether to use all units per vocalisation
+or their average. Defaults to False.</p></li>
+<li><p><strong>num_cpus</strong> – N cpus to use. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A list of lists of tuples</dt><dd><p>with ID and path to saved data source.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[List[Tuple[str, Path]]]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.app.data.load_app_data">

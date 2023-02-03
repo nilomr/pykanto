@@ -449,54 +449,148 @@ title="Print to PDF"
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.app.main.build_legend" title="pykanto.app.main.build_legend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_legend</span></code></a>(source, html_markers, ...)</p></td>
-<td><p></p></td>
+<td><p>Builds the legend for the main interactive plot.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pykanto.app.main.get_markers" title="pykanto.app.main.get_markers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_markers</span></code></a>(marker_types, mapping)</p></td>
-<td><p></p></td>
+<td><p>Maps a list of markers to labels.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.app.main.parse_boolean" title="pykanto.app.main.parse_boolean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_boolean</span></code></a>(b)</p></td>
-<td><p></p></td>
+<td><p>Parses a boolean.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pykanto.app.main.prepare_legend" title="pykanto.app.main.prepare_legend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_legend</span></code></a>(source, palette, labs[, ...])</p></td>
-<td><p></p></td>
+<td><p>Prepares the legend for the scatterplot.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.app.main.set_range" title="pykanto.app.main.set_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_range</span></code></a>(sdata[, ax_percentage])</p></td>
-<td><p></p></td>
+<td><p>Sets the range of the scatterplot.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pykanto.app.main.update_feedback_text" title="pykanto.app.main.update_feedback_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_feedback_text</span></code></a>(indv_list, remaining_indvs)</p></td>
-<td><p></p></td>
+<td><p>Updates the feedback text for the user.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.app.main.get_markers">
-<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">get_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marker_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#get_markers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.get_markers" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">get_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marker_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/app/main.html#get_markers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.get_markers" title="Permalink to this definition">#</a></dt>
+<dd><p>Maps a list of markers to labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>marker_types</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of marker types.</p></li>
+<li><p><strong>mapping</strong> (<em>np.ndarray</em>) – List of labels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of markers.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.app.main.prepare_legend">
-<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">prepare_legend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bokeh.models.sources.ColumnDataSource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto_class'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#prepare_legend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.prepare_legend" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">prepare_legend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bokeh.models.sources.ColumnDataSource</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'auto_class'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bokeh.core.property.vectorization.Field</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pykanto/app/main.html#prepare_legend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.prepare_legend" title="Permalink to this definition">#</a></dt>
+<dd><p>Prepares the legend for the scatterplot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>ColumnDataSource</em>) – Data source for the scatterplot.</p></li>
+<li><p><strong>palette</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Colour palette for the scatterplot.</p></li>
+<li><p><strong>labs</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of labels.</p></li>
+<li><p><strong>grouping_labels</strong> (<em>str</em><em>, </em><em>optional</em>) – Column name for the labels. Defaults to</p></li>
+<li><p><strong>&quot;auto_class&quot;.</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of the colour palette, marker
+types and the colour field.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple[List[str], list[str], Field]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.app.main.build_legend">
 <span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">build_legend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">html_markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">span_mk_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mk_colours</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#build_legend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.build_legend" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Builds the legend for the main interactive plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>ColumnDataSource</em>) – Data source for the scatterplot.</p></li>
+<li><p><strong>html_markers</strong> (<em>dict</em>) – Dictionary of HTML markers.</p></li>
+<li><p><strong>span_mk_sizes</strong> (<em>dict</em>) – Dictionary of marker sizes.</p></li>
+<li><p><strong>mk_colours</strong> (<em>dict</em>) – Dictionary of marker colours.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTML for the legend.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.app.main.update_feedback_text">
 <span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">update_feedback_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indv_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remaining_indvs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#update_feedback_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.update_feedback_text" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Updates the feedback text for the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indv_list</strong> (<em>list</em>) – List of individuals.</p></li>
+<li><p><strong>remaining_indvs</strong> (<em>list</em>) – List of remaining individuals.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Feedback text.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.app.main.parse_boolean">
 <span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">parse_boolean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#parse_boolean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.parse_boolean" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Parses a boolean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>b</strong> (<em>str</em>) – String to parse.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.app.main.set_range">
 <span class="sig-prename descclassname"><span class="pre">pykanto.app.main.</span></span><span class="sig-name descname"><span class="pre">set_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/app/main.html#set_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.app.main.set_range" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Sets the range of the scatterplot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sdata</strong> (<em>pd.DataFrame</em>) – Dataframe with the scatterplot data.</p></li>
+<li><p><strong>ax_percentage</strong> (<em>int</em><em>, </em><em>optional</em>) – Percentage of the axis to extend.
+Defaults to 5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of the x and y ranges.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 

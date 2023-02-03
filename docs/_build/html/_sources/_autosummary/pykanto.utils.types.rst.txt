@@ -1,4 +1,4 @@
-pykanto.utils.types
+﻿pykanto.utils.types
 ===================
 
 .. automodule:: pykanto.utils.types
@@ -29,6 +29,7 @@ pykanto.utils.types
       AttrProto
       AudioAnnotation
       Chunkinfo
+      Chunkinfo_
       Metadata
       SegmentAnnotation
       ValidDirs

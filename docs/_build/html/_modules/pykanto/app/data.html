@@ -88,7 +88,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -114,17 +114,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="../../../contents/segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -144,7 +144,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -526,7 +526,28 @@ title="Source repository"
     <span class="n">spec_length</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">song_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">num_cpus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepare and save data sources for the interactibe labelling application (parallel).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset (KantoData): Source dataset.</span>
+<span class="sd">        spec_length (float | None, optional): . Defaults to None.</span>
+<span class="sd">        song_level (bool, optional): _description_. Defaults to False.</span>
+<span class="sd">        num_cpus (float | None, optional): N cpus to use. Defaults to None.</span>
+
+<span class="sd">        dataset (KantoData): Source dataset.</span>
+<span class="sd">        spec_length (float | None, optional): Desired spectrogram lenght, in</span>
+<span class="sd">            frames. Defaults to 500.</span>
+<span class="sd">        song_level (bool, optional): Whether to use all units per vocalisation</span>
+<span class="sd">            or their average. Defaults to False.</span>
+<span class="sd">        num_cpus (float | None, optional):</span>
+<span class="sd">            N cpus to use. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[List[Tuple[str, Path]]]: A list of lists of tuples</span>
+<span class="sd">            with ID and path to saved data source.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Set or get spectrogram length (affects width of unit/voc preview)</span>
     <span class="c1"># NOTE: this is set to maxlen=50%len if using units, 4*maxlen if using</span>

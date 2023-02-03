@@ -168,6 +168,30 @@ main.bd-content #main-content, main.bd-content #print-main-content {
     }
 }
 
+
+@media (min-width: 0px) and (max-width: 960px) {
+    .viewcode-link {
+        visibility: hidden;
+        color: rgb(148, 148, 148);
+    }
+
+    .viewcode-link:after {
+        content: 'Source' !important;
+        visibility: visible;
+        display: block;
+        transform: rotate(-90deg);
+        position: absolute !important;
+        left: -1.3em !important;
+        font-family: var(--pst-font-family-monospace);
+    }
+}
+
+#main-page .toctree-wrapper.compound {
+    /* # hide: */
+    display: none;
+}
+
+
 /* HEADING STYLES ─────────────────────────────────────────────────────────── */
 
 main.bd-content #main-content h1, main.bd-content #main-content h2, main.bd-content #main-content h3, main.bd-content #main-content h4, main.bd-content #main-content h5, main.bd-content #print-main-content h1, main.bd-content #print-main-content h2, main.bd-content #print-main-content h3, main.bd-content #print-main-content h4, main.bd-content #print-main-content h5 {

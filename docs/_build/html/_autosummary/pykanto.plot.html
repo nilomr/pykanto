@@ -439,7 +439,7 @@ title="Print to PDF"
                 
   <section id="module-pykanto.plot">
 <span id="pykanto-plot"></span><h1>pykanto.plot<a class="headerlink" href="#module-pykanto.plot" title="Permalink to this headline">#</a></h1>
-<p>Classes and methods to store and modify pykanto parameters.</p>
+<p>A collection of functions to plot spectrograms. annotations and other output.</p>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable table autosummary">
 <colgroup>
@@ -457,7 +457,7 @@ title="Print to PDF"
 <td><p>Returns a mask of length N to select M indices as regularly spaced as possible.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pykanto.plot.rand_jitter" title="pykanto.plot.rand_jitter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rand_jitter</span></code></a>(arr[, jitter])</p></td>
-<td><p></p></td>
+<td><p>Adds random jitter to an array.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pykanto.plot.segmentation" title="pykanto.plot.segmentation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segmentation</span></code></a>(dataset[, key, spectrogram, ...])</p></td>
 <td><p>Plots a vocalisation and overlays the results of the segmentation process.</p></td>
@@ -552,8 +552,23 @@ indices as regularly spaced as possible.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.plot.rand_jitter">
-<span class="sig-prename descclassname"><span class="pre">pykanto.plot.</span></span><span class="sig-name descname"><span class="pre">rand_jitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pykanto/plot.html#rand_jitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.plot.rand_jitter" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">pykanto.plot.</span></span><span class="sig-name descname"><span class="pre">rand_jitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.ndarray</span></span></span><a class="reference internal" href="../_modules/pykanto/plot.html#rand_jitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pykanto.plot.rand_jitter" title="Permalink to this definition">#</a></dt>
+<dd><p>Adds random jitter to an array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>np.ndarray</em>) – Array to jitter.</p></li>
+<li><p><strong>jitter</strong> (<em>float</em><em>, </em><em>optional</em>) – Jitter factor. Defaults to 0.001.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Jittered array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pykanto.plot.show_spec_centroid_bandwidth">

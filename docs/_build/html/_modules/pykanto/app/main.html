@@ -88,7 +88,7 @@
     <div class="bd-toc-item active">
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  User guides
+  User guide
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -114,17 +114,17 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/segmenting-files.html">
-   Raw file segmentation
+   Preparing long recordings
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../../../contents/segmentation.html">
-   Vocalisation segmentation
+  <a class="reference internal" href="../../../contents/segmenting-vocalisations.html">
+   Segmenting vocalisations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/kantodata-dataset.html">
-   KantoData datasets
+   The KantoData dataset
   </a>
  </li>
  <li class="toctree-l1">
@@ -144,7 +144,7 @@
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../../../contents/deep-learning.html">
-   ML Model training
+   Training ML models
   </a>
  </li>
  <li class="toctree-l1">
@@ -412,6 +412,7 @@ title="Source repository"
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">from</span> <span class="nn">bokeh.core.property.vectorization</span> <span class="kn">import</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">bokeh.layouts</span> <span class="kn">import</span> <span class="n">row</span>
 <span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BoxSelectTool</span><span class="p">,</span>
@@ -436,7 +437,17 @@ title="Source repository"
 <span class="c1"># ──── FUNCTIONS ───────────────────────────────────────────────────────────────</span>
 
 
-<div class="viewcode-block" id="get_markers"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.get_markers">[docs]</a><span class="k">def</span> <span class="nf">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<div class="viewcode-block" id="get_markers"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.get_markers">[docs]</a><span class="k">def</span> <span class="nf">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maps a list of markers to labels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        marker_types (List[str]): List of marker types.</span>
+<span class="sd">        mapping (np.ndarray): List of labels.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[str]: List of markers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">marker_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">lab</span><span class="p">:</span> <span class="n">marker</span> <span class="k">for</span> <span class="n">marker</span><span class="p">,</span> <span class="n">lab</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cycle</span><span class="p">(</span><span class="n">marker_types</span><span class="p">),</span> <span class="n">labs</span><span class="p">)</span>
     <span class="p">}</span>
@@ -449,8 +460,21 @@ title="Source repository"
     <span class="n">palette</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">labs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">grouping_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto_class&quot;</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepares the legend for the scatterplot.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        source (ColumnDataSource): Data source for the scatterplot.</span>
+<span class="sd">        palette (List[str]): Colour palette for the scatterplot.</span>
+<span class="sd">        labs (List[str]): List of labels.</span>
+<span class="sd">        grouping_labels (str, optional): Column name for the labels. Defaults to</span>
+<span class="sd">        &quot;auto_class&quot;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple[List[str], list[str], Field]: Tuple of the colour palette, marker</span>
+<span class="sd">        types and the colour field.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Build marker shapes</span>
     <span class="n">marker_types</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;asterisk&quot;</span><span class="p">,</span>
@@ -484,7 +508,19 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="build_legend"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.build_legend">[docs]</a><span class="k">def</span> <span class="nf">build_legend</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">html_markers</span><span class="p">,</span> <span class="n">span_mk_sizes</span><span class="p">,</span> <span class="n">mk_colours</span><span class="p">):</span>
-    <span class="c1"># Build html code</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds the legend for the main interactive plot.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        source (ColumnDataSource): Data source for the scatterplot.</span>
+<span class="sd">        html_markers (dict): Dictionary of HTML markers.</span>
+<span class="sd">        span_mk_sizes (dict): Dictionary of marker sizes.</span>
+<span class="sd">        mk_colours (dict): Dictionary of marker colours.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: HTML for the legend.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">pre</span> <span class="o">=</span> <span class="s1">&#39;&lt;div class=&quot;legend_wrapper&quot;&gt;&#39;</span>
     <span class="n">img_htmls</span> <span class="o">=</span> <span class="p">[</span><span class="n">pre</span><span class="p">]</span>
 
@@ -513,6 +549,16 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="update_feedback_text"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.update_feedback_text">[docs]</a><span class="k">def</span> <span class="nf">update_feedback_text</span><span class="p">(</span><span class="n">indv_list</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates the feedback text for the user.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        indv_list (list): List of individuals.</span>
+<span class="sd">        remaining_indvs (list): List of remaining individuals.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Feedback text.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;// &lt;b&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_indvs</span><span class="p">)</span><span class="si">}</span><span class="s2"> out of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> done&lt;/b&gt; // &quot;</span>
         <span class="s2">&quot;Use the &#39;Label&#39; button to change the label of the selected points. &quot;</span>
@@ -523,10 +569,31 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="parse_boolean"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.parse_boolean">[docs]</a><span class="k">def</span> <span class="nf">parse_boolean</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses a boolean.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        b (str): String to parse.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: Boolean.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">b</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span></div>
 
 
 <div class="viewcode-block" id="set_range"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.set_range">[docs]</a><span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span> <span class="n">ax_percentage</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets the range of the scatterplot.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sdata (pd.DataFrame): Dataframe with the scatterplot data.</span>
+<span class="sd">        ax_percentage (int, optional): Percentage of the axis to extend.</span>
+<span class="sd">            Defaults to 5.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: Tuple of the x and y ranges.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_x&quot;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_x&quot;</span><span class="p">])</span>
     <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_y&quot;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">sdata</span><span class="p">[</span><span class="s2">&quot;umap_y&quot;</span><span class="p">])</span>
     <span class="n">xlen</span><span class="p">,</span> <span class="n">ylen</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">xmin</span> <span class="o">-</span> <span class="n">xmax</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ymin</span> <span class="o">-</span> <span class="n">ymax</span><span class="p">)</span>
@@ -726,7 +793,10 @@ title="Source repository"
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dummy_scatter&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_legend_items</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">get_legend_items</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">LegendItem</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of LegendItem objects for the legend.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dummy_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]))</span>
         <span class="n">legend_items</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">LegendItem</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">renderers</span><span class="o">=</span><span class="p">[</span><span class="n">dummy_scatter</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
