@@ -906,10 +906,10 @@ class KantoData:
         # Check palette validity
         max_labs_data = (
             getattr(self, datatype)
-            .dropna(subset=["auto_class"])["auto_class"]
-            .astype(int)
+            .dropna(subset=["auto_class"])
+            .groupby(["ID"])["auto_class"]
+            .nunique()
             .max()
-            + 1
         )
         max_labs = max_n_labs if max_n_labs > max_labs_data else max_labs_data
         if len(palette) < max_labs:

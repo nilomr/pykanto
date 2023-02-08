@@ -299,7 +299,7 @@ else:
     # Generate labels, markers and colours
 
     # Build labels
-    labs = [str(lab) for lab in range(-1, max_n_labs)]
+    labs = [str(lab) for lab in np.unique(source.data["auto_class"])]
     palette, marker_types, colours = prepare_legend(source, palette, labs)
 
     lightgrey = "#9e9e9e"
