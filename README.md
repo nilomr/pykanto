@@ -40,7 +40,7 @@ See [getting
 started](https://nilomr.github.io/pykanto) for a
 complete use guide.
 
-![](https://nilomr.github.io/pykanto/_build/html/_images/labelapp.gif)
+![webapp](https://raw.githubusercontent.com/nilomr/pykanto/423867fd13ec447c8937d9bade1a927b1869f53e/docs/custom/labelapp.gif)
 
 
 <br>
