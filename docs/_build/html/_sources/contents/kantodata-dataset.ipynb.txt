@@ -10,7 +10,7 @@
         },
         {
             "cell_type": "code",
-            "execution_count": 10,
+            "execution_count": 1,
             "metadata": {
                 "tags": [
                     "remove-cell"
@@ -20,7 +20,7 @@
                 {
                     "data": {
                         "application/vnd.jupyter.widget-view+json": {
-                            "model_id": "3fd8a1d930704f388699d2701694a073",
+                            "model_id": "13b1f7d522f34950965738258402ae21",
                             "version_major": 2,
                             "version_minor": 0
                         },
@@ -32,14 +32,21 @@
                     "output_type": "display_data"
                 },
                 {
+                    "name": "stderr",
+                    "output_type": "stream",
+                    "text": [
+                        "2023-02-09 14:10:37,986\tINFO services.py:1456 -- View the Ray dashboard at \u001b[1m\u001b[32mhttp://127.0.0.1:8265\u001b[39m\u001b[22m\n"
+                    ]
+                },
+                {
                     "data": {
                         "application/vnd.jupyter.widget-view+json": {
-                            "model_id": "beeddf61a84b4ed4b3507100dea95b33",
+                            "model_id": "3ced60ffb5b44b3eb734f00888efa919",
                             "version_major": 2,
                             "version_minor": 0
                         },
                         "text/plain": [
-                            "Preparing spectrograms:   0%|          | 0/7 [00:00<?, ?it/s]"
+                            "Preparing spectrograms:   0%|          | 0/10 [00:00<?, ?it/s]"
                         ]
                     },
                     "metadata": {},
@@ -55,12 +62,12 @@
                 {
                     "data": {
                         "application/vnd.jupyter.widget-view+json": {
-                            "model_id": "b9821542d6fb4b56ba644a54bb96882b",
+                            "model_id": "423786351412488b83ad1cb11393d8c2",
                             "version_major": 2,
                             "version_minor": 0
                         },
                         "text/plain": [
-                            "Finding units in vocalisations:   0%|          | 0/7 [00:00<?, ?it/s]"
+                            "Finding units in vocalisations:   0%|          | 0/10 [00:00<?, ?it/s]"
                         ]
                     },
                     "metadata": {},
@@ -77,7 +84,7 @@
                 {
                     "data": {
                         "application/vnd.jupyter.widget-view+json": {
-                            "model_id": "35ccc96a820641919c30e8ea1cdad6d5",
+                            "model_id": "159fc62be68546d8b0f725682c6d9eef",
                             "version_major": 2,
                             "version_minor": 0
                         },
@@ -171,9 +178,30 @@
         },
         {
             "cell_type": "code",
-            "execution_count": null,
+            "execution_count": 2,
             "metadata": {},
-            "outputs": [],
+            "outputs": [
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": [
+                        "Total length: 20\n",
+                        "Unique IDs: 2\n"
+                    ]
+                },
+                {
+                    "data": {
+                        "text/plain": [
+                            "B32     11\n",
+                            "SW83     9\n",
+                            "Name: ID, dtype: int64"
+                        ]
+                    },
+                    "execution_count": 2,
+                    "metadata": {},
+                    "output_type": "execute_result"
+                }
+            ],
             "source": [
                 "dataset.sample_info()\n",
                 "dataset.data['ID'].value_counts()"
@@ -192,7 +220,7 @@
         },
         {
             "cell_type": "code",
-            "execution_count": 16,
+            "execution_count": 3,
             "metadata": {},
             "outputs": [
                 {
@@ -256,7 +284,7 @@
                             "2021-B32-0415_05-21  [0.1219047619047619, 0.10448979591836738, 0.14...  "
                         ]
                     },
-                    "execution_count": 16,
+                    "execution_count": 3,
                     "metadata": {},
                     "output_type": "execute_result"
                 }
@@ -276,7 +304,7 @@
         },
         {
             "cell_type": "code",
-            "execution_count": null,
+            "execution_count": 4,
             "metadata": {},
             "outputs": [],
             "source": [
@@ -288,13 +316,22 @@
         },
         {
             "cell_type": "code",
-            "execution_count": null,
+            "execution_count": 5,
             "metadata": {
                 "tags": [
                     "hide-input"
                 ]
             },
-            "outputs": [],
+            "outputs": [
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": [
+                        "Vocalisation durations:  ['2.12', '1.99', '2.16', '2.32', '1.81']\n",
+                        "IOIs:  ['0.22', '0.23', '0.25', '0.24', '0.26']\n"
+                    ]
+                }
+            ],
             "source": [
                 "print(\"Vocalisation durations: \",[f\"{x:.2f}\" for x in last_offsets[:5]])\n",
                 "print(\"IOIs: \", [f\"{x:.2f}\" for x in iois[0][:5]])"
@@ -317,7 +354,7 @@
             "name": "python",
             "nbconvert_exporter": "python",
             "pygments_lexer": "ipython3",
-            "version": "3.9.15"
+            "version": "3.9.12"
         },
         "orig_nbformat": 4,
         "vscode": {

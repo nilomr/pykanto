@@ -20,8 +20,9 @@
     href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.1ae1adf31bcec4f5a66e594d147bbc00e33ac08d67b8f5697420a1436a24298a.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
     
@@ -34,7 +35,12 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
-    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -412,7 +418,7 @@ title="Source repository"
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="kn">from</span> <span class="nn">bokeh.core.property.vectorization</span> <span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">bokeh.core.properties</span> <span class="kn">import</span> <span class="n">field</span>
 <span class="kn">from</span> <span class="nn">bokeh.layouts</span> <span class="kn">import</span> <span class="n">row</span>
 <span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BoxSelectTool</span><span class="p">,</span>
@@ -460,7 +466,7 @@ title="Source repository"
     <span class="n">palette</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">labs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">grouping_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto_class&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">field</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prepares the legend for the scatterplot.</span>
 
@@ -472,7 +478,7 @@ title="Source repository"
 <span class="sd">        &quot;auto_class&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        tuple[List[str], list[str], Field]: Tuple of the colour palette, marker</span>
+<span class="sd">        tuple[List[str], list[str], field]: Tuple of the colour palette, marker</span>
 <span class="sd">        types and the colour field.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Build marker shapes</span>
@@ -691,7 +697,7 @@ title="Source repository"
     <span class="c1"># Generate labels, markers and colours</span>
 
     <span class="c1"># Build labels</span>
-    <span class="n">labs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span> <span class="k">for</span> <span class="n">lab</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_n_labs</span><span class="p">)]</span>
+    <span class="n">labs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span> <span class="k">for</span> <span class="n">lab</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">])]</span>
     <span class="n">palette</span><span class="p">,</span> <span class="n">marker_types</span><span class="p">,</span> <span class="n">colours</span> <span class="o">=</span> <span class="n">prepare_legend</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="n">labs</span><span class="p">)</span>
 
     <span class="n">lightgrey</span> <span class="o">=</span> <span class="s2">&quot;#9e9e9e&quot;</span>
