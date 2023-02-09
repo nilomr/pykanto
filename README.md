@@ -40,6 +40,9 @@ See [getting
 started](https://nilomr.github.io/pykanto) for a
 complete use guide.
 
+![](https://nilomr.github.io/pykanto/_build/html/_images/labelapp.gif)
+
+
 <br>
 
 ### Datasets
