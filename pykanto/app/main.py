@@ -20,7 +20,7 @@ from typing import List
 import numpy as np
 import pandas as pd
 import pkg_resources
-from bokeh.core.property.vectorization import Field
+from bokeh.core.properties import field
 from bokeh.layouts import row
 from bokeh.models import (
     BoxSelectTool,
@@ -68,7 +68,7 @@ def prepare_legend(
     palette: List[str],
     labs: List[str],
     grouping_labels: str = "auto_class",
-) -> tuple[List[str], list[str], Field]:
+) -> tuple[List[str], list[str], field]:
     """
     Prepares the legend for the scatterplot.
 
@@ -80,7 +80,7 @@ def prepare_legend(
         "auto_class".
 
     Returns:
-        tuple[List[str], list[str], Field]: Tuple of the colour palette, marker
+        tuple[List[str], list[str], field]: Tuple of the colour palette, marker
         types and the colour field.
     """
     # Build marker shapes
