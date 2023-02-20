@@ -30,7 +30,7 @@ dependencies = [
     "hdbscan >= 0.8.29",
     "seaborn >= 0.11",
     "scikit-image >= 0.18",
-    "librosa >= 0.8",
+    "librosa >= 0.8, <0.10.0",
     "bokeh >=2.3.3, <3.0.0",
     "ujson",
     "psutil",
