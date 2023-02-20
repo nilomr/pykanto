@@ -21,9 +21,8 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.1ae1adf31bcec4f5a66e594d147bbc00e33ac08d67b8f5697420a1436a24298a.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     
@@ -36,12 +35,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Acoustic feature extraction" href="feature-extraction.html" />
@@ -574,13 +568,13 @@ machine. There are two ways to do this in <code class="docutils literal notransl
 </li>
 <li><p>Request compute resources the same way you would normally do, say you want an interactive session in one node with an NVIDIA v100 GPU:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For reference only, how you do this exactly will depend on which particular system you are using.</span>
-srun -p interactive --x11 --pty --gres<span class="o">=</span>gpu:v100:1 --mem<span class="o">=</span><span class="m">90000</span> /bin/bash
+srun<span class="w"> </span>-p<span class="w"> </span>interactive<span class="w"> </span>--x11<span class="w"> </span>--pty<span class="w"> </span>--gres<span class="o">=</span>gpu:v100:1<span class="w"> </span>--mem<span class="o">=</span><span class="m">90000</span><span class="w"> </span>/bin/bash
 </pre></div>
 </div>
 </li>
 <li><p>You can run <code class="docutils literal notranslate"><span class="pre">pykanto-slaunch</span> <span class="pre">--help</span></code> in your terminal to see which arguments you can pass to pykanto-slaunch.</p>
 <p>A sumbission command will look something like this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span> pykanto-slaunch --exp BigBird2020 --p short --time <span class="m">00</span>:30:00 -n <span class="m">1</span> --memory <span class="m">40000</span> --gpu <span class="m">1</span> --c <span class="s2">&quot;python 0.0_build-dataset.py&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>pykanto-slaunch<span class="w"> </span>--exp<span class="w"> </span>BigBird2020<span class="w"> </span>--p<span class="w"> </span>short<span class="w"> </span>--time<span class="w"> </span><span class="m">00</span>:30:00<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>--memory<span class="w"> </span><span class="m">40000</span><span class="w"> </span>--gpu<span class="w"> </span><span class="m">1</span><span class="w"> </span>--c<span class="w"> </span><span class="s2">&quot;python 0.0_build-dataset.py&quot;</span>
 </pre></div>
 </div>
 <p>This will create a bash (.sh) file and a  log (.log) file in a <code class="docutils literal notranslate"><span class="pre">/logs</span></code> folder within the directory from which you are calling the script.</p>

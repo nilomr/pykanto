@@ -20,9 +20,8 @@
     href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.1ae1adf31bcec4f5a66e594d147bbc00e33ac08d67b8f5697420a1436a24298a.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
     
@@ -35,12 +34,7 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../../../_static/togglebutton.js"></script>
-    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -460,7 +454,7 @@ title="Source repository"
 <div class="viewcode-block" id="load_dataset"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.load_dataset">[docs]</a><span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span>
     <span class="n">dataset_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">DIRS</span><span class="p">:</span> <span class="n">ProjDirs</span><span class="p">,</span> <span class="n">relink_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KantoData</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load an existing dataset, fixing any broken links to data using a new</span>
 <span class="sd">    ProjDirs object.</span>
 
@@ -520,7 +514,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="read_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.read_json">[docs]</a><span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">json_loc</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a .json file using ujson.</span>
 
 <span class="sd">    Args:</span>
@@ -534,7 +528,7 @@ title="Source repository"
 
 
 <span class="k">def</span> <span class="nf">_get_json</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads and returns a .json file with a new &#39;noise&#39; key with value True if the</span>
 <span class="sd">    json file has a &#39;label&#39; key with value &#39;NOISE&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -554,7 +548,7 @@ title="Source repository"
 <span class="k">def</span> <span class="nf">_get_json_parallel</span><span class="p">(</span>
     <span class="n">lst</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parallel implementation of</span>
 <span class="sd">    :func:`~pykanto.utils.io._get_json`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -578,7 +572,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="makedir"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.makedir">[docs]</a><span class="k">def</span> <span class="nf">makedir</span><span class="p">(</span><span class="n">DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">return_path</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make a safely nested directory. Returns the Path object by default. Modified</span>
 <span class="sd">    from code by Tim Sainburg (`source &lt;https://shorturl.at/douA0&gt;`_).</span>
 
@@ -610,7 +604,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="copy_xml_files"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.copy_xml_files">[docs]</a><span class="k">def</span> <span class="nf">copy_xml_files</span><span class="p">(</span><span class="n">file_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">dest_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Copies a list of files to `dest_dir / file.parent.name / file.name`</span>
 
 <span class="sd">    Args:</span>
@@ -629,7 +623,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="save_json"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.save_json">[docs]</a><span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="n">json_object</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">json_loc</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Saves a .json file using ujson.</span>
 
 <span class="sd">    Args:</span>
@@ -644,7 +638,7 @@ title="Source repository"
 
 <span class="c1"># Save segmentation and label data to jsons:</span>
 <div class="viewcode-block" id="save_to_jsons"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.save_to_jsons">[docs]</a><span class="k">def</span> <span class="nf">save_to_jsons</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Appends new metadata generated in pykanto to the original json metadata</span>
 <span class="sd">    files that were used to create a `KantoData` dataset. These usually include</span>
 <span class="sd">    things like type labels and unit oset/offsets.</span>
@@ -696,7 +690,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="NumpyEncoder"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.NumpyEncoder">[docs]</a><span class="k">class</span> <span class="nc">NumpyEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Stores a numpy.ndarray or any nested-list composition as JSON.</span>
 <span class="sd">    Source: `karlB on Stack Overflow &lt;https://stackoverflow.com/a/47626762&gt;`_.</span>
 
@@ -710,7 +704,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="make_tarfile"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.make_tarfile">[docs]</a><span class="k">def</span> <span class="nf">make_tarfile</span><span class="p">(</span><span class="n">source_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes a tarfile from a given directory.</span>
 <span class="sd">    Source: ` George V. Reilly on stack overflow &lt;https://stackoverflow.com/a/17081026&gt;`_.</span>
 
@@ -723,7 +717,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="get_unit_spectrograms"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.get_unit_spectrograms">[docs]</a><span class="k">def</span> <span class="nf">get_unit_spectrograms</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">ID</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves unit (e.g. individual notes) spectrograms for a grouping ID in a</span>
 <span class="sd">        dataset.</span>
 
@@ -750,7 +744,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="save_songs"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.io.html#pykanto.utils.io.save_songs">[docs]</a><span class="k">def</span> <span class="nf">save_songs</span><span class="p">(</span><span class="n">folder</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">specs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save song spectrograms as .jpg images to folder.</span>
 
 <span class="sd">    Args:</span>
@@ -772,7 +766,7 @@ title="Source repository"
     <span class="n">dname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">to_export</span><span class="p">:</span> <span class="n">ItemsView</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save train and test subsets of dataset to disk as .jpg images (in folders</span>
 <span class="sd">    correspoding to class labels).</span>
 

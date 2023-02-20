@@ -1,4 +1,4 @@
-﻿pykanto.app.main
+pykanto.app.main
 ================
 
 .. automodule:: pykanto.app.main

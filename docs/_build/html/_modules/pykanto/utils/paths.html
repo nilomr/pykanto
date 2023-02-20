@@ -20,9 +20,8 @@
     href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.1ae1adf31bcec4f5a66e594d147bbc00e33ac08d67b8f5697420a1436a24298a.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
     
@@ -35,12 +34,7 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../../../_static/togglebutton.js"></script>
-    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -425,7 +419,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="ProjDirs"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs">[docs]</a><span class="k">class</span> <span class="nc">ProjDirs</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initialises a ProjDirs class, which is used to store a</span>
 <span class="sd">    project&#39;s file structure. This is required when constructing</span>
 <span class="sd">    a :class:`~pykanto.dataset.KantoData` object and generally</span>
@@ -439,10 +433,40 @@ title="Source repository"
 <span class="sd">        mkdir (bool, optional): Wether to create directories if they</span>
 <span class="sd">            don&#39;t already exist. Defaults to False.</span>
 
+<span class="sd">    Attributes:</span>
+<span class="sd">        PROJECT (Path): Root directory of the project.</span>
+<span class="sd">        DATA (Path): Directory for project data.</span>
+<span class="sd">        RAW_DATA (Path): (Immutable) location of the raw data to be used in</span>
+<span class="sd">            this project.</span>
+<span class="sd">        SEGMENTED (Path): Directory for segmented audio data.</span>
+<span class="sd">        SPECTROGRAMS (Path): Directory for project spectrograms.</span>
+<span class="sd">        RESOURCES (Path): Directory for project resources.</span>
+<span class="sd">        REPORTS (Path): Directory for project reports.</span>
+<span class="sd">        FIGURES (Path): Directory for project figures.</span>
+<span class="sd">        DATASET (Path): Directory for project datasets.</span>
+<span class="sd">        DATASET_ID (str): Name of the dataset.</span>
+
 <span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; from pathlib import Path</span>
+<span class="sd">        &gt;&gt;&gt; from pykanto.utils.paths import ProjDirs</span>
+<span class="sd">        &gt;&gt;&gt; DATASET_ID = &quot;BIGBIRD&quot;</span>
 <span class="sd">        &gt;&gt;&gt; PROJROOT = Path(&#39;home&#39; / &#39;user&#39; / &#39;projects&#39; / &#39;myproject&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; RAW_DATA= Path(&#39;bigexternaldrive&#39; / &#39;fieldrecordings&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; DIRS = ProjDirs(PROJROOT, RAW_DATA, mkdir=True)</span>
+<span class="sd">        &gt;&gt;&gt; DIRS = ProjDirs(PROJROOT, RAW_DATA, DATASET_ID, mkdir=True)</span>
+<span class="sd">        ... 📁 project</span>
+<span class="sd">        ... ├── 📁 data</span>
+<span class="sd">        ... │   ├── 📁 datasets</span>
+<span class="sd">        ... │   │   └── 📁 &lt;DATASET_ID&gt;</span>
+<span class="sd">        ... │   │       ├── &lt;DATASET_ID&gt;.db</span>
+<span class="sd">        ... │   │       └── 📁 spectrograms</span>
+<span class="sd">        ... |   ├── 📁 RAW_DATA</span>
+<span class="sd">        ... │   │   └── 📁 &lt;DATASET_ID&gt;</span>
+<span class="sd">        ... │   └── 📁 segmented</span>
+<span class="sd">        ... │       └── 📁 &lt;lowercase name of RAW_DATA&gt;</span>
+<span class="sd">        ... ├── 📁 resources</span>
+<span class="sd">        ... ├── 📁 reports</span>
+<span class="sd">        ... │   └── 📁 figures</span>
+<span class="sd">        ... └── &lt;other project files&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ProjDirs.__init__"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -477,7 +501,7 @@ title="Source repository"
                     <span class="n">makedir</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the class objects as a string.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Pretty printed dictionary contents</span>
@@ -487,7 +511,7 @@ title="Source repository"
 <div class="viewcode-block" id="ProjDirs.append"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">new_attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_value</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Appends a new attribute to the class instance.</span>
 
 <span class="sd">        Args:</span>
@@ -545,7 +569,7 @@ title="Source repository"
 <div class="viewcode-block" id="ProjDirs.update_json_locs"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.update_json_locs">[docs]</a>    <span class="k">def</span> <span class="nf">update_json_locs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_checks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the `wav_file` field in JSON metadata files for a given project.</span>
 <span class="sd">        This is useful if you have moved your data to a new location. It will</span>
 <span class="sd">        fix broken links to the .wav files, provided that the</span>
@@ -577,7 +601,7 @@ title="Source repository"
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">WAV_LIST</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore_checks</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;There are no .wav files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;There are no .wav files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s2">&quot;WAV&quot;</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="s2">&quot; will not look for JSON files.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">WAV_LIST</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore_checks</span><span class="p">:</span>
@@ -655,7 +679,7 @@ title="Source repository"
 <div class="viewcode-block" id="get_wavs_w_annotation"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_wavs_w_annotation">[docs]</a><span class="k">def</span> <span class="nf">get_wavs_w_annotation</span><span class="p">(</span>
     <span class="n">wav_filepaths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">annotation_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a list of tuples containing [0] paths to wavfiles for which there is</span>
 <span class="sd">    an annotation file and [1] paths to its annotation file. Assumes that wav</span>
 <span class="sd">    and paths to the annotation files share the same file name and only their</span>
@@ -681,7 +705,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="change_data_loc"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.change_data_loc">[docs]</a><span class="k">def</span> <span class="nf">change_data_loc</span><span class="p">(</span><span class="n">DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates the location of the parent directories of a project, including the</span>
 <span class="sd">    project name, for a given path. Used when the location of a dataset changes</span>
 <span class="sd">    (e.g if transferring a project to a new machine).</span>
@@ -702,7 +726,7 @@ title="Source repository"
 <div class="viewcode-block" id="get_file_paths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_file_paths">[docs]</a><span class="k">def</span> <span class="nf">get_file_paths</span><span class="p">(</span>
     <span class="n">root_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">extensions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns paths to files with given extension found recursively within a</span>
 <span class="sd">    directory.</span>
 
@@ -741,7 +765,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="link_project_data"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.link_project_data">[docs]</a><span class="k">def</span> <span class="nf">link_project_data</span><span class="p">(</span><span class="n">origin</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="n">project_data_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a symlink from a project&#39;s data folder (not under version control)</span>
 <span class="sd">    to the directory where the data lives (e.g. on an external HDD).</span>
 
@@ -776,7 +800,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="pykanto_data"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.pykanto_data">[docs]</a><span class="k">def</span> <span class="nf">pykanto_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GREAT_TIT&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjDirs</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Loads pykanto&#39;s sample datasets. These are minimal data examples intended</span>
 <span class="sd">    for testing and tutorials.</span>
 

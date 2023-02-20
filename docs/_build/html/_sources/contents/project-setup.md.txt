@@ -71,6 +71,36 @@ and build the project's directory tree:
 DIRS = ProjDirs(project_root, data_dir, dataset_name,  mkdir=True)
 print(DIRS)
 ```
+
+If `mkdir` is set to `True`, the directories will be created if they don't already exist.
+This is the resulting directory tree, assuming that your raw data folder is
+called `raw`. 
+
+```{code-block} text
+
+📁 project
+├── 📁 data
+│   ├── 📁 datasets
+│   │   └── 📁 <DATASET_ID>
+│   │       ├── <DATASET_ID>.db
+│   │       └── 📁 spectrograms
+|   ├── 📁 raw
+│   │   └── 📁 <DATASET_ID>  
+│   └── 📁 segmented
+│       └── 📁 <lowercase name of RAW_DATA>
+├── 📁 resources
+├── 📁 reports
+│   └── 📁 figures
+└── <other project files>
+
+```
+
+**Note**: If you are starting with a dataset that has already been
+segmented, you can simply pass the path to the segmented data folder instead to
+the `RAW_DATA` argument of `ProjDirs`.
+
+
+
 See the
 {py:class}`~pykanto.utils.paths.ProjDirs` docs for more information.
 <br>

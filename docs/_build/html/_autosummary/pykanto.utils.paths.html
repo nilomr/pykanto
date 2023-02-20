@@ -21,9 +21,8 @@
     href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.1ae1adf31bcec4f5a66e594d147bbc00e33ac08d67b8f5697420a1436a24298a.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     
@@ -36,12 +35,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pykanto.utils.slurm" href="pykanto.utils.slurm.html" />
@@ -503,10 +497,138 @@ don’t already exist. Defaults to False.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.PROJECT">
+<span class="sig-name descname"><span class="pre">PROJECT</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.PROJECT" title="Permalink to this definition">#</a></dt>
+<dd><p>Root directory of the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.DATA">
+<span class="sig-name descname"><span class="pre">DATA</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.DATA" title="Permalink to this definition">#</a></dt>
+<dd><p>Directory for project data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.RAW_DATA">
+<span class="sig-name descname"><span class="pre">RAW_DATA</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.RAW_DATA" title="Permalink to this definition">#</a></dt>
+<dd><p>(Immutable) location of the raw data to be used in
+this project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.SEGMENTED">
+<span class="sig-name descname"><span class="pre">SEGMENTED</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.SEGMENTED" title="Permalink to this definition">#</a></dt>
+<dd><p>Directory for segmented audio data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.SPECTROGRAMS">
+<span class="sig-name descname"><span class="pre">SPECTROGRAMS</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.SPECTROGRAMS" title="Permalink to this definition">#</a></dt>
+<dd><p>Directory for project spectrograms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.RESOURCES">
+<span class="sig-name descname"><span class="pre">RESOURCES</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.RESOURCES" title="Permalink to this definition">#</a></dt>
+<dd><p>Directory for project resources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.REPORTS">
+<span class="sig-name descname"><span class="pre">REPORTS</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.REPORTS" title="Permalink to this definition">#</a></dt>
+<dd><p>Directory for project reports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.FIGURES">
+<span class="sig-name descname"><span class="pre">FIGURES</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.FIGURES" title="Permalink to this definition">#</a></dt>
+<dd><p>Directory for project figures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.DATASET">
+<span class="sig-name descname"><span class="pre">DATASET</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.DATASET" title="Permalink to this definition">#</a></dt>
+<dd><p>Directory for project datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pykanto.utils.paths.ProjDirs.DATASET_ID">
+<span class="sig-name descname"><span class="pre">DATASET_ID</span></span><a class="headerlink" href="#pykanto.utils.paths.ProjDirs.DATASET_ID" title="Permalink to this definition">#</a></dt>
+<dd><p>Name of the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PROJROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;home&#39;</span> <span class="o">/</span> <span class="s1">&#39;user&#39;</span> <span class="o">/</span> <span class="s1">&#39;projects&#39;</span> <span class="o">/</span> <span class="s1">&#39;myproject&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">RAW_DATA</span><span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;bigexternaldrive&#39;</span> <span class="o">/</span> <span class="s1">&#39;fieldrecordings&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJROOT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; from pathlib import Path
+&gt;&gt;&gt; from pykanto.utils.paths import ProjDirs
+&gt;&gt;&gt; DATASET_ID = &quot;BIGBIRD&quot;
+&gt;&gt;&gt; PROJROOT = Path(&#39;home&#39; / &#39;user&#39; / &#39;projects&#39; / &#39;myproject&#39;)
+&gt;&gt;&gt; RAW_DATA= Path(&#39;bigexternaldrive&#39; / &#39;fieldrecordings&#39;)
+&gt;&gt;&gt; DIRS = ProjDirs(PROJROOT, RAW_DATA, DATASET_ID, mkdir=True)
+... 📁 project
+... ├── 📁 data
+... │   ├── 📁 datasets
+... │   │   └── 📁 &lt;DATASET_ID&gt;
+... │   │       ├── &lt;DATASET_ID&gt;.db
+... │   │       └── 📁 spectrograms
+... |   ├── 📁 RAW_DATA
+... │   │   └── 📁 &lt;DATASET_ID&gt;
+... │   └── 📁 segmented
+... │       └── 📁 &lt;lowercase name of RAW_DATA&gt;
+... ├── 📁 resources
+... ├── 📁 reports
+... │   └── 📁 figures
+... └── &lt;other project files&gt;
 </pre></div>
 </div>
 <dl class="py method">
@@ -536,7 +658,7 @@ if it doesn’t already exist. Defaults to False.</p></li>
 <dd><p>Updates the <code class="xref py py-obj docutils literal notranslate"><span class="pre">wav_file</span></code> field in JSON metadata files for a given project.
 This is useful if you have moved your data to a new location. It will
 fix broken links to the .wav files, provided that the
-<a class="reference internal" href="#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a> object has a <code class="xref py py-obj docutils literal notranslate"><span class="pre">SEGMENTED</span></code>
+<a class="reference internal" href="#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a> object has a <a class="reference internal" href="#pykanto.utils.paths.ProjDirs.SEGMENTED" title="pykanto.utils.paths.ProjDirs.SEGMENTED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SEGMENTED</span></code></a>
 attribute pointing to a valid directory containing <code class="xref py py-obj docutils literal notranslate"><span class="pre">/WAV</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">/JSON</span></code>
 subdirectories.</p>
 <dl class="field-list simple">
