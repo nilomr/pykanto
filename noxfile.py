@@ -22,7 +22,7 @@ def build(session: nox.Session) -> None:
     session.run("flit", "build")
 
 
-@nox.session(python=["3.8"], venv_backend="conda")
+@nox.session(python=["3.8", "3.10"], venv_backend="conda")
 def test(session):
     session.install(".[test]")
     session.run("pytest")
