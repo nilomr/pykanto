@@ -41,10 +41,40 @@ class ProjDirs:
         mkdir (bool, optional): Wether to create directories if they
             don't already exist. Defaults to False.
 
+    Attributes:
+        PROJECT (Path): Root directory of the project.
+        DATA (Path): Directory for project data.
+        RAW_DATA (Path): (Immutable) location of the raw data to be used in
+            this project.
+        SEGMENTED (Path): Directory for segmented audio data.
+        SPECTROGRAMS (Path): Directory for project spectrograms.
+        RESOURCES (Path): Directory for project resources.
+        REPORTS (Path): Directory for project reports.
+        FIGURES (Path): Directory for project figures.
+        DATASET (Path): Directory for project datasets.
+        DATASET_ID (str): Name of the dataset.
+
     Examples:
+        >>> from pathlib import Path
+        >>> from pykanto.utils.paths import ProjDirs
+        >>> DATASET_ID = "BIGBIRD"
         >>> PROJROOT = Path('home' / 'user' / 'projects' / 'myproject')
         >>> RAW_DATA= Path('bigexternaldrive' / 'fieldrecordings')
-        >>> DIRS = ProjDirs(PROJROOT, RAW_DATA, mkdir=True)
+        >>> DIRS = ProjDirs(PROJROOT, RAW_DATA, DATASET_ID, mkdir=True)
+        ... 📁 project
+        ... ├── 📁 data
+        ... │   ├── 📁 datasets
+        ... │   │   └── 📁 <DATASET_ID>
+        ... │   │       ├── <DATASET_ID>.db
+        ... │   │       └── 📁 spectrograms
+        ... |   ├── 📁 RAW_DATA
+        ... │   │   └── 📁 <DATASET_ID>
+        ... │   └── 📁 segmented
+        ... │       └── 📁 <lowercase name of RAW_DATA>
+        ... ├── 📁 resources
+        ... ├── 📁 reports
+        ... │   └── 📁 figures
+        ... └── <other project files>
     """
 
     def __init__(
