@@ -75,9 +75,6 @@ print(DIRS)
 If `mkdir` is set to `True`, the directories will be created if they don't already exist.
 This is the resulting directory tree, assuming that your raw data folder is
 called `raw`. 
-- If you are starting with a dataset that has already been
-segmented, you can simply pass the path to the segmented data folder instead to
-the `RAW_DATA` argument of `ProjDirs`.
 
 ```{code-block} text
 
@@ -97,6 +94,11 @@ the `RAW_DATA` argument of `ProjDirs`.
 └── <other project files>
 
 ```
+
+**Note**: If you are starting with a dataset that has already been
+segmented, you can simply pass the path to the segmented data folder instead to
+the `RAW_DATA` argument of `ProjDirs`.
+
 
 
 See the
