@@ -1,0 +1,16 @@
+{
+  "sample_rate": 22050,
+  "bit_rate": 1411200,
+  "length_s": 1.5346938775510204,
+  "ID": "STORM-PETREL",
+  "label": "",
+  "start": 219072,
+  "end": 286752,
+  "lower_freq": 224,
+  "upper_freq": 8965,
+  "max_amplitude": 0.6086800729687178,
+  "min_amplitude": -0.4043241893507527,
+  "source_wav": "/home/nilomr/projects/pykanto/pykanto/data/raw/STORM-PETREL/XC663885.wav",
+  "annotation_file": "/home/nilomr/projects/pykanto/pykanto/data/raw/STORM-PETREL/XC663885.xml",
+  "wav_file": "/home/nilomr/projects/pykanto/pykanto/data/segmented/storm-petrel/WAV/STORM-PETREL_XC663885_2.wav"
+}

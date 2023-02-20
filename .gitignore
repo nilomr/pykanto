@@ -92,8 +92,10 @@ target/
 /reports/text/talks
 embedding_remove
 pykanto/data/datasets
-!pykanto/data/segmented/great_tit
 pykanto/data/segmented/*
+!pykanto/data/segmented/great_tit
+!pykanto/data/segmented/storm-petrel
+pykanto/data/segmented/storm-petrel/WAV
 /logs/
 
 
