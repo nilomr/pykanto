@@ -50,6 +50,7 @@ extensions = [
     "IPython.sphinxext.ipython_console_highlighting",
 ]
 nb_execution_mode = "cache"
+nb_execution_timeout = 90
 coverage_show_missing_items = True
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 templates_path = ["_templates"]
