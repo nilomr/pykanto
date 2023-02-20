@@ -825,7 +825,17 @@ class KantoData:
             columns=["ID", "voc_app_data" if song_level else "unit_app_data"],
         )
         int_df["voc_check" if song_level else "unit_check"] = False
-        self.files.update(int_df)
+        ID = self.files.ID
+        self.files = self.files.drop(
+            self.files.columns.intersection(int_df.columns), axis=1
+        )
+        self.files["ID"] = ID
+        self.files = (
+            self.files.reset_index()
+            .merge(int_df, how="left", on="ID")
+            .set_index("index")
+        )
+
         self.save_to_disk(verbose=self.parameters.verbose)
 
     def open_label_app(
