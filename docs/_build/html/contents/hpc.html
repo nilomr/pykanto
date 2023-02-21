@@ -40,12 +40,35 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Acoustic feature extraction" href="feature-extraction.html" />
     <link rel="prev" title="Interactive app" href="interactive-app.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None" />
+<meta property="og:title" content="pykanto: documentation">
+<meta property="og:type" content="website">
+<meta property="og:image" content="_images/docspreview.jpeg">
+<meta property="og:url" content="https://nilomr.github.io/pykanto/">
 
-    <!-- Google Analytics -->
-    
+<!-- ****** faviconit.com favicons ****** -->
+<link rel="shortcut icon" href="_images/favicon.ico">
+<link rel="icon" sizes="16x16 32x32 64x64" href="_images/favicon.ico">
+<link rel="icon" type="image/png" sizes="196x196" href="_images/favicon-192.png">
+<link rel="icon" type="image/png" sizes="160x160" href="_images/favicon-160.png">
+<link rel="icon" type="image/png" sizes="96x96" href="_images/favicon-96.png">
+<link rel="icon" type="image/png" sizes="64x64" href="_images/favicon-64.png">
+<link rel="icon" type="image/png" sizes="32x32" href="_images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="_images/favicon-16.png">
+<link rel="apple-touch-icon" href="_images/favicon-57.png">
+<link rel="apple-touch-icon" sizes="114x114" href="_images/favicon-114.png">
+<link rel="apple-touch-icon" sizes="72x72" href="_images/favicon-72.png">
+<link rel="apple-touch-icon" sizes="144x144" href="_images/favicon-144.png">
+<link rel="apple-touch-icon" sizes="60x60" href="_images/favicon-60.png">
+<link rel="apple-touch-icon" sizes="120x120" href="_images/favicon-120.png">
+<link rel="apple-touch-icon" sizes="76x76" href="_images/favicon-76.png">
+<link rel="apple-touch-icon" sizes="152x152" href="_images/favicon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="_images/favicon-180.png">
+<meta name="msapplication-TileColor" content="#FFFFFF">
+<meta name="msapplication-TileImage" content="_images/favicon-144.png">
+<meta name="msapplication-config" content="_images/browserconfig.xml">
+<!-- ****** faviconit.com favicons ****** -->
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
 <!-- Checkboxes to toggle the left sidebar -->
@@ -568,13 +591,13 @@ machine. There are two ways to do this in <code class="docutils literal notransl
 </li>
 <li><p>Request compute resources the same way you would normally do, say you want an interactive session in one node with an NVIDIA v100 GPU:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For reference only, how you do this exactly will depend on which particular system you are using.</span>
-srun<span class="w"> </span>-p<span class="w"> </span>interactive<span class="w"> </span>--x11<span class="w"> </span>--pty<span class="w"> </span>--gres<span class="o">=</span>gpu:v100:1<span class="w"> </span>--mem<span class="o">=</span><span class="m">90000</span><span class="w"> </span>/bin/bash
+srun -p interactive --x11 --pty --gres<span class="o">=</span>gpu:v100:1 --mem<span class="o">=</span><span class="m">90000</span> /bin/bash
 </pre></div>
 </div>
 </li>
 <li><p>You can run <code class="docutils literal notranslate"><span class="pre">pykanto-slaunch</span> <span class="pre">--help</span></code> in your terminal to see which arguments you can pass to pykanto-slaunch.</p>
 <p>A sumbission command will look something like this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>pykanto-slaunch<span class="w"> </span>--exp<span class="w"> </span>BigBird2020<span class="w"> </span>--p<span class="w"> </span>short<span class="w"> </span>--time<span class="w"> </span><span class="m">00</span>:30:00<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>--memory<span class="w"> </span><span class="m">40000</span><span class="w"> </span>--gpu<span class="w"> </span><span class="m">1</span><span class="w"> </span>--c<span class="w"> </span><span class="s2">&quot;python 0.0_build-dataset.py&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span> pykanto-slaunch --exp BigBird2020 --p short --time <span class="m">00</span>:30:00 -n <span class="m">1</span> --memory <span class="m">40000</span> --gpu <span class="m">1</span> --c <span class="s2">&quot;python 0.0_build-dataset.py&quot;</span>
 </pre></div>
 </div>
 <p>This will create a bash (.sh) file and a  log (.log) file in a <code class="docutils literal notranslate"><span class="pre">/logs</span></code> folder within the directory from which you are calling the script.</p>

@@ -108,6 +108,9 @@ pykanto/data/segmented/storm-petrel/WAV
 *.xml
 !pykanto/data/raw/*/*.xml
 !pykanto/data/raw/*/*/*.xml
+!docs/custom/*.xml
+!docs/_build/html/_images/browserconfig.xml
+
 
 # Mac OS-specific storage files
 .DS_Store
