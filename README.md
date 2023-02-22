@@ -9,7 +9,7 @@
 <br>
 <br>
 
-![version](https://img.shields.io/badge/package_version-0.1.2-orange)
+![version](https://img.shields.io/badge/package_version-0.1.3-orange)
 ![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![Open Source Love](https://img.shields.io/badge/open%20source-♡-lightgrey)
@@ -68,7 +68,7 @@ If you use `pykanto` in your own work, please cite the associated article and/or
 the repository:
 
 [![DOI](https://zenodo.org/badge/239354937.svg)](https://zenodo.org/badge/latestdoi/239354937)
-![DOI](https://img.shields.io/badge/DOI-coming%20soon-yellow)
+[![arXiv](https://img.shields.io/badge/arXiv-2302.10340-b31b1b.svg)](https://arxiv.org/abs/2302.10340)
 
 <br>
 
