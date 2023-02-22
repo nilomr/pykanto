@@ -4,8 +4,8 @@
 
 `pykanto` is a new software package to make the process of archiving,
 cleaning, segmenting, labelling, and analysing animal vocalisations faster and
-more reproducible. This website contains its documentation. [This article]()
-explains the motivation behind the project and provides a worked example using
+more reproducible. This website contains its documentation.<br>
+[`This article`](https://arxiv.org/pdf/2302.10340v1.pdf) explains the motivation behind the project and provides a worked example using
 it to analyse bird songs.
 
 ![Python 3.8](https://img.shields.io/badge/_python-≥3.8-lighgreen.svg)
