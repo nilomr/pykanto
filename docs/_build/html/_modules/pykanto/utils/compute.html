@@ -37,12 +37,55 @@
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None" />
 
-    <!-- Google Analytics -->
-    
+
+<!-- HTML Meta Tags -->
+<title>pykanto: documentation</title>
+<meta name="description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+
+<!-- Facebook Meta Tags -->
+<meta property="og:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="pykanto: documentation">
+<meta property="og:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta property="og:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="nilomr.github.io">
+<meta property="twitter:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta name="twitter:title" content="pykanto: documentation">
+<meta name="twitter:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta name="twitter:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+
+<!-- ****** faviconit.com favicons ****** -->
+<link rel="shortcut icon" href="_images/favicon.ico">
+<link rel="icon" sizes="16x16 32x32 64x64" href="_images/favicon.ico">
+<link rel="icon" type="image/png" sizes="196x196" href="_images/favicon-192.png">
+<link rel="icon" type="image/png" sizes="160x160" href="_images/favicon-160.png">
+<link rel="icon" type="image/png" sizes="96x96" href="_images/favicon-96.png">
+<link rel="icon" type="image/png" sizes="64x64" href="_images/favicon-64.png">
+<link rel="icon" type="image/png" sizes="32x32" href="_images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="_images/favicon-16.png">
+<link rel="apple-touch-icon" href="_images/favicon-57.png">
+<link rel="apple-touch-icon" sizes="114x114" href="_images/favicon-114.png">
+<link rel="apple-touch-icon" sizes="72x72" href="_images/favicon-72.png">
+<link rel="apple-touch-icon" sizes="144x144" href="_images/favicon-144.png">
+<link rel="apple-touch-icon" sizes="60x60" href="_images/favicon-60.png">
+<link rel="apple-touch-icon" sizes="120x120" href="_images/favicon-120.png">
+<link rel="apple-touch-icon" sizes="76x76" href="_images/favicon-76.png">
+<link rel="apple-touch-icon" sizes="152x152" href="_images/favicon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="_images/favicon-180.png">
+<meta name="msapplication-TileColor" content="#FFFFFF">
+<meta name="msapplication-TileImage" content="_images/favicon-144.png">
+<meta name="msapplication-config" content="_images/browserconfig.xml">
+<!-- ****** faviconit.com favicons ****** -->
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
 <!-- Checkboxes to toggle the left sidebar -->
@@ -421,7 +464,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="to_iterator"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.to_iterator">[docs]</a><span class="k">def</span> <span class="nf">to_iterator</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">,</span> <span class="n">breaks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use ray paralell with a progress bar.</span>
 <span class="sd">    Modified from https://git.io/JMv6r.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -441,7 +484,7 @@ title="Source repository"
 <div class="viewcode-block" id="with_pbar"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.with_pbar">[docs]</a><span class="k">def</span> <span class="nf">with_pbar</span><span class="p">(</span>
     <span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tqdm</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a custom progress bar. This is just a wrapper around tqdm.</span>
 
 <span class="sd">    Args:</span>
@@ -457,7 +500,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="print_dict"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.print_dict">[docs]</a><span class="k">def</span> <span class="nf">print_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pretty print a class __dict__ attribute.</span>
 
 <span class="sd">    Args:</span>
@@ -488,7 +531,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="timing"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.timing">[docs]</a><span class="k">def</span> <span class="nf">timing</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Custom timer decorator. Prints time info unless used within a KantoData</span>
 <span class="sd">    where parameters.verbose = False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -518,7 +561,7 @@ title="Source repository"
     <span class="n">n_workers</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Chunkinfo</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate chunk size to optimise parallel computing.</span>
 <span class="sd">    Adapted from https://stackoverflow.com/a/54032744.</span>
 
@@ -544,7 +587,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="get_chunks"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.get_chunks">[docs]</a><span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Yields successive n-sized chunks from list.</span>
 <span class="sd">    Last chunk will be shorter if len(lst) % n != 0.</span>
 
@@ -560,14 +603,14 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="flatten_list"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.flatten_list">[docs]</a><span class="k">def</span> <span class="nf">flatten_list</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Flattens a list using chain.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">lst</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="dictlist_to_dict"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.dictlist_to_dict">[docs]</a><span class="k">def</span> <span class="nf">dictlist_to_dict</span><span class="p">(</span><span class="n">dictlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Builds a dictionary from a list of dictionaries.</span>
 
 <span class="sd">    Args:</span>
@@ -581,7 +624,7 @@ title="Source repository"
 <div class="viewcode-block" id="print_parallel_info"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.compute.html#pykanto.utils.compute.print_parallel_info">[docs]</a><span class="k">def</span> <span class="nf">print_parallel_info</span><span class="p">(</span>
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">iterable_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">chunk_length</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prints information about a parallel process for the user.</span>
 
 <span class="sd">    Args:</span>

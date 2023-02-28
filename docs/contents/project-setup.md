@@ -62,9 +62,14 @@ Next, tell `pykanto` where the raw data for your project live,
 dataset_name = 'BIGBIRD_2021'
 data_dir = project_root / "data" / "raw" / dataset_name
 ```
+```{admonition} Note:
+:class: note
 
+If you are working with a dataset where long audio files have already been segmented into smaller chunks (e.g., songs), you can simply pass the path to the segmented data folder to the `RAW_DATA` argument of `ProjDirs`. See the {py:class}`~pykanto.utils.paths.ProjDirs` docs for more information.
+```
 and build the project's directory tree:
- 
+
+
 
 ```{code-block} python
 
@@ -72,9 +77,9 @@ DIRS = ProjDirs(project_root, data_dir, dataset_name,  mkdir=True)
 print(DIRS)
 ```
 
-If `mkdir` is set to `True`, the directories will be created if they don't already exist.
-This is the resulting directory tree, assuming that your raw data folder is
-called `raw`. 
+If `mkdir` is set to `True`, the directories will be created if they don't
+already exist. This is the resulting directory tree, assuming that your raw data
+folder is called `raw`.
 
 ```{code-block} text
 
@@ -94,11 +99,6 @@ called `raw`.
 └── <other project files>
 
 ```
-
-**Note**: If you are starting with a dataset that has already been
-segmented, you can simply pass the path to the segmented data folder instead to
-the `RAW_DATA` argument of `ProjDirs`.
-
 
 
 See the

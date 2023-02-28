@@ -586,14 +586,18 @@ never ever touch it.</p>
 <span class="n">data_dir</span> <span class="o">=</span> <span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span> <span class="o">/</span> <span class="s2">&quot;raw&quot;</span> <span class="o">/</span> <span class="n">dataset_name</span>
 </pre></div>
 </div>
+<div class="note admonition">
+<p class="admonition-title">Note:</p>
+<p>If you are working with a dataset where long audio files have already been segmented into smaller chunks (e.g., songs), you can simply pass the path to the segmented data folder to the <code class="docutils literal notranslate"><span class="pre">RAW_DATA</span></code> argument of <code class="docutils literal notranslate"><span class="pre">ProjDirs</span></code>. See the <a class="reference internal" href="../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a> docs for more information.</p>
+</div>
 <p>and build the project’s directory tree:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">project_root</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span>  <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">DIRS</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If <code class="docutils literal notranslate"><span class="pre">mkdir</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the directories will be created if they don’t already exist.
-This is the resulting directory tree, assuming that your raw data folder is
-called <code class="docutils literal notranslate"><span class="pre">raw</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">mkdir</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the directories will be created if they don’t
+already exist. This is the resulting directory tree, assuming that your raw data
+folder is called <code class="docutils literal notranslate"><span class="pre">raw</span></code>.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>📁 project
 ├── 📁 data
 │   ├── 📁 datasets
@@ -610,9 +614,6 @@ called <code class="docutils literal notranslate"><span class="pre">raw</span></
 └── &lt;other project files&gt;
 </pre></div>
 </div>
-<p><strong>Note</strong>: If you are starting with a dataset that has already been
-segmented, you can simply pass the path to the segmented data folder instead to
-the <code class="docutils literal notranslate"><span class="pre">RAW_DATA</span></code> argument of <code class="docutils literal notranslate"><span class="pre">ProjDirs</span></code>.</p>
 <p>See the
 <a class="reference internal" href="../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs" title="pykanto.utils.paths.ProjDirs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjDirs</span></code></a> docs for more information.
 <br>

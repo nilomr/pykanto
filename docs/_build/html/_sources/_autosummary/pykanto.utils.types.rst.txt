@@ -1,4 +1,4 @@
-pykanto.utils.types
+﻿pykanto.utils.types
 ===================
 
 .. automodule:: pykanto.utils.types

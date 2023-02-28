@@ -37,12 +37,55 @@
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None" />
 
-    <!-- Google Analytics -->
-    
+
+<!-- HTML Meta Tags -->
+<title>pykanto: documentation</title>
+<meta name="description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+
+<!-- Facebook Meta Tags -->
+<meta property="og:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="pykanto: documentation">
+<meta property="og:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta property="og:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="nilomr.github.io">
+<meta property="twitter:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta name="twitter:title" content="pykanto: documentation">
+<meta name="twitter:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta name="twitter:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+
+<!-- ****** faviconit.com favicons ****** -->
+<link rel="shortcut icon" href="_images/favicon.ico">
+<link rel="icon" sizes="16x16 32x32 64x64" href="_images/favicon.ico">
+<link rel="icon" type="image/png" sizes="196x196" href="_images/favicon-192.png">
+<link rel="icon" type="image/png" sizes="160x160" href="_images/favicon-160.png">
+<link rel="icon" type="image/png" sizes="96x96" href="_images/favicon-96.png">
+<link rel="icon" type="image/png" sizes="64x64" href="_images/favicon-64.png">
+<link rel="icon" type="image/png" sizes="32x32" href="_images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="_images/favicon-16.png">
+<link rel="apple-touch-icon" href="_images/favicon-57.png">
+<link rel="apple-touch-icon" sizes="114x114" href="_images/favicon-114.png">
+<link rel="apple-touch-icon" sizes="72x72" href="_images/favicon-72.png">
+<link rel="apple-touch-icon" sizes="144x144" href="_images/favicon-144.png">
+<link rel="apple-touch-icon" sizes="60x60" href="_images/favicon-60.png">
+<link rel="apple-touch-icon" sizes="120x120" href="_images/favicon-120.png">
+<link rel="apple-touch-icon" sizes="76x76" href="_images/favicon-76.png">
+<link rel="apple-touch-icon" sizes="152x152" href="_images/favicon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="_images/favicon-180.png">
+<meta name="msapplication-TileColor" content="#FFFFFF">
+<meta name="msapplication-TileImage" content="_images/favicon-144.png">
+<meta name="msapplication-config" content="_images/browserconfig.xml">
+<!-- ****** faviconit.com favicons ****** -->
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
 <!-- Checkboxes to toggle the left sidebar -->
@@ -419,7 +462,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="ProjDirs"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs">[docs]</a><span class="k">class</span> <span class="nc">ProjDirs</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initialises a ProjDirs class, which is used to store a</span>
 <span class="sd">    project&#39;s file structure. This is required when constructing</span>
 <span class="sd">    a :class:`~pykanto.dataset.KantoData` object and generally</span>
@@ -501,7 +544,7 @@ title="Source repository"
                     <span class="n">makedir</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the class objects as a string.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Pretty printed dictionary contents</span>
@@ -511,7 +554,7 @@ title="Source repository"
 <div class="viewcode-block" id="ProjDirs.append"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">new_attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_value</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">mkdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Appends a new attribute to the class instance.</span>
 
 <span class="sd">        Args:</span>
@@ -569,7 +612,7 @@ title="Source repository"
 <div class="viewcode-block" id="ProjDirs.update_json_locs"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.ProjDirs.update_json_locs">[docs]</a>    <span class="k">def</span> <span class="nf">update_json_locs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_checks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the `wav_file` field in JSON metadata files for a given project.</span>
 <span class="sd">        This is useful if you have moved your data to a new location. It will</span>
 <span class="sd">        fix broken links to the .wav files, provided that the</span>
@@ -601,7 +644,7 @@ title="Source repository"
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">WAV_LIST</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore_checks</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;There are no .wav files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s2">&quot;WAV&quot;</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;There are no .wav files in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">SEGMENTED</span> <span class="o">/</span> <span class="s2">&quot;WAV&quot;</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="s2">&quot; will not look for JSON files.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">WAV_LIST</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">JSON_LIST</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore_checks</span><span class="p">:</span>
@@ -679,7 +722,7 @@ title="Source repository"
 <div class="viewcode-block" id="get_wavs_w_annotation"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_wavs_w_annotation">[docs]</a><span class="k">def</span> <span class="nf">get_wavs_w_annotation</span><span class="p">(</span>
     <span class="n">wav_filepaths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">annotation_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">Path</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a list of tuples containing [0] paths to wavfiles for which there is</span>
 <span class="sd">    an annotation file and [1] paths to its annotation file. Assumes that wav</span>
 <span class="sd">    and paths to the annotation files share the same file name and only their</span>
@@ -705,7 +748,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="change_data_loc"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.change_data_loc">[docs]</a><span class="k">def</span> <span class="nf">change_data_loc</span><span class="p">(</span><span class="n">DIR</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">NEW_PROJECT</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates the location of the parent directories of a project, including the</span>
 <span class="sd">    project name, for a given path. Used when the location of a dataset changes</span>
 <span class="sd">    (e.g if transferring a project to a new machine).</span>
@@ -726,7 +769,7 @@ title="Source repository"
 <div class="viewcode-block" id="get_file_paths"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.get_file_paths">[docs]</a><span class="k">def</span> <span class="nf">get_file_paths</span><span class="p">(</span>
     <span class="n">root_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">extensions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns paths to files with given extension found recursively within a</span>
 <span class="sd">    directory.</span>
 
@@ -765,7 +808,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="link_project_data"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.link_project_data">[docs]</a><span class="k">def</span> <span class="nf">link_project_data</span><span class="p">(</span><span class="n">origin</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">,</span> <span class="n">project_data_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a symlink from a project&#39;s data folder (not under version control)</span>
 <span class="sd">    to the directory where the data lives (e.g. on an external HDD).</span>
 
@@ -800,7 +843,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="pykanto_data"><a class="viewcode-back" href="../../../_autosummary/pykanto.utils.paths.html#pykanto.utils.paths.pykanto_data">[docs]</a><span class="k">def</span> <span class="nf">pykanto_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GREAT_TIT&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjDirs</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Loads pykanto&#39;s sample datasets. These are minimal data examples intended</span>
 <span class="sd">    for testing and tutorials.</span>
 
