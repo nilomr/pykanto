@@ -59,8 +59,8 @@ never ever touch it.
 Next, tell `pykanto` where the raw data for your project live, 
 
 ```{code-block} python
-dataset_name = 'BIGBIRD_2021'
-data_dir = project_root / "data" / "raw" / dataset_name
+DATASET_ID = 'BIGBIRD_2021'
+data_dir = project_root / "data" / "raw" / DATASET_ID
 ```
 ```{admonition} Note:
 :class: note
@@ -73,7 +73,7 @@ and build the project's directory tree:
 
 ```{code-block} python
 
-DIRS = ProjDirs(project_root, data_dir, dataset_name,  mkdir=True)
+DIRS = ProjDirs(project_root, data_dir, DATASET_ID,  mkdir=True)
 print(DIRS)
 ```
 
@@ -83,7 +83,7 @@ folder is called `raw`.
 
 ```{code-block} text
 
-📁 project
+📁 project_root
 ├── 📁 data
 │   ├── 📁 datasets
 │   │   └── 📁 <DATASET_ID>
