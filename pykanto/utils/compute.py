@@ -135,7 +135,12 @@ def calc_chunks(
 
     """
     if not n_workers:
-        n_workers = len(psutil.Process().cpu_affinity())
+        try:
+            n_workers = len(psutil.Process().cpu_affinity())
+        except:
+            # cpu_affinity doesn't work on macOS nilomr/pykanto/#18
+            # TODO: #21 @nilomr optionally pass n_workers from methods using calc_chunks
+            n_workers = psutil.cpu_count(logical=False)
 
     chunksize, extra = divmod(len_iterable, n_workers * factor)
     if extra:

@@ -9,7 +9,7 @@ more reproducible. This website contains its documentation.<br>
 it to analyse bird songs.
 
 ![Python 3.8](https://img.shields.io/badge/_python-≥3.8-lighgreen.svg)
-![version](https://img.shields.io/badge/_version-0.1.0-orange.svg)
+![version](https://img.shields.io/badge/_version-0.1.4-orange.svg)
 
 <div id="main-page">
 
