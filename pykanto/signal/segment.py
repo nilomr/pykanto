@@ -325,7 +325,6 @@ def save_segments(
     n_segments = len(metadata.start_times)
 
     for i in range(n_segments):
-
         # Get segment frames
         wavfile.seek(metadata.start_times[i])
         audio_section: np.ndarray = wavfile.read(metadata.durations[i])
@@ -359,7 +358,7 @@ def save_segments(
             sr = resample
 
         # Both to disk under name:
-        name: str = f"{metadata.ID}_{metadata.source_wav.stem}_{i}"
+        name: str = f"{metadata.ID}_{metadata.source_wav.stem}_{metadata.start_times[i]}"
 
         # Save .wav
         wav_out = wav_outdir / f"{name}.wav"
