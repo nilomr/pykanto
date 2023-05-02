@@ -57,6 +57,8 @@ def get_markers(marker_types: List[str], mapping: np.ndarray) -> List[str]:
     Returns:
         List[str]: List of markers.
     """
+    if "-1" not in labs:
+        labs.insert(0, "-1")
     marker_dict = {
         lab: marker for marker, lab in zip(cycle(marker_types), labs)
     }
@@ -105,10 +107,10 @@ def prepare_legend(
     source.data["markers"] = get_markers(
         marker_types, source.data[grouping_labels]
     )
-
     # Build colour palette for the scatterplot
     # Add red for -1
-    labs.insert(0, "-1")
+    if "-1" not in labs:
+        labs.insert(0, "-1")
     palette.insert(0, "#d92400")
     palette = tuple(palette)
     colours = factor_cmap(
