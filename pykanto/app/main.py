@@ -106,7 +106,9 @@ def prepare_legend(
     )
 
     # Build colour palette for the scatterplot
-    palette.insert(0, "#d92400")  # Add red for -1
+    # Add red for -1
+    labs.insert(0, "-1")
+    palette.insert(0, "#d92400")
     palette = tuple(palette)
     colours = factor_cmap(
         field_name=grouping_labels, palette=palette, factors=labs
