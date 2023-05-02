@@ -291,7 +291,8 @@ else:
     # Generate labels, markers and colours
 
     # Build labels
-    labs = [str(lab) for lab in np.unique(source.data["auto_class"])]
+    labs = [str(lab) for lab in range(0, max_n_labs)]
+
     palette, marker_types, colours = prepare_legend(source, palette, labs)
 
     lightgrey = "#9e9e9e"
@@ -315,7 +316,7 @@ else:
         y_axis_location=None,
         output_backend="webgl",
     )
-    splot.title.text = f"{remaining_indvs[0].title()}: vocal repertoire"
+    splot.title.text = f"{remaining_indvs[0]}: vocal repertoire"
     splot.select(BoxSelectTool).select_every_mousemove = False
     splot.select(LassoSelectTool).select_every_mousemove = False
 
@@ -499,7 +500,6 @@ else:
     # Interactive labelling and updating
 
     def next_plot(event):
-
         # Add previous individual to list of already checked
         indv = source.data["ID"][0]
 
