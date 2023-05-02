@@ -219,7 +219,7 @@ if "sphinx" in sys.modules:
 else:
     # ──── SETTINGS ────────────────────────────────────────────────────────────────
 
-    debug = True
+    debug = False
 
     if debug:
         warnings.warn(
