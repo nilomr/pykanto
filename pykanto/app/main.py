@@ -40,6 +40,7 @@ from bokeh.themes import Theme
 from bokeh.transform import factor_cmap
 
 from pykanto.app.data import load_app_data
+from pykanto.utils.io import load_dataset
 from pykanto.utils.paths import ProjDirs
 
 # ──── FUNCTIONS ───────────────────────────────────────────────────────────────
@@ -216,38 +217,27 @@ def set_range(sdata, ax_percentage=5):
 if "sphinx" in sys.modules:
     pass
 else:
-
     # ──── SETTINGS ────────────────────────────────────────────────────────────────
 
-    debug = False
+    debug = True
 
     if debug:
         warnings.warn(
             "Debug is set to true. The app will not work "
             "unless served directly"
         )
-        # YEAR = "2021"
-        # DATASET_ID = f"WYTHAM_GRETIS_2021_TEST"
-        # PROJECT = Path(
-        #     git.Repo('.', search_parent_directories=True).working_tree_dir)
-        # # Build the project structure if it isn't already:
-        # DIRS = ProjDirs(PROJECT, mkdir=True)
-        # dataset_loc = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
-        # max_n_labs = 12
-        # palette = list(Set3_12)
-        # song_level = True
+        song_level = False
+        DATASET_ID = "GREAT_TIT"
+        DATA_PATH = Path(pkg_resources.resource_filename("pykanto", "data"))
+        PROJECT = Path(DATA_PATH).parent
+        RAW_DATA = DATA_PATH / "segmented" / "great_tit"
+        DIRS = ProjDirs(PROJECT, RAW_DATA, DATASET_ID, mkdir=True)
         max_n_labs = 12
         palette = list(Set3_12)
-        song_level = False
-        PROJECT_ROOT = Path("/home/nilomr/projects/storm-petrel-song")
-        DATASET = "STORM_PETREL_2021"
-        RAW_DATA = PROJECT_ROOT / "data" / "raw" / DATASET
-        DIRS = ProjDirs(PROJECT_ROOT, RAW_DATA)
-        DATASET_ID = "STORM_PETREL_SONGS"
         dataset_loc = DIRS.DATA / "datasets" / DATASET_ID / f"{DATASET_ID}.db"
+        dataset = load_dataset(dataset_loc, DIRS)
 
     else:
-
         # Get dataset location from command line args
         dataset_loc = Path(sys.argv[1])
         # Maximum possible n of vocalisation types
