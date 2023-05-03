@@ -494,6 +494,18 @@ title="Print to PDF"
    Developer installation
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#os-support">
+   OS support
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#apple-silicon-support">
+     Apple silicon support
+    </a>
+   </li>
+  </ul>
+ </li>
 </ul>
 
     </nav>
@@ -527,6 +539,18 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#developer-installation">
    Developer installation
   </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#os-support">
+   OS support
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#apple-silicon-support">
+     Apple silicon support
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -601,6 +625,30 @@ necessary for testing and generating the documentation.</p>
 pip install -e <span class="s1">&#39;.[dev, test, doc]&#39;</span>
 </pre></div>
 </div>
+</section>
+<section id="os-support">
+<h2>OS support<a class="headerlink" href="#os-support" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pykanto</span></code> is developed and tested on Linux. It should also work on macOS and
+Windows but you might need to install some extra dependencies manually and encounter
+more wrinkles. If you do, please let me know by opening an issue or a pull
+request.</p>
+<section id="apple-silicon-support">
+<h3>Apple silicon support<a class="headerlink" href="#apple-silicon-support" title="Permalink to this headline">#</a></h3>
+<p>This is currently not tested. Thanks to a kind reviewer for pointing out that
+this installation steps might be necessary to get <code class="docutils literal notranslate"><span class="pre">pykanto</span></code> to work on machines
+running Apple Silicon:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Within your conda environment:</span>
+pip uninstall grpcio <span class="c1"># if installed</span>
+conda install grpcio
+conda install -c conda-forge libsndfile
+pip install pykanto
+</pre></div>
+</div>
+<p>See also: <a class="reference external" href="https://docs.ray.io/en/master/ray-overview/installation.html#m1-mac-apple-silicon-support">ray apple silicon
+support</a>,
+<a class="reference external" href="https://stackoverflow.com/questions/72525054/python-sndfile-library-not-found-on-newly-installed-mac">sndfile library
+missing</a>.</p>
+</section>
 </section>
 </section>
 

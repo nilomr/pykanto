@@ -37,12 +37,55 @@
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None" />
 
-    <!-- Google Analytics -->
-    
+
+<!-- HTML Meta Tags -->
+<title>pykanto: documentation</title>
+<meta name="description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+
+<!-- Facebook Meta Tags -->
+<meta property="og:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="pykanto: documentation">
+<meta property="og:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta property="og:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="nilomr.github.io">
+<meta property="twitter:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta name="twitter:title" content="pykanto: documentation">
+<meta name="twitter:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta name="twitter:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+
+<!-- ****** faviconit.com favicons ****** -->
+<link rel="shortcut icon" href="_images/favicon.ico">
+<link rel="icon" sizes="16x16 32x32 64x64" href="_images/favicon.ico">
+<link rel="icon" type="image/png" sizes="196x196" href="_images/favicon-192.png">
+<link rel="icon" type="image/png" sizes="160x160" href="_images/favicon-160.png">
+<link rel="icon" type="image/png" sizes="96x96" href="_images/favicon-96.png">
+<link rel="icon" type="image/png" sizes="64x64" href="_images/favicon-64.png">
+<link rel="icon" type="image/png" sizes="32x32" href="_images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="_images/favicon-16.png">
+<link rel="apple-touch-icon" href="_images/favicon-57.png">
+<link rel="apple-touch-icon" sizes="114x114" href="_images/favicon-114.png">
+<link rel="apple-touch-icon" sizes="72x72" href="_images/favicon-72.png">
+<link rel="apple-touch-icon" sizes="144x144" href="_images/favicon-144.png">
+<link rel="apple-touch-icon" sizes="60x60" href="_images/favicon-60.png">
+<link rel="apple-touch-icon" sizes="120x120" href="_images/favicon-120.png">
+<link rel="apple-touch-icon" sizes="76x76" href="_images/favicon-76.png">
+<link rel="apple-touch-icon" sizes="152x152" href="_images/favicon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="_images/favicon-180.png">
+<meta name="msapplication-TileColor" content="#FFFFFF">
+<meta name="msapplication-TileImage" content="_images/favicon-144.png">
+<meta name="msapplication-config" content="_images/browserconfig.xml">
+<!-- ****** faviconit.com favicons ****** -->
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
 <!-- Checkboxes to toggle the left sidebar -->
@@ -432,13 +475,14 @@ title="Source repository"
 <span class="kn">from</span> <span class="nn">bokeh.transform</span> <span class="kn">import</span> <span class="n">factor_cmap</span>
 
 <span class="kn">from</span> <span class="nn">pykanto.app.data</span> <span class="kn">import</span> <span class="n">load_app_data</span>
+<span class="kn">from</span> <span class="nn">pykanto.utils.io</span> <span class="kn">import</span> <span class="n">load_dataset</span>
 <span class="kn">from</span> <span class="nn">pykanto.utils.paths</span> <span class="kn">import</span> <span class="n">ProjDirs</span>
 
 <span class="c1"># ──── FUNCTIONS ───────────────────────────────────────────────────────────────</span>
 
 
 <div class="viewcode-block" id="get_markers"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.get_markers">[docs]</a><span class="k">def</span> <span class="nf">get_markers</span><span class="p">(</span><span class="n">marker_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Maps a list of markers to labels.</span>
 
 <span class="sd">    Args:</span>
@@ -448,6 +492,8 @@ title="Source repository"
 <span class="sd">    Returns:</span>
 <span class="sd">        List[str]: List of markers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;-1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">labs</span><span class="p">:</span>
+        <span class="n">labs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;-1&quot;</span><span class="p">)</span>
     <span class="n">marker_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">lab</span><span class="p">:</span> <span class="n">marker</span> <span class="k">for</span> <span class="n">marker</span><span class="p">,</span> <span class="n">lab</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">cycle</span><span class="p">(</span><span class="n">marker_types</span><span class="p">),</span> <span class="n">labs</span><span class="p">)</span>
     <span class="p">}</span>
@@ -461,7 +507,7 @@ title="Source repository"
     <span class="n">labs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">grouping_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;auto_class&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">field</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prepares the legend for the scatterplot.</span>
 
 <span class="sd">    Args:</span>
@@ -496,9 +542,11 @@ title="Source repository"
     <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;markers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_markers</span><span class="p">(</span>
         <span class="n">marker_types</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">grouping_labels</span><span class="p">]</span>
     <span class="p">)</span>
-
     <span class="c1"># Build colour palette for the scatterplot</span>
-    <span class="n">palette</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;#d92400&quot;</span><span class="p">)</span>  <span class="c1"># Add red for -1</span>
+    <span class="c1"># Add red for -1</span>
+    <span class="k">if</span> <span class="s2">&quot;-1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">labs</span><span class="p">:</span>
+        <span class="n">labs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;-1&quot;</span><span class="p">)</span>
+    <span class="n">palette</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;#d92400&quot;</span><span class="p">)</span>
     <span class="n">palette</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span>
     <span class="n">colours</span> <span class="o">=</span> <span class="n">factor_cmap</span><span class="p">(</span>
         <span class="n">field_name</span><span class="o">=</span><span class="n">grouping_labels</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="n">labs</span>
@@ -508,7 +556,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="build_legend"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.build_legend">[docs]</a><span class="k">def</span> <span class="nf">build_legend</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">html_markers</span><span class="p">,</span> <span class="n">span_mk_sizes</span><span class="p">,</span> <span class="n">mk_colours</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Builds the legend for the main interactive plot.</span>
 
 <span class="sd">    Args:</span>
@@ -549,7 +597,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="update_feedback_text"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.update_feedback_text">[docs]</a><span class="k">def</span> <span class="nf">update_feedback_text</span><span class="p">(</span><span class="n">indv_list</span><span class="p">,</span> <span class="n">remaining_indvs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates the feedback text for the user.</span>
 
 <span class="sd">    Args:</span>
@@ -560,7 +608,7 @@ title="Source repository"
 <span class="sd">        str: Feedback text.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;// &lt;b&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">remaining_indvs</span><span class="p">)</span><span class="si">}</span><span class="s2"> out of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> done&lt;/b&gt; // &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;// &lt;b&gt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">remaining_indvs</span><span class="p">)</span><span class="si">}</span><span class="s2"> out of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">indv_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> done&lt;/b&gt; // &quot;</span>
         <span class="s2">&quot;Use the &#39;Label&#39; button to change the label of the selected points. &quot;</span>
         <span class="s2">&quot;Label data are automatically saved when you click &#39;Next&#39;.&lt;br&gt;&quot;</span>
         <span class="s2">&quot;Points labelled &#39;-1&#39; (red asterisks) are considered noise.&quot;</span>
@@ -569,7 +617,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="parse_boolean"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.parse_boolean">[docs]</a><span class="k">def</span> <span class="nf">parse_boolean</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parses a boolean.</span>
 
 <span class="sd">    Args:</span>
@@ -582,7 +630,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="set_range"><a class="viewcode-back" href="../../../_autosummary/pykanto.app.main.html#pykanto.app.main.set_range">[docs]</a><span class="k">def</span> <span class="nf">set_range</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span> <span class="n">ax_percentage</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets the range of the scatterplot.</span>
 
 <span class="sd">    Args:</span>
@@ -606,7 +654,6 @@ title="Source repository"
 <span class="k">if</span> <span class="s2">&quot;sphinx&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
     <span class="k">pass</span>
 <span class="k">else</span><span class="p">:</span>
-
     <span class="c1"># ──── SETTINGS ────────────────────────────────────────────────────────────────</span>
 
     <span class="n">debug</span> <span class="o">=</span> <span class="kc">False</span>
@@ -616,28 +663,18 @@ title="Source repository"
             <span class="s2">&quot;Debug is set to true. The app will not work &quot;</span>
             <span class="s2">&quot;unless served directly&quot;</span>
         <span class="p">)</span>
-        <span class="c1"># YEAR = &quot;2021&quot;</span>
-        <span class="c1"># DATASET_ID = f&quot;WYTHAM_GRETIS_2021_TEST&quot;</span>
-        <span class="c1"># PROJECT = Path(</span>
-        <span class="c1">#     git.Repo(&#39;.&#39;, search_parent_directories=True).working_tree_dir)</span>
-        <span class="c1"># # Build the project structure if it isn&#39;t already:</span>
-        <span class="c1"># DIRS = ProjDirs(PROJECT, mkdir=True)</span>
-        <span class="c1"># dataset_loc = DIRS.DATA / &quot;datasets&quot; / DATASET_ID / f&quot;{DATASET_ID}.db&quot;</span>
-        <span class="c1"># max_n_labs = 12</span>
-        <span class="c1"># palette = list(Set3_12)</span>
-        <span class="c1"># song_level = True</span>
+        <span class="n">song_level</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">DATASET_ID</span> <span class="o">=</span> <span class="s2">&quot;GREAT_TIT&quot;</span>
+        <span class="n">DATA_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;pykanto&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">))</span>
+        <span class="n">PROJECT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">DATA_PATH</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">RAW_DATA</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">/</span> <span class="s2">&quot;segmented&quot;</span> <span class="o">/</span> <span class="s2">&quot;great_tit&quot;</span>
+        <span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJECT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">,</span> <span class="n">DATASET_ID</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">max_n_labs</span> <span class="o">=</span> <span class="mi">12</span>
         <span class="n">palette</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Set3_12</span><span class="p">)</span>
-        <span class="n">song_level</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/home/nilomr/projects/storm-petrel-song&quot;</span><span class="p">)</span>
-        <span class="n">DATASET</span> <span class="o">=</span> <span class="s2">&quot;STORM_PETREL_2021&quot;</span>
-        <span class="n">RAW_DATA</span> <span class="o">=</span> <span class="n">PROJECT_ROOT</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span> <span class="o">/</span> <span class="s2">&quot;raw&quot;</span> <span class="o">/</span> <span class="n">DATASET</span>
-        <span class="n">DIRS</span> <span class="o">=</span> <span class="n">ProjDirs</span><span class="p">(</span><span class="n">PROJECT_ROOT</span><span class="p">,</span> <span class="n">RAW_DATA</span><span class="p">)</span>
-        <span class="n">DATASET_ID</span> <span class="o">=</span> <span class="s2">&quot;STORM_PETREL_SONGS&quot;</span>
         <span class="n">dataset_loc</span> <span class="o">=</span> <span class="n">DIRS</span><span class="o">.</span><span class="n">DATA</span> <span class="o">/</span> <span class="s2">&quot;datasets&quot;</span> <span class="o">/</span> <span class="n">DATASET_ID</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DATASET_ID</span><span class="si">}</span><span class="s2">.db&quot;</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">dataset_loc</span><span class="p">,</span> <span class="n">DIRS</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-
         <span class="c1"># Get dataset location from command line args</span>
         <span class="n">dataset_loc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="c1"># Maximum possible n of vocalisation types</span>
@@ -691,7 +728,8 @@ title="Source repository"
     <span class="c1"># Generate labels, markers and colours</span>
 
     <span class="c1"># Build labels</span>
-    <span class="n">labs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span> <span class="k">for</span> <span class="n">lab</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">])]</span>
+    <span class="n">labs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">lab</span><span class="p">)</span> <span class="k">for</span> <span class="n">lab</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_n_labs</span><span class="p">)]</span>
+
     <span class="n">palette</span><span class="p">,</span> <span class="n">marker_types</span><span class="p">,</span> <span class="n">colours</span> <span class="o">=</span> <span class="n">prepare_legend</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="n">labs</span><span class="p">)</span>
 
     <span class="n">lightgrey</span> <span class="o">=</span> <span class="s2">&quot;#9e9e9e&quot;</span>
@@ -715,7 +753,7 @@ title="Source repository"
         <span class="n">y_axis_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">output_backend</span><span class="o">=</span><span class="s2">&quot;webgl&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">splot</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2">: vocal repertoire&quot;</span>
+    <span class="n">splot</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">remaining_indvs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">: vocal repertoire&quot;</span>
     <span class="n">splot</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">BoxSelectTool</span><span class="p">)</span><span class="o">.</span><span class="n">select_every_mousemove</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">splot</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">LassoSelectTool</span><span class="p">)</span><span class="o">.</span><span class="n">select_every_mousemove</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -750,7 +788,7 @@ title="Source repository"
     <span class="n">splot</span><span class="o">.</span><span class="n">add_tools</span><span class="p">(</span>
         <span class="n">HoverTool</span><span class="p">(</span>
             <span class="n">tooltips</span><span class="o">=</span><span class="p">(</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+                <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &lt;div @spectrogram{custom}&gt;</span>
 <span class="sd">        &lt;div class=&quot;hover_container&quot;&gt;</span>
 <span class="sd">            &lt;img class=&#39;hover_img&#39; src=&#39;@spectrogram&#39; style=&#39;float: top; width:120px;height:120px;&#39;/&gt;</span>
@@ -794,7 +832,7 @@ title="Source repository"
     <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_legend_items</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">LegendItem</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a list of LegendItem objects for the legend.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dummy_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;auto_class&quot;</span><span class="p">]))</span>
@@ -899,7 +937,6 @@ title="Source repository"
     <span class="c1"># Interactive labelling and updating</span>
 
     <span class="k">def</span> <span class="nf">next_plot</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
-
         <span class="c1"># Add previous individual to list of already checked</span>
         <span class="n">indv</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 

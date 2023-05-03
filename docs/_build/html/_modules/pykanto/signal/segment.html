@@ -37,12 +37,55 @@
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None" />
 
-    <!-- Google Analytics -->
-    
+
+<!-- HTML Meta Tags -->
+<title>pykanto: documentation</title>
+<meta name="description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+
+<!-- Facebook Meta Tags -->
+<meta property="og:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="pykanto: documentation">
+<meta property="og:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta property="og:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="nilomr.github.io">
+<meta property="twitter:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta name="twitter:title" content="pykanto: documentation">
+<meta name="twitter:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta name="twitter:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+
+<!-- ****** faviconit.com favicons ****** -->
+<link rel="shortcut icon" href="_images/favicon.ico">
+<link rel="icon" sizes="16x16 32x32 64x64" href="_images/favicon.ico">
+<link rel="icon" type="image/png" sizes="196x196" href="_images/favicon-192.png">
+<link rel="icon" type="image/png" sizes="160x160" href="_images/favicon-160.png">
+<link rel="icon" type="image/png" sizes="96x96" href="_images/favicon-96.png">
+<link rel="icon" type="image/png" sizes="64x64" href="_images/favicon-64.png">
+<link rel="icon" type="image/png" sizes="32x32" href="_images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="_images/favicon-16.png">
+<link rel="apple-touch-icon" href="_images/favicon-57.png">
+<link rel="apple-touch-icon" sizes="114x114" href="_images/favicon-114.png">
+<link rel="apple-touch-icon" sizes="72x72" href="_images/favicon-72.png">
+<link rel="apple-touch-icon" sizes="144x144" href="_images/favicon-144.png">
+<link rel="apple-touch-icon" sizes="60x60" href="_images/favicon-60.png">
+<link rel="apple-touch-icon" sizes="120x120" href="_images/favicon-120.png">
+<link rel="apple-touch-icon" sizes="76x76" href="_images/favicon-76.png">
+<link rel="apple-touch-icon" sizes="152x152" href="_images/favicon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="_images/favicon-180.png">
+<meta name="msapplication-TileColor" content="#FFFFFF">
+<meta name="msapplication-TileImage" content="_images/favicon-144.png">
+<meta name="msapplication-config" content="_images/browserconfig.xml">
+<!-- ****** faviconit.com favicons ****** -->
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
 <!-- Checkboxes to toggle the left sidebar -->
@@ -457,7 +500,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="ReadWav"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav">[docs]</a><span class="k">class</span> <span class="nc">ReadWav</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a wav file and its metadata.</span>
 
 <span class="sd">    Note:</span>
@@ -471,12 +514,12 @@ title="Source repository"
 
 <div class="viewcode-block" id="ReadWav.__init__"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wav_dir</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wav_dir</span> <span class="o">=</span> <span class="n">wav_dir</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Location of wav file.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Location of wav file.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_wav</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_metadata</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_load_wav</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Opens a wav sound file.</span>
 
 <span class="sd">        Raises:</span>
@@ -491,12 +534,12 @@ title="Source repository"
         <span class="bp">self</span><span class="o">.</span><span class="n">nframes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sf</span><span class="o">.</span><span class="n">SEEK_END</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Loads available metadata from wavfile; builds a AudioAnnotation object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">all_metadata</span> <span class="o">=</span> <span class="n">audiometa</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wav_dir</span><span class="p">)</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;All available metadata for this audio clip.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;All available metadata for this audio clip.&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">AudioAnnotation</span><span class="p">(</span>
             <span class="n">sample_rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wavfile</span><span class="o">.</span><span class="n">samplerate</span><span class="p">,</span>
@@ -504,10 +547,10 @@ title="Source repository"
             <span class="n">length_s</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nframes</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavfile</span><span class="o">.</span><span class="n">samplerate</span><span class="p">,</span>
             <span class="n">source_wav</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wav_dir</span><span class="p">,</span>
         <span class="p">)</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Selected metadata to be used later&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Selected metadata to be used later&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ReadWav.get_wav"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.get_wav">[docs]</a>    <span class="k">def</span> <span class="nf">get_wav</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">sf</span><span class="o">.</span><span class="n">SoundFile</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the wavfile.</span>
 
 <span class="sd">        Returns:</span>
@@ -516,7 +559,7 @@ title="Source repository"
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavfile</span></div>
 
 <div class="viewcode-block" id="ReadWav.get_metadata"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.get_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AudioAnnotation</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns metadata attached to wavfile as an AudioAnnotation object.</span>
 
 <span class="sd">        Returns:</span>
@@ -525,7 +568,7 @@ title="Source repository"
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span></div>
 
 <div class="viewcode-block" id="ReadWav.as_dict"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.ReadWav.as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns metadata attached to wavfile as a dictionary.</span>
 
 <span class="sd">        Returns:</span>
@@ -539,7 +582,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="SegmentMetadata"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata">[docs]</a><span class="k">class</span> <span class="nc">SegmentMetadata</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Consolidates segment metadata in a single Metadata object,</span>
 <span class="sd">    which can then be saved as a standard .JSON file.</span>
 
@@ -556,7 +599,7 @@ title="Source repository"
         <span class="n">sr</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">wav_out</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Consolidates segment metadata in a single Metadata object,</span>
 <span class="sd">        which can then be saved as a standard .JSON file.</span>
 
@@ -574,10 +617,10 @@ title="Source repository"
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">all_metadata</span> <span class="o">=</span> <span class="n">metadata</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Attribute containing all available metadata&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Attribute containing all available metadata&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">i</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Index of &#39;focal&#39; segment&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Index of &#39;focal&#39; segment&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">audio_section</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">wav_out</span><span class="p">)</span></div>
 
@@ -589,7 +632,7 @@ title="Source repository"
         <span class="n">sr</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">wav_out</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Consolidates segment metadata in a single dictionary,</span>
 <span class="sd">        which can then be saved as a standard .JSON file.</span>
 
@@ -625,7 +668,7 @@ title="Source repository"
         <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">i</span>
 
 <div class="viewcode-block" id="SegmentMetadata.get_metadata"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata.get_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Metadata</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get Metadata object.</span>
 
 <span class="sd">        Returns:</span>
@@ -634,7 +677,7 @@ title="Source repository"
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span></div>
 
 <div class="viewcode-block" id="SegmentMetadata.as_dict"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.SegmentMetadata.as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns Metadata object as a dictionary.</span>
 
 <span class="sd">        Returns:</span>
@@ -661,7 +704,7 @@ title="Source repository"
     <span class="p">]</span> <span class="o">=</span> <span class="n">parse_sonic_visualiser_xml</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Segments and saves audio segmets and their metadata from a single audio</span>
 <span class="sd">    file, based on annotations provided in a separate &#39;metadata&#39; file.</span>
 
@@ -699,7 +742,7 @@ title="Source repository"
     <span class="n">resample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save segments present in a single wav file to new separate files along with</span>
 <span class="sd">    their metadata.</span>
 
@@ -717,7 +760,6 @@ title="Source repository"
     <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">start_times</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_segments</span><span class="p">):</span>
-
         <span class="c1"># Get segment frames</span>
         <span class="n">wavfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">start_times</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="n">audio_section</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">durations</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -751,7 +793,7 @@ title="Source repository"
             <span class="n">sr</span> <span class="o">=</span> <span class="n">resample</span>
 
         <span class="c1"># Both to disk under name:</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">source_wav</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">ID</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">source_wav</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">start_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="c1"># Save .wav</span>
         <span class="n">wav_out</span> <span class="o">=</span> <span class="n">wav_outdir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.wav&quot;</span>
@@ -776,7 +818,7 @@ title="Source repository"
     <span class="n">min_amplitude</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">labels_to_ignore</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;NO&quot;</span><span class="p">,</span> <span class="s2">&quot;NOISE&quot;</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks whether a segment of index i within a dictionary is a valid segment.</span>
 
 <span class="sd">    Args:</span>
@@ -827,7 +869,7 @@ title="Source repository"
     <span class="n">pbar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds and saves audio segments and their metadata.</span>
 <span class="sd">    Parallel version in :func:`~pykanto.signal.segment.segment_files_parallel`.</span>
 <span class="sd">    Works well with large files (only reads one chunk at a time).</span>
@@ -882,7 +924,7 @@ title="Source repository"
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds and saves audio segments and their metadata.</span>
 <span class="sd">    Parallel version of :func:`~pykanto.signal.segment.segment_files`.</span>
 <span class="sd">    Works well with large files (only reads one chunk at a time).</span>
@@ -954,7 +996,7 @@ title="Source repository"
     <span class="n">min_freqrange</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">ignore_labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;FIRST&quot;</span><span class="p">,</span> <span class="s2">&quot;first&quot;</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a summary of all segments present in a directory. Works for .xml files</span>
 <span class="sd">        output by Sonic Visualiser.</span>
 
@@ -1021,7 +1063,7 @@ title="Source repository"
 <div class="viewcode-block" id="find_units"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.find_units">[docs]</a><span class="k">def</span> <span class="nf">find_units</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">spectrogram</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Segment a given spectrogram array into its units. For convenience,</span>
 <span class="sd">    parameters are defined in a KantoData class instance (class Parameters).</span>
 <span class="sd">    Based on Tim Sainburg&#39;s</span>
@@ -1082,7 +1124,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="onsets_offsets"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.onsets_offsets">[docs]</a><span class="k">def</span> <span class="nf">onsets_offsets</span><span class="p">(</span><span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Labels features in array as insets and offsets.</span>
 <span class="sd">    Based on Tim Sainburg&#39;s</span>
 <span class="sd">    `vocalseg &lt;https://github.com/timsainb/vocalization-segmentation/&gt;`_.</span>
@@ -1109,7 +1151,7 @@ title="Source repository"
 <div class="viewcode-block" id="segment_song_into_units"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_song_into_units">[docs]</a><span class="k">def</span> <span class="nf">segment_song_into_units</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find amplitude-differentiable units in a given vocalisation after applying a</span>
 <span class="sd">    series of morphological transformations to reduce noise.</span>
 
@@ -1171,7 +1213,7 @@ title="Source repository"
 <div class="viewcode-block" id="segment_song_into_units_parallel"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.segment_song_into_units_parallel">[docs]</a><span class="k">def</span> <span class="nf">segment_song_into_units_parallel</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;See save_melspectrogram&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;See save_melspectrogram&quot;&quot;&quot;</span>
 
     <span class="c1"># Calculate and make chunks</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
@@ -1207,7 +1249,7 @@ title="Source repository"
 <div class="viewcode-block" id="drop_zero_len_units"><a class="viewcode-back" href="../../../_autosummary/pykanto.signal.segment.html#pykanto.signal.segment.drop_zero_len_units">[docs]</a><span class="k">def</span> <span class="nf">drop_zero_len_units</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">onsets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">offsets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Removes onset/offset pairs which (under this dataset&#39;s spectrogram parameter</span>
 <span class="sd">    combination) would result in a unit of length zero.</span>
 

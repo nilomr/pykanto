@@ -74,3 +74,27 @@ git clone https://github.com/nilomr/pykanto.git
 cd pykanto
 pip install -e '.[dev, test, doc]'
 ```
+
+## OS support
+
+`pykanto` is developed and tested on Linux. It should also work on macOS and
+Windows but you might need to install some extra dependencies manually and encounter
+more wrinkles. If you do, please let me know by opening an issue or a pull
+request.
+
+### Apple silicon support
+This is currently not tested. Thanks to a kind reviewer for pointing out that
+this installation steps might be necessary to get `pykanto` to work on machines
+running Apple Silicon:
+
+```bash
+# Within your conda environment:
+pip uninstall grpcio # if installed
+conda install grpcio
+conda install -c conda-forge libsndfile
+pip install pykanto
+```
+See also: [ray apple silicon
+support](https://docs.ray.io/en/master/ray-overview/installation.html#m1-mac-apple-silicon-support),
+[sndfile library
+missing](https://stackoverflow.com/questions/72525054/python-sndfile-library-not-found-on-newly-installed-mac).
