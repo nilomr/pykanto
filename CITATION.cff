@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Merino Recalde"
+  given-names: "Nilo"
+  orcid: "https://orcid.org/0000-0003-3903-1288"
+title: "pykanto-example"
+version: 0.1.5
+doi: 10.5281/zenodo.7941355
+date-released: 2023-05-02
+url: "https://github.com/nilomr/pykanto"
