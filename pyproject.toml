@@ -24,6 +24,7 @@ dependencies = [
     "numba >= 0.49",
     "tqdm",
     "audio-metadata >= 0.11.1",
+    "pydantic < 2",
     "ray[default]",
     "pysoundfile >= 0.9",
     "umap-learn >= 0.5",
