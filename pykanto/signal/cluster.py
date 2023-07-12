@@ -51,7 +51,6 @@ def umap_reduce(
     data: np.ndarray,
     n_neighbors: int = 15,
     n_components: int = 2,
-    min_dist: float = 0.1,
     verbose: bool = False,
     **kwargs,
 ) -> Tuple[np.ndarray, umap.UMAP]:
