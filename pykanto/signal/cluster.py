@@ -75,7 +75,6 @@ def umap_reduce(
         reducer = cumlUMAP(
             n_neighbors=n_neighbors,
             n_components=n_components,
-            min_dist=min_dist,
             **kwargs,
         )
         embedding = reducer.fit_transform(data)
@@ -88,7 +87,6 @@ def umap_reduce(
         reducer = UMAP(
             n_neighbors=n_neighbors,
             n_components=n_components,
-            min_dist=min_dist,
             **kwargs,
         )
         embedding = reducer.fit_transform(data)
@@ -124,7 +122,6 @@ def hdbscan_cluster(
         min_cluster_size = 2
     clusterer = HDBSCAN(
         min_cluster_size=min_cluster_size,
-        min_samples=min_samples,
         cluster_selection_method="eom",
         **kwargs,
     )
@@ -133,7 +130,7 @@ def hdbscan_cluster(
 
 
 def reduce_and_cluster(
-    dataset: KantoData, ID: str, song_level: bool = False, min_sample: int = 10
+    dataset: KantoData, ID: str, song_level: bool = False, min_sample: int = 10, **kwargs
 ) -> pd.DataFrame | None:
     # TODO: pass UMAP and HDBSCAN params!
     """
@@ -209,13 +206,13 @@ def reduce_and_cluster(
 
     # Run UMAP
     embedding, _ = umap_reduce(
-        flat_units, n_neighbors=25, min_dist=0.2, n_components=2
+        flat_units, **kwargs
     )
 
     # Cluster using HDBSCAN
     # smallest cluster size allowed
     clusterer = hdbscan_cluster(
-        embedding, min_cluster_size=int(len(flat_units) * 0.02), min_samples=10
+        embedding, **kwargs
     )
 
     # Put together in a dataframe
@@ -234,7 +231,7 @@ def reduce_and_cluster(
 
 
 def reduce_and_cluster_parallel(
-    dataset: KantoData, min_sample: int = 10, num_cpus: float | None = None
+    dataset: KantoData, min_sample: int = 10, num_cpus: float | None = None, **kwargs
 ) -> pd.DataFrame | None:
     """
     Parallel implementation of
@@ -272,7 +269,7 @@ def reduce_and_cluster_parallel(
     ) -> List[pd.DataFrame | None]:
         return [
             reduce_and_cluster(
-                dataset, ID, song_level=song_level, min_sample=min_sample
+                dataset, ID, song_level=song_level, min_sample=min_sample, **kwargs
             )
             for ID in IDS
         ]
