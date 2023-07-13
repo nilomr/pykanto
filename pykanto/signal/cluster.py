@@ -137,7 +137,7 @@ def hdbscan_cluster(
 
 
 def reduce_and_cluster(
-    dataset: KantoData, ID: str, song_level: bool = False, min_sample: int = 10, kwargs_umap: dict=None, kwargs_hdbscan: dict=None
+    dataset: KantoData, ID: str, song_level: bool = False, min_sample: int = 10, kwargs_umap: dict={}, kwargs_hdbscan: dict={}
 ) -> pd.DataFrame | None:
     # TODO: pass UMAP and HDBSCAN params!
     """
@@ -240,7 +240,7 @@ def reduce_and_cluster(
 
 
 def reduce_and_cluster_parallel(
-    dataset: KantoData, kwargs_umap: dict=None, kwargs_hdbscan: dict=None, min_sample: int = 10, num_cpus: float | None = None
+    dataset: KantoData, kwargs_umap: dict={}, kwargs_hdbscan: dict={}, min_sample: int = 10, num_cpus: float | None = None
 ) -> pd.DataFrame | None:
     """
     Parallel implementation of
