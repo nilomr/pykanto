@@ -52,7 +52,7 @@ def umap_reduce(
     n_neighbors: int = 15,
     n_components: int = 2,
     verbose: bool = False,
-    **kwargs,
+    **kwargs_umap,
 ) -> Tuple[np.ndarray, umap.UMAP]:
     """
     Uniform Manifold Approximation and Projection.
@@ -70,11 +70,16 @@ def umap_reduce(
         Tuple[np.ndarray, umap.UMAP]: Embedding coordinates
         and UMAP reducer.
     """
+    n_neighbors = kwargs_umap.setdefault("n_neighbors", n_neighbors)
+    n_components = kwargs_umap.setdefault("n_components", n_components)
+    min_dist = kwargs_umap.setdefault("min_dist", min_dist)
+    random_state = kwargs_umap.setdefault("random_state", random_state)
     if _has_cuml:
         reducer = cumlUMAP(
             n_neighbors=n_neighbors,
             n_components=n_components,
-            **kwargs,
+            min_dist=min_dist,
+            random_state=random_state,
         )
         embedding = reducer.fit_transform(data)
     else:
@@ -86,7 +91,8 @@ def umap_reduce(
         reducer = UMAP(
             n_neighbors=n_neighbors,
             n_components=n_components,
-            **kwargs,
+            min_dist=min_dist,
+            random_state=random_state,
         )
         embedding = reducer.fit_transform(data)
     return embedding, reducer
@@ -96,7 +102,7 @@ def hdbscan_cluster(
     embedding: np.ndarray,
     min_cluster_size: int = 5,
     min_samples: None | int = None,
-    **kwargs,
+    **kwargs_hdbscan,
 ) -> HDBSCAN:
     """
     Perform HDBSCAN clustering from vector array or distance matrix.
@@ -116,20 +122,22 @@ def hdbscan_cluster(
     Returns:
         HDBSCAN: HDBSCAN object. Labels are at `self.labels_`.
     """
+    min_cluster_size = kwargs_hdbscan.setdefault("min_cluster_size", min_cluster_size)
+    min_samples = kwargs_hdbscan.setdefault("min_samples", min_samples)
     if min_cluster_size < 2:
         warnings.warn("`min_cluster_size` too small, setting it to 2")
         min_cluster_size = 2
     clusterer = HDBSCAN(
         min_cluster_size=min_cluster_size,
+        min_samples=min_samples,
         cluster_selection_method="eom",
-        **kwargs,
     )
     clusterer.fit(embedding)
     return clusterer
 
 
 def reduce_and_cluster(
-    dataset: KantoData, ID: str, song_level: bool = False, min_sample: int = 10, **kwargs
+    dataset: KantoData, ID: str, song_level: bool = False, min_sample: int = 10, kwargs_umap: dict=None, kwargs_hdbscan: dict=None
 ) -> pd.DataFrame | None:
     # TODO: pass UMAP and HDBSCAN params!
     """
@@ -140,6 +148,8 @@ def reduce_and_cluster(
             each vocalisation instead of all units. Defaults to False.
         min_sample (int, optional): Minimum number of vocalisations or units.
             Defaults to 10.
+        kwargs_umap (dict): dictionary of umap params.
+        kwargs_hdbscan (dict): dictionary of hdbscan params.
 
     Returns:
         pd.DataFrame | None: Dataframe with columns ['vocalisation_key', 'ID',
@@ -211,7 +221,7 @@ def reduce_and_cluster(
     # Cluster using HDBSCAN
     # smallest cluster size allowed
     clusterer = hdbscan_cluster(
-        embedding, **kwargs
+        embedding, **kwargs_hdbscan
     )
 
     # Put together in a dataframe
@@ -230,7 +240,7 @@ def reduce_and_cluster(
 
 
 def reduce_and_cluster_parallel(
-    dataset: KantoData, min_sample: int = 10, num_cpus: float | None = None, **kwargs
+    dataset: KantoData, kwargs_umap: dict=None, kwargs_hdbscan: dict=None, min_sample: int = 10, num_cpus: float | None = None
 ) -> pd.DataFrame | None:
     """
     Parallel implementation of
@@ -265,17 +275,19 @@ def reduce_and_cluster_parallel(
         IDS: List[str],
         song_level: bool = False,
         min_sample: int = 10,
+        kwargs_umap=kwargs_umap,
+        kwargs_hdbscan=kwargs_hdbscan,
     ) -> List[pd.DataFrame | None]:
         return [
             reduce_and_cluster(
-                dataset, ID, song_level=song_level, min_sample=min_sample, **kwargs
+                dataset, ID, song_level=song_level, min_sample=min_sample, kwargs_umap=kwargs_umap, kwargs_hdbscan=kwargs_hdbscan
             )
             for ID in IDS
         ]
 
     obj_ids = [
         _reduce_and_cluster_r.remote(
-            dataset_ref, i, song_level=song_level, min_sample=min_sample
+            dataset_ref, i, song_level=song_level, min_sample=min_sample, kwargs_umap=kwargs_umap, kwargs_hdbscan=kwargs_hdbscan
         )
         for i in chunks
     ]
