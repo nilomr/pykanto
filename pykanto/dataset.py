@@ -749,7 +749,7 @@ class KantoData:
         save_to_jsons(self)
 
     @timing
-    def cluster_ids(self, kwargs_umap: dict={}, kwargs_hdbscan: dict={}, min_sample: int = 10, ) -> None:
+    def cluster_ids(self, min_sample: int = 10, kwargs_umap: dict | None = None, kwargs_hdbscan: dict | None = None) -> None:
         """
         Dimensionality reduction using UMAP + unsupervised clustering using
         HDBSCAN. This will fail if the sample size for an ID (grouping factor,
@@ -767,7 +767,7 @@ class KantoData:
             kwargs_hdbscan (dict): dictionary of hdbscan params.
         """
         df = reduce_and_cluster_parallel(
-            self, kwargs_umap=kwargs_umap, kwargs_hdbscan=kwargs_hdbscan, min_sample=min_sample, num_cpus=self.parameters.num_cpus
+            self, min_sample=min_sample, num_cpus=self.parameters.num_cpus, kwargs_umap=kwargs_umap, kwargs_hdbscan=kwargs_hdbscan
         )
 
         if self.parameters.song_level:
