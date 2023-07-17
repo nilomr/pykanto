@@ -51,6 +51,8 @@ def umap_reduce(
     data: np.ndarray,
     n_neighbors: int = 15,
     n_components: int = 2,
+    min_dist: float = 0.1,
+    random_state: int | None = None,
     verbose: bool = False,
     **kwargs_umap,
 ) -> Tuple[np.ndarray, umap.UMAP]:
@@ -70,10 +72,12 @@ def umap_reduce(
         Tuple[np.ndarray, umap.UMAP]: Embedding coordinates
         and UMAP reducer.
     """
-    n_neighbors = kwargs_umap.setdefault("n_neighbors", n_neighbors)
-    n_components = kwargs_umap.setdefault("n_components", n_components)
-    min_dist = kwargs_umap.setdefault("min_dist", min_dist)
-    random_state = kwargs_umap.setdefault("random_state", random_state)
+    if len(kwargs_umap)>0:
+        n_neighbors = kwargs_umap.setdefault("n_neighbors", n_neighbors)
+        n_components = kwargs_umap.setdefault("n_components", n_components)
+        min_dist = kwargs_umap.setdefault("min_dist", min_dist)
+        random_state = kwargs_umap.setdefault("random_state", random_state)
+        
     if _has_cuml:
         reducer = cumlUMAP(
             n_neighbors=n_neighbors,
@@ -122,8 +126,10 @@ def hdbscan_cluster(
     Returns:
         HDBSCAN: HDBSCAN object. Labels are at `self.labels_`.
     """
-    min_cluster_size = kwargs_hdbscan.setdefault("min_cluster_size", min_cluster_size)
-    min_samples = kwargs_hdbscan.setdefault("min_samples", min_samples)
+    if len(kwargs_hdbscan)>0:
+        min_cluster_size = kwargs_hdbscan.setdefault("min_cluster_size", min_cluster_size)
+        min_samples = kwargs_hdbscan.setdefault("min_samples", min_samples)
+        
     if min_cluster_size < 2:
         warnings.warn("`min_cluster_size` too small, setting it to 2")
         min_cluster_size = 2
@@ -137,7 +143,7 @@ def hdbscan_cluster(
 
 
 def reduce_and_cluster(
-    dataset: KantoData, ID: str, song_level: bool = False, min_sample: int = 10, kwargs_umap: dict={}, kwargs_hdbscan: dict={}
+    dataset: KantoData, ID: str, song_level: bool = False, min_sample: int = 10, kwargs_umap: dict | None = None, kwargs_hdbscan: dict | None = None
 ) -> pd.DataFrame | None:
     # TODO: pass UMAP and HDBSCAN params!
     """
@@ -215,13 +221,13 @@ def reduce_and_cluster(
 
     # Run UMAP
     embedding, _ = umap_reduce(
-        flat_units, **kwargs
+        flat_units, **(kwargs_umap or {})
     )
 
     # Cluster using HDBSCAN
     # smallest cluster size allowed
     clusterer = hdbscan_cluster(
-        embedding, **kwargs_hdbscan
+        embedding, **(kwargs_hdbscan or {})
     )
 
     # Put together in a dataframe
@@ -240,7 +246,7 @@ def reduce_and_cluster(
 
 
 def reduce_and_cluster_parallel(
-    dataset: KantoData, kwargs_umap: dict={}, kwargs_hdbscan: dict={}, min_sample: int = 10, num_cpus: float | None = None
+    dataset: KantoData, min_sample: int = 10, num_cpus: float | None = None, kwargs_umap: dict | None = None, kwargs_hdbscan: dict | None = None, 
 ) -> pd.DataFrame | None:
     """
     Parallel implementation of
