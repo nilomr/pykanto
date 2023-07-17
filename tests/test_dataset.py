@@ -86,7 +86,17 @@ def test_cluster_ids(dataset, song_level, df, ss):
     dataset.cluster_ids(min_sample=ss)
     # TODO: test with min_sample > len of one of the IDs
     assert {"umap_x", "auto_class"}.issubset(getattr(dataset, df).columns)
-
+    
+@pytest.mark.parametrize(
+    "song_level,df, kwargs_umap, kwargs_hdbscan"
+    [(False, "units", 5, {"min_dist":0.1, "random_state":3}, {"min_cluster_size":3, "min_samples":3}),
+    (False, "units", 5, {"min_dist":0.6,"random_state":5}, {"min_cluster_size":10, "min_samples":10})],
+)
+def test_cluster_ids_params(dataset, song_level, df, kwargs_umap, kwargs_hdbscan):
+    dataset.parameters.update(song_level=song_level)
+    dataset.cluster_ids(kwargs_umap=kwargs_umap, kwargs_hdbscan=kwargs_hdbscan)
+    # TODO: test with min_sample > len of one of the IDs
+    assert {"umap_x", "auto_class"}.issubset(getattr(dataset, df).columns)
 
 @pytest.mark.parametrize(
     "song_level,colname",
