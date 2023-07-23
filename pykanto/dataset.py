@@ -16,7 +16,7 @@ import warnings
 from datetime import datetime
 from pathlib import Path
 from random import sample
-from typing import List, Literal, Tuple
+from typing import Any, Dict, List, Literal, Tuple
 
 import numpy as np
 import pandas as pd
@@ -749,7 +749,12 @@ class KantoData:
         save_to_jsons(self)
 
     @timing
-    def cluster_ids(self, min_sample: int = 10, kwargs_umap: dict | None = None, kwargs_hdbscan: dict | None = None) -> None:
+    def cluster_ids(
+        self,
+        min_sample: int = 10,
+        kwargs_umap: Dict[str, Any] = {},
+        kwargs_hdbscan: Dict[str, Any] = {},
+    ) -> None:
         """
         Dimensionality reduction using UMAP + unsupervised clustering using
         HDBSCAN. This will fail if the sample size for an ID (grouping factor,
@@ -763,11 +768,15 @@ class KantoData:
             min_sample (int): Minimum sample size below which an ID will
                 be skipped. Defaults to 10, but you can reallistically expect
                 good automatic results above ~100.
-            kwargs_umap (dict): dictionary of umap params.
-            kwargs_hdbscan (dict): dictionary of hdbscan params.
+            kwargs_umap (dict): Dictionary of UMAP parameters.
+            kwargs_hdbscan (dict): Dictionary of HDBSCAN+ parameters.
         """
         df = reduce_and_cluster_parallel(
-            self, min_sample=min_sample, num_cpus=self.parameters.num_cpus, kwargs_umap=kwargs_umap, kwargs_hdbscan=kwargs_hdbscan
+            self,
+            min_sample=min_sample,
+            num_cpus=self.parameters.num_cpus,
+            kwargs_umap=kwargs_umap,
+            kwargs_hdbscan=kwargs_hdbscan,
         )
 
         if self.parameters.song_level:
