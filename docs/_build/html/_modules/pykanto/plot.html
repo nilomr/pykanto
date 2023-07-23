@@ -37,12 +37,55 @@
     <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None" />
 
-    <!-- Google Analytics -->
-    
+
+<!-- HTML Meta Tags -->
+<title>pykanto: documentation</title>
+<meta name="description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+
+<!-- Facebook Meta Tags -->
+<meta property="og:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="pykanto: documentation">
+<meta property="og:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta property="og:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:domain" content="nilomr.github.io">
+<meta property="twitter:url" content="https://nilomr.github.io/pykanto/_build/html/index.html">
+<meta name="twitter:title" content="pykanto: documentation">
+<meta name="twitter:description"
+    content="pykanto is a new software library to catalogue, explore, and label large animal vocalisation datasets">
+<meta name="twitter:image" content="https://nilomr.github.io/pykanto/_build/html/_images/docspreview.jpeg">
+
+
+<!-- ****** faviconit.com favicons ****** -->
+<link rel="shortcut icon" href="_images/favicon.ico">
+<link rel="icon" sizes="16x16 32x32 64x64" href="_images/favicon.ico">
+<link rel="icon" type="image/png" sizes="196x196" href="_images/favicon-192.png">
+<link rel="icon" type="image/png" sizes="160x160" href="_images/favicon-160.png">
+<link rel="icon" type="image/png" sizes="96x96" href="_images/favicon-96.png">
+<link rel="icon" type="image/png" sizes="64x64" href="_images/favicon-64.png">
+<link rel="icon" type="image/png" sizes="32x32" href="_images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="_images/favicon-16.png">
+<link rel="apple-touch-icon" href="_images/favicon-57.png">
+<link rel="apple-touch-icon" sizes="114x114" href="_images/favicon-114.png">
+<link rel="apple-touch-icon" sizes="72x72" href="_images/favicon-72.png">
+<link rel="apple-touch-icon" sizes="144x144" href="_images/favicon-144.png">
+<link rel="apple-touch-icon" sizes="60x60" href="_images/favicon-60.png">
+<link rel="apple-touch-icon" sizes="120x120" href="_images/favicon-120.png">
+<link rel="apple-touch-icon" sizes="76x76" href="_images/favicon-76.png">
+<link rel="apple-touch-icon" sizes="152x152" href="_images/favicon-152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="_images/favicon-180.png">
+<meta name="msapplication-TileColor" content="#FFFFFF">
+<meta name="msapplication-TileImage" content="_images/favicon-144.png">
+<meta name="msapplication-config" content="_images/browserconfig.xml">
+<!-- ****** faviconit.com favicons ****** -->
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
 <!-- Checkboxes to toggle the left sidebar -->
@@ -432,7 +475,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="sns_histoplot"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.sns_histoplot">[docs]</a><span class="k">def</span> <span class="nf">sns_histoplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots a histogram using seaborn</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -452,7 +495,7 @@ title="Source repository"
     <span class="n">max_lenght</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">colour_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots a melspectrogram from a numpy array or path to a numpy array.</span>
 
 <span class="sd">    Args:</span>
@@ -565,7 +608,7 @@ title="Source repository"
     <span class="n">onsets_offsets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots a vocalisation and overlays the results</span>
 <span class="sd">    of the segmentation process.</span>
 
@@ -625,7 +668,7 @@ title="Source repository"
 
 
 <div class="viewcode-block" id="mspaced_mask"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.mspaced_mask">[docs]</a><span class="k">def</span> <span class="nf">mspaced_mask</span><span class="p">(</span><span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">M</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a mask of length N to select M</span>
 <span class="sd">    indices as regularly spaced as possible.</span>
 
@@ -651,7 +694,7 @@ title="Source repository"
 
 <div class="viewcode-block" id="rand_jitter"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.rand_jitter">[docs]</a><span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">rand_jitter</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">jitter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adds random jitter to an array.</span>
 
 <span class="sd">    Args:</span>
@@ -672,7 +715,7 @@ title="Source repository"
     <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots spectral centroids and bandwiths over a mel spectrogram.</span>
 <span class="sd">    You can either provide a key string for a vocalisation or its</span>
 <span class="sd">    mel spectrogram directly.</span>
@@ -718,7 +761,7 @@ title="Source repository"
     <span class="n">key</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">spec</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots approximate minimum and maximum frequencies over a mel spectrogram.</span>
 <span class="sd">    You can either provide a key string for a vocalisation or its</span>
 <span class="sd">    mel spectrogram directly.</span>
@@ -755,7 +798,7 @@ title="Source repository"
 <div class="viewcode-block" id="build_plot_summary"><a class="viewcode-back" href="../../_autosummary/pykanto.plot.html#pykanto.plot.build_plot_summary">[docs]</a><span class="k">def</span> <span class="nf">build_plot_summary</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">KantoData</span><span class="p">,</span> <span class="n">nbins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">variable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;frequency&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots a histogram + kernel densiyy estimate of the frequency</span>
 <span class="sd">    distribution of vocalisation duration and frequencies.</span>
 

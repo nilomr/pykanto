@@ -9,7 +9,7 @@
 <br>
 <br>
 
-![version](https://img.shields.io/badge/package_version-0.1.6-orange)
+![version](https://img.shields.io/badge/package_version-0.1.7-orange)
 ![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)
 ![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![Open Source Love](https://img.shields.io/badge/open%20source-♡-lightgrey)

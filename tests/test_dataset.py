@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pkg_resources
 import pytest
+
 from pykanto.dataset import KantoData
 from pykanto.parameters import Parameters
 from pykanto.utils.io import load_dataset
@@ -85,6 +86,34 @@ def test_cluster_ids(dataset, song_level, df, ss):
     dataset.parameters.update(song_level=song_level)
     dataset.cluster_ids(min_sample=ss)
     # TODO: test with min_sample > len of one of the IDs
+    assert {"umap_x", "auto_class"}.issubset(getattr(dataset, df).columns)
+
+
+@pytest.mark.parametrize(
+    "song_level, df, kwargs_umap, kwargs_hdbscan",
+    [
+        (
+            False,
+            "units",
+            {"min_dist": 0.1, "n_neighbors": 10, "random_state": 3},
+            {"min_cluster_size": 3, "min_samples": 3},
+        ),
+        (
+            True,
+            "data",
+            {"min_dist": 0.6, "random_state": 5},
+            {"min_cluster_size": 10, "min_samples": 10},
+        ),
+    ],
+)
+def test_cluster_ids_params(
+    dataset, song_level, df, kwargs_umap, kwargs_hdbscan
+):
+    """
+    Test cluster_ids method with different parameters.
+    """
+    dataset.parameters.update(song_level=song_level)
+    dataset.cluster_ids(kwargs_umap=kwargs_umap, kwargs_hdbscan=kwargs_hdbscan)
     assert {"umap_x", "auto_class"}.issubset(getattr(dataset, df).columns)
 
 

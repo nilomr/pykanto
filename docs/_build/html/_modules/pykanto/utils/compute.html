@@ -570,7 +570,12 @@ title="Source repository"
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">n_workers</span><span class="p">:</span>
-        <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">cpu_affinity</span><span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">n_workers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span><span class="o">.</span><span class="n">cpu_affinity</span><span class="p">())</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c1"># cpu_affinity doesn&#39;t work on macOS nilomr/pykanto/#18</span>
+            <span class="c1"># TODO: #21 @nilomr optionally pass n_workers from methods using calc_chunks</span>
+            <span class="n">n_workers</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="n">chunksize</span><span class="p">,</span> <span class="n">extra</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">len_iterable</span><span class="p">,</span> <span class="n">n_workers</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
