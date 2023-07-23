@@ -451,7 +451,7 @@ title="Source repository"
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">sample</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -1184,7 +1184,12 @@ title="Source repository"
         <span class="n">save_to_jsons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KantoData.cluster_ids"><a class="viewcode-back" href="../../_autosummary/pykanto.dataset.html#pykanto.dataset.KantoData.cluster_ids">[docs]</a>    <span class="nd">@timing</span>
-    <span class="k">def</span> <span class="nf">cluster_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_sample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">cluster_ids</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">min_sample</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">kwargs_umap</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">kwargs_hdbscan</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dimensionality reduction using UMAP + unsupervised clustering using</span>
 <span class="sd">        HDBSCAN. This will fail if the sample size for an ID (grouping factor,</span>
@@ -1198,10 +1203,15 @@ title="Source repository"
 <span class="sd">            min_sample (int): Minimum sample size below which an ID will</span>
 <span class="sd">                be skipped. Defaults to 10, but you can reallistically expect</span>
 <span class="sd">                good automatic results above ~100.</span>
-
+<span class="sd">            kwargs_umap (dict): Dictionary of UMAP parameters.</span>
+<span class="sd">            kwargs_hdbscan (dict): Dictionary of HDBSCAN+ parameters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">reduce_and_cluster_parallel</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">min_sample</span><span class="o">=</span><span class="n">min_sample</span><span class="p">,</span> <span class="n">num_cpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">min_sample</span><span class="o">=</span><span class="n">min_sample</span><span class="p">,</span>
+            <span class="n">num_cpus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_cpus</span><span class="p">,</span>
+            <span class="n">kwargs_umap</span><span class="o">=</span><span class="n">kwargs_umap</span><span class="p">,</span>
+            <span class="n">kwargs_hdbscan</span><span class="o">=</span><span class="n">kwargs_hdbscan</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">song_level</span><span class="p">:</span>
