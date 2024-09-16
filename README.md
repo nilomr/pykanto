@@ -67,8 +67,8 @@ The project is licensed under the [MIT license](./LICENSE).
 If you use `pykanto` in your own work, please cite the associated article and/or
 the repository:
 
-[![DOI](https://zenodo.org/badge/239354937.svg)](https://zenodo.org/badge/latestdoi/239354937)
-[![arXiv](https://img.shields.io/badge/arXiv-2302.10340-b31b1b.svg)](https://arxiv.org/abs/2302.10340)
+[![Article](https://img.shields.io/badge/Metods_Ecol._Evol-article-green)](https://arxiv.org/abs/2302.10340)<br>
+[![DOI](https://zenodo.org/badge/239354937.svg)](https://doi.org/10.1111/2041-210X.14155)
 
 <br>
 
