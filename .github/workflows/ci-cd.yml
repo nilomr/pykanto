@@ -1,4 +1,13 @@
 # .github/workflows/ci-cd.yml
+
+name: Publish ${package_name} to PyPI / GitHub
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
 jobs:
   pypi-publish:
     name: Upload release to PyPI
